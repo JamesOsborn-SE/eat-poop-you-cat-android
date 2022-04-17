@@ -62,7 +62,7 @@ classDiagram
 sequenceDiagram
     autonumber
     Player1->>Player2: Can I play?
-    loop playerHasPlayed(Player1.Id)
+    loop hasPlayed?
         Player2->>Player2: check for Player Id in this game
     end
     Player2-->>Player1: Yes, here is payload
