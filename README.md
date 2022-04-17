@@ -14,7 +14,8 @@ Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start wi
 * Time Limit?
 
 ### Permissions needed
-* `android.permission.BLUETOOTH
+``` java
+android.permission.BLUETOOTH
 android.permission.BLUETOOTH_ADMIN
 android.permission.ACCESS_WIFI_STATE
 android.permission.CHANGE_WIFI_STATE
@@ -23,7 +24,8 @@ android.permission.ACCESS_FINE_LOCATION
 android.permission.ACCESS_BACKGROUND_LOCATION
 android.permission.BLUETOOTH_SCAN neverForLocation
 android.permission.BLUETOOTH_ADVERTISE
-android.permission.BLUETOOTH_CONNECT`
+android.permission.BLUETOOTH_CONNECT
+```
 * these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app 
 
 ### Tech used
