@@ -30,8 +30,9 @@ android.permission.BLUETOOTH_CONNECT
 
 ### Tech used
 * [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
+* [ORM - Room](https://developer.android.com/training/data-storage/room/)
 
-### PayLoad
+### Data
 ```mermaid
 classDiagram
     Payload <|-- Metadata
@@ -68,4 +69,8 @@ sequenceDiagram
         Player2->>Player2: check for Player Id in this game
     end
     Player2-->>Player1: Yes, here is payload
+    Player1->>Player2: Is there an update for Games?
+    loop hasUpdate?
+        Player2->>Player2: check for Player Id in current games
+    end
 ```
