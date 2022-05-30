@@ -27,6 +27,7 @@ android.permission.BLUETOOTH_ADVERTISE
 android.permission.BLUETOOTH_CONNECT
 ```
 * these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app 
+[Figma File](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
 
 ### Tech used
 * [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
