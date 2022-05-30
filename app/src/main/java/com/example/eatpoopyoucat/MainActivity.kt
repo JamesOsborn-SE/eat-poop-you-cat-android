@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     private var connectionsClient: ConnectionsClient? = null
 
     // CodeName will be a hash of the sentence that starts the game
-    private val codeName: String = "New Game"
+    private val codeName: String = getString(R.string.new_game)
 
     private var requiredPermissions = when {
         Build.VERSION.SDK_INT >= VERSION_CODES.S -> {
