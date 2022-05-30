@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     private var connectionsClient: ConnectionsClient? = null
 
     // CodeName will be a hash of the sentence that starts the game
-    private val codeName: String = getString(R.string.new_game)
+    private lateinit var codeName: String
 
     private var requiredPermissions = when {
         Build.VERSION.SDK_INT >= VERSION_CODES.S -> {
@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
+        codeName = getString(R.string.new_game)
         super.onStart()
         if (!hasPermissions(this, requiredPermissions)) {
             if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
