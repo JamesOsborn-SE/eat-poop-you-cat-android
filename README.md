@@ -7,13 +7,13 @@ Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start wi
 ### Info Needed from user
 
 * Display Name
-* Unique Id
 
 ### Rules
 
 * Each person can only play once per Unique game
 * only Monochrome drawings
-* Time Limit?
+* Time Limit
+* Trun limit
 
 ### Permissions needed
 
