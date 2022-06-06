@@ -7,6 +7,9 @@ import com.example.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 import com.google.android.gms.nearby.connection.*
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status
 
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val tag = "EatPoopYouCat"
 
@@ -32,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         startDiscovery()
         setStatusText(getString(R.string.status_searching))
         PermissionsUtility.requestBackGroundPermission(this)
-
     }
 
     /** Starts looking for other players using Nearby Connections.  */

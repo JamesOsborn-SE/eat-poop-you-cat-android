@@ -1,4 +1,4 @@
-package com.example.eatpoopyoucat.database
+package com.example.eatpoopyoucat.data
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,11 +12,14 @@ interface EntryDao {
     fun getAll(): List<Entry>
 
     @Query("SELECT * FROM entry WHERE uid=:uid")
-    fun get(uid: UUID)
+    fun get(uid: UUID): Entry
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entry: Entry)
 
     @Query("DELETE FROM entry")
     suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(games: List<Entry>)
 }

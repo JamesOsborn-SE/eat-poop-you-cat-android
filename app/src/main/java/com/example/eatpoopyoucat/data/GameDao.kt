@@ -1,4 +1,4 @@
-package com.example.eatpoopyoucat.database
+package com.example.eatpoopyoucat.data
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -13,6 +13,9 @@ interface GameDao {
     @Query("SELECT * FROM game")
     fun getAll(): Flow<List<Game>>
 
+    @Query("SELECT * FROM game")
+    fun getAllWithEntries(): Flow<List<GameWithEntries>>
+
     @Query("SELECT * FROM game WHERE uid=:uid")
     fun get(uid: UUID): Game
 
@@ -21,4 +24,8 @@ interface GameDao {
 
     @Query("DELETE FROM Game")
     suspend fun deleteAll()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(games: List<Game>)
+
 }

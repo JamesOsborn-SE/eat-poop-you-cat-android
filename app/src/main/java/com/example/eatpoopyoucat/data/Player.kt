@@ -1,4 +1,4 @@
-package com.example.eatpoopyoucat.database
+package com.example.eatpoopyoucat.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

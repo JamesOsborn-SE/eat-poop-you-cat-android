@@ -1,4 +1,4 @@
-package com.example.eatpoopyoucat.database
+package com.example.eatpoopyoucat.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,5 +9,5 @@ data class Game(
     @PrimaryKey val uid: UUID,
     val Timeout: Int?,
     val Turns: Int?,
-    val Entries: Array<Entry>
+//    val Entries: Array<Entry>
 )
