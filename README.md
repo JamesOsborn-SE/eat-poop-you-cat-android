@@ -13,11 +13,11 @@ Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start wi
 * Each person can only play once per Unique game
 * only Monochrome drawings
 * Time Limit
-* Trun limit
+* Turn limit
 
 ### Permissions needed
 
-```java
+```
 android.permission.BLUETOOTH
 android.permission.BLUETOOTH_ADMIN
 android.permission.ACCESS_WIFI_STATE
