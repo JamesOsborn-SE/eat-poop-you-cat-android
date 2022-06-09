@@ -26,6 +26,7 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -80,7 +81,8 @@ dependencies {
     implementation 'androidx.databinding:databinding-runtime:7.2.1'
     implementation 'androidx.databinding:databinding-adapters:7.2.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
-    kapt 'com.android.databinding:compiler:3.1.4'
+    kapt 'androidx.databinding:databinding-compiler:7.2.1'
+    implementation('androidx.appcompat:appcompat:1.4.2')
 
     testImplementation 'junit:junit:4.13.2'
     implementation 'commons-codec:commons-codec:1.15'
@@ -106,7 +108,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     // optional - Paging 3 Integration
-    implementation "androidx.room:room-paging:2.5.0-alpha01"
+    implementation "androidx.room:room-paging:$room_version"
 
     implementation 'com.google.dagger:hilt-android:2.42'
     kapt 'com.google.dagger:hilt-compiler:2.42'
