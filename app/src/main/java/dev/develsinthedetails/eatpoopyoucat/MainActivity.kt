@@ -3,12 +3,10 @@ package dev.develsinthedetails.eatpoopyoucat
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 import com.google.android.gms.nearby.connection.*
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate.Status
-
 import dagger.hilt.android.AndroidEntryPoint
+import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

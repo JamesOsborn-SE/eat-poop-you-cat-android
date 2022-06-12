@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat
 
 import android.app.Application
 import androidx.work.Configuration
-import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 
 

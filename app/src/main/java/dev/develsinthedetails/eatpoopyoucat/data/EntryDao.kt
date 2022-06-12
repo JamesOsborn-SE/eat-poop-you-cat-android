@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
 import androidx.room.*
-import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import java.util.*
 
 @Dao

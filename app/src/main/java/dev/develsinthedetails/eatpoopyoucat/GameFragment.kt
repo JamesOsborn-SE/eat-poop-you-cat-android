@@ -1,16 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat
 
 import android.os.Bundle
-import android.util.Log
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import dev.develsinthedetails.eatpoopyoucat.data.Game
+import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
 
 class GameFragment : Fragment() {
 
@@ -24,7 +22,7 @@ class GameFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentGameBinding>(
             inflater,
             R.layout.fragment_game,

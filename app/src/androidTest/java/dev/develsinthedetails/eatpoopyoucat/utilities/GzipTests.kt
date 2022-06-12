@@ -1,8 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.utilities
 
-import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.utilities.testImage
-import dev.develsinthedetails.eatpoopyoucat.utilities.testImageGzipBytes
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
 import org.junit.Test
