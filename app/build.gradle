@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.eatpoopyoucat"
+        applicationId "dev.develsinthedetails.eatpoopyoucat"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -60,7 +60,7 @@ android {
         excludes += '/META-INF/gradle/incremental.annotation.processors'
     }
 
-    namespace 'com.example.eatpoopyoucat'
+    namespace 'dev.develsinthedetails.eatpoopyoucat'
 }
 
 dependencies {

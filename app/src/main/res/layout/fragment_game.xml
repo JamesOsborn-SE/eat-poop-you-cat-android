@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
 <data>
-    <import type="com.example.eatpoopyoucat.data.Game"/>
+    <import type="dev.develsinthedetails.eatpoopyoucat.data.Game"/>
     <variable
         name="viewModel"
-        type="com.example.eatpoopyoucat.GameViewModel" />
+        type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
     <variable
         name="callback"
-        type="com.example.eatpoopyoucat.GameFragment.Callback" />
+        type="dev.develsinthedetails.eatpoopyoucat.GameFragment" />
 </data>
     <TextView
         android:layout_width="match_parent"
