@@ -1,30 +1,33 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 @Dao
 interface GameDao {
 
+    @Transaction
     @Query("SELECT * FROM game")
     fun getAll(): Flow<List<Game>>
 
+    @Transaction
     @Query("SELECT * FROM game")
     fun getAllWithEntries(): Flow<List<GameWithEntries>>
 
+    @Transaction
     @Query("SELECT * FROM game WHERE id=:id")
     fun get(id: UUID): Game
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(game: Game)
 
+    @Transaction
     @Query("DELETE FROM Game")
     suspend fun deleteAll()
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Game>)
 

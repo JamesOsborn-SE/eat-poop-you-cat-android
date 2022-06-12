@@ -18,7 +18,7 @@ import java.util.*
         childColumns = ["playerId"],
         onDelete = CASCADE
     )],
-    indices = [Index("gameId")]
+    indices = [Index("gameId"), Index("playerId")]
 )
 data class Entry(
     @PrimaryKey val id: UUID,
