@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/home"
+        android:name="dev.develsinthedetails.eatpoopyoucat.GameFragment"
+        tools:layout="@layout/activity_main">
+        <action
+            android:id="@+id/action_home_to_game_fragment"
+            app:destination="@id/game_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/game_fragment"
+        android:name="dev.develsinthedetails.eatpoopyoucat.GameFragment"
+        tools:layout="@layout/fragment_game">
+
+    </fragment>
+
+</navigation>
