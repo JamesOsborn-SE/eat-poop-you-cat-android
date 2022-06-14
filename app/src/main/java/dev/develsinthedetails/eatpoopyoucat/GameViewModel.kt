@@ -1,13 +1,11 @@
 package dev.develsinthedetails.eatpoopyoucat
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.develsinthedetails.eatpoopyoucat.data.GameRepository
-import javax.inject.Inject
 
-@HiltViewModel
-class GameViewModel @Inject constructor(
-    private val gameRepository: GameRepository
+class GameViewModel constructor(
 ): ViewModel() {
+    private var _sentenceToDraw = "eat poop you cat!"
 
+    val sentenceToDraw
+        get() = _sentenceToDraw
 }

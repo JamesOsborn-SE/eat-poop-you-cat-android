@@ -1,90 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<data>
-    <import type="dev.develsinthedetails.eatpoopyoucat.data.Game"/>
-    <variable
-        name="viewModel"
-        type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
+    <data>
+        <import type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
+        <variable
+            name="viewModel"
+            type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
 
-</data>
+    </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        android:layout_gravity="top">
+
+        <TextView
+            android:id="@+id/sentenceToDraw"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="9dp"
+            android:autofillHints="@string/draw_this_sentence"
+            android:hint="@string/draw_this_sentence"
+            android:text="@{viewModel.sentenceToDraw}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <dev.develsinthedetails.eatpoopyoucat.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sentenceToDraw" />
 
         <LinearLayout
-            android:id="@+id/linear"
+            android:id="@+id/edit_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/draw_view">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <Button
+                android:id="@+id/btn_clearAll"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:contentDescription="@string/clear"
+                android:drawableTop="@drawable/ic_baseline_delete_forever_24"
+                android:text="@string/clear" />
 
-                <ImageButton
-                    android:id="@+id/btn_clearAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_delete_forever_24"
-                    android:text="@string/undo"
-                    android:contentDescription="clear" />
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/save_description"
+                android:drawableTop="@drawable/ic_baseline_save_24"
+                android:text="@string/save" />
 
-                <ImageButton
-                    android:id="@+id/btn_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/save"
-                    android:src="@drawable/ic_baseline_save_24"
-                    android:contentDescription="save your work" />
+            <Button
+                android:id="@+id/btn_erase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/erase_description"
+                android:drawableTop="@drawable/ic_eraser_24"
+                android:text="@string/erase"/>
 
-                <ImageButton
-                    android:id="@+id/btn_erase"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_eraser_24"
-                    android:text="Erase"
-                    android:contentDescription="Erase some" />
+            <Button
+                android:id="@+id/btn_draw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/draw_description"
+                android:drawableTop="@drawable/ic_baseline_create_24"
+                android:text="@string/draw" />
 
-                <ImageButton
-                    android:id="@+id/btn_draw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_baseline_create_24"
-                    android:text="Draw"
-                    android:contentDescription="Draw" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-                <dev.develsinthedetails.eatpoopyoucat.DrawView
-                    android:id="@+id/draw_view"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="H,1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
-    </RelativeLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
