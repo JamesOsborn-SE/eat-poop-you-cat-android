@@ -2,14 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@id/home">
+    app:startDestination="@id/game_fragment">
 
     <fragment
-        android:id="@+id/home"
-        android:name="dev.develsinthedetails.eatpoopyoucat.GameFragment"
-        tools:layout="@layout/activity_main">
+        android:id="@+id/welcome"
+        android:name="dev.develsinthedetails.eatpoopyoucat.WelcomeFragment"
+        tools:layout="@layout/fragment_welcome">
         <action
-            android:id="@+id/action_home_to_game_fragment"
+            android:id="@+id/action_welcome_to_game_fragment"
             app:destination="@id/game_fragment" />
     </fragment>
 

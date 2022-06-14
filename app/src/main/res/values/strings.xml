@@ -22,4 +22,15 @@
     <string name="save">Save</string>
     <string name="undo">Undo</string>
     <string name="enter_a_nickname">Enter a nickname</string>
+    <string name="enter_a_sentence">Enter a sentence</string>
+    <string name="draw_this_sentence">Draw this sentence!</string>
+    <string name="clear">clear</string>
+    <string name="save_description">save your work</string>
+    <string name="erase_description">Erase stuff</string>
+    <string name="erase">Erase</string>
+    <string name="draw_description">Draw</string>
+    <string name="draw">Draw</string>
+    <string name="undo_description">Undo what you just did</string>
+    <string name="redo_description">Undo the undo</string>
+    <string name="redo">Redo</string>
 </resources>
