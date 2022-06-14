@@ -9,20 +9,21 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import dagger.hilt.android.AndroidEntryPoint
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-import kotlinx.android.synthetic.main.fragment_game.*
-import kotlinx.android.synthetic.main.fragment_game.view.*
 import org.apache.commons.codec.binary.Base64
 import java.io.ByteArrayOutputStream
 
-@AndroidEntryPoint
+
 class GameFragment : Fragment() {
 
     companion object {
         fun newInstance() = GameFragment()
     }
+    private var _binding: FragmentGameBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     private val gameViewModel: GameViewModel by viewModels()
 
@@ -31,7 +32,7 @@ class GameFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = DataBindingUtil.inflate<FragmentGameBinding>(
+        _binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_game,
             container,
@@ -42,29 +43,36 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_save.setOnClickListener {
-            val bitmap= view.draw_view.getBitmap()
+
+        binding.btnSave.setOnClickListener {
+            val bitmap=  binding.drawView.getBitmap()
             var outputSteam = ByteArrayOutputStream(bitmap.byteCount)
-            val x = bitmap.compress(Bitmap.CompressFormat.PNG, 10, outputSteam)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 10, outputSteam)
             val gzip = Gzip()
             val pngGZipped = gzip.compress(outputSteam.toByteArray())
             var b64encode = Base64.encodeBase64(pngGZipped)
             Log.d("PngGzipBase64Encoded",String(b64encode))
             Log.d("PngGzipBase64Encoded","bitMap Bytes ${bitmap.byteCount}")
             Log.d("PngGzipBase64Encoded","png Bytes ${outputSteam.toByteArray().size}")
-            Log.d("PngGzipBase64Encoded","gziped png Bytes ${pngGZipped.size}")
+            Log.d("PngGzipBase64Encoded","gZipped png Bytes ${pngGZipped.size}")
         }
 
-        btn_erase.setOnClickListener {
-            view.draw_view.setErase()
+        binding.btnErase.setOnClickListener {
+            binding.drawView.setErase()
         }
 
-        btn_draw.setOnClickListener {
-            view.draw_view.setPen()
+        binding.btnDraw.setOnClickListener {
+            binding.drawView.setPen()
         }
 
-        btn_clearAll.setOnClickListener {
-            view.draw_view.clearCanvas()
+        binding.btnClearAll.setOnClickListener {
+            binding.drawView.clearCanvas()
         }
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
