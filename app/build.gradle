@@ -1,12 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -30,6 +30,10 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -82,8 +86,8 @@ dependencies {
     implementation 'androidx.databinding:databinding-runtime:7.2.1'
     implementation 'androidx.databinding:databinding-adapters:7.2.1'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
-    implementation 'androidx.navigation:navigation-fragment:2.4.2'
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
+    implementation 'androidx.preference:preference-ktx:1.2.0'
     kapt 'androidx.databinding:databinding-compiler:7.2.1'
     implementation('androidx.appcompat:appcompat:1.4.2')
 
