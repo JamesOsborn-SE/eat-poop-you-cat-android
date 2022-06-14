@@ -1,51 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    tools:context="dev.develsinthedetails.eatpoopyoucat.MainActivity">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:context=".MainActivity">
-
-        <TextView
-            android:id="@+id/txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <EditText
-            android:id="@+id/editNickname"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:autofillHints="@string/enter_a_nickname"
-            android:hint="@string/enter_a_nickname"
-            android:inputType="text"
-            android:textColor="@color/black" />
-
-        <Button
-            android:id="@+id/save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/save" />
-
-        <Button
-            android:id="@+id/new_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/new_game" />
+    tools:context=".MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host"
@@ -54,5 +13,5 @@
             android:layout_height="match_parent"
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_game" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
