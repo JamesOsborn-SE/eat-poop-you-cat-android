@@ -49,11 +49,12 @@ class GameFragment : Fragment() {
 
         binding.btnSave.setOnClickListener {
             val bitmap = binding.drawView.getBitmap()
-            var outputSteam = ByteArrayOutputStream(bitmap.byteCount)
+            val outputSteam = ByteArrayOutputStream(bitmap.byteCount)
             bitmap.compress(Bitmap.CompressFormat.PNG, 10, outputSteam)
             val gzip = Gzip()
             val pngGZipped = gzip.compress(outputSteam.toByteArray())
-            var b64encode = Base64.encodeBase64(pngGZipped)
+            val b64encode = Base64.encodeBase64(pngGZipped)
+            Log.d("PngGzipBase64Encoded", "b64 size ${b64encode.size}")
             Log.d("PngGzipBase64Encoded", "bitMap Bytes ${bitmap.byteCount}")
             Log.d("PngGzipBase64Encoded", "png Bytes ${outputSteam.toByteArray().size}")
             Log.d("PngGzipBase64Encoded", "gZipped png Bytes ${pngGZipped.size}")
