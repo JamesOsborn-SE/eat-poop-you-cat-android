@@ -1,4 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.data
+
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -7,13 +8,15 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(
-    foreignKeys = [ ForeignKey
-        (entity = Game::class,
+    foreignKeys = [ForeignKey
+        (
+        entity = Game::class,
         parentColumns = ["id"],
         childColumns = ["gameId"],
         onDelete = CASCADE
-    ),ForeignKey
-        (entity = Player::class,
+    ), ForeignKey
+        (
+        entity = Player::class,
         parentColumns = ["id"],
         childColumns = ["playerId"],
         onDelete = CASCADE

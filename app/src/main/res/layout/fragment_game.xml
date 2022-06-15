@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
+
         <variable
             name="viewModel"
             type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
@@ -11,10 +13,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top">
+        android:layout_gravity="top"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <TextView
             android:id="@+id/sentenceToDraw"
@@ -73,7 +75,7 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/erase_description"
                 android:drawableTop="@drawable/ic_eraser_24"
-                android:text="@string/erase"/>
+                android:text="@string/erase" />
 
             <Button
                 android:id="@+id/btn_draw"

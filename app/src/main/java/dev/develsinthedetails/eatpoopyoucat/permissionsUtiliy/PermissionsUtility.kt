@@ -67,10 +67,13 @@ class PermissionsUtility {
         }
 
         /** Can't ask for ACCESS_BACKGROUND_LOCATION at the same time as location permissions  **/
-        fun requestBackGroundPermission(activity: Activity){
+        fun requestBackGroundPermission(activity: Activity) {
             if (!hasPermissions(activity, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)))
                 if (Build.VERSION.SDK_INT >= VERSION_CODES.Q) {
-                    activity.requestPermissions(arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),2)
+                    activity.requestPermissions(
+                        arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION),
+                        2
+                    )
                 }
         }
 

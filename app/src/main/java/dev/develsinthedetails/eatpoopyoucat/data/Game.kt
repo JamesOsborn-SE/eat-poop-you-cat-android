@@ -5,7 +5,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity(indices =  [Index("id")])
+@Entity(indices = [Index("id")])
 data class Game(
     @PrimaryKey val id: UUID,
     val timeout: Int?,

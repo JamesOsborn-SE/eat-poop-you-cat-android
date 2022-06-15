@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -72,6 +73,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
      * No need to call and implement MyCanvasView#performClick, because MyCanvasView custom view
      * does not handle click actions.
      */
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         motionTouchEventX = event.x
         motionTouchEventY = event.y
@@ -104,7 +106,12 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         if (dx >= touchTolerance || dy >= touchTolerance) {
             // QuadTo() adds a quadratic bezier from the last point,
             // approaching control point (x1,y1), and ending at (x2,y2).
-            path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
+            path.quadTo(
+                currentX,
+                currentY,
+                (motionTouchEventX + currentX) / 2,
+                (motionTouchEventY + currentY) / 2
+            )
             currentX = motionTouchEventX
             currentY = motionTouchEventY
             // Draw the path in the extra bitmap to save it.
@@ -121,21 +128,21 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         path.reset()
     }
 
-    fun getBitmap(): Bitmap{
+    fun getBitmap(): Bitmap {
         return this.extraBitmap
     }
 
     fun setErase() {
-        paint.color=backgroundColor
+        paint.color = backgroundColor
         paint.strokeWidth = STROKE_WIDTH * 4
     }
 
-    fun clearCanvas(){
+    fun clearCanvas() {
         extraCanvas.drawColor(backgroundColor)
     }
 
-    fun setPen(){
-        paint.color=drawColor
+    fun setPen() {
+        paint.color = drawColor
         paint.strokeWidth = STROKE_WIDTH
     }
 }

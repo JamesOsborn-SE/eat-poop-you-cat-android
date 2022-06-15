@@ -20,8 +20,9 @@ import java.util.*
 class WelcomeFragment : Fragment() {
     private lateinit var nickname: String
 
-    private lateinit var shared : SharedPreferences
+    private lateinit var shared: SharedPreferences
     private var _binding: FragmentWelcomeBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -36,18 +37,18 @@ class WelcomeFragment : Fragment() {
         nickname = shared.getString("nickname", "No name")!!
         showNickname()
 
-        if(nickname !== "No name")
+        if (nickname !== "No name")
             binding.editNickname.setText(nickname)
 
-        if(shared.getString("playerId","") === "")
+        if (shared.getString("playerId", "") === "")
             setPlayerId()
 
-        binding.save.setOnClickListener{
+        binding.save.setOnClickListener {
             setNickname()
         }
 
         binding.editNickname.setOnEditorActionListener { _, actionId, _ ->
-            if(actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE){
+            if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                 setNickname()
                 this.activity.dismissKeyboard()
                 true
@@ -57,9 +58,11 @@ class WelcomeFragment : Fragment() {
         }
 
         shared.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if(key === "nickname")
-                binding.welcomeMessage.text = getString(R.string.welcome_message,
-                    sharedPreferences.getString("nickname" , "No name"))
+            if (key === "nickname")
+                binding.welcomeMessage.text = getString(
+                    R.string.welcome_message,
+                    sharedPreferences.getString("nickname", "No name")
+                )
         }
 
         binding.newGame.setOnClickListener {

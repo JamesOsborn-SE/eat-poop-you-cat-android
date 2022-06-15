@@ -20,7 +20,9 @@ class GameFragment : Fragment() {
     companion object {
         fun newInstance() = GameFragment()
     }
+
     private var _binding: FragmentGameBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -36,7 +38,8 @@ class GameFragment : Fragment() {
             inflater,
             R.layout.fragment_game,
             container,
-            false)
+            false
+        )
 
         return binding.root
     }
@@ -45,16 +48,15 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSave.setOnClickListener {
-            val bitmap=  binding.drawView.getBitmap()
+            val bitmap = binding.drawView.getBitmap()
             var outputSteam = ByteArrayOutputStream(bitmap.byteCount)
             bitmap.compress(Bitmap.CompressFormat.PNG, 10, outputSteam)
             val gzip = Gzip()
             val pngGZipped = gzip.compress(outputSteam.toByteArray())
             var b64encode = Base64.encodeBase64(pngGZipped)
-            Log.d("PngGzipBase64Encoded",String(b64encode))
-            Log.d("PngGzipBase64Encoded","bitMap Bytes ${bitmap.byteCount}")
-            Log.d("PngGzipBase64Encoded","png Bytes ${outputSteam.toByteArray().size}")
-            Log.d("PngGzipBase64Encoded","gZipped png Bytes ${pngGZipped.size}")
+            Log.d("PngGzipBase64Encoded", "bitMap Bytes ${bitmap.byteCount}")
+            Log.d("PngGzipBase64Encoded", "png Bytes ${outputSteam.toByteArray().size}")
+            Log.d("PngGzipBase64Encoded", "gZipped png Bytes ${pngGZipped.size}")
         }
 
         binding.btnErase.setOnClickListener {
