@@ -14,12 +14,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      //  PermissionsUtility.requestPermissions(Activity())
-
         // Displaying edge-to-edge
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-       // PermissionsUtility.requestBackGroundPermission(Activity())
+
+    }
+    override fun onStart() {
+        super.onStart()
+        PermissionsUtility.requestPermissions(this)
+        PermissionsUtility.requestBackGroundPermission(this)
     }
 }
