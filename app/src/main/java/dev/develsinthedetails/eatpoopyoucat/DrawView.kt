@@ -9,12 +9,11 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
 import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
-import kotlin.math.abs
+
 
 // todo figure out how to allow dots
 // Stroke width for the the paint.

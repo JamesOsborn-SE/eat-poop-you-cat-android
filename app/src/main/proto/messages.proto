@@ -1,7 +1,7 @@
 syntax = "proto3";
-package eatPoopYouCat;
 
-import "google/protobuf/timestamp.proto";
+package dev.develsinthedetails.eatpoopyoucat;
+option optimize_for = LITE_RUNTIME;
 
 message LineSegment {
     float startX = 1;

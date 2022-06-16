@@ -1,6 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +8,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.gson.Gson
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
-import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-import org.apache.commons.codec.binary.Base64
-import java.io.ByteArrayOutputStream
 
 
 class GameFragment : Fragment() {
@@ -46,10 +43,10 @@ class GameFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.btnSave.setOnClickListener {
+            val gson = Gson()
             val drawing = binding.drawView.getDrawing()
-            Log.d("drawing", drawing.toPaths().toString())
+            Log.wtf("drawing", gson.toJson(drawing.toPaths()))
         }
 
         binding.btnErase.setOnClickListener {
