@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="75mm"
+   height="75mm"
+   viewBox="0 0 75 75"
+   version="1.1"
+   id="svg1187"
+   sodipodi:docname="EPYC_icon_background.svg"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   inkscape:export-filename="EPYC_icon.svg"
+   inkscape:export-xdpi="8.1899996"
+   inkscape:export-ydpi="8.1899996"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1189"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.1266375"
+     inkscape:cx="108.15195"
+     inkscape:cy="153.52875"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1729"
+     showguides="true" />
+  <defs
+     id="defs1184">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient2117">
+      <stop
+         style="stop-color:#aa4400;stop-opacity:1;"
+         offset="0"
+         id="stop2113" />
+      <stop
+         style="stop-color:#aa4400;stop-opacity:0;"
+         offset="0.88652909"
+         id="stop2115" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient2117"
+       id="radialGradient2119"
+       cx="88.512047"
+       cy="125.49849"
+       fx="88.512047"
+       fy="125.49849"
+       r="31.216574"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-50.375816,-91.684761)">
+    <g
+       id="g1729"
+       style="fill:#000000"
+       transform="matrix(0.9999914,0,0,0.9999914,-0.63546599,3.6873496)">
+      <rect
+         style="fill:#803300;stroke:none;stroke-width:0.100136"
+         id="rect1868"
+         width="75.000648"
+         height="75.000648"
+         x="51.011719"
+         y="87.998169" />
+      <circle
+         style="fill:url(#radialGradient2119);fill-opacity:1;stroke:none;stroke-width:0.100001"
+         id="path2036"
+         cx="88.512047"
+         cy="125.49849"
+         r="31.216574" />
+    </g>
+  </g>
+</svg>

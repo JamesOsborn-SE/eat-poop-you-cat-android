@@ -75,7 +75,8 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/erase_description"
                 android:drawableTop="@drawable/ic_eraser_24"
-                android:text="@string/erase" />
+                android:text="@string/erase"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_draw"
@@ -84,8 +85,26 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/draw_description"
                 android:drawableTop="@drawable/ic_baseline_create_24"
-                android:text="@string/draw" />
+                android:text="@string/draw"
+                android:visibility="gone" />
 
+            <Button
+                android:id="@+id/btn_undo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/undo_description"
+                android:drawableTop="@drawable/ic_baseline_undo_24"
+                android:text="@string/undo" />
+
+            <Button
+                android:id="@+id/btn_redo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:contentDescription="@string/redo_description"
+                android:drawableTop="@drawable/ic_baseline_undo_24"
+                android:text="@string/redo" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,10 @@ package dev.develsinthedetails.eatpoopyoucat
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -10,6 +13,7 @@ import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
 import kotlin.math.abs
 
+// todo figure out how to allow dots
 // Stroke width for the the paint.
 private const val STROKE_WIDTH = 12f
 
@@ -18,11 +22,13 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
 
     // Holds the path you are currently drawing.
     private var path = Path()
+    private val drawingPaths = ArrayList<Path>()
+    private val undonePaths = ArrayList<Path>()
 
     private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
-    private lateinit var extraCanvas: Canvas
-    private lateinit var extraBitmap: Bitmap
+    private lateinit var canvas: Canvas
+    private lateinit var bitmap: Bitmap
 
     // Set up the paint with which to draw.
     private val paint = Paint().apply {
@@ -58,15 +64,18 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
 
-        if (::extraBitmap.isInitialized) extraBitmap.recycle()
-        extraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        extraCanvas = Canvas(extraBitmap)
-        extraCanvas.drawColor(backgroundColor)
+        if (::bitmap.isInitialized) bitmap.recycle()
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        canvas = Canvas(bitmap)
+        canvas.drawColor(backgroundColor)
+        drawingPaths.add(path)
     }
 
     override fun onDraw(canvas: Canvas) {
-        // Draw the bitmap that has the saved path.
-        canvas.drawBitmap(extraBitmap, 0f, 0f, null)
+        for (p in drawingPaths) {
+            canvas.drawPath(p, paint)
+        }
+        canvas.drawPath(path, paint)
     }
 
     /**
@@ -94,6 +103,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
      * No need to call invalidate because we are not drawing anything.
      */
     private fun touchStart() {
+        undonePaths.clear()
         path.reset()
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
@@ -104,8 +114,6 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         val dx = abs(motionTouchEventX - currentX)
         val dy = abs(motionTouchEventY - currentY)
         if (dx >= touchTolerance || dy >= touchTolerance) {
-            // QuadTo() adds a quadratic bezier from the last point,
-            // approaching control point (x1,y1), and ending at (x2,y2).
             path.quadTo(
                 currentX,
                 currentY,
@@ -114,35 +122,51 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
             )
             currentX = motionTouchEventX
             currentY = motionTouchEventY
-            // Draw the path in the extra bitmap to save it.
-            extraCanvas.drawPath(path, paint)
+
         }
-        // Invalidate() is inside the touchMove() under ACTION_MOVE because there are many other
-        // types of motion events passed into this listener, and we don't want to invalidate the
-        // view for those.
+        canvas.drawPath(path, paint)
         invalidate()
     }
 
     private fun touchUp() {
-        // Reset the path so it doesn't get drawn again.
-        path.reset()
+        // draw a dot if no movement but touched.
+        if (currentX == motionTouchEventX && currentY == motionTouchEventY) {
+            path.lineTo(currentX, currentY)
+        }
+
+        drawingPaths.add(path)
+        path = Path()
+        invalidate()
     }
 
     fun getBitmap(): Bitmap {
-        return this.extraBitmap
+        return this.bitmap
     }
 
     fun setErase() {
-        paint.color = backgroundColor
-        paint.strokeWidth = STROKE_WIDTH * 4
     }
 
     fun clearCanvas() {
-        extraCanvas.drawColor(backgroundColor)
+        canvas.drawColor(backgroundColor)
+        path.reset()
+        drawingPaths.clear()
+        invalidate()
     }
 
     fun setPen() {
-        paint.color = drawColor
-        paint.strokeWidth = STROKE_WIDTH
+    }
+
+    fun undo() {
+        if (drawingPaths.size > 0) {
+            undonePaths.add(drawingPaths.removeAt(drawingPaths.size - 1))
+            invalidate()
+        }
+    }
+
+    fun redo() {
+        if (undonePaths.size > 0) {
+            drawingPaths.add(undonePaths.removeAt(undonePaths.size - 1))
+            invalidate()
+        }
     }
 }

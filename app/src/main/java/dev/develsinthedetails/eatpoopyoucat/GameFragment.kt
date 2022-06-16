@@ -71,7 +71,13 @@ class GameFragment : Fragment() {
         binding.btnClearAll.setOnClickListener {
             binding.drawView.clearCanvas()
         }
+        binding.btnUndo.setOnClickListener {
+            binding.drawView.undo()
+        }
 
+        binding.btnRedo.setOnClickListener {
+            binding.drawView.redo()
+        }
     }
 
     override fun onDestroyView() {
