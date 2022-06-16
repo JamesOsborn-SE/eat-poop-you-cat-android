@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="top"
+        android:layout_gravity="bottom"
         android:layout_marginTop="?attr/actionBarSize">
 
         <TextView
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:contentDescription="@string/redo_description"
-                android:drawableTop="@drawable/ic_baseline_undo_24"
+                android:drawableTop="@drawable/ic_baseline_redo_24"
                 android:text="@string/redo" />
         </LinearLayout>
 
