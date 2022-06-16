@@ -1,0 +1,19 @@
+syntax = "proto3";
+package eatPoopYouCat;
+
+import "google/protobuf/timestamp.proto";
+
+message LineSegment {
+    float startX = 1;
+    float startY = 2;
+    float endX = 3;
+    float endY = 4;
+}
+
+message Line {
+  repeated LineSegment lineSegment = 1;
+}
+
+message Drawing {
+  repeated Line line = 1;
+}

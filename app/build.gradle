@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.protobuf' version '0.8.18'
 }
 
 apply plugin: 'com.android.application'
@@ -90,6 +91,10 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
     kapt 'androidx.databinding:databinding-compiler:7.2.1'
     implementation('androidx.appcompat:appcompat:1.4.2')
+    implementation 'io.grpc:grpc-okhttp:1.47.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.47.0'
+    implementation 'io.grpc:grpc-stub:1.47.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
 
     testImplementation 'junit:junit:4.13.2'
     implementation 'commons-codec:commons-codec:1.15'
@@ -129,4 +134,24 @@ dependencies {
     kaptTest 'com.google.dagger:hilt-compiler:2.42'
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.2"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.47.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
+    }
+}
 
