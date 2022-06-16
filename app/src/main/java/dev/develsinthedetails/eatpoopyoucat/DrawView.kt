@@ -11,6 +11,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
+import dev.develsinthedetails.eatpoopyoucat.data.Drawing
+import dev.develsinthedetails.eatpoopyoucat.data.Line
+import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import kotlin.math.abs
 
 // todo figure out how to allow dots
@@ -24,6 +27,9 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     private var path = Path()
     private val drawingPaths = ArrayList<Path>()
     private val undonePaths = ArrayList<Path>()
+    private var lineSegments: MutableList<LineSegment> = mutableListOf()
+    private var lines: MutableList<Line> = mutableListOf()
+    private var undoneLines: MutableList<Line> = mutableListOf()
 
     private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
@@ -43,18 +49,12 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         strokeWidth = STROKE_WIDTH // default: Hairline-width (really thin)
     }
 
-    /**
-     * Don't draw every single pixel.
-     * If the finger has has moved less than this distance, don't draw. scaledTouchSlop, returns
-     * the distance in pixels a touch can wander before we think the user is scrolling.
-     */
-    private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-
     private var currentX = 0f
     private var currentY = 0f
 
     private var motionTouchEventX = 0f
     private var motionTouchEventY = 0f
+
 
     /**
      * Called whenever the view changes size.
@@ -68,7 +68,6 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap)
         canvas.drawColor(backgroundColor)
-        drawingPaths.add(path)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -104,26 +103,25 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
      */
     private fun touchStart() {
         undonePaths.clear()
+        undoneLines.clear()
         path.reset()
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
+        LineSegment(currentX, currentY, currentX, currentY)
     }
 
     private fun touchMove() {
-        val dx = abs(motionTouchEventX - currentX)
-        val dy = abs(motionTouchEventY - currentY)
-        if (dx >= touchTolerance || dy >= touchTolerance) {
-            path.quadTo(
-                currentX,
-                currentY,
-                (motionTouchEventX + currentX) / 2,
-                (motionTouchEventY + currentY) / 2
-            )
-            currentX = motionTouchEventX
-            currentY = motionTouchEventY
+        path.quadTo(
+            currentX,
+            currentY,
+            (motionTouchEventX + currentX) / 2,
+            (motionTouchEventY + currentY) / 2
+        )
+        lineSegments.add(LineSegment(currentX, currentY, motionTouchEventX, motionTouchEventY))
+        currentX = motionTouchEventX
+        currentY = motionTouchEventY
 
-        }
         canvas.drawPath(path, paint)
         invalidate()
     }
@@ -132,15 +130,21 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         // draw a dot if no movement but touched.
         if (currentX == motionTouchEventX && currentY == motionTouchEventY) {
             path.lineTo(currentX, currentY)
+            canvas.drawPath(path, paint)
         }
-
+        lineSegments.add(LineSegment(currentX, currentY, motionTouchEventX, motionTouchEventY))
+        lines.add(Line(lineSegments))
+        lineSegments = mutableListOf()
         drawingPaths.add(path)
         path = Path()
         invalidate()
     }
 
-    fun getBitmap(): Bitmap {
-        return this.bitmap
+    fun getDrawing(): Drawing {
+        val drawingPathsTest = Drawing(lines).toPaths()
+        drawingPaths.clear()
+        drawingPaths.addAll(drawingPathsTest)
+        return Drawing(lines)
     }
 
     fun setErase() {
@@ -159,6 +163,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     fun undo() {
         if (drawingPaths.size > 0) {
             undonePaths.add(drawingPaths.removeAt(drawingPaths.size - 1))
+            undoneLines.add(lines.removeAt(lines.size - 1))
             invalidate()
         }
     }
@@ -166,6 +171,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     fun redo() {
         if (undonePaths.size > 0) {
             drawingPaths.add(undonePaths.removeAt(undonePaths.size - 1))
+            lines.add(undoneLines.removeAt(undoneLines.size - 1))
             invalidate()
         }
     }
