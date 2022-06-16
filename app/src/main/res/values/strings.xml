@@ -4,7 +4,7 @@
     <string name="status_connected">Connected</string>
     <string name="new_game">New Game</string>
     <string name="welcome_message">Welcome %1$s!</string>
-     <string name="show">Show</string>
+    <string name="show">Show</string>
     <string name="save">Save</string>
     <string name="undo">Undo</string>
     <string name="enter_a_nickname">Enter a nickname</string>
