@@ -141,9 +141,6 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getDrawing(): Drawing {
-        val drawingPathsTest = Drawing(lines).toPaths()
-        drawingPaths.clear()
-        drawingPaths.addAll(drawingPathsTest)
         return Drawing(lines)
     }
 
