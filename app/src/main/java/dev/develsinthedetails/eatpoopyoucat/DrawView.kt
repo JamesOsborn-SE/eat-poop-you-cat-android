@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import dev.develsinthedetails.eatpoopyoucat.data.Coordinates
 import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
@@ -107,7 +108,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
-        LineSegment(currentX, currentY, currentX, currentY)
+        LineSegment(Coordinates(currentX, currentY),Coordinates(currentX, currentY))
     }
 
     private fun touchMove() {
@@ -117,7 +118,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
             (motionTouchEventX + currentX) / 2,
             (motionTouchEventY + currentY) / 2
         )
-        lineSegments.add(LineSegment(currentX, currentY, motionTouchEventX, motionTouchEventY))
+        lineSegments.add(LineSegment(Coordinates(currentX, currentY),Coordinates(motionTouchEventX, motionTouchEventY)))
         currentX = motionTouchEventX
         currentY = motionTouchEventY
 
@@ -131,7 +132,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
             path.lineTo(currentX, currentY)
             canvas.drawPath(path, paint)
         }
-        lineSegments.add(LineSegment(currentX, currentY, motionTouchEventX, motionTouchEventY))
+        lineSegments.add(LineSegment(Coordinates(currentX, currentY),Coordinates(motionTouchEventX, motionTouchEventY)))
         lines.add(Line(lineSegments))
         lineSegments = mutableListOf()
         drawingPaths.add(path)

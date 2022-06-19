@@ -2,30 +2,18 @@ package dev.develsinthedetails.eatpoopyoucat.data
 
 import android.graphics.Path
 
-class LineSegment(startX: Float, startY: Float, endX: Float, endY: Float) {
-    private val _startX = startX
-    private val _startY = startY
-    private val _endX = endX
-    private val _endY = endY
-    val startY: Float
-        get() {
-            return _startY
-        }
-    val startX: Float
-        get() {
-            return _startX
-        }
+class LineSegment(val start: Coordinates, private val end: Coordinates) {
+
     fun toPath(path: Path) {
-        return if (_startX == _endX && _startY == _startY)
-            path.lineTo(_startX, _startY)
+        return if (start.x == end.x && start.y == start.y)
+            path.lineTo(start.x, start.y)
         else
             path.quadTo(
-                _startX,
-                _startY,
-                (_endX + _startX) / 2,
-                (_endY + _startY) / 2
+                start.x,
+                start.y,
+                (end.x + start.x) / 2,
+                (end.y + start.y) / 2
             )
-
     }
-
 }
+

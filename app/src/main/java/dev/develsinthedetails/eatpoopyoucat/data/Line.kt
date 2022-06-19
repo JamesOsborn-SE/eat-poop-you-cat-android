@@ -5,10 +5,10 @@ import android.graphics.Path
 class Line(lineSegments: List<LineSegment>){
     private val _lineSegments = lineSegments
     fun toPath(): Path {
-        var path = Path()
+        val path = Path()
         if(_lineSegments.isNotEmpty()) {
             path.reset()
-            path.moveTo(_lineSegments[0].startX, _lineSegments[0].startY)
+            path.moveTo(_lineSegments[0].start.x, _lineSegments[0].start.y)
         }
         for (lineSegment in _lineSegments){
             lineSegment.toPath(path)

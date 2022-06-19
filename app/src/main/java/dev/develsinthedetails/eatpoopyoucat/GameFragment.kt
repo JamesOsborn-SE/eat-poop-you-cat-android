@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.gson.Gson
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
+import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 
 
 class GameFragment : Fragment() {
@@ -45,8 +46,13 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSave.setOnClickListener {
             val gson = Gson()
+            val gzip = Gzip()
             val drawing = binding.drawView.getDrawing()
-            Log.wtf("drawing", gson.toJson(drawing.toPaths()))
+            val drawingSerialized = gson.toJson(drawing)
+            val zipped = gzip.compress(drawingSerialized.toByteArray())
+
+            Log.wtf("drawing", drawingSerialized)
+            Log.wtf("drawing", zipped.size.toString())
         }
 
         binding.btnErase.setOnClickListener {
