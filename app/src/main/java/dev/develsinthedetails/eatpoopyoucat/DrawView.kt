@@ -16,7 +16,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 
 
-// todo figure out how to allow dots
+// todo figure out how to erase
 // Stroke width for the the paint.
 private const val STROKE_WIDTH = 12f
 

@@ -24,7 +24,5 @@
     <string name="background_title">"Allow app to communicate in the background "</string>
     <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
     <string name="background_summary_on">You will be able to send or receive games even if the app is closed</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="describe_this_drawing">Describe this drawing</string>
 </resources>
