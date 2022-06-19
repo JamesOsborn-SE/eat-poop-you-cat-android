@@ -7,25 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.google.gson.Gson
-import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentGameBinding
+import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentDrawBinding
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 
 
-class GameFragment : Fragment() {
+class DrawFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = GameFragment()
-    }
-
-    private var _binding: FragmentGameBinding? = null
+    private var _binding: FragmentDrawBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val gameViewModel: GameViewModel by viewModels()
+    private val args: DrawFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,17 +30,19 @@ class GameFragment : Fragment() {
     ): View {
         _binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_game,
+            R.layout.fragment_draw,
             container,
             false
         )
+
+        args.sentence.also { binding.sentenceToDraw.text = it }
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnSave.setOnClickListener {
+        binding.btnSend.setOnClickListener {
             val gson = Gson()
             val gzip = Gzip()
             val drawing = binding.drawView.getDrawing()

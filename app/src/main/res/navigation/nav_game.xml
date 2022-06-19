@@ -15,9 +15,11 @@
 
     <fragment
         android:id="@+id/game_fragment"
-        android:name="dev.develsinthedetails.eatpoopyoucat.GameFragment"
-        tools:layout="@layout/fragment_game">
-
+        android:name="dev.develsinthedetails.eatpoopyoucat.DrawFragment"
+        tools:layout="@layout/fragment_draw">
+        <argument
+            android:name="sentence"
+            app:argType="string" />
     </fragment>
 
 </navigation>

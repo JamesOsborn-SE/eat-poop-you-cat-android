@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <import type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
-
-        <variable
-            name="viewModel"
-            type="dev.develsinthedetails.eatpoopyoucat.GameViewModel" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +16,7 @@
             android:layout_marginEnd="9dp"
             android:autofillHints="@string/draw_this_sentence"
             android:hint="@string/draw_this_sentence"
-            android:text="@{viewModel.sentenceToDraw}"
+            android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,13 +50,13 @@
                 android:text="@string/clear" />
 
             <Button
-                android:id="@+id/btn_save"
+                android:id="@+id/btn_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="@string/save_description"
-                android:drawableTop="@drawable/ic_baseline_save_24"
-                android:text="@string/save" />
+                android:contentDescription="@string/send_description"
+                android:drawableTop="@drawable/ic_baseline_send_24"
+                android:text="@string/send" />
 
             <Button
                 android:id="@+id/btn_erase"

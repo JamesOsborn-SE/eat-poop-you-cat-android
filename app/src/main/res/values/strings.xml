@@ -5,13 +5,13 @@
     <string name="new_game">New Game</string>
     <string name="welcome_message">Welcome %1$s!</string>
     <string name="show">Show</string>
-    <string name="save">Save</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn " >Send</string>
+    <string name="send_description">send your work</string>
     <string name="undo">Undo</string>
     <string name="enter_a_nickname">Enter a nickname</string>
     <string name="enter_a_sentence">Enter a sentence</string>
     <string name="draw_this_sentence">Draw this sentence!</string>
     <string name="clear">clear</string>
-    <string name="save_description">save your work</string>
     <string name="erase_description">Erase stuff</string>
     <string name="erase">Erase</string>
     <string name="draw_description">Draw</string>

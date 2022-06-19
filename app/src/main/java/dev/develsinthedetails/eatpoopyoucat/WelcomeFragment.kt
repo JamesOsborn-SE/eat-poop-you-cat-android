@@ -59,14 +59,15 @@ class WelcomeFragment : Fragment() {
 
         shared.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key === "nickname")
-                binding.welcomeMessage.text = getString(
+                getString(
                     R.string.welcome_message,
                     sharedPreferences.getString("nickname", "No name")
-                )
+                ).also { binding.welcomeMessage.text = it }
         }
 
         binding.newGame.setOnClickListener {
-            this.findNavController().navigate(R.id.game_fragment)
+            val directions = WelcomeFragmentDirections.actionWelcomeToGameFragment("my cat likes to eat wet food and drink grape soda under a full moon")
+            this.findNavController().navigate(directions)
         }
 
         // Inflate the layout for this fragment
