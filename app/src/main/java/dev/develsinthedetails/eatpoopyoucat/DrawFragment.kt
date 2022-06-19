@@ -1,17 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.gson.Gson
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentDrawBinding
-import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-
 
 class DrawFragment : Fragment() {
 
@@ -43,14 +40,11 @@ class DrawFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSend.setOnClickListener {
-            val gson = Gson()
-            val gzip = Gzip()
-            val drawing = binding.drawView.getDrawing()
-            val drawingSerialized = gson.toJson(drawing)
-            val zipped = gzip.compress(drawingSerialized.toByteArray())
 
-            Log.wtf("drawing", drawingSerialized)
-            Log.wtf("drawing", zipped.size.toString())
+            val drawing = binding.drawView.getDrawing()
+
+            val directions = DrawFragmentDirections.actionGameFragmentToSentenceFragment(drawing)
+            this.findNavController().navigate(directions)
         }
 
         binding.btnErase.setOnClickListener {

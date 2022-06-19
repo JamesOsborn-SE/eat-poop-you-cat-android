@@ -30,6 +30,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     private var lineSegments: MutableList<LineSegment> = mutableListOf()
     private var lines: MutableList<Line> = mutableListOf()
     private var undoneLines: MutableList<Line> = mutableListOf()
+    private var isReadOnly = false
 
     private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
@@ -83,6 +84,9 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isReadOnly)
+            return true
+
         motionTouchEventX = event.x
         motionTouchEventY = event.y
 
@@ -150,6 +154,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     fun clearCanvas() {
         canvas.drawColor(backgroundColor)
         path.reset()
+        lines.clear()
         drawingPaths.clear()
         invalidate()
     }
@@ -171,5 +176,10 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
             lines.add(undoneLines.removeAt(undoneLines.size - 1))
             invalidate()
         }
+    }
+
+    fun setDrawing(drawing: Drawing) {
+        isReadOnly = true
+        drawingPaths.addAll(drawing.toPaths())
     }
 }
