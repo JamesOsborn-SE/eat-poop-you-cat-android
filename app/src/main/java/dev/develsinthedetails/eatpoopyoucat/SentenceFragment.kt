@@ -12,8 +12,6 @@ import androidx.navigation.fragment.navArgs
 import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentSentenceBinding
 
-private const val ARG_DRAWING = "drawing"
-
 /**
  * A simple [Fragment] subclass.
  * create an instance of this fragment.

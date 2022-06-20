@@ -2,7 +2,7 @@
     <string name="app_name">Eat Poop You Cat</string>
     <string name="status_searching">Searching</string>
     <string name="status_connected">Connected</string>
-    <string name="new_game">New Game</string>
+    <string name="new_game">Start New Game</string>
     <string name="welcome_message">Welcome %1$s!</string>
     <string name="show">Show</string>
     <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn ">Send</string>
@@ -33,4 +33,7 @@
     <string name="created_by">Created By: %1$s</string>
     <string name="dialog_one_entry_allowed">Only one entry per game is allowed</string>
     <string name="ok">Oof</string>
+    <string name="save">Save</string>
+    <string name="find_game">find a game</string>
+    <string name="previous_games">old games</string>
 </resources>
