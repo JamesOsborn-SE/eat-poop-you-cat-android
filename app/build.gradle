@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-parcelize'
 }
 
 apply plugin: 'com.android.application'
@@ -95,6 +96,8 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'junit:junit:4.13.2'
     implementation 'commons-codec:commons-codec:1.15'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
