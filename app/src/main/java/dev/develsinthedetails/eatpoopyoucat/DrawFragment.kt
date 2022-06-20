@@ -43,7 +43,7 @@ class DrawFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val shared = context!!.getSharedPreferences("player", Context.MODE_PRIVATE)
         val nickname = shared.getString("nickname", "No name")!!
-        binding.createdBy.text= getString(R.string.created_by, nickname)
+        binding.playerName = getString(R.string.created_by, nickname)
 
         binding.btnSend.setOnClickListener {
 

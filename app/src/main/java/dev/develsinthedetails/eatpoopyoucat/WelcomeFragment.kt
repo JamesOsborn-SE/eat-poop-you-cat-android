@@ -20,6 +20,7 @@ import java.util.*
  */
 
 class WelcomeFragment : Fragment() {
+    private var welcomeMessage: String =""
     private lateinit var nickname: String
 
     private lateinit var shared: SharedPreferences
@@ -77,7 +78,7 @@ class WelcomeFragment : Fragment() {
     }
 
     private fun showNickname() {
-        binding.welcomeMessage.text = getString(R.string.welcome_message, nickname)
+        binding.welcome = getString(R.string.welcome_message, nickname)
     }
 
     private fun setNickname() {

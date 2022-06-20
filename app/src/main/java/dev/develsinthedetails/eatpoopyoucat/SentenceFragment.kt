@@ -16,7 +16,6 @@ private const val ARG_DRAWING = "drawing"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [SentenceFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class SentenceFragment : Fragment() {
@@ -50,7 +49,7 @@ class SentenceFragment : Fragment() {
 
         val shared = context!!.getSharedPreferences("player", Context.MODE_PRIVATE)
         val nickname = shared.getString("nickname", "No name")!!
-        binding.createdBy.text= getString(R.string.created_by, nickname)
+        binding.playerName = getString(R.string.created_by, nickname)
 
         binding.btnSend.setOnClickListener {
             val directions = SentenceFragmentDirections.actionSentenceFragmentToGameFragment(binding.sentenceToDraw.text.toString())
