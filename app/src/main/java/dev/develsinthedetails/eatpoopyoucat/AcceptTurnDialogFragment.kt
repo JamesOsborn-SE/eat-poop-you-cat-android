@@ -22,7 +22,8 @@ class AcceptTurnDialogFragment() : DialogFragment(), Parcelable {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        otherPlayersName = arguments!!.getString(PLAYER_NAME)!!
+
+        arguments?.getString(PLAYER_NAME)!!.also { otherPlayersName = it }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =

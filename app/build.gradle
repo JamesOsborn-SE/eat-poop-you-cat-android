@@ -52,8 +52,8 @@ android {
         jvmTarget = "1.8"
 
         // Enable Coroutines and Flow APIs
-        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.FlowPreview"
     }
 
     packagingOptions {
@@ -66,6 +66,8 @@ android {
     }
 
     namespace 'dev.develsinthedetails.eatpoopyoucat'
+    buildToolsVersion '30.0.3'
+    ndkVersion '24.0.8215888'
 }
 
 dependencies {
@@ -85,7 +87,6 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
     implementation 'androidx.databinding:databinding-runtime:7.2.1'
     implementation 'androidx.databinding:databinding-adapters:7.2.1'
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'

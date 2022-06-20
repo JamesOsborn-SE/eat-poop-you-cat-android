@@ -34,7 +34,7 @@ class WelcomeFragment : Fragment() {
     ): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
-        shared = context!!.getSharedPreferences("player", Context.MODE_PRIVATE)
+        shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
         nickname = shared.getString("nickname", "No name")!!
         showNickname()
 

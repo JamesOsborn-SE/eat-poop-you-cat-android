@@ -45,7 +45,7 @@ class SentenceFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.drawView.setDrawing(drawing)
 
-        val shared = context!!.getSharedPreferences("player", Context.MODE_PRIVATE)
+        val shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
         val nickname = shared.getString("nickname", "No name")!!
         binding.playerName = getString(R.string.created_by, nickname)
 
