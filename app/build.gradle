@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
+    id 'kotlin-kapt'
 }
 
 apply plugin: 'com.android.application'
@@ -62,7 +63,6 @@ android {
         // our test APK to build (has no effect on our AARs)
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
-//        excludes += '/META-INF/DEPENDENCIES'
         excludes += '/META-INF/gradle/incremental.annotation.processors'
     }
 
