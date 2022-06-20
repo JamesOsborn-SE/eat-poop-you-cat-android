@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -14,6 +16,8 @@ import dev.develsinthedetails.eatpoopyoucat.data.Coordinates
 import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
+import dev.develsinthedetails.eatpoopyoucat.utilities.fromByteArray
+import dev.develsinthedetails.eatpoopyoucat.utilities.toByteArray
 
 
 // todo figure out how to erase
@@ -71,6 +75,27 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap)
         canvas.drawColor(backgroundColor)
+    }
+
+    override fun onSaveInstanceState(): Parcelable {
+        val superState = super.onSaveInstanceState()
+        val ss = SavedState(Drawing(drawingLines).toByteArray(), superState)
+        return ss
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state !is SavedState) {
+            super.onRestoreInstanceState(state)
+            return
+        }
+
+        val ss = state
+        super.onRestoreInstanceState(ss.superState)
+        //end
+        val drawing=fromByteArray<Drawing>(ss.drawings)
+        //end
+        drawingLines.addAll(drawing.lines)
+        drawingPaths.addAll(drawing.toPaths())
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -194,5 +219,13 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     fun setDrawing(drawing: Drawing) {
         isReadOnly = true
         drawingPaths.addAll(drawing.toPaths())
+    }
+
+    internal class SavedState(val drawings: ByteArray, superState: Parcelable?) :
+        BaseSavedState(superState) {
+        override fun writeToParcel(out: Parcel?, flags: Int) {
+            super.writeToParcel(out, flags)
+            out?.writeByteArray(drawings)
+        }
     }
 }
