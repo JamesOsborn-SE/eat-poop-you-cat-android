@@ -25,4 +25,12 @@
     <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
     <string name="background_summary_on">You will be able to send or receive games even if the app is closed</string>
     <string name="describe_this_drawing">Describe this drawing</string>
+    <string name="dialog_start_game">Start Game?</string>
+    <string name="start">Start</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept!</string>
+    <string name="dialog_accept_turn">Accept turn from %1$s!</string>
+    <string name="created_by">Created By: %1$s</string>
+    <string name="dialog_one_entry_allowed">Only one entry per game is allowed</string>
+    <string name="ok">Oof</string>
 </resources>

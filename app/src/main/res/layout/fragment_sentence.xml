@@ -17,14 +17,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/created_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/created_by"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/draw_view" />
 
         <LinearLayout
             android:id="@+id/edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/draw_view">
+            app:layout_constraintTop_toBottomOf="@+id/created_by" >
+
 
         <EditText
             android:id="@+id/sentenceToDraw"
@@ -34,7 +43,7 @@
             android:hint="@string/describe_this_drawing"
             android:importantForAutofill="no"
             android:textSize="15sp"
-            android:inputType="text" />
+            android:inputType="text|textMultiLine|textCapSentences" />
 
         <Button
             android:id="@+id/btn_send"

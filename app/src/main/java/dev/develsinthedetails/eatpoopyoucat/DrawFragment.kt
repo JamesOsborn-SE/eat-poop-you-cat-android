@@ -1,9 +1,11 @@
 package dev.develsinthedetails.eatpoopyoucat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -39,6 +41,10 @@ class DrawFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val shared = context!!.getSharedPreferences("player", Context.MODE_PRIVATE)
+        val nickname = shared.getString("nickname", "No name")!!
+        binding.createdBy.text= getString(R.string.created_by, nickname)
+
         binding.btnSend.setOnClickListener {
 
             val drawing = binding.drawView.getDrawing()
@@ -56,6 +62,12 @@ class DrawFragment : Fragment() {
         }
 
         binding.btnClearAll.setOnClickListener {
+            val text = "Hello toast!"
+            val duration = Toast.LENGTH_SHORT
+
+            val toast = Toast.makeText(this.context, text, duration)
+            toast.show()
+
             binding.drawView.clearCanvas()
         }
         binding.btnUndo.setOnClickListener {
