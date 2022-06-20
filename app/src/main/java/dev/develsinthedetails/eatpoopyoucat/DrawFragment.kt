@@ -62,12 +62,6 @@ class DrawFragment : Fragment() {
         }
 
         binding.btnClearAll.setOnClickListener {
-            val text = "Hello toast!"
-            val duration = Toast.LENGTH_SHORT
-
-            val toast = Toast.makeText(this.context, text, duration)
-            toast.show()
-
             binding.drawView.clearCanvas()
         }
         binding.btnUndo.setOnClickListener {

@@ -23,12 +23,14 @@ private const val STROKE_WIDTH = 12f
 class DrawView(context: Context, attributeSet: AttributeSet) :
     View(context, attributeSet) {
 
+    private var justCleared: Boolean=false
+
     // Holds the path you are currently drawing.
     private var path = Path()
     private val drawingPaths = ArrayList<Path>()
     private val undonePaths = ArrayList<Path>()
     private var lineSegments: MutableList<LineSegment> = mutableListOf()
-    private var lines: MutableList<Line> = mutableListOf()
+    private var drawingLines: MutableList<Line> = mutableListOf()
     private var undoneLines: MutableList<Line> = mutableListOf()
     private var isReadOnly = false
 
@@ -137,7 +139,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
             canvas.drawPath(path, paint)
         }
         lineSegments.add(LineSegment(Coordinates(currentX, currentY),Coordinates(motionTouchEventX, motionTouchEventY)))
-        lines.add(Line(lineSegments))
+        drawingLines.add(Line(lineSegments))
         lineSegments = mutableListOf()
         drawingPaths.add(path)
         path = Path()
@@ -145,16 +147,21 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun getDrawing(): Drawing {
-        return Drawing(lines)
+        return Drawing(drawingLines)
     }
 
     fun setErase() {
     }
 
     fun clearCanvas() {
+        undoneLines.clear()
+        undoneLines.addAll(drawingLines)
+        undonePaths.clear()
+        undonePaths.addAll(drawingPaths)
+        justCleared= true
         canvas.drawColor(backgroundColor)
         path.reset()
-        lines.clear()
+        drawingLines.clear()
         drawingPaths.clear()
         invalidate()
     }
@@ -163,9 +170,15 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     }
 
     fun undo() {
-        if (drawingPaths.size > 0) {
+        if(justCleared){
+            justCleared=false
+            drawingPaths.addAll(undonePaths)
+            drawingLines.addAll(undoneLines)
+            invalidate()
+        }
+        else if (drawingPaths.size > 0) {
             undonePaths.add(drawingPaths.removeAt(drawingPaths.size - 1))
-            undoneLines.add(lines.removeAt(lines.size - 1))
+            undoneLines.add(drawingLines.removeAt(drawingLines.size - 1))
             invalidate()
         }
     }
@@ -173,7 +186,7 @@ class DrawView(context: Context, attributeSet: AttributeSet) :
     fun redo() {
         if (undonePaths.size > 0) {
             drawingPaths.add(undonePaths.removeAt(undonePaths.size - 1))
-            lines.add(undoneLines.removeAt(undoneLines.size - 1))
+            drawingLines.add(undoneLines.removeAt(undoneLines.size - 1))
             invalidate()
         }
     }
