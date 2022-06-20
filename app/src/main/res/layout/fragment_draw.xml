@@ -24,6 +24,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/created_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{playerName}"
+            android:textSize="15sp"
+            android:layout_margin="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sentenceToDraw" />
+
         <dev.develsinthedetails.eatpoopyoucat.DrawView
             android:id="@+id/draw_view"
             android:layout_width="0dp"
@@ -32,16 +42,7 @@
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sentenceToDraw" />
-        <TextView
-            android:id="@+id/created_by"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{playerName}"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/draw_view" />
-
+            app:layout_constraintTop_toBottomOf="@+id/created_by" />
 
         <LinearLayout
             android:id="@+id/edit_buttons"
@@ -49,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/created_by">
+            app:layout_constraintTop_toBottomOf="@+id/draw_view">
+
             <Button
                 android:id="@+id/btn_clearAll"
                 android:layout_width="wrap_content"
