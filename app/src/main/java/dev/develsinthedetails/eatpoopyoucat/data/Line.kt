@@ -3,7 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.data
 import android.graphics.Path
 import java.io.Serializable
 
-class Line(private val lineSegments: List<LineSegment>): Serializable{
+data class Line(private val lineSegments: List<LineSegment>): Serializable {
     fun toPath(): Path {
         val path = Path()
         if(lineSegments.isNotEmpty()) {
