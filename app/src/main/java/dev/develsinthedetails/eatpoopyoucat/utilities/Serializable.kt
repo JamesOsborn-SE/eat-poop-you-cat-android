@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.utilities
 
 import java.io.*
-import java.io.Serializable
 
 @Suppress("UNCHECKED_CAST")
 fun <T : Serializable> fromByteArray(byteArray: ByteArray): T {

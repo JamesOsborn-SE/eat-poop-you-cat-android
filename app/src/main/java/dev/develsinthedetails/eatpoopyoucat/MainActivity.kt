@@ -1,15 +1,11 @@
 package dev.develsinthedetails.eatpoopyoucat
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil.setContentView
-import androidx.fragment.app.DialogFragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import dev.develsinthedetails.eatpoopyoucat.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import dev.develsinthedetails.eatpoopyoucat.databinding.ActivityMainBinding
 import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 
 @AndroidEntryPoint
