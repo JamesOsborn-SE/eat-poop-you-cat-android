@@ -11,10 +11,13 @@ class AlertFragment : DialogFragment() {
         return activity?.let {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
-            builder.setMessage(R.string.dialog_one_entry_allowed)
-                .setNegativeButton(R.string.ok) { _, _ -> }
+            builder.setMessage(displayTextStringId)
+                .setNegativeButton(R.string.oof) { _, _ -> }
 
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+    companion object {
+        var displayTextStringId: Int = R.string.oof
     }
 }

@@ -31,8 +31,10 @@
     <string name="accept">Accept!</string>
     <string name="dialog_accept_turn">Accept turn from %1$s!</string>
     <string name="created_by">Created By: %1$s</string>
+    <string name="write_a_funny_sentence">Write a funny sentence %1$s</string>
+    <string name="no_really_write_a_funny_sentence">For reals write a funny sentence!!</string>
     <string name="dialog_one_entry_allowed">Only one entry per game is allowed</string>
-    <string name="ok">Oof</string>
+    <string name="oof">Oof</string>
     <string name="save">Save</string>
     <string name="find_game">find a game</string>
     <string name="previous_games">old games</string>

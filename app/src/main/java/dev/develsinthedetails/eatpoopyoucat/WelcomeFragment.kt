@@ -36,6 +36,7 @@ class WelcomeFragment : Fragment() {
 
         shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
         nickname = shared.getString("nickname", "No name")!!
+
         showNickname()
 
         if (nickname !== "No name")
@@ -67,7 +68,7 @@ class WelcomeFragment : Fragment() {
         }
 
         binding.newGame.setOnClickListener {
-            val directions = WelcomeFragmentDirections.actionWelcomeToGameFragment("my cat likes to eat wet food and drink grape soda under a full moon")
+            val directions = WelcomeFragmentDirections.actionWelcomeToSentenceFragment(null)
             findNavController().navigate(directions)
         }
 
