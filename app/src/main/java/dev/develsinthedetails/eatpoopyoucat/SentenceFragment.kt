@@ -28,7 +28,7 @@ class SentenceFragment : Fragment() {
     private lateinit var sentenceToDraw: TextView
     private lateinit var viewModel: SentenceViewModel
     private lateinit var drawView: DrawView
-    private lateinit var createdBy: TextView
+    lateinit var createdBy: TextView
 
     private val args: SentenceFragmentArgs by navArgs()
 

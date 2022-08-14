@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<data>
+    <variable
+        name="viewModel"
+        type="dev.develsinthedetails.eatpoopyoucat.SentenceViewModel" />
+</data>
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SentenceFragment">
+    tools:context=".SentenceViewModel">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,11 +28,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/created_by"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{playerName}"
+            android:name="dev.develsinthedetails.eatpoopyoucat.SentenceFragment"
+            android:text="@{viewModel.createdBy}"
             android:textSize="15sp"
             android:layout_margin="10sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,9 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/created_by" >
-
 
         <EditText
             android:id="@+id/sentence_to_draw"
@@ -62,3 +71,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
+</layout>
