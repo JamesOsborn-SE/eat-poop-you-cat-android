@@ -36,11 +36,11 @@ class WelcomeFragment : Fragment() {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
         shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
-        nickname = shared.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)!!
+        nickname = shared.getString(CommonStringNames.nickname, getString(R.string.default_nickname))!!
 
         showNickname()
 
-        if (nickname !== CommonStringNames.default_nickname)
+        if (nickname !== getString(R.string.default_nickname))
             binding.editNickname.setText(nickname)
 
         if (shared.getString(CommonStringNames.playerId, CommonStringNames.Empty) ===  CommonStringNames.Empty)
@@ -64,7 +64,7 @@ class WelcomeFragment : Fragment() {
             if (key === "nickname")
                 getString(
                     R.string.welcome_message,
-                    sharedPreferences.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)
+                    sharedPreferences.getString(CommonStringNames.nickname, getString(R.string.default_nickname))
                 ).also { binding.welcomeMessage.text = it }
         }
 

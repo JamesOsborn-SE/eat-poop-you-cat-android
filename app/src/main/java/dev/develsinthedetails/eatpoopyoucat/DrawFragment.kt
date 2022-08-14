@@ -42,7 +42,7 @@ class DrawFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
-        val nickname = shared.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)!!
+        val nickname = shared.getString(CommonStringNames.nickname, getString(R.string.default_nickname))!!
         binding.playerName = getString(R.string.created_by, nickname)
 
         binding.btnSend.setOnClickListener {
