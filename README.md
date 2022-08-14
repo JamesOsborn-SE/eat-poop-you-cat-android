@@ -17,7 +17,7 @@ Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start wi
 
 ### Permissions needed
 
-```
+```none
 android.permission.BLUETOOTH
 android.permission.BLUETOOTH_ADMIN
 android.permission.ACCESS_WIFI_STATE
