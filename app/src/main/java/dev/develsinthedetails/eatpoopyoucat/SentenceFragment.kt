@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.develsinthedetails.eatpoopyoucat.R.*
 import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
-import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames.Companion.player
 
 
 /**
@@ -68,7 +67,7 @@ class SentenceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shared = requireContext().getSharedPreferences(player, Context.MODE_PRIVATE)
+        val shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
         val nickname = shared.getString(CommonStringNames.nickname, getString(string.default_nickname))!!
 
         if (viewModel.drawing == null) {
