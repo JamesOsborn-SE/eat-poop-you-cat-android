@@ -6,14 +6,14 @@ Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start wi
 
 ### Info Needed from user
 
-* Display Name
+*   Display Name
 
 ### Rules
 
-* Each person can only play once per Unique game
-* only Monochrome drawings
-* Time Limit
-* Turn limit
+*   Each person can only play once per Unique game 
+*   only Monochrome drawings
+*   Time Limit
+*   Turn limit
 
 ### Permissions needed
 
@@ -30,13 +30,13 @@ android.permission.BLUETOOTH_ADVERTISE
 android.permission.BLUETOOTH_CONNECT
 ```
 
-* these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app
+*   these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app
 
 ### Tech used
 
-* [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
-* [ORM - Room](https://developer.android.com/training/data-storage/room/)
-* [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
+*   [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
+*   [ORM - Room](https://developer.android.com/training/data-storage/room/)
+*   [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
 
 ### Data
 
