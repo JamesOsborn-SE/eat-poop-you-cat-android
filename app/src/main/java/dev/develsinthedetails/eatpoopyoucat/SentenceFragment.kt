@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.develsinthedetails.eatpoopyoucat.R.*
+import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
+import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames.Companion.player
 
 
 /**
@@ -21,9 +23,6 @@ import dev.develsinthedetails.eatpoopyoucat.R.*
  * create an instance of this fragment.
  */
 class SentenceFragment : Fragment() {
-    companion object {
-        fun newInstance() = SentenceFragment()
-    }
 
     private lateinit var sentenceToDraw: TextView
     private lateinit var viewModel: SentenceViewModel
@@ -69,8 +68,8 @@ class SentenceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
-        val nickname = shared.getString("nickname", "No name")!!
+        val shared = requireContext().getSharedPreferences(player, Context.MODE_PRIVATE)
+        val nickname = shared.getString(CommonStringNames.nickname,CommonStringNames.default_nickname)!!
 
         if (viewModel.drawing == null) {
             viewModel.drawViewVisibility = GONE

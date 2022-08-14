@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentWelcomeBinding
+import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
 import java.util.*
 
 
@@ -34,15 +35,15 @@ class WelcomeFragment : Fragment() {
     ): View {
         _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
 
-        shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
-        nickname = shared.getString("nickname", "No name")!!
+        shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
+        nickname = shared.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)!!
 
         showNickname()
 
-        if (nickname !== "No name")
+        if (nickname !== CommonStringNames.default_nickname)
             binding.editNickname.setText(nickname)
 
-        if (shared.getString("playerId", "") === "")
+        if (shared.getString(CommonStringNames.playerId, CommonStringNames.Empty) ===  CommonStringNames.Empty)
             setPlayerId()
 
         binding.save.setOnClickListener {
@@ -63,7 +64,7 @@ class WelcomeFragment : Fragment() {
             if (key === "nickname")
                 getString(
                     R.string.welcome_message,
-                    sharedPreferences.getString("nickname", "No name")
+                    sharedPreferences.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)
                 ).also { binding.welcomeMessage.text = it }
         }
 
@@ -83,7 +84,7 @@ class WelcomeFragment : Fragment() {
     private fun setNickname() {
         val edit = shared.edit()
         nickname = binding.editNickname.text.toString()
-        edit.putString("nickname", nickname)
+        edit.putString(CommonStringNames.nickname, nickname)
         edit.apply()
         showNickname()
         activity.dismissKeyboard()
@@ -91,7 +92,7 @@ class WelcomeFragment : Fragment() {
 
     private fun setPlayerId() {
         val edit = shared.edit()
-        edit.putString("playerId", UUID.randomUUID().toString())
+        edit.putString(CommonStringNames.playerId, UUID.randomUUID().toString())
         edit.apply()
     }
 

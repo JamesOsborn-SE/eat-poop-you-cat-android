@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentDrawBinding
+import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
 
 class DrawFragment : Fragment() {
 
@@ -40,8 +41,8 @@ class DrawFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shared = requireContext().getSharedPreferences("player", Context.MODE_PRIVATE)
-        val nickname = shared.getString("nickname", "No name")!!
+        val shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
+        val nickname = shared.getString(CommonStringNames.nickname, CommonStringNames.default_nickname)!!
         binding.playerName = getString(R.string.created_by, nickname)
 
         binding.btnSend.setOnClickListener {
