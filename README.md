@@ -76,10 +76,10 @@ classDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    Player1->>Player2: Can I play?
-    loop hasPlayed?
-        Player2->>Player2: check for Player Id in this game
-    end
+    Player1->>Player1: Starts new game<br/>writes sentence
+    Player1->>Player2: Wanna play?
+    Player2->>Player1: Can I play?<br/>check for Player Id in current game
+
     Player2-->>Player1: Yes, here is payload
     Player1->>Player2: Is there an update for Games?
     loop hasUpdate?
