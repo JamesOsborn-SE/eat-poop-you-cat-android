@@ -67,8 +67,10 @@ class SentenceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
-        val nickname = shared.getString(CommonStringNames.nickname, getString(string.default_nickname))!!
+        val shared =
+            requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
+        val nickname =
+            shared.getString(CommonStringNames.nickname, getString(string.default_nickname))!!
 
         if (viewModel.drawing == null) {
             viewModel.drawViewVisibility = GONE
