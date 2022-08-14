@@ -79,10 +79,27 @@ sequenceDiagram
     Player1->>Player1: Starts new game<br/>writes sentence
     Player1->>Player2: Wanna play?
     Player2->>Player1: Can I play?<br/>check for Player Id in current game
-
     Player2-->>Player1: Yes, here is payload
     Player1->>Player2: Is there an update for Games?
     loop hasUpdate?
         Player2->>Player2: check for Player Id in current games
     end
+    Player2->>Player1: here is update payload
+```
+
+### Flow
+
+```mermaid
+graph TD
+    p[Player] --> TT(Take turn draw / write)
+    TT --> LFNP(Look for next player)
+    LFNP --> FP{Found Player?}
+    FP -->|No| LFNP
+    FP -->|Yes| HPG{Has played in this game?}
+    HPG -->|No| WTP{Want to play?}
+    WTP -->|No| LFNP
+    WTP -->|Yes| SP(Send Payload)
+    HPG -->|Yes| LFNP
+    SP --> SRUL[Send and recieve update loop]
+    SRUL --> SRUL
 ```
