@@ -9,8 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentDrawBinding
+import dev.develsinthedetails.eatpoopyoucat.utilities.toByteArray
 import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
+import java.util.*
 
 class DrawFragment : Fragment() {
 
@@ -34,7 +37,7 @@ class DrawFragment : Fragment() {
             false
         )
 
-        args.sentence.also { binding.sentenceToDraw.text = it }
+        args.entry.sentence.also { binding.sentenceToDraw.text = it }
 
         return binding.root
     }
@@ -43,13 +46,22 @@ class DrawFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
         val nickname = shared.getString(CommonStringNames.nickname, getString(R.string.default_nickname))!!
+        val playerId = UUID.fromString(shared.getString(CommonStringNames.playerId, getString(R.string.default_nickname))!!)
         binding.playerName = getString(R.string.created_by, nickname)
 
         binding.btnSend.setOnClickListener {
 
             val drawing = binding.drawView.getDrawing()
-
-            val directions = DrawFragmentDirections.actionGameFragmentToSentenceFragment(drawing)
+            val entry = Entry(
+                id = UUID.randomUUID(),
+                sequence = args.entry.sequence + 1,
+                drawing = drawing.toByteArray(),
+                sentence = null,
+                timePassed = 0,
+                gameId = args.entry.gameId,
+                playerId = playerId
+            )
+            val directions = DrawFragmentDirections.actionGameFragmentToSentenceFragment(entry)
             this.findNavController().navigate(directions)
         }
 

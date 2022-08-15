@@ -18,8 +18,8 @@
         android:name="dev.develsinthedetails.eatpoopyoucat.DrawFragment"
         tools:layout="@layout/fragment_draw">
         <argument
-            android:name="sentence"
-            app:argType="string" />
+            android:name="entry"
+            app:argType="dev.develsinthedetails.eatpoopyoucat.data.Entry" />
         <action
             android:id="@+id/action_game_fragment_to_sentenceFragment"
             app:destination="@id/sentenceFragment" />
@@ -30,9 +30,8 @@
         android:label="fragment_sentence"
         tools:layout="@layout/fragment_sentence">
         <argument
-            android:name="drawing"
-            app:argType="dev.develsinthedetails.eatpoopyoucat.data.Drawing"
-            app:nullable="true" />
+            android:name="entry"
+            app:argType="dev.develsinthedetails.eatpoopyoucat.data.Entry" />
         <action
             android:id="@+id/action_sentenceFragment_to_game_fragment"
             app:destination="@id/draw_turn" />

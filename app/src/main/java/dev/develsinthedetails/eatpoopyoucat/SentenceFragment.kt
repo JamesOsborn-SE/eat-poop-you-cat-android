@@ -14,7 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import dev.develsinthedetails.eatpoopyoucat.R.*
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
+import dev.develsinthedetails.eatpoopyoucat.utilities.fromByteArray
+import java.util.*
 
 
 /**
@@ -23,11 +26,11 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
  */
 class SentenceFragment : Fragment() {
 
+    lateinit var createdBy: TextView
     private lateinit var sentenceToDraw: TextView
     private lateinit var viewModel: SentenceViewModel
     private lateinit var drawView: DrawView
-    lateinit var createdBy: TextView
-
+    private lateinit var playerId: UUID
     private val args: SentenceFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -46,21 +49,31 @@ class SentenceFragment : Fragment() {
         sentenceToDraw = root.findViewById(R.id.sentence_to_draw)
         createdBy = root.findViewById(R.id.created_by)
         val send = root.findViewById<Button>(R.id.btn_send)
-        val sentenceToDraw = root.findViewById<EditText>(R.id.sentence_to_draw)
+
         send.setOnClickListener {
-            if (sentenceToDraw.text.toString().isBlank() ||
-                sentenceToDraw.text.toString().length < 15
+            val sentenceToDraw = root.findViewById<TextView>(R.id.sentence_to_draw).text.toString()
+            if (sentenceToDraw.isBlank() ||
+                sentenceToDraw.length < 15
             ) {
                 val alert = AlertFragment()
                 AlertFragment.displayTextStringId = string.no_really_write_a_funny_sentence
                 alert.show(childFragmentManager, "")
             } else {
+                val entry = Entry(UUID.randomUUID(),
+                    playerId = playerId,
+                    sequence = args.entry.sequence + 1,
+                    gameId = args.entry.gameId,
+                    drawing = null,
+                    sentence = sentenceToDraw,
+                    timePassed = 0 // todo: add real time here
+                )
                 val directions =
-                    SentenceFragmentDirections.actionSentenceFragmentToGameFragment(sentenceToDraw.text.toString())
+                    SentenceFragmentDirections.actionSentenceFragmentToGameFragment(entry)
                 this.findNavController().navigate(directions)
             }
         }
-        viewModel.drawing = args.drawing
+        if(args.entry.drawing != null)
+            viewModel.drawing = fromByteArray(args.entry.drawing!!)
 
         return root
     }
@@ -71,6 +84,8 @@ class SentenceFragment : Fragment() {
             requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
         val nickname =
             shared.getString(CommonStringNames.nickname, getString(string.default_nickname))!!
+        playerId =
+            UUID.fromString(shared.getString(CommonStringNames.playerId, getString(string.default_nickname))!!)
 
         if (viewModel.drawing == null) {
             viewModel.drawViewVisibility = GONE

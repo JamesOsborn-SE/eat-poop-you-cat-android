@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.databinding.FragmentWelcomeBinding
 import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
 import java.util.*
@@ -37,15 +38,17 @@ class WelcomeFragment : Fragment() {
 
         shared = requireContext().getSharedPreferences(CommonStringNames.player, Context.MODE_PRIVATE)
         nickname = shared.getString(CommonStringNames.nickname, getString(R.string.default_nickname))!!
-
+        lateinit var playerId:UUID
         showNickname()
 
         if (nickname !== getString(R.string.default_nickname))
             binding.editNickname.setText(nickname)
 
-        if (shared.getString(CommonStringNames.playerId, CommonStringNames.Empty) ===  CommonStringNames.Empty)
+        val playerIdCached = shared.getString(CommonStringNames.playerId, CommonStringNames.Empty)
+        playerId = if (playerIdCached ===  CommonStringNames.Empty)
             setPlayerId()
-
+        else
+            UUID.fromString(playerIdCached)
         binding.save.setOnClickListener {
             setNickname()
         }
@@ -69,7 +72,16 @@ class WelcomeFragment : Fragment() {
         }
 
         binding.newGame.setOnClickListener {
-            val directions = WelcomeFragmentDirections.actionWelcomeToSentenceFragment(null)
+            val entry = Entry(
+            id = UUID.randomUUID(),
+            gameId = UUID.randomUUID(),
+            playerId = playerId,
+            sequence = 0,
+            sentence = null,
+            drawing = null,
+            timePassed = 0
+        )
+            val directions = WelcomeFragmentDirections.actionWelcomeToSentenceFragment(entry)
             findNavController().navigate(directions)
         }
 
@@ -90,10 +102,12 @@ class WelcomeFragment : Fragment() {
         activity.dismissKeyboard()
     }
 
-    private fun setPlayerId() {
+    private fun setPlayerId(): UUID {
         val edit = shared.edit()
-        edit.putString(CommonStringNames.playerId, UUID.randomUUID().toString())
+        val playerId = UUID.randomUUID()
+        edit.putString(CommonStringNames.playerId, playerId.toString())
         edit.apply()
+        return playerId
     }
 
     override fun onDestroyView() {
