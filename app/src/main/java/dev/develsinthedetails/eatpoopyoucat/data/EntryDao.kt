@@ -7,15 +7,15 @@ import java.util.*
 interface EntryDao {
     @Transaction
     @Query("SELECT * FROM entry")
-    fun getAll(): List<Entry>
+    suspend fun getAll(): List<Entry>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
-    fun get(id: UUID): Entry
+    suspend fun get(id: UUID): Entry
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
-    fun getEntryAndPlayers(id: UUID): Entry
+    suspend fun getEntryAndPlayers(id: UUID): Entry
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)

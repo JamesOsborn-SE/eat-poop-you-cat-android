@@ -10,13 +10,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import dagger.hilt.android.AndroidEntryPoint
 import dev.develsinthedetails.eatpoopyoucat.R.*
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
 import dev.develsinthedetails.eatpoopyoucat.utilities.fromByteArray
+import dev.develsinthedetails.eatpoopyoucat.views.base.viewmodel.MainViewModel
+import dev.develsinthedetails.eatpoopyoucat.views.base.viewmodel.ViewModelFactory
 import java.util.*
 
 
@@ -24,11 +28,12 @@ import java.util.*
  * A simple [Fragment] subclass.
  * create an instance of this fragment.
  */
-class SentenceFragment : Fragment() {
-
+@AndroidEntryPoint
+class SentenceFragment : Fragment(R.layout.fragment_sentence) {
     lateinit var createdBy: TextView
     private lateinit var sentenceToDraw: TextView
-    private lateinit var viewModel: SentenceViewModel
+    //private lateinit var viewModel: SentenceViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var drawView: DrawView
     private lateinit var playerId: UUID
     private val args: SentenceFragmentArgs by navArgs()
@@ -38,7 +43,9 @@ class SentenceFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this)[SentenceViewModel::class.java]
+
+        val factory = ViewModelFactory.getInstance(requireContext())
+        viewModel = ViewModelProvider(this, factory)[SentenceViewModel::class.java]
 
         val root = inflater.inflate(
             layout.fragment_sentence,
