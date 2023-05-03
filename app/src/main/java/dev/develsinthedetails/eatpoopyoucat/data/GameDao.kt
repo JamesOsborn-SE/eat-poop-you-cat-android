@@ -24,6 +24,10 @@ interface GameDao {
     suspend fun insert(game: Game)
 
     @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertWait(game: Game)
+
+    @Transaction
     @Query("DELETE FROM Game")
     suspend fun deleteAll()
 

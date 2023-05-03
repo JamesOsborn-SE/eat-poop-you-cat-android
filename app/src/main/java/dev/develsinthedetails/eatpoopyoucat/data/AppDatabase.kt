@@ -1,16 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
 import android.content.Context
-import androidx.databinding.adapters.Converters
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
 import dev.develsinthedetails.eatpoopyoucat.utilities.DATABASE_NAME
 
 @Database(entities = [Game::class, Player::class, Entry::class], version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
+@TypeConverters
 abstract class AppDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun gameDao(): GameDao
