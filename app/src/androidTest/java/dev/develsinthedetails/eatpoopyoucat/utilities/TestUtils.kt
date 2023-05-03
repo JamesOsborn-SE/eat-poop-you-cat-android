@@ -4,7 +4,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Game
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.Player
-import org.apache.commons.codec.binary.Base64
 import java.util.*
 
     val testGames = arrayListOf(
@@ -27,15 +26,15 @@ import java.util.*
     val entries = arrayListOf(
         Entry(
             UUID.fromString("e0000000-0000-0000-0000-000000000001"), playerOne.id,
-            1, "My cat likes to eat wet food on their birthday", null, testGames[0].id, 600
+            1, testGames[0].id, 600, "My cat likes to eat wet food on their birthday", null
         ),
         Entry(
             UUID.fromString("e0000000-0000-0000-0000-000000000002"), playerTwo.id,
-            2, null, testImage, testGames[0].id, 600
+            2, testGames[0].id, 600, null, testImage
         ),
         Entry(
             UUID.fromString("e0000000-0000-0000-0000-000000000003"), playerOne.id,
-            3, "some cats eat hockey pucks", null, testGames[0].id, 600
+            3, testGames[0].id, 600, "some cats eat hockey pucks", null
         )
     )
 

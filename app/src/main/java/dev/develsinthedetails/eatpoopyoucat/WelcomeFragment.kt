@@ -73,13 +73,13 @@ class WelcomeFragment : Fragment() {
 
         binding.newGame.setOnClickListener {
             val entry = Entry(
-            id = UUID.randomUUID(),
-            gameId = UUID.randomUUID(),
-            playerId = playerId,
-            sequence = 0,
-            sentence = null,
-            drawing = null,
-            timePassed = 0
+                id = UUID.randomUUID(),
+                playerId = playerId,
+                sequence = 0,
+                gameId = UUID.randomUUID(),
+                timePassed = 0,
+                sentence = null,
+                drawing = null
         )
             val directions = WelcomeFragmentDirections.actionWelcomeToSentenceFragment(entry)
             findNavController().navigate(directions)

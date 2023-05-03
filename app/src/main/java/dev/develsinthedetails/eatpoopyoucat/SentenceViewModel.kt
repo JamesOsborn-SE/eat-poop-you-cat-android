@@ -1,23 +1,26 @@
 package dev.develsinthedetails.eatpoopyoucat
 
+import android.content.SharedPreferences
 import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.develsinthedetails.eatpoopyoucat.data.AppRepositoryImpl
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Game
-import kotlinx.coroutines.coroutineScope
+import dev.develsinthedetails.eatpoopyoucat.utilities.CommonStringNames
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class SentenceViewModel @Inject constructor(
     private val state: SavedStateHandle,
-    private val repository: AppRepositoryImpl
+    private val repository: AppRepository,
+    private var shared: SharedPreferences
 ) : ViewModel() {
     init {
         viewModelScope.launch {
@@ -25,20 +28,20 @@ class SentenceViewModel @Inject constructor(
         }
     }
     var entry: Entry?
-        get() = state.get(ENTRY)
+        get() = state[ENTRY]
         set(value) = state.set(ENTRY, value)
     var drawing: Drawing?
-        get() = state.get(DRAWING_KEY)
+        get() = state[DRAWING_KEY]
         set(value) = state.set(DRAWING_KEY, value)
     var sentenceToDrawHint: String?
-        get() = state.get(SENTENCE_HINT_KEY)
+        get() = state[SENTENCE_HINT_KEY]
         set(value) = state.set(SENTENCE_HINT_KEY, value)
     var createdByVisibility : Int?
-        get() = state.get(CREATE_VIS_KEY)
+        get() = state[CREATE_VIS_KEY]
         set(value) = state.set(CREATE_VIS_KEY, value)
     var drawViewVisibility = VISIBLE
     var playerName: String?
-        get() = state.get(PLAYER_KEY)
+        get() = state[PLAYER_KEY]
         set(value) = state.set(PLAYER_KEY, value)
     var createdBy: LiveData<String>
         get() = state.getLiveData(CREATED_BY_KEY)
@@ -54,9 +57,26 @@ class SentenceViewModel @Inject constructor(
     }
 
     private suspend fun saveEntry() {
-        val game = repository.getGame(entry!!.gameId)
-        if (game == null)
-            repository.createGame(Game(id = entry!!.id, null, null))
+        var game: Game;
+        if (entry == null) {
+            game = Game(id = UUID.randomUUID(), null, null)
+            repository.createGame(game)
+            entry = Entry(
+                UUID.randomUUID(),
+                UUID.fromString(
+                    shared.getString(
+                        CommonStringNames.playerId,
+                        CommonStringNames.Empty,
+                    ),
+                ),
+                0,
+                game.id,
+                0,
+            );
+        }
+        else{
+            game = repository.getGame(entry!!.gameId)
+        }
 
         repository.createEntry(entry!!)
     }

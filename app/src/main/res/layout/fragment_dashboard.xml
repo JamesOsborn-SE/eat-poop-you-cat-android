@@ -8,8 +8,9 @@
     </data>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" >
+        android:layout_height="match_parent">
+<!--        android:layout_marginTop="?attr/actionBarSize" -->
+<!--        >-->
 
         <TextView
             android:layout_width="wrap_content"

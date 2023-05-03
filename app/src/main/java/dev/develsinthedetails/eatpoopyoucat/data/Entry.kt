@@ -2,7 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.io.Serializable
@@ -32,10 +32,10 @@ data class Entry(
     @PrimaryKey val id: UUID,
     val playerId: UUID,
     val sequence: Int,
-    val sentence: String?,
-    val drawing: ByteArray?,
     val gameId: UUID,
-    val timePassed: Int
+    val timePassed: Int,
+    val sentence: String? = null,
+    val drawing: ByteArray? = null
 ):Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

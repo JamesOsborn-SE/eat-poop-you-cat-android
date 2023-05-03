@@ -54,12 +54,12 @@ class DrawFragment : Fragment() {
             val drawing = binding.drawView.getDrawing()
             val entry = Entry(
                 id = UUID.randomUUID(),
+                playerId = playerId,
                 sequence = args.entry.sequence + 1,
-                drawing = drawing.toByteArray(),
-                sentence = null,
-                timePassed = 0,
                 gameId = args.entry.gameId,
-                playerId = playerId
+                timePassed = 0,
+                sentence = null,
+                drawing = drawing.toByteArray()
             )
             val directions = DrawFragmentDirections.actionGameFragmentToSentenceFragment(entry)
             this.findNavController().navigate(directions)

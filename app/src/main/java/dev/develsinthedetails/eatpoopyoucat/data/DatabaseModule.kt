@@ -1,37 +1,25 @@
-package dev.develsinthedetails.eatpoopyoucat.data
+package dev.develsinthedetails.eatpoopyoucat.di
 
 import android.content.Context
-import androidx.room.Room
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
+import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
+import dev.develsinthedetails.eatpoopyoucat.data.GameDao
+import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
 import javax.inject.Singleton
 
 @Module
-//Repositories will live same as the activity that requires them
-@InstallIn(ActivityComponent::class)
-abstract class RepositoryModule {
-
-    @Binds
-    abstract fun providesAppRepository(impl: AppRepositoryImpl): IAppRepository
-
-}
-
-@Module
 @InstallIn(SingletonComponent::class)
-object DatabaseModule {
+class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideAppDatabase(@ApplicationContext appContext: Context): AppDatabase {
-        return Room.databaseBuilder(appContext,
-            AppDatabase::class.java,
-            "EatPoopYouCat"
-        ).build()
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getInstance(context)
     }
 
     @Provides
