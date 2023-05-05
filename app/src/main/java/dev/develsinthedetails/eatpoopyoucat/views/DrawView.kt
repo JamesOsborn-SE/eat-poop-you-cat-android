@@ -45,23 +45,21 @@ class DrawView(
     View(context, attributeSet) {
 
     private var path: Path = Path()
-
+    private var _strokeWidth = STROKE_WIDTH
     private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
     private lateinit var canvas: Canvas
     private lateinit var bitmap: Bitmap
 
     // Set up the paint with which to draw.
-    private val paint = Paint().apply {
+    private fun paint() = Paint().apply {
         color = drawColor
-        // Smooths out edges of what is drawn without affecting shape.
         isAntiAlias = true
-        // Dithering affects how colors with higher-precision than the device are down-sampled.
         isDither = true
-        style = Paint.Style.STROKE // default: FILL
-        strokeJoin = Paint.Join.ROUND // default: MITER
-        strokeCap = Paint.Cap.ROUND // default: BUTT
-        strokeWidth = STROKE_WIDTH // default: Hairline-width (really thin)
+        style = Paint.Style.STROKE
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = _strokeWidth
     }
 
     private var currentX = 0f
@@ -92,13 +90,14 @@ class DrawView(
         if(originalResolution != null && originalResolution.height !=0&& originalResolution.width !=0) {
             val xScale: Float = width/ originalResolution.width.toFloat()
             val yScale: Float =  height/ originalResolution.height.toFloat()
+            _strokeWidth *= min(xScale,yScale)
             scaleMatrix.setScale(xScale, yScale, rectF.centerX(), rectF.centerY())
         }
         for (p in drawingPaths) {
             p.transform(scaleMatrix)
-            canvas.drawPath(p, paint)
+            canvas.drawPath(p, paint())
         }
-        canvas.drawPath(path, paint)
+        canvas.drawPath(path, paint())
     }
 
      /**
@@ -153,7 +152,7 @@ class DrawView(
         currentX = motionTouchEventX
         currentY = motionTouchEventY
 
-        canvas.drawPath(path, paint)
+        canvas.drawPath(path, paint())
         invalidate()
     }
 
@@ -165,7 +164,7 @@ class DrawView(
         // draw a dot if no movement but touched.
         if (currentX == motionTouchEventX && currentY == motionTouchEventY) {
             path.lineTo(currentX, currentY)
-            canvas.drawPath(path, paint)
+            canvas.drawPath(path, paint())
         }
         lineSegments.add(LineSegment(Coordinates(currentX, currentY),Coordinates(motionTouchEventX, motionTouchEventY)))
         drawingLines.add(Line(lineSegments))
