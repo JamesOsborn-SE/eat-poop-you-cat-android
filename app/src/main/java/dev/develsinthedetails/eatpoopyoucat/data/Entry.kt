@@ -35,7 +35,9 @@ data class Entry(
     val gameId: UUID,
     val timePassed: Int,
     val sentence: String? = null,
-    val drawing: ByteArray? = null
+    val drawing: ByteArray? = null,
+    val height: Int? = null,
+    val width: Int? = null,
 ):Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

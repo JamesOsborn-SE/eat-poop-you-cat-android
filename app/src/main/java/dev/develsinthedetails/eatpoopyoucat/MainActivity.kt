@@ -13,9 +13,11 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
+        SharedPref.init(applicationContext)
         super.onCreate(savedInstanceState)
 
         setContent {
+//            Spinner()
             EatPoopYouCatApp()
         }
 
