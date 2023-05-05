@@ -1,26 +1,27 @@
 # Eat Poop You Cat for Android
 
 ## Status
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/819f04beefcf4d58b9e4248c4f6d643f)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JamesOsborn-SE/eat-poop-you-cat-android&amp;utm_campaign=Badge_Grade)
 
 ## Premise
 
-Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a 
-sentence pass it to the next person and it they draw a picture. 
+Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a
+sentence pass it to the next person and it they draw a picture.
 Then they pass it to the next person and they can only see the last entry
-(picture in this case) and they write a sentence. It goes on until 
+(picture in this case) and they write a sentence. It goes on until
 everyone has had a turn or boredom takes hold.
 
 ### Info Needed from user
 
-*   Display Name
+* Display Name
 
 ### Rules
 
-*   Each person can only play once per Unique game 
-*   only Monochrome drawings
-*   Time Limit
-*   Turn limit
+* Each person can only play once per Unique game
+* only Monochrome drawings
+* Time Limit
+* Turn limit
 
 ### Permissions needed
 
@@ -37,13 +38,18 @@ android.permission.BLUETOOTH_ADVERTISE
 android.permission.BLUETOOTH_CONNECT
 ```
 
-*   these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app
+* these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app
 
 ### Tech used
 
-*   [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
-*   [ORM - Room](https://developer.android.com/training/data-storage/room/)
-*   [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
+* [nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data
+* [ORM - Room](https://developer.android.com/training/data-storage/room/)
+* [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
+
+### Run locally
+
+* Install the latest [Android Studio](https://developer.android.com/studio/)
+* Enable developer tools on a physical device or make a new virtual device in Android Device Manager [Run your app](https://developer.android.com/studio/)
 
 ### Data
 
