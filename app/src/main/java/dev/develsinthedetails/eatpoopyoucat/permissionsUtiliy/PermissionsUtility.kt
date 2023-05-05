@@ -60,9 +60,7 @@ class PermissionsUtility {
 
         fun requestPermissions(activity: Activity) {
             if (!hasPermissions(activity, requiredPermissions)) {
-                if (Build.VERSION.SDK_INT >= VERSION_CODES.M) {
-                    activity.requestPermissions(requiredPermissions, requestCodeRequiredPermissions)
-                }
+                activity.requestPermissions(requiredPermissions, requestCodeRequiredPermissions)
             }
         }
 

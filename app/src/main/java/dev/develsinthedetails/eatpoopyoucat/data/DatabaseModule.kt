@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.di
+package dev.develsinthedetails.eatpoopyoucat.data
 
 import android.content.Context
 import dagger.Module
@@ -6,10 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
-import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
-import dev.develsinthedetails.eatpoopyoucat.data.GameDao
-import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
 import javax.inject.Singleton
 
 @Module

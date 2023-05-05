@@ -41,7 +41,7 @@ fun DrawScreen(
         ) {
             if (viewModel.isLoading)
                 Spinner()
-            Column() {
+            Column {
 
 
                 val previousEntry by viewModel.previousEntry.observeAsState()
@@ -68,7 +68,7 @@ fun DrawScreen(
 fun Draw(
     drawViewModel: DrawViewModel = hiltViewModel(),
     isReadOnly: Boolean = false,
-    drawingPaths: ArrayList<Path> = ArrayList<Path>(),
+    drawingPaths: ArrayList<Path> = ArrayList(),
     drawingByteArray: ByteArray = ByteArray(0)
 ) {
     drawViewModel.isReadOnly = isReadOnly

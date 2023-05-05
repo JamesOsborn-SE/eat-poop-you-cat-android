@@ -33,8 +33,8 @@ private const val STROKE_WIDTH = 12f
 class DrawView(
     context: Context,
     attributeSet: AttributeSet?,
-    var drawingPaths: ArrayList<Path> = ArrayList<Path>(),
-    var undonePaths: ArrayList<Path> = ArrayList<Path>(),
+    var drawingPaths: ArrayList<Path> = ArrayList(),
+    var undonePaths: ArrayList<Path> = ArrayList(),
     var lineSegments: MutableList<LineSegment> = mutableListOf(),
     var drawingLines: MutableList<Line> = mutableListOf(),
     var undoneLines: MutableList<Line> = mutableListOf(),
@@ -70,6 +70,8 @@ class DrawView(
     private var motionTouchEventX = 0f
     private var motionTouchEventY = 0f
 
+    private val scaleMatrix = Matrix()
+    private val rectF = RectF()
 
     /**
      * Called whenever the view changes size.
@@ -86,8 +88,6 @@ class DrawView(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val scaleMatrix = Matrix()
-        val rectF = RectF()
         path.computeBounds(rectF, true)
         if(originalResolution != null && originalResolution.height !=0&& originalResolution.width !=0) {
             val xScale: Float = width/ originalResolution.width.toFloat()

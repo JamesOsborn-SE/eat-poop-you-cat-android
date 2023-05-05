@@ -1,21 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-
-//interface IAppRepository {
-//    val allGames: Flow<List<Game>>
-//    val allGamesWithEntries: Flow<List<GameWithEntries>>
-//    val allPlayers: Flow<List<Player>>
-//
-//    suspend fun createPlayer(player: Player)
-//    suspend fun createGame(game: Game)
-//    suspend fun getGame(id: UUID): Game
-//    suspend fun createEntry(entry: Entry)
-//    suspend fun getEntry(id: UUID)
-//}
 
 @Singleton
 class AppRepository @Inject constructor(
@@ -41,9 +29,7 @@ class AppRepository @Inject constructor(
     fun getEntry(id: UUID): Flow<Entry> = entryDao.get(id)
     fun getEntry(id: String) = entryDao.get(UUID.fromString(id))
     suspend fun getAllEntries(): List<Entry> = entryDao.getAll()
-    suspend fun getAllEntriesByGame(id: UUID)= entryDao.getAllEntriesByGame(id)
-    suspend fun getAllEntriesByGame(id: String)= entryDao.getAllEntriesByGame(UUID.fromString(id))
+    fun getAllEntriesByGame(id: UUID)= entryDao.getAllEntriesByGame(id)
+    fun getAllEntriesByGame(id: String)= entryDao.getAllEntriesByGame(UUID.fromString(id))
     suspend fun updateEntry(entry: Entry) = entryDao.update(entry)
-
-
 }
