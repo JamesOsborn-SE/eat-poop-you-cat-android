@@ -5,7 +5,11 @@
 
 ## Premise
 
-Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a sentence pass it to the next person and it they draw a picture. Then they pass it to the next person and they can only see the last entry (picture in this case) and they write a sentence. It goes on until everyone has had a turn or boredom takes hold.
+Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a 
+sentence pass it to the next person and it they draw a picture. 
+Then they pass it to the next person and they can only see the last entry
+(picture in this case) and they write a sentence. It goes on until 
+everyone has had a turn or boredom takes hold.
 
 ### Info Needed from user
 
@@ -79,13 +83,30 @@ classDiagram
 ```mermaid
 sequenceDiagram
     autonumber
-    Player1->>Player2: Can I play?
-    loop hasPlayed?
-        Player2->>Player2: check for Player Id in this game
-    end
+    Player1->>Player1: Starts new game<br/>writes sentence
+    Player1->>Player2: Wanna play?
+    Player2->>Player1: Can I play?<br/>check for Player Id in current game
     Player2-->>Player1: Yes, here is payload
     Player1->>Player2: Is there an update for Games?
     loop hasUpdate?
         Player2->>Player2: check for Player Id in current games
     end
+    Player2->>Player1: here is update payload
+```
+
+### Flow
+
+```mermaid
+graph TD
+    p[Player] --> TT(Take turn draw / write)
+    TT --> LFNP(Look for next player)
+    LFNP --> FP{Found Player?}
+    FP -->|No| LFNP
+    FP -->|Yes| HPG{Has played in this game?}
+    HPG -->|No| WTP{Want to play?}
+    WTP -->|No| LFNP
+    WTP -->|Yes| SP(Send Payload)
+    HPG -->|Yes| LFNP
+    SP --> SRUL[Send and recieve update loop]
+    SRUL --> SRUL
 ```

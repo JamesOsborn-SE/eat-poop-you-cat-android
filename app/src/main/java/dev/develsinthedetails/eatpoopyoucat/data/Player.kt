@@ -9,5 +9,5 @@ import java.util.*
 @Entity(indices =  [Index("id")])
 data class Player(
     @PrimaryKey val id: UUID,
-    @ColumnInfo(name = "name") val name: String
+    @ColumnInfo(name = "name") val name: String,
 )

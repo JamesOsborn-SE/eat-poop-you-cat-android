@@ -11,20 +11,20 @@ data class Coordinates(private var xValue: Float, private var yValue: Float) : S
     constructor(
         x: Float,
         y: Float,
-        sourceScreenResolution: ScreenResolution,
-        destinationScreenResolution: ScreenResolution
+        sourceResolution: Resolution,
+        destinationResolution: Resolution
     ) : this(x, y) {
         val xCoefficient: Float =
-            (sourceScreenResolution.width).toFloat() / (destinationScreenResolution.width).toFloat()
+            (sourceResolution.width).toFloat() / (destinationResolution.width).toFloat()
 
-        val yCoefficient: Float = if (sourceScreenResolution.height == sourceScreenResolution.width)
+        val yCoefficient: Float = if (sourceResolution.height == sourceResolution.width)
             xCoefficient
         else
-            (sourceScreenResolution.height).toFloat() / (destinationScreenResolution.height).toFloat()
+            (sourceResolution.height).toFloat() / (destinationResolution.height).toFloat()
 
         this.xValue = x / xCoefficient
         this.yValue = y / yCoefficient
     }
 }
 
-data class ScreenResolution(val width: Int, val height: Int)
+data class Resolution(val height: Int, val width: Int)

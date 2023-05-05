@@ -6,6 +6,5 @@ class CommonStringNames {
         const val player = "player"
         const val playerId = "playerId"
         const val nickname = "nickname"
-        const val default_nickname = "No Name"
     }
 }

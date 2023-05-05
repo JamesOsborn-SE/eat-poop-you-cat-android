@@ -16,6 +16,10 @@ interface GameDao {
     fun getAllWithEntries(): Flow<List<GameWithEntries>>
 
     @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    fun getWithEntries(id: UUID): Flow<GameWithEntries>
+
+    @Transaction
     @Query("SELECT * FROM game WHERE id=:id")
     fun get(id: UUID): Game
 
@@ -24,11 +28,16 @@ interface GameDao {
     suspend fun insert(game: Game)
 
     @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertWait(game: Game)
+
+    @Transaction
     @Query("DELETE FROM Game")
     suspend fun deleteAll()
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Game>)
+
 
 }
