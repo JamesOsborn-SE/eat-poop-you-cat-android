@@ -1,11 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +23,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 
 @Composable
@@ -36,19 +40,27 @@ fun PreviousGameScreen(
     entries: List<Entry>,
     modifier: Modifier = Modifier,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
-        modifier = modifier.testTag("Entry_list"),
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(id = R.dimen.card_side_margin),
-            vertical = dimensionResource(id = R.dimen.header_margin)
-        )
-    ) {
-        items(
-            items = entries,
-            key = { it.id }
+    EatPoopYouCatTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
         ) {
-            EntryListItem(it)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(1),
+                modifier = modifier.testTag("Entry_list"),
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(id = R.dimen.card_side_margin),
+                    vertical = dimensionResource(id = R.dimen.header_margin)
+                )
+            ) {
+                items(
+                    items = entries,
+                    key = { it.id }
+                ) {
+                    EntryListItem(it)
+                }
+            }
         }
     }
 }

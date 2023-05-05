@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +27,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
 
 @Composable
@@ -43,21 +46,28 @@ fun PreviousGamesScreen(
     modifier: Modifier = Modifier,
     onGameClick: (String) -> Unit = {},
 ) {
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier.testTag("game_list"),
-        contentPadding = PaddingValues(
-            horizontal = dimensionResource(id = R.dimen.card_side_margin),
-            vertical = dimensionResource(id = R.dimen.header_margin)
-        )
-    ) {
-        items(
-            items = games,
-            key = { it.game.id }
-        ) { game ->
-            GameListItem(game = game) {
-                onGameClick(game.game.id.toString())
+    EatPoopYouCatTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = modifier.testTag("game_list"),
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(id = R.dimen.card_side_margin),
+                    vertical = dimensionResource(id = R.dimen.header_margin)
+                )
+            ) {
+                items(
+                    items = games,
+                    key = { it.game.id }
+                ) { game ->
+                    GameListItem(game = game) {
+                        onGameClick(game.game.id.toString())
+                    }
+                }
             }
         }
     }
@@ -75,8 +85,9 @@ fun GameListItem(game: GameWithEntries, onClick: () -> Unit) {
         drawing = lastDrawing?.drawing,
         turns = game.entries.count(),
         height = lastDrawing?.height,
-        width =  lastDrawing?.width,
-        onClick = onClick)
+        width = lastDrawing?.width,
+        onClick = onClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +110,8 @@ fun ListItem(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(all = dimensionResource(id = R.dimen.margin_normal))) {
+                .padding(all = dimensionResource(id = R.dimen.margin_normal))
+        ) {
             Text(
                 text = sentence,
                 textAlign = TextAlign.Start,
@@ -118,7 +130,10 @@ fun ListItem(
             )
 
             if (drawing != null && height != null && width != null) {
-                DrawReadOnly(drawingByteArray = drawing, entryResolution = Resolution(height, width))
+                DrawReadOnly(
+                    drawingByteArray = drawing,
+                    entryResolution = Resolution(height, width)
+                )
             }
         }
     }
