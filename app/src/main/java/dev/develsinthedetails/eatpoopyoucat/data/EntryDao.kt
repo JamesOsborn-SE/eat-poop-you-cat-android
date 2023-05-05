@@ -15,6 +15,10 @@ interface EntryDao {
     fun get(id: UUID): Flow<Entry>
 
     @Transaction
+    @Query("SELECT * FROM entry WHERE gameId=:id LIMIT 1")
+    fun getAllEntriesByGame(id: UUID): Flow<List<Entry>>
+
+    @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
     suspend fun getEntryAndPlayers(id: UUID): Entry
 
@@ -33,4 +37,8 @@ interface EntryDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Entry>)
+
+    @Transaction
+    @Update
+    suspend fun update(entry: Entry)
 }
