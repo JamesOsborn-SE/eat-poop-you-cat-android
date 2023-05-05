@@ -45,7 +45,9 @@ fun EatPoopYouCatApp(
         composable("home") {
             WelcomeScreen(
                 onNavigateToSentence = {
-                    navController.navigate("sentence/${it}")
+                    navController.navigate("sentence/${it}") {
+                        popUpTo("home")
+                    }
                 },
                 onNavigateToPreviousGames = {
                     navController.navigate("games")
@@ -59,7 +61,9 @@ fun EatPoopYouCatApp(
             )
         ) {
             SentenceScreen {
-                navController.navigate("draw/${it}")
+                navController.navigate("draw/${it}"){
+                    popUpTo("home")
+                }
             }
         }
         composable(
@@ -69,7 +73,9 @@ fun EatPoopYouCatApp(
             )
         ) {
             DrawScreen {
-                navController.navigate("sentence/${it}")
+                navController.navigate("sentence/${it}"){
+                    popUpTo("home")
+                }
             }
         }
         composable(
