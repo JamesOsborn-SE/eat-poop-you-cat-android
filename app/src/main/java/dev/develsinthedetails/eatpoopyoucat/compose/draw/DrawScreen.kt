@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import android.graphics.Path
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -132,6 +133,7 @@ fun Draw(
 fun DrawReadOnly(
     drawingByteArray: ByteArray = ByteArray(0),
     entryResolution: Resolution,
+    onClick: () -> Unit= { }
 ) {
     val drawingPaths = DrawViewModel.fromByteArray(drawingByteArray)
 
@@ -162,6 +164,11 @@ fun DrawReadOnly(
             },
             update = { }
         )
+        // HACK to make the drawing clickable
+        Text(text = "",
+            Modifier
+                .fillMaxSize()
+                .clickable { onClick.invoke() })
     }
 
 }

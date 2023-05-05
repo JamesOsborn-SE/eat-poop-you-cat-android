@@ -132,7 +132,8 @@ fun ListItem(
             if (drawing != null && height != null && width != null) {
                 DrawReadOnly(
                     drawingByteArray = drawing,
-                    entryResolution = Resolution(height, width)
+                    entryResolution = Resolution(height, width),
+                    onClick = onClick
                 )
             }
         }
