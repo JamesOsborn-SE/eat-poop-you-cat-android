@@ -51,7 +51,7 @@ fun SentenceScreen(
             Column {
 
                 previousEntry?.drawing?.let {
-                    Draw(drawingByteArray = it, isReadOnly = true)
+                    Draw(drawingZippedJson = it, isReadOnly = true)
                 }
                 if (viewModel.isError) {
                     Text(text = "write a more better sentence.", color = Color.Red)

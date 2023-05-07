@@ -26,9 +26,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
+import dev.develsinthedetails.eatpoopyoucat.data.Drawing
+import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.views.DrawView
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 @Composable
 fun DrawScreen(
@@ -69,17 +74,18 @@ fun DrawScreen(
 fun Draw(
     drawViewModel: DrawViewModel = hiltViewModel(),
     isReadOnly: Boolean = false,
-    drawingPaths: ArrayList<Path> = ArrayList(),
-    drawingByteArray: ByteArray = ByteArray(0)
+    drawingLines: ArrayList<Path> = ArrayList(),
+    drawingZippedJson: ByteArray? = null
 ) {
     drawViewModel.isReadOnly = isReadOnly
 
-    if (drawingPaths.isNotEmpty()) {
-        drawViewModel.drawingPaths = drawingPaths
+    if (drawingLines.isNotEmpty()) {
+        drawViewModel.drawingPaths = drawingLines
     }
 
-    if (drawingByteArray.isNotEmpty()) {
-        drawViewModel.drawingPaths = DrawViewModel.fromByteArray(drawingByteArray)
+    if (drawingZippedJson != null) {
+        val lines: MutableList<Line> = Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
+        drawViewModel.drawingPaths = Drawing(lines).toPaths()
     }
 
     // Adds view to Compose
@@ -131,11 +137,11 @@ fun Draw(
 }
 @Composable
 fun DrawReadOnly(
-    drawingByteArray: ByteArray = ByteArray(0),
+    drawingZippedJson: ByteArray,
     entryResolution: Resolution,
     onClick: () -> Unit= { }
 ) {
-    val drawingPaths = DrawViewModel.fromByteArray(drawingByteArray)
+    val drawingLines: MutableList<Line> = Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
 
     // Adds view to Compose
     Box(
@@ -153,7 +159,7 @@ fun DrawReadOnly(
                 DrawView(
                     context,
                     attributeSet = null,
-                    drawingPaths = drawingPaths,
+                    drawingPaths = Drawing(drawingLines).toPaths(),
                     isReadOnly = true,
                     originalResolution = entryResolution,
                 ).apply {

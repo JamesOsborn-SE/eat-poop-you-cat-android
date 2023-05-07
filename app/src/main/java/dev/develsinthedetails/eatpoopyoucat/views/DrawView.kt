@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -19,7 +18,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
-import dev.develsinthedetails.eatpoopyoucat.utilities.toByteArray
 import java.lang.Float.min
 
 
@@ -33,8 +31,8 @@ private const val STROKE_WIDTH = 12f
 class DrawView(
     context: Context,
     attributeSet: AttributeSet?,
-    var drawingPaths: ArrayList<Path> = ArrayList(),
-    var undonePaths: ArrayList<Path> = ArrayList(),
+    var drawingPaths: MutableList<Path> = mutableListOf(),
+    var undonePaths: MutableList<Path> = mutableListOf(),
     var lineSegments: MutableList<LineSegment> = mutableListOf(),
     var drawingLines: MutableList<Line> = mutableListOf(),
     var undoneLines: MutableList<Line> = mutableListOf(),
@@ -171,8 +169,6 @@ class DrawView(
         lineSegments = mutableListOf()
         drawingPaths.add(path)
         path = Path()
-        val x = Drawing(drawingLines).toByteArray()
-        Log.i("test", "$x")
         invalidate()
     }
 

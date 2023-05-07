@@ -1,9 +1,10 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
 import android.graphics.Path
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
-data class Line(private val lineSegments: List<LineSegment>): Serializable {
+@Serializable
+data class Line(private val lineSegments: List<LineSegment>) {
     fun toPath(): Path {
         val path = Path()
         if(lineSegments.isNotEmpty()) {

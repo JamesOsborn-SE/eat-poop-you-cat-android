@@ -5,8 +5,25 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.io.Serializable
-import java.util.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.util.UUID
+
+object UUIDSerializer : KSerializer<UUID> {
+    override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): UUID {
+        return UUID.fromString(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: UUID) {
+        encoder.encodeString(value.toString())
+    }
+}
 
 /**
  * Entry is the main unit of game data it holds the drawing/sentence
@@ -26,19 +43,23 @@ import java.util.*
         childColumns = ["playerId"],
         onDelete = CASCADE
     )],
-    indices = [Index("gameId"), Index("playerId")]
+    indices = [Index("gameId"), Index("playerId")],
 )
+@Serializable
 data class Entry(
+    @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val id: UUID,
+    @Serializable(with = UUIDSerializer::class)
     val playerId: UUID,
     val sequence: Int,
+    @Serializable(with = UUIDSerializer::class)
     val gameId: UUID,
     val timePassed: Int,
     val sentence: String? = null,
     val drawing: ByteArray? = null,
     val height: Int? = null,
     val width: Int? = null,
-):Serializable {
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

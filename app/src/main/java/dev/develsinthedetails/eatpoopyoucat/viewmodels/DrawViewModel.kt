@@ -16,9 +16,10 @@ import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
-import dev.develsinthedetails.eatpoopyoucat.utilities.fromByteArray
-import dev.develsinthedetails.eatpoopyoucat.utilities.toByteArray
+import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.UUID
 import javax.inject.Inject
 
@@ -40,9 +41,9 @@ class DrawViewModel @Inject constructor(
 
     val entryId = UUID.randomUUID().toString()
 
-    var drawingPaths: ArrayList<Path> = ArrayList()
+    var drawingPaths: MutableList<Path> = mutableListOf()
     var drawingLines: MutableList<Line> = mutableListOf()
-    var undonePaths: ArrayList<Path> = ArrayList()
+    var undonePaths: MutableList<Path> = mutableListOf()
     var lineSegments: MutableList<LineSegment> = mutableListOf()
     var undoneLines: MutableList<Line> = mutableListOf()
     var isReadOnly: Boolean = false
@@ -50,6 +51,7 @@ class DrawViewModel @Inject constructor(
 
     init {
         clearCanvas()
+        drawingPaths = Drawing(drawingLines).toPaths()
     }
 
     private fun clearCanvas() {
@@ -63,13 +65,13 @@ class DrawViewModel @Inject constructor(
     }
 
     fun checkDrawing(onNavigateToSentence: () -> Unit) {
-        if(height == 0 || width == 0)
+        if (height == 0 || width == 0)
             isError
         isLoading = true
         val newEntry: Entry = previousEntry.value!!.copy(
             id = UUID.fromString(entryId),
             sentence = null,
-            drawing = Drawing(drawingLines).toByteArray(),
+            drawing = Gzip.compress(Json.encodeToString(drawingLines)),
             height = height,
             width = width,
             sequence = previousEntry.value!!.sequence.inc(),
@@ -79,18 +81,6 @@ class DrawViewModel @Inject constructor(
             repository.createEntry(newEntry)
             onNavigateToSentence.invoke()
             isLoading = false
-        }
-    }
-
-    companion object {
-        fun fromByteArray(b: ByteArray): java.util.ArrayList<Path> {
-            val drawingPaths: java.util.ArrayList<Path> = java.util.ArrayList<Path>()
-            val drawing = fromByteArray<Drawing>(b)
-
-            val drawingLines: MutableList<Line> = mutableListOf()
-            drawingLines.addAll(drawing.lines)
-            drawingPaths.addAll(drawing.toPaths())
-            return drawingPaths
         }
     }
 }
