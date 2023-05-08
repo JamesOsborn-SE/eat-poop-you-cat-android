@@ -76,7 +76,6 @@ fun DrawScreen(
                     Text(stringResource(R.string.accept))
                 }
             }
-
         }
     }
 }
@@ -172,9 +171,8 @@ fun Draw(
         onRedo = {
             drawViewModel.redo()
             hasChanged = true
-        },
+        }
     )
-
 }
 
 @Composable
@@ -213,7 +211,6 @@ fun DrawReadOnly(
                 )
             }
     )
-
 }
 
 @Composable
@@ -232,7 +229,8 @@ private fun DrawingPropertiesMenu(
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_undo_black_24dp),
-                contentDescription = "Undo"
+                contentDescription = "Undo",
+                tint = Color.Black
             )
         }
 
@@ -241,7 +239,8 @@ private fun DrawingPropertiesMenu(
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_redo_black_24dp),
-                contentDescription = "Redo"
+                contentDescription = "Redo",
+                tint = Color.Black
             )
         }
     }
