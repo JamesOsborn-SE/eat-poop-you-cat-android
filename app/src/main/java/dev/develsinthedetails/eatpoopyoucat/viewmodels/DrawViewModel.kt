@@ -169,6 +169,17 @@ class DrawViewModel @Inject constructor(
         )
     }
 
+    fun undo() = moveLastToOtherList(fromList = drawingPaths, toList = undonePaths)
+
+    fun redo() = moveLastToOtherList(fromList = undonePaths, toList = drawingPaths)
+
+    private fun moveLastToOtherList(fromList: MutableList<Path>, toList: MutableList<Path>) {
+        if (fromList.isNotEmpty()) {
+            toList.add(fromList.last())
+            fromList.removeLast()
+        }
+    }
+
     companion object {
         fun doDraw(
             drawingPaths: MutableList<Path>,
@@ -226,7 +237,7 @@ class DrawViewModel @Inject constructor(
             }
             val yScale: Float = currentResolution.height / originalResolution.height.toFloat()
             val xScale: Float = currentResolution.width / originalResolution.width.toFloat()
-            return strokeWidth * min(xScale,yScale)
+            return strokeWidth * min(xScale, yScale)
         }
     }
 }
