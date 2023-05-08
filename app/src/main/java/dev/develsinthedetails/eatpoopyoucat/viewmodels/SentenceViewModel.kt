@@ -16,9 +16,6 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-// get previous session id
-// save to db and wait before progressing
-//
 @HiltViewModel
 class SentenceViewModel @Inject constructor(
     state: SavedStateHandle,
@@ -35,7 +32,6 @@ class SentenceViewModel @Inject constructor(
 
     val entryId = UUID.randomUUID().toString()
 
-
     var sentence: String by mutableStateOf("")
         private set
 
@@ -44,7 +40,8 @@ class SentenceViewModel @Inject constructor(
     }
 
     fun checkSentence(): Boolean {
-        isError = !sentence.contains("([a-z0-9A-Z]+ ){3,}".toRegex())
+        val hasThreeOrMoreWords = sentence.contains("([a-z0-9A-Z]+ +){3,}".toRegex())
+        isError = !hasThreeOrMoreWords
         return isError
     }
 
