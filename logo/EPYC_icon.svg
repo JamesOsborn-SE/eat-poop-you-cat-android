@@ -1,30 +1,128 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="74.416mm" height="74.416mm" version="1.1" viewBox="0 0 74.416 74.416" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <linearGradient id="linearGradient1303" x1="83.296" x2="114.45" y1="138.21" y2="163.63" gradientUnits="userSpaceOnUse">
-   <stop stop-opacity=".31952" offset="0"/>
-   <stop stop-opacity="0" offset="1"/>
-  </linearGradient>
- </defs>
- <g transform="translate(-50.376 -91.685)">
-  <g transform="matrix(.99999 0 0 .99999 -.63547 3.6873)">
-   <g transform="matrix(.86542 0 0 .86542 16.348 10.764)" fill="#fff">
-    <g>
-     <circle cx="90.119" cy="130.96" r="2.311" fill="#008000" stroke-width="33.27"/>
-     <circle cx="76.076" cy="130.96" r="2.311" fill="#008000" stroke-width="33.27"/>
-     <path d="m97.938 108.61 2.1862 17.038-15.355 26.966-19.117 3.092 26.316 19.529c34.005 0 10.145 0.089 34.121 0.089l-0.0847-26.859z" fill="url(#linearGradient1303)"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="74.416mm"
+   height="74.416mm"
+   version="1.1"
+   viewBox="0 0 74.416 74.416"
+   id="svg5264"
+   xmlns="http://www.w3.org/2000/svg">
+  <defs
+     id="defs5228">
+    <linearGradient
+       id="linearGradient1303"
+       x1="83.296"
+       x2="114.45"
+       y1="138.21"
+       y2="163.63"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-opacity=".31952"
+         offset="0"
+         id="stop5223" />
+      <stop
+         stop-opacity="0"
+         offset="1"
+         id="stop5225" />
+    </linearGradient>
+  </defs>
+  <g
+     transform="translate(-50.376 -91.685)"
+     id="g5262">
+    <g
+       transform="matrix(.99999 0 0 .99999 -.63547 3.6873)"
+       id="g5256">
+      <g
+         transform="matrix(.86542 0 0 .86542 16.348 10.764)"
+         fill="#fff"
+         id="g5254">
+        <g
+           id="g6069"
+           transform="translate(0,-1.2229252)">
+          <g
+             id="g6059">
+            <rect
+               style="fill:#ffffff;stroke:none;stroke-width:0.113268;stroke-linejoin:round;stroke-dasharray:none"
+               id="rect5999"
+               width="21.769079"
+               height="5.4451575"
+               x="71.822006"
+               y="133.40181" />
+            <g
+               id="g5236"
+               transform="translate(-0.00275819,5.4386756)">
+              <circle
+                 cx="90.119003"
+                 cy="130.96001"
+                 r="2.3110001"
+                 fill="#008000"
+                 stroke-width="33.27"
+                 id="circle5230" />
+              <circle
+                 cx="76.075996"
+                 cy="130.96001"
+                 r="2.3110001"
+                 fill="#008000"
+                 stroke-width="33.27"
+                 id="circle5232" />
+            </g>
+            <circle
+               cx="90.116241"
+               cy="136.39868"
+               r="1.2865"
+               fill="#000000"
+               stroke-width="60.797"
+               id="circle5248" />
+            <circle
+               cx="75.895241"
+               cy="136.39868"
+               r="1.2865"
+               fill="#000000"
+               stroke-width="60.797"
+               id="circle5250" />
+          </g>
+          <path
+             d="m 68.16109,133.39379 8.4085,14.72188 12.625267,0.0441 8.739054,-14.76597 0.0032,-19.34211 -7.446,17.187 c -7.15738,-2.43721 -7.180784,-2.47409 -14.877,0 l -7.431,-17.187 z m 4.703052,1.39329 h 6.2242 c -3.091,5.5939 -3.5046,4.7098 -6.2242,0 z m 14.139,0 h 6.2242 c -3.091,5.5937 -3.5051,4.7101 -6.2242,0 z"
+             fill="#000000"
+             id="path5238" />
+        </g>
+        <g
+           id="g5437"
+           transform="translate(0.00380531,-6.6754466)">
+          <path
+             d="m 68.294,152.3 v 3.5601 h 0.53264 V 152.3 Z m 0.53324,0 v 3.5601 h 28.582 V 152.3 Z m 28.582,0 v 1.78 1.78 l 1.5418,-0.88973 1.5418,-0.89032 -1.5418,-0.89032 -1.5418,-0.88972 z"
+             fill="#ed850e"
+             id="path5240" />
+          <path
+             d="m 97.417,152.31 v 3.5517 l 1.5346,-0.88555 1.5418,-0.89032 -1.5418,-0.89032 -1.5346,-0.88554 z"
+             fill="#ddc7a9"
+             id="path5242" />
+          <path
+             d="m 99.462,153.49 v 1.1907 l 1.0312,-0.59534 -1.0312,-0.59534 z"
+             fill="#000000"
+             id="path5244" />
+          <path
+             d="m 66.22,152.3 c -0.3451,0 -0.62281,0.27771 -0.62281,0.6228 v 2.3348 c 0,0.34509 0.27771,0.6228 0.62281,0.6228 h 2.0744 V 152.3 Z"
+             fill="#dc5459"
+             stroke-width="39.288"
+             id="path5246" />
+        </g>
+      </g>
     </g>
-    <path d="m65.775 125.8 17.273 29.918 8.6369-14.959 8.6363-14.959-2.3813-17.187-7.446 17.187h-14.877l-7.431-17.187zm7.0919 3.5484h6.2242c-3.091 5.5939-3.5046 4.7098-6.2242 0zm14.139 0h6.2242c-3.091 5.5937-3.5051 4.7101-6.2242 0z" fill="#000"/>
-    <path d="m68.294 152.3v3.5601h0.53264v-3.5601h-0.53264zm0.53324 0v3.5601h28.582v-3.5601h-28.582zm28.582 0v1.78 1.78l1.5418-0.88973 1.5418-0.89032-1.5418-0.89032-1.5418-0.88972z" fill="#ed850e"/>
-    <path d="m97.417 152.31v3.5517l1.5346-0.88555 1.5418-0.89032-1.5418-0.89032-1.5346-0.88554z" fill="#ddc7a9"/>
-    <path d="m99.462 153.49v1.1907l1.0312-0.59534-1.0312-0.59534z" fill="#000"/>
-    <g>
-     <path d="m66.22 152.3c-0.3451 0-0.62281 0.27771-0.62281 0.6228v2.3348c0 0.34509 0.27771 0.6228 0.62281 0.6228h2.0744v-3.5804h-2.0744z" fill="#dc5459" stroke-width="39.288"/>
-     <circle cx="90.119" cy="130.96" r="1.2865" fill="#000" stroke-width="60.797"/>
-     <circle cx="75.898" cy="130.96" r="1.2865" fill="#000" stroke-width="60.797"/>
-    </g>
-   </g>
+    <text
+       x="2"
+       y="2"
+       fill="#000000"
+       font-family="sans-serif"
+       font-size="40px"
+       style="line-height:1.25"
+       xml:space="preserve"
+       id="text5260"><tspan
+         fill="#ffffff"
+         font-size="10px"
+         letter-spacing="0"
+         text-anchor="middle"
+         word-spacing="0"
+         style="line-height:125%"
+         id="tspan5258">-0.31 °</tspan></text>
   </g>
-  <text x="2" y="2" fill="#000000" font-family="sans-serif" font-size="40px" style="line-height:1.25" xml:space="preserve"><tspan fill="#ffffff" font-size="10px" letter-spacing="0" text-anchor="middle" word-spacing="0" style="line-height:125%">-0.31 °</tspan></text>
- </g>
 </svg>
