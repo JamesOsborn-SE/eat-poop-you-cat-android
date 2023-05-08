@@ -1,6 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import android.graphics.Path
+import androidx.compose.ui.graphics.Path
 
 
 @kotlinx.serialization.Serializable

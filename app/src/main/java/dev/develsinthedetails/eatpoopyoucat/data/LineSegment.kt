@@ -1,6 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import android.graphics.Path
+import androidx.compose.ui.graphics.Path
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,7 +10,7 @@ data class LineSegment(val start: Coordinates, private val end: Coordinates) {
         return if (start.x == end.x && start.y == start.y)
             path.lineTo(start.x, start.y)
         else
-            path.quadTo(
+            path.quadraticBezierTo(
                 start.x,
                 start.y,
                 (end.x + start.x) / 2,
