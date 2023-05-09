@@ -11,9 +11,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -35,6 +39,8 @@ fun SentenceScreen(
         val previousEntry by viewModel.previousEntry.observeAsState()
         val idToSend =
             if (previousEntry?.sequence == 0) previousEntry!!.id.toString() else viewModel.entryId
+
+        val focusRequester = remember { FocusRequester() }
 
         fun go() {
             if (!viewModel.checkSentence() && previousEntry != null) {
@@ -64,7 +70,8 @@ fun SentenceScreen(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = { go() }),
-                    modifier = modifier,
+                    modifier = modifier
+                        .focusRequester(focusRequester),
                     enabled = true,
                     readOnly = false,
                     shape = RoundedCornerShape(8.dp),
@@ -78,6 +85,10 @@ fun SentenceScreen(
                 )
                 Button(onClick = { go() }) {
                     Text(stringResource(R.string.accept))
+                }
+
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
                 }
             }
         }
