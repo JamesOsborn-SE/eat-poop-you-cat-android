@@ -115,8 +115,8 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.45")
+    kapt("com.google.dagger:hilt-compiler:2.45")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
