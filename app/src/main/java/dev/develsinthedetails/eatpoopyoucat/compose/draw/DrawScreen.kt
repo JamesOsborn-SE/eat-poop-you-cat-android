@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,7 @@ import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -97,6 +99,7 @@ fun Draw(
     }
     val undoCount = drawViewModel.undoCount.observeAsState(initial = 0)
     val redoCount = drawViewModel.redoCount.observeAsState(initial = 0)
+
     var hasChanged by remember { mutableStateOf(false) }
 
     Box(
@@ -150,6 +153,7 @@ fun Draw(
 
     )
 
+
     DrawingPropertiesMenu(
         modifier = Modifier
             .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
@@ -159,14 +163,16 @@ fun Draw(
             .padding(4.dp),
         undoCount = undoCount,
         redoCount = redoCount,
+        drawMode = drawViewModel.drawMode,
+        setPencilMode = { drawViewModel.setPencileMode(it) },
         onUndo = {
             drawViewModel.undo()
             hasChanged = true
-        }
-    ) {
+        },
+        onRedo =  {
         drawViewModel.redo()
         hasChanged = true
-    }
+    })
 }
 
 @Composable
@@ -178,7 +184,7 @@ fun DrawReadOnly(
         Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
     var height = 0
     var width = 0
-    Box(
+    Canvas(
         modifier = Modifier
             .aspectRatio(1f)
             .padding(all = 8.dp)
@@ -191,18 +197,18 @@ fun DrawReadOnly(
             .onSizeChanged {
                 height = it.height
                 width = it.width
-            }
-            .drawBehind {
+            })
+            {
                 val currentResolution = Resolution(height = height, width = width)
                 DrawViewModel.doDraw(
-                    drawingLines = lines,
                     drawScope = this,
+                    drawingLines = lines,
                     currentLine = null,
                     currentResolution = currentResolution,
                     hasChanged = false
                 )
             }
-    )
+
 }
 
 @Composable
@@ -210,14 +216,34 @@ private fun DrawingPropertiesMenu(
     modifier: Modifier = Modifier,
     undoCount: State<Int>,
     redoCount: State<Int>,
+    drawMode: DrawMode,
     onUndo: () -> Unit,
     onRedo: () -> Unit,
+    setPencilMode: (DrawMode) -> Unit,
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
+        IconButton(onClick = {
+            setPencilMode(DrawMode.Draw)
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_draw_black_24dp),
+                contentDescription = stringResource(id = R.string.erase),
+                tint = if (drawMode == DrawMode.Draw) Color.Black else Color.LightGray
+            )
+        }
+        IconButton(onClick = {
+            setPencilMode(DrawMode.Erase)
+        }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_eraser_black_24dp),
+                contentDescription = stringResource(id = R.string.erase),
+                tint = if (drawMode == DrawMode.Erase) Color.Black else Color.LightGray
+            )
+        }
         IconButton(onClick = {
             onUndo()
         }) {

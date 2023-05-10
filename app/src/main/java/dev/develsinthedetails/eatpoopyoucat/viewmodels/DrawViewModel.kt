@@ -33,7 +33,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.max
 import kotlin.math.min
+
+enum class DrawMode {
+    Draw, Erase
+}
 
 @HiltViewModel
 class DrawViewModel @Inject constructor(
@@ -41,6 +46,7 @@ class DrawViewModel @Inject constructor(
     private val repository: AppRepository,
 ) : ViewModel() {
 
+    var drawMode: DrawMode by mutableStateOf(DrawMode.Draw)
     private var currentX = 0f
     private var currentY = 0f
 
@@ -120,10 +126,10 @@ class DrawViewModel @Inject constructor(
     }
 
     fun touchMove(inputChange: PointerInputChange) {
-        currentX = min(currentX, currentResolution.height.toFloat())
-        currentY = min(currentY, currentResolution.width.toFloat())
-        val motionTouchEventX = min(inputChange.position.x, currentResolution.height.toFloat())
-        val motionTouchEventY = min(inputChange.position.y, currentResolution.width.toFloat())
+        currentX = normalizeLocationX(currentX)
+        currentY = normalizeLocationY(currentY)
+        val motionTouchEventX = normalizeLocationX(inputChange.position.x)
+        val motionTouchEventY = normalizeLocationY(inputChange.position.y)
         lineSegments.add(
             LineSegment(
                 Coordinates(currentX, currentY),
@@ -135,11 +141,20 @@ class DrawViewModel @Inject constructor(
         inputChange.consume()
     }
 
+    private fun normalizeLocation(x: Float, canvasSize: Int): Float {
+        return max(0f+lineProperties.strokeWidth/2, min(canvasSize.toFloat()-lineProperties.strokeWidth/2, x))
+    }
+    private fun normalizeLocationX(x: Float): Float {
+        return normalizeLocation(x, currentResolution.height)
+    }
+    private fun normalizeLocationY(y: Float): Float {
+        return normalizeLocation(y, currentResolution.width)
+    }
     fun touchUp(inputChange: PointerInputChange) {
-        currentX = min(currentX, currentResolution.height.toFloat())
-        currentY = min(currentY, currentResolution.width.toFloat())
-        val motionTouchEventX = min(inputChange.position.x, currentResolution.height.toFloat())
-        val motionTouchEventY = min(inputChange.position.y, currentResolution.width.toFloat())
+        currentX = normalizeLocationX(currentX)
+        currentY = normalizeLocationY(currentY)
+        val motionTouchEventX = normalizeLocationX(inputChange.position.x)
+        val motionTouchEventY = normalizeLocationY(inputChange.position.y)
         lineSegments.add(
             LineSegment(
                 Coordinates(currentX, currentY),
@@ -192,6 +207,15 @@ class DrawViewModel @Inject constructor(
 
     fun setCanvasResolution(height: Int, width: Int) {
         currentResolution = Resolution(height, width)
+    }
+
+    fun setPencileMode(mode: DrawMode) {
+        lineProperties.eraseMode = mode == DrawMode.Erase
+        drawMode = mode
+        if(mode == DrawMode.Erase)
+            lineProperties.strokeWidth = 48f
+        else
+            lineProperties.strokeWidth = 12f
     }
 
     companion object {

@@ -11,6 +11,6 @@ data class LineProperties(
     var color: Int = Color.Black.toArgb(),
     var eraseMode: Boolean = false,
 ) {
-    fun drawColor(): Color = if(eraseMode) Color.Transparent else Color(color)
-    fun blendMode(): BlendMode = if(eraseMode) BlendMode.Clear else BlendMode.SrcOver
+    fun drawColor(): Color = if(eraseMode) Color.White else Color(color)
+    fun blendMode(): BlendMode = if(eraseMode) BlendMode.SrcOver else BlendMode.SrcOver
 }
