@@ -56,13 +56,16 @@ class DrawViewModel @Inject constructor(
 
 
     private var currentPath: Path = Path()
-    var drawingPaths: MutableList<Path> = mutableListOf(Path())
+    var drawingPaths: MutableList<Path> = mutableListOf()
     private var drawingLines: MutableList<Line> = mutableListOf()
     private var undonePaths: MutableList<Path> = mutableListOf()
     private var lineSegments: MutableList<LineSegment> = mutableListOf()
     private var undoneLines: MutableList<Line> = mutableListOf()
     var isReadOnly: Boolean = false
     private var justCleared: Boolean = false
+
+    var undoCount by mutableStateOf(drawingPaths.count())
+    var redoCount by mutableStateOf(undonePaths.count())
 
     init {
         clearCanvas()
@@ -150,6 +153,7 @@ class DrawViewModel @Inject constructor(
         drawingLines.add(Line(lineSegments))
         lineSegments = mutableListOf()
         drawingPaths.add(currentPath)
+        undoCount = drawingPaths.count()
         currentPath = Path()
         inputChange.consume()
     }
@@ -169,9 +173,17 @@ class DrawViewModel @Inject constructor(
         )
     }
 
-    fun undo() = moveLastToOtherList(fromList = drawingPaths, toList = undonePaths)
+    fun undo() {
+        moveLastToOtherList(fromList = drawingPaths, toList = undonePaths)
+        undoCount = drawingPaths.count()
+        redoCount = undonePaths.count()
+    }
 
-    fun redo() = moveLastToOtherList(fromList = undonePaths, toList = drawingPaths)
+    fun redo() {
+        moveLastToOtherList(fromList = undonePaths, toList = drawingPaths)
+        undoCount = drawingPaths.count()
+        redoCount = undonePaths.count()
+    }
 
     private fun moveLastToOtherList(fromList: MutableList<Path>, toList: MutableList<Path>) {
         if (fromList.isNotEmpty()) {

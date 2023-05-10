@@ -59,10 +59,13 @@ fun DrawScreen(
             if (viewModel.isLoading)
                 Spinner()
             Column {
-
-
                 val previousEntry by viewModel.previousEntry.observeAsState()
-                previousEntry?.sentence?.let { Text(it) }
+                previousEntry?.sentence?.let {
+                    Column {
+                        Text(stringResource(R.string.draw_this_sentence))
+                        Text(it)
+                    }
+                }
                 Draw()
 
                 if (viewModel.isError) {
@@ -86,7 +89,6 @@ fun Draw(
     drawViewModel: DrawViewModel = hiltViewModel(),
     isReadOnly: Boolean = false,
     drawingLines: ArrayList<Line> = ArrayList(),
-    drawingZippedJson: ByteArray? = null,
     entryResolution: Resolution? = null
 ) {
 
@@ -94,12 +96,6 @@ fun Draw(
 
     if (drawingLines.isNotEmpty()) {
         drawViewModel.drawingPaths = Drawing(drawingLines).toPaths()
-    }
-
-    if (drawingZippedJson != null) {
-        val lines: MutableList<Line> =
-            Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
-        drawViewModel.drawingPaths = Drawing(lines).toPaths()
     }
 
     var hasChanged by remember { mutableStateOf(false) }
@@ -164,6 +160,8 @@ fun Draw(
             .fillMaxWidth()
             .background(Color.White)
             .padding(4.dp),
+        undoCount = drawViewModel.undoCount,
+        redoCount = drawViewModel.redoCount,
         onUndo = {
             drawViewModel.undo()
             hasChanged = true
@@ -178,7 +176,7 @@ fun Draw(
 @Composable
 fun DrawReadOnly(
     drawingZippedJson: ByteArray,
-    entryResolution: Resolution,
+    entryResolution: Resolution? = null,
     onClick: () -> Unit = {},
 ) {
     val lines: List<Line> =
@@ -201,11 +199,12 @@ fun DrawReadOnly(
                 width = it.width
             }
             .drawBehind {
+                val currentResolution = Resolution(height = height, width = width)
                 DrawViewModel.doDraw(
                     drawingPaths = drawingPaths,
                     drawScope = this,
                     currentPath = Path(),
-                    currentResolution = Resolution(height = height, width = width),
+                    currentResolution = currentResolution,
                     originalResolution = entryResolution,
                     hasChanged = false
                 )
@@ -216,6 +215,8 @@ fun DrawReadOnly(
 @Composable
 private fun DrawingPropertiesMenu(
     modifier: Modifier = Modifier,
+    undoCount: Int = 0,
+    redoCount: Int = 0,
     onUndo: () -> Unit,
     onRedo: () -> Unit,
 ) {
@@ -230,7 +231,7 @@ private fun DrawingPropertiesMenu(
             Icon(
                 painter = painterResource(id = R.drawable.ic_undo_black_24dp),
                 contentDescription = "Undo",
-                tint = Color.Black
+                tint = if (undoCount > 0) Color.Black else Color.LightGray
             )
         }
 
@@ -240,7 +241,7 @@ private fun DrawingPropertiesMenu(
             Icon(
                 painter = painterResource(id = R.drawable.ic_redo_black_24dp),
                 contentDescription = "Redo",
-                tint = Color.Black
+                tint = if (redoCount > 0) Color.Black else Color.LightGray
             )
         }
     }
