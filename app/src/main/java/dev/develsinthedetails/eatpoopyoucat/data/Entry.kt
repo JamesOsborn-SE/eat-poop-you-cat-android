@@ -57,8 +57,6 @@ data class Entry(
     val timePassed: Int,
     val sentence: String? = null,
     val drawing: ByteArray? = null,
-    val height: Int? = null,
-    val width: Int? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

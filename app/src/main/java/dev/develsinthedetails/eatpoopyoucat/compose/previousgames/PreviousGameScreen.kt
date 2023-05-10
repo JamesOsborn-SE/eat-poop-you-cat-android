@@ -22,7 +22,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 
@@ -69,8 +68,6 @@ fun PreviousGameScreen(
 fun EntryListItem(entry: Entry) {
     val sentence = entry.sentence
     val drawing = entry.drawing
-    val height = entry.height
-    val width = entry.width
 
     if (sentence != null) {
 
@@ -83,10 +80,9 @@ fun EntryListItem(entry: Entry) {
         )
     }
 
-    if (drawing != null && height != null && width != null) {
+    if (drawing != null) {
         DrawReadOnly(
             drawingZippedJson = drawing,
-            entryResolution = Resolution(height, width)
         )
 
     }

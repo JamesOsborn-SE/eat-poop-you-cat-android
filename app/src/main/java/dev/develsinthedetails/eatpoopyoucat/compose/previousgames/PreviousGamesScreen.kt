@@ -27,7 +27,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
 
@@ -85,9 +84,7 @@ fun GameListItem(game: GameWithEntries, onClick: () -> Unit) {
         sentence = firstSentence,
         drawing = lastDrawing?.drawing,
         turns = game.entries.count(),
-        height = lastDrawing?.height,
-        width = lastDrawing?.width,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -96,8 +93,6 @@ fun GameListItem(game: GameWithEntries, onClick: () -> Unit) {
 fun ListItem(
     sentence: String,
     drawing: ByteArray?,
-    height: Int?,
-    width: Int?,
     turns: Int,
     onClick: () -> Unit
 ) {
@@ -130,10 +125,9 @@ fun ListItem(
                     .wrapContentWidth(Alignment.End)
             )
 
-            if (drawing != null && height != null && width != null) {
+            if (drawing != null) {
                 DrawReadOnly(
                     drawingZippedJson = drawing,
-                    entryResolution = Resolution(height, width),
                     onClick = onClick
                 )
             }

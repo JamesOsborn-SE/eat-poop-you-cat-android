@@ -11,4 +11,5 @@ data class Coordinates(private var xValue: Float, private var yValue: Float) {
         get() = yValue
 }
 
+@Serializable
 data class Resolution(val height: Int, val width: Int)

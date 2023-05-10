@@ -4,7 +4,11 @@ import androidx.compose.ui.graphics.Path
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Line(private val lineSegments: List<LineSegment>) {
+data class Line(
+    private val lineSegments: List<LineSegment>,
+    val properties: LineProperties = LineProperties(),
+    val resolution: Resolution = Resolution(0,0),
+) {
     fun toPath(): Path {
         val path = Path()
         if(lineSegments.isNotEmpty()) {

@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
@@ -89,7 +88,6 @@ fun Draw(
     drawViewModel: DrawViewModel = hiltViewModel(),
     isReadOnly: Boolean = false,
     drawingLines: ArrayList<Line> = ArrayList(),
-    entryResolution: Resolution? = null
 ) {
 
     drawViewModel.isReadOnly(isReadOnly)
@@ -109,12 +107,10 @@ fun Draw(
             .aspectRatio(1f)
             .fillMaxWidth()
             .onPlaced {
-                drawViewModel.canvasHeight(it.size.height)
-                drawViewModel.canvasWidth(it.size.width)
+                drawViewModel.setCanvasResolution(it.size.height, it.size.width)
             }
             .onSizeChanged {
-                drawViewModel.canvasHeight(it.height)
-                drawViewModel.canvasWidth(it.width)
+                drawViewModel.setCanvasResolution(it.height,it.width)
             }
             .dragMotionEvent(
                 onDragStart = { pointerInputChange ->
@@ -145,10 +141,10 @@ fun Draw(
                 })
             .drawBehind {
                 if (hasChanged) {
-                    drawViewModel.doDraw(this, true, entryResolution)
+                    drawViewModel.doDraw(this, true)
                     hasChanged = false
                 } else {
-                    drawViewModel.doDraw(this, false, entryResolution)
+                    drawViewModel.doDraw(this, false)
                 }
             }
 
@@ -176,7 +172,6 @@ fun Draw(
 @Composable
 fun DrawReadOnly(
     drawingZippedJson: ByteArray,
-    entryResolution: Resolution? = null,
     onClick: () -> Unit = {},
 ) {
     val lines: List<Line> =
@@ -202,9 +197,8 @@ fun DrawReadOnly(
                 DrawViewModel.doDraw(
                     drawingLines = lines,
                     drawScope = this,
-                    currentPath = Path(),
+                    currentLine = null,
                     currentResolution = currentResolution,
-                    originalResolution = entryResolution,
                     hasChanged = false
                 )
             }
