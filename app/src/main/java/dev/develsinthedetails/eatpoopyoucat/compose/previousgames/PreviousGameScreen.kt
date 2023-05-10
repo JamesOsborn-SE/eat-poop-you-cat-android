@@ -75,7 +75,7 @@ fun EntryListItem(entry: Entry) {
     if (sentence != null) {
 
         Text(
-            text = "$sentence",
+            text = sentence,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .fillMaxWidth()

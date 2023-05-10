@@ -61,7 +61,7 @@ fun SentenceScreen(
                 }
 
                 if (viewModel.isError) {
-                    Text(text = "write a more better sentence.", color = Color.Red)
+                    Text(text = stringResource(id = R.string.write_sentence_error), color = Color.Red)
                 }
                 OutlinedTextField(
                     value = viewModel.sentence,

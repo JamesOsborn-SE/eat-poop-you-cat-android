@@ -69,7 +69,7 @@ fun DrawScreen(
                 Draw()
 
                 if (viewModel.isError) {
-                    Text(text = "make a more better picture.", color = Color.Red)
+                    Text(text = stringResource(id = R.string.drawing_error), color = Color.Red)
                 }
 
                 Button(onClick = {
@@ -230,7 +230,7 @@ private fun DrawingPropertiesMenu(
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_undo_black_24dp),
-                contentDescription = "Undo",
+                contentDescription = stringResource(id = R.string.undo),
                 tint = if (undoCount > 0) Color.Black else Color.LightGray
             )
         }
@@ -240,7 +240,7 @@ private fun DrawingPropertiesMenu(
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_redo_black_24dp),
-                contentDescription = "Redo",
+                contentDescription = stringResource(id = R.string.redo),
                 tint = if (redoCount > 0) Color.Black else Color.LightGray
             )
         }

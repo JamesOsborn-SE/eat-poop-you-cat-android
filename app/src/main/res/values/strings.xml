@@ -46,4 +46,7 @@
     <string name="default_nickname">No Name</string>
     <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
     <string name="title_activity_sentence_screen">SentenceScreen</string>
+    <string name="write_sentence_error">Write a more better sentence!</string>
+    <string name="drawing_error">make a more better picture.</string>
+    <string name="turns">Turns</string>
 </resources>
