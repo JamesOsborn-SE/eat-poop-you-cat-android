@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
-import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
@@ -92,12 +92,13 @@ fun Draw(
     entryResolution: Resolution? = null
 ) {
 
-    drawViewModel.isReadOnly = isReadOnly
+    drawViewModel.isReadOnly(isReadOnly)
 
     if (drawingLines.isNotEmpty()) {
-        drawViewModel.drawingPaths = Drawing(drawingLines).toPaths()
+        drawViewModel.setLines(drawingLines)
     }
-
+    val undoCount = drawViewModel.undoCount.observeAsState(initial = 0)
+    val redoCount = drawViewModel.redoCount.observeAsState(initial = 0)
     var hasChanged by remember { mutableStateOf(false) }
 
     Box(
@@ -108,12 +109,12 @@ fun Draw(
             .aspectRatio(1f)
             .fillMaxWidth()
             .onPlaced {
-                drawViewModel.canvasHeight = it.size.height
-                drawViewModel.canvasWidth = it.size.width
+                drawViewModel.canvasHeight(it.size.height)
+                drawViewModel.canvasWidth(it.size.width)
             }
             .onSizeChanged {
-                drawViewModel.canvasHeight = it.height
-                drawViewModel.canvasWidth = it.width
+                drawViewModel.canvasHeight(it.height)
+                drawViewModel.canvasWidth(it.width)
             }
             .dragMotionEvent(
                 onDragStart = { pointerInputChange ->
@@ -160,17 +161,16 @@ fun Draw(
             .fillMaxWidth()
             .background(Color.White)
             .padding(4.dp),
-        undoCount = drawViewModel.undoCount,
-        redoCount = drawViewModel.redoCount,
+        undoCount = undoCount,
+        redoCount = redoCount,
         onUndo = {
             drawViewModel.undo()
             hasChanged = true
-        },
-        onRedo = {
-            drawViewModel.redo()
-            hasChanged = true
         }
-    )
+    ) {
+        drawViewModel.redo()
+        hasChanged = true
+    }
 }
 
 @Composable
@@ -181,7 +181,6 @@ fun DrawReadOnly(
 ) {
     val lines: List<Line> =
         Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
-    val drawingPaths = Drawing(lines).toPaths()
     var height = 0
     var width = 0
     Box(
@@ -201,7 +200,7 @@ fun DrawReadOnly(
             .drawBehind {
                 val currentResolution = Resolution(height = height, width = width)
                 DrawViewModel.doDraw(
-                    drawingPaths = drawingPaths,
+                    drawingLines = lines,
                     drawScope = this,
                     currentPath = Path(),
                     currentResolution = currentResolution,
@@ -215,8 +214,8 @@ fun DrawReadOnly(
 @Composable
 private fun DrawingPropertiesMenu(
     modifier: Modifier = Modifier,
-    undoCount: Int = 0,
-    redoCount: Int = 0,
+    undoCount: State<Int>,
+    redoCount: State<Int>,
     onUndo: () -> Unit,
     onRedo: () -> Unit,
 ) {
@@ -231,7 +230,7 @@ private fun DrawingPropertiesMenu(
             Icon(
                 painter = painterResource(id = R.drawable.ic_undo_black_24dp),
                 contentDescription = stringResource(id = R.string.undo),
-                tint = if (undoCount > 0) Color.Black else Color.LightGray
+                tint = if (undoCount.value > 0) Color.Black else Color.LightGray
             )
         }
 
@@ -241,7 +240,7 @@ private fun DrawingPropertiesMenu(
             Icon(
                 painter = painterResource(id = R.drawable.ic_redo_black_24dp),
                 contentDescription = stringResource(id = R.string.redo),
-                tint = if (redoCount > 0) Color.Black else Color.LightGray
+                tint = if (redoCount.value > 0) Color.Black else Color.LightGray
             )
         }
     }

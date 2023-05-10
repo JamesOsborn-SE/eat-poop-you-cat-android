@@ -19,12 +19,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.Coordinates
-import dev.develsinthedetails.eatpoopyoucat.data.Drawing
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -41,7 +44,9 @@ class DrawViewModel @Inject constructor(
     private var currentY = 0f
 
     var canvasHeight: Int = 0
+        private set
     var canvasWidth: Int = 0
+        private set
 
     private val playerId = SharedPref.playerId()
     var isError: Boolean by mutableStateOf(false)
@@ -54,32 +59,39 @@ class DrawViewModel @Inject constructor(
 
     val entryId = UUID.randomUUID().toString()
 
-
     private var currentPath: Path = Path()
-    var drawingPaths: MutableList<Path> = mutableListOf()
-    private var drawingLines: MutableList<Line> = mutableListOf()
-    private var undonePaths: MutableList<Path> = mutableListOf()
+
+    private var drawingLines = MutableStateFlow(listOf<Line>())
+    private var undoneLines = MutableStateFlow(listOf<Line>())
+
     private var lineSegments: MutableList<LineSegment> = mutableListOf()
-    private var undoneLines: MutableList<Line> = mutableListOf()
     var isReadOnly: Boolean = false
+        private set
     private var justCleared: Boolean = false
 
-    var undoCount by mutableStateOf(drawingPaths.count())
-    var redoCount by mutableStateOf(undonePaths.count())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val undoCount = drawingLines.flatMapLatest { lines ->
+        flow {
+            emit(lines.count())
+        }
+    }.asLiveData()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val redoCount = undoneLines.flatMapLatest { lines ->
+        flow {
+            emit(lines.count())
+        }
+    }.asLiveData()
 
     init {
         clearCanvas()
-        drawingPaths = Drawing(drawingLines).toPaths()
     }
 
     private fun clearCanvas() {
-        undoneLines.clear()
-        undoneLines.addAll(drawingLines)
-        undonePaths.clear()
-        undonePaths.addAll(drawingPaths)
+        undoneLines.value = listOf()
+        undoneLines.value += drawingLines.value
         justCleared = true
-        drawingLines.clear()
-        drawingPaths.clear()
+        drawingLines.value = listOf()
     }
 
     fun checkDrawing(onNavigateToSentence: () -> Unit) {
@@ -89,7 +101,7 @@ class DrawViewModel @Inject constructor(
         val newEntry: Entry = previousEntry.value!!.copy(
             id = UUID.fromString(entryId),
             sentence = null,
-            drawing = Gzip.compress(Json.encodeToString(drawingLines)),
+            drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
             height = canvasHeight,
             width = canvasWidth,
             sequence = previousEntry.value!!.sequence.inc(),
@@ -103,8 +115,7 @@ class DrawViewModel @Inject constructor(
     }
 
     fun touchStart(inputChange: PointerInputChange) {
-        undonePaths.clear()
-        undoneLines.clear()
+        undoneLines.value = listOf()
         currentPath.reset()
         currentPath.moveTo(inputChange.position.x, inputChange.position.y)
         currentX = inputChange.position.x
@@ -150,10 +161,9 @@ class DrawViewModel @Inject constructor(
                 Coordinates(motionTouchEventX, motionTouchEventY)
             )
         )
-        drawingLines.add(Line(lineSegments))
+        drawingLines.value += Line(lineSegments)
         lineSegments = mutableListOf()
-        drawingPaths.add(currentPath)
-        undoCount = drawingPaths.count()
+        undoneLines.value = listOf()
         currentPath = Path()
         inputChange.consume()
     }
@@ -164,7 +174,7 @@ class DrawViewModel @Inject constructor(
         originalResolution: Resolution?
     ) {
         Companion.doDraw(
-            drawingPaths = drawingPaths,
+            drawingLines = drawingLines.value.toMutableList(),
             drawScope = drawScope,
             currentPath = currentPath,
             hasChanged = hasChanged,
@@ -173,28 +183,40 @@ class DrawViewModel @Inject constructor(
         )
     }
 
-    fun undo() {
-        moveLastToOtherList(fromList = drawingPaths, toList = undonePaths)
-        undoCount = drawingPaths.count()
-        redoCount = undonePaths.count()
+    fun undo() = moveLastToOtherList(fromList = drawingLines, toList = undoneLines)
+
+    fun redo() = moveLastToOtherList(fromList = undoneLines, toList = drawingLines)
+
+    fun setLines(lines: ArrayList<Line>) {
+        drawingLines.value = lines
     }
 
-    fun redo() {
-        moveLastToOtherList(fromList = undonePaths, toList = drawingPaths)
-        undoCount = drawingPaths.count()
-        redoCount = undonePaths.count()
-    }
-
-    private fun moveLastToOtherList(fromList: MutableList<Path>, toList: MutableList<Path>) {
-        if (fromList.isNotEmpty()) {
-            toList.add(fromList.last())
-            fromList.removeLast()
+    private fun <T> moveLastToOtherList(
+        fromList: MutableStateFlow<List<T>>,
+        toList: MutableStateFlow<List<T>>
+    ) {
+        if (fromList.value.isNotEmpty()) {
+            val popped = fromList.value.last()
+            fromList.value -= popped
+            toList.value += popped
         }
+    }
+
+    fun isReadOnly(readOnly: Boolean) {
+        isReadOnly = readOnly
+    }
+
+    fun canvasHeight(height: Int) {
+        canvasHeight = height
+    }
+
+    fun canvasWidth(width: Int) {
+        canvasWidth = width
     }
 
     companion object {
         fun doDraw(
-            drawingPaths: MutableList<Path>,
+            drawingLines: List<Line>,
             drawScope: DrawScope,
             currentPath: Path,
             hasChanged: Boolean,
@@ -202,8 +224,9 @@ class DrawViewModel @Inject constructor(
             originalResolution: Resolution?
         ) {
             val scaledStrokeWidth = scaleStroke(currentResolution, originalResolution)
-            drawingPaths.forEach {
-                val scaledPath = scalePath(it, currentResolution, originalResolution)
+            drawingLines.forEach {
+                val path = it.toPath()
+                val scaledPath = scalePath(path, currentResolution, originalResolution)
                 drawScope.drawPath(
                     color = Color.Black,
                     path = scaledPath,
