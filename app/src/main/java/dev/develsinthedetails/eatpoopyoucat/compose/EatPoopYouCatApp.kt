@@ -3,14 +3,13 @@ package dev.develsinthedetails.eatpoopyoucat.compose
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -140,40 +139,33 @@ fun Buttons(
     onSubmit: () -> Unit,
     onEnd: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .height(IntrinsicSize.Min)
-            .fillMaxWidth()
-            .padding(top = 15.dp)
+    Column(
+        modifier = Modifier.fillMaxSize()
     ) {
         Button(
             modifier = Modifier
-                .padding(start = 4.dp)
-                .weight(1f)
-                .wrapContentWidth(Alignment.Start),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
-            onClick = onEnd
-        )
-        {
-            Text(stringResource(R.string.end_game_for_all))
-        }
-        Button(
-            modifier = Modifier
-                .padding(end = 4.dp)
-                .weight(1f)
-                .wrapContentWidth(Alignment.End)
+                .padding(top = 15.dp)
+                .align(Alignment.End)
                 .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
             onClick = { onSubmit() }
         ) {
             Text(stringResource(R.string.submit))
         }
 
+        Button(
+            modifier = Modifier.padding(top = 15.dp)
+                .align(Alignment.Start),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+            onClick = onEnd
+        )
+        {
+            Text(stringResource(R.string.end_game_for_all))
         }
+    }
 }
 
 @Composable
-fun GetFill(): Modifier {
-
+fun getFill(): Modifier {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
     val fill = when (configuration.orientation) {
@@ -193,6 +185,6 @@ fun GetFill(): Modifier {
 
 @Preview
 @Composable
-fun ButtonsPreview(){
+fun ButtonsPreview() {
     Buttons(onSubmit = {}, onEnd = {})
 }
