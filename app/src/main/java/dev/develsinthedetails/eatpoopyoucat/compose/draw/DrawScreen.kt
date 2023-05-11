@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -90,9 +91,23 @@ fun DrawScreen(
 
 @Composable
 fun Sentence(it: String) {
-    Column() {
-        Text(stringResource(R.string.draw_this_sentence))
-        Text(it)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+            .border(2.dp, color = MaterialTheme.colorScheme.onTertiary)
+
+    ) {
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = stringResource(R.string.draw_this_sentence),
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
+        Text(modifier = Modifier.padding(8.dp)
+            .background(color = MaterialTheme.colorScheme.secondaryContainer),
+            text = it,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }
 
