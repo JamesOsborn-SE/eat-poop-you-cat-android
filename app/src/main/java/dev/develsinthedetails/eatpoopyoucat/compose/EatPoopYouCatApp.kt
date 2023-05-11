@@ -135,18 +135,20 @@ fun WelcomeScreen(
                     text = stringResource(R.string.welcome_message),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                OutlinedTextField(
-                    value = viewModel.userName,
-                    onValueChange = {
-                        viewModel.updateNickName(it)
-                    },
-                    modifier = modifier,
-                    enabled = true,
-                    readOnly = false,
-                    shape = RoundedCornerShape(8.dp),
+                if (0 == 1) {
+                    OutlinedTextField(
+                        value = viewModel.userName,
+                        onValueChange = {
+                            viewModel.updateNickName(it)
+                        },
+                        modifier = modifier,
+                        enabled = true,
+                        readOnly = false,
+                        shape = RoundedCornerShape(8.dp),
 
-                    label = { Text(stringResource(R.string.nickname), modifier = modifier) },
-                )
+                        label = { Text(stringResource(R.string.nickname), modifier = modifier) },
+                    )
+                }
                 StartGame(onNavigateToSentence)
                 ViewPreviousGames(onNavigateToPreviousGames)
             }
