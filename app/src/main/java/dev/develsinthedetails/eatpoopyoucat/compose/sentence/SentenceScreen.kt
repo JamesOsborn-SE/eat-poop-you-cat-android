@@ -37,8 +37,11 @@ fun SentenceScreen(
 ) {
     EatPoopYouCatTheme {
         val previousEntry by viewModel.previousEntry.observeAsState()
+        val isFirstTurn = previousEntry?.sequence == 0
         val idToSend =
-            if (previousEntry?.sequence == 0) previousEntry!!.id.toString() else viewModel.entryId
+            if (isFirstTurn) previousEntry!!.id.toString() else viewModel.entryId
+
+        val sentencePromt = if(isFirstTurn) stringResource(R.string.write_a_funny_sentence) else stringResource(R.string.describe_this_drawing)
 
         val focusRequester = remember { FocusRequester() }
 
@@ -79,7 +82,7 @@ fun SentenceScreen(
 
                     label = {
                         Text(
-                            stringResource(R.string.write_a_funny_sentence),
+                            sentencePromt,
                             modifier = modifier
                         )
                     },
