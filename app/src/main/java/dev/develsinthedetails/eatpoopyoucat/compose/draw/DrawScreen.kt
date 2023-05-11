@@ -86,11 +86,7 @@ fun DrawScreen(
 
 @Composable
 fun Sentence(it: String) {
-    Column(
-        modifier = Modifier.background(
-            color = Color.LightGray,
-        )
-    ) {
+    Column() {
         Text(stringResource(R.string.draw_this_sentence))
         Text(it)
     }
@@ -125,11 +121,18 @@ fun Draw(
             .fillMaxWidth()
     ) {
 
+
         DrawBox(
             drawingLines = linesState.value,
             currentLine = currentLineState.value,
-            currentProperties = currentPropertiesState.value,
+            currentProperties = currentPropertiesState.value
+        )
+
+        Box(
             modifier = Modifier
+                .aspectRatio(1f)
+                .padding(all = 8.dp)
+                .fillMaxWidth()
                 .onPlaced {
                     drawViewModel.setCanvasResolution(it.size.height, it.size.width)
                 }
@@ -182,7 +185,6 @@ fun Draw(
 
 @Composable
 fun DrawBox(
-    modifier: Modifier = Modifier,
     drawingZippedJson: ByteArray = byteArrayOf(),
     drawingLines: List<Line> = listOf(),
     currentLine: List<LineSegment> = listOf(),
@@ -202,7 +204,7 @@ fun DrawBox(
     var height = 0
     var width = 0
     Canvas(
-        modifier = modifier
+        modifier = Modifier
             .aspectRatio(1f)
             .padding(all = 8.dp)
             .background(color = Color.White)
@@ -249,7 +251,12 @@ private fun DrawingPropertiesMenu(
     setPencilMode: (DrawMode) -> Unit,
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            .shadow(1.dp, RoundedCornerShape(8.dp))
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -309,12 +316,6 @@ fun PreviewDawing() {
             onUndo = { },
             onRedo = { },
             setPencilMode = {},
-            modifier = Modifier
-                .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-                .shadow(1.dp, RoundedCornerShape(8.dp))
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(4.dp),
         )
     }
 }
