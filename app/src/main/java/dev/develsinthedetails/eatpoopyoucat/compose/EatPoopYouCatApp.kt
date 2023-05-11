@@ -1,27 +1,34 @@
 package dev.develsinthedetails.eatpoopyoucat.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,13 +36,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
+import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
-import java.util.UUID
-
+import kotlin.math.floor
 
 @Composable
 fun EatPoopYouCatApp(
@@ -43,7 +48,7 @@ fun EatPoopYouCatApp(
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            WelcomeScreen(
+            HomeScreen(
                 onNavigateToSentence = {
                     navController.navigate("sentence/${it}") {
                         popUpTo("home")
@@ -62,12 +67,14 @@ fun EatPoopYouCatApp(
         ) {
             SentenceScreen(
                 onNavigateToDraw = {
-                    navController.navigate("draw/${it}"){
+                    navController.navigate("draw/${it}") {
                         popUpTo("home")
                     }
                 },
-                onNavigateToHome = { navController.navigate("home"){
-                    popUpTo("home")}
+                onNavigateToHome = {
+                    navController.navigate("home") {
+                        popUpTo("home")
+                    }
                 })
         }
         composable(
@@ -76,17 +83,20 @@ fun EatPoopYouCatApp(
                 navArgument("EntryId") { type = NavType.StringType }
             )
         ) {
-            DrawScreen(onNavigateToSentence= {navController.navigate("sentence/${it}"){
+            DrawScreen(onNavigateToSentence = {
+                navController.navigate("sentence/${it}") {
                     popUpTo("home")
                 }
-            }, onNavigateToHome = { navController.navigate("home"){
-                popUpTo("home")}
+            }, onNavigateToHome = {
+                navController.navigate("home") {
+                    popUpTo("home")
+                }
             })
         }
         composable(
             "games",
         ) {
-            PreviousGamesScreen (
+            PreviousGamesScreen(
                 onGameClick = { navController.navigate("game/${it}") }
             )
         }
@@ -119,68 +129,70 @@ fun Spinner(
     }
 }
 
+@Preview
+@Composable
+fun PreviewSpinner() {
+    Spinner()
+}
 
 @Composable
-fun WelcomeScreen(
-    modifier: Modifier = Modifier,
-    viewModel: GreetingViewModel = hiltViewModel(),
-    onNavigateToSentence: (String) -> Unit,
-    onNavigateToPreviousGames: () -> Unit,
+fun Buttons(
+    onSubmit: () -> Unit,
+    onEnd: () -> Unit,
 ) {
-    EatPoopYouCatTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+    Row(
+        modifier = Modifier
+            .height(IntrinsicSize.Min)
+            .fillMaxWidth()
+            .padding(top = 15.dp)
+    ) {
+        Button(
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .weight(1f)
+                .wrapContentWidth(Alignment.Start),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+            onClick = onEnd
+        )
+        {
+            Text(stringResource(R.string.end_game_for_all))
+        }
+        Button(
+            modifier = Modifier
+                .padding(end = 4.dp)
+                .weight(1f)
+                .wrapContentWidth(Alignment.End)
+                .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
+            onClick = { onSubmit() }
         ) {
-            if (viewModel.isLoading)
-                Spinner()
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = stringResource(R.string.welcome_message),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                if (0 == 1) {
-                    OutlinedTextField(
-                        value = viewModel.userName,
-                        onValueChange = {
-                            viewModel.updateNickName(it)
-                        },
-                        modifier = modifier,
-                        enabled = true,
-                        readOnly = false,
-                        shape = RoundedCornerShape(8.dp),
+            Text(stringResource(R.string.submit))
+        }
 
-                        label = { Text(stringResource(R.string.nickname), modifier = modifier) },
-                    )
-                }
-                StartGame(onNavigateToSentence)
-                ViewPreviousGames(onNavigateToPreviousGames)
-            }
+        }
+}
+
+@Composable
+fun GetFill(): Modifier {
+
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    val fill = when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            val screenMax = floor(screenHeight * .8).dp
+            Modifier
+                .width(screenMax)
+                .height(screenMax)
+        }
+
+        else -> {
+            Modifier.fillMaxWidth()
         }
     }
+    return fill
 }
 
+@Preview
 @Composable
-fun ViewPreviousGames(navTo: () -> Unit) {
-    Button(onClick = {
-        navTo()
-    }) {
-        Text(stringResource(id = R.string.previous_games))
-    }
-}
-
-@Composable
-fun StartGame(
-    onNavigateToSentence: (String) -> Unit,
-    greetingViewModel: GreetingViewModel = hiltViewModel()
-) {
-    Button(onClick = {
-        val entryId = UUID.randomUUID()
-        greetingViewModel.saveNewGame(
-            entryId
-        ) { onNavigateToSentence(entryId.toString()) }
-    }) {
-        Text(stringResource(id = R.string.dialog_start_game))
-    }
+fun ButtonsPreview(){
+    Buttons(onSubmit = {}, onEnd = {})
 }
