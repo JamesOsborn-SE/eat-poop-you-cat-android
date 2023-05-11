@@ -33,7 +33,8 @@ import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
 fun SentenceScreen(
     modifier: Modifier = Modifier,
     viewModel: SentenceViewModel = hiltViewModel(),
-    onNavigateToDraw: (String) -> Unit
+    onNavigateToDraw: (String) -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     EatPoopYouCatTheme {
         val previousEntry by viewModel.previousEntry.observeAsState()
@@ -90,6 +91,16 @@ fun SentenceScreen(
                 Button(onClick = { go() }) {
                     Text(stringResource(R.string.accept))
                 }
+
+                Button(onClick = {
+                    if(isFirstTurn)
+                        viewModel.deleteGame()
+                    onNavigateToHome()
+                })
+                {
+                    Text(stringResource(R.string.end_game_for_all))
+                }
+
                 if (previousEntry?.sequence == 0)
                     LaunchedEffect(Unit) {
                         focusRequester.requestFocus()

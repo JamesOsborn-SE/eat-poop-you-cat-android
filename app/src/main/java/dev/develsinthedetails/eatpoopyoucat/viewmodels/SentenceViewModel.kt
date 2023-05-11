@@ -75,4 +75,10 @@ class SentenceViewModel @Inject constructor(
 
         }
     }
+
+    fun deleteGame() {
+        viewModelScope.launch {
+            previousEntry.value?.let { repository.deleteGame(it.gameId) }
+        }
+    }
 }

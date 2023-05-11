@@ -49,4 +49,5 @@
     <string name="write_sentence_error">Write a more better sentence!</string>
     <string name="drawing_error">make a more better picture.</string>
     <string name="turns">Turns</string>
+    <string name="end_game_for_all">End Game For All</string>
 </resources>

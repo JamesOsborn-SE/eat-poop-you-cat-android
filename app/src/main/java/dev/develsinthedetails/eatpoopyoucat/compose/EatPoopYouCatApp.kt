@@ -60,11 +60,15 @@ fun EatPoopYouCatApp(
                 navArgument("EntryId") { type = NavType.StringType }
             )
         ) {
-            SentenceScreen {
-                navController.navigate("draw/${it}"){
-                    popUpTo("home")
-                }
-            }
+            SentenceScreen(
+                onNavigateToDraw = {
+                    navController.navigate("draw/${it}"){
+                        popUpTo("home")
+                    }
+                },
+                onNavigateToHome = { navController.navigate("home"){
+                    popUpTo("home")}
+                })
         }
         composable(
             "draw/{EntryId}",
@@ -72,11 +76,12 @@ fun EatPoopYouCatApp(
                 navArgument("EntryId") { type = NavType.StringType }
             )
         ) {
-            DrawScreen {
-                navController.navigate("sentence/${it}"){
+            DrawScreen(onNavigateToSentence= {navController.navigate("sentence/${it}"){
                     popUpTo("home")
                 }
-            }
+            }, onNavigateToHome = { navController.navigate("home"){
+                popUpTo("home")}
+            })
         }
         composable(
             "games",

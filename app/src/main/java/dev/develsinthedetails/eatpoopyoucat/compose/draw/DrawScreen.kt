@@ -55,6 +55,7 @@ import kotlinx.serialization.json.Json
 fun DrawScreen(
     viewModel: DrawViewModel = hiltViewModel(),
     onNavigateToSentence: (String) -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     EatPoopYouCatTheme {
         Surface(
@@ -76,9 +77,13 @@ fun DrawScreen(
 
                 Button(onClick = {
                     viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
-
                 }) {
                     Text(stringResource(R.string.accept))
+                }
+
+                Button(onClick = { onNavigateToHome() })
+                {
+                    Text(stringResource(R.string.end_game_for_all))
                 }
             }
         }
