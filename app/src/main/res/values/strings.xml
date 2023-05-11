@@ -24,11 +24,11 @@
     <string name="background_title">"Allow app to communicate in the background "</string>
     <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
     <string name="background_summary_on">You will be able to send or receive games even if the app is closed</string>
-    <string name="describe_this_drawing">Describe this drawing</string>
+    <string name="write_a_sentence_to_describe_this_drawing">Describe this drawing</string>
     <string name="dialog_start_game">Start Game</string>
     <string name="start">Start</string>
     <string name="cancel">Cancel</string>
-    <string name="accept">Accept!</string>
+    <string name="submit">Submit!</string>
     <string name="dialog_accept_turn">Accept turn from %1$s!</string>
     <string name="created_by">Created By: %1$s</string>
     <string name="write_a_funny_sentence">Write a funny sentence</string>
@@ -48,6 +48,7 @@
     <string name="title_activity_sentence_screen">SentenceScreen</string>
     <string name="write_sentence_error">Write a more better sentence!</string>
     <string name="drawing_error">make a more better picture.</string>
-    <string name="turns">Turns</string>
+    <string name="turns">Turns: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
+    <string name="app_description">Is is a game of telephone where you alternate between sentecnse and drawings</string>
 </resources>
