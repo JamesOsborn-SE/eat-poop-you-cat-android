@@ -8,6 +8,8 @@
 
 [![Android Package](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml/badge.svg)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml)
 
+[![iOS status](https://img.shields.io/badge/iOS%20Build-Nope-informational?style=plastic&logo=apple)]()
+
 ## Premise
 
 Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a
