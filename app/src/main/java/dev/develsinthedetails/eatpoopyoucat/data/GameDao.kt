@@ -36,6 +36,10 @@ interface GameDao {
     suspend fun deleteAll()
 
     @Transaction
+    @Query("DELETE FROM Game WHERE id=:id")
+    suspend fun delete(id: UUID)
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Game>)
 

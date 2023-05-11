@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -37,14 +39,15 @@ fun PreviousGamesScreen(
     onGameClick: (String) -> Unit,
 ) {
     val games by viewModel.games.observeAsState(initial = emptyList())
-    PreviousGamesScreen(games = games, modifier, onGameClick = onGameClick)
+    PreviousGamesScreen(games = games, modifier, onClick = onGameClick, onLongClick = {viewModel.deleteGame(it)} )
 }
 
 @Composable
 fun PreviousGamesScreen(
     games: List<GameWithEntries>,
     modifier: Modifier = Modifier,
-    onGameClick: (String) -> Unit = {},
+    onClick: (String) -> Unit = {},
+    onLongClick: (String) -> Unit = {},
 ) {
     EatPoopYouCatTheme {
         // A surface container using the 'background' color from the theme
@@ -64,9 +67,9 @@ fun PreviousGamesScreen(
                     items = games,
                     key = { it.game.id }
                 ) { game ->
-                    GameListItem(game = game) {
-                        onGameClick(game.game.id.toString())
-                    }
+                    GameListItem(game = game,
+                        onClick = { onClick(game.game.id.toString()) },
+                        onLongClick = { onLongClick(game.game.id.toString()) })
                 }
             }
         }
@@ -74,7 +77,7 @@ fun PreviousGamesScreen(
 }
 
 @Composable
-fun GameListItem(game: GameWithEntries, onClick: () -> Unit) {
+fun GameListItem(game: GameWithEntries, onClick: () -> Unit, onLongClick: () -> Unit) {
     val firstSentence = game.entries
         .minBy { it.sequence }.sentence ?: String()
     val lastDrawing = game.entries
@@ -85,6 +88,7 @@ fun GameListItem(game: GameWithEntries, onClick: () -> Unit) {
         drawing = lastDrawing?.drawing,
         turns = game.entries.count(),
         onClick = onClick,
+        onLongClick = onLongClick
     )
 }
 
@@ -94,14 +98,22 @@ fun ListItem(
     sentence: String,
     drawing: ByteArray?,
     turns: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     Card(
-        onClick = onClick,
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.card_side_margin))
             .padding(bottom = dimensionResource(id = R.dimen.card_bottom_margin))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        onLongClick()
+                    },
+                    onTap = { onClick() }
+                )
+            }
     ) {
         Column(
             Modifier
@@ -128,7 +140,8 @@ fun ListItem(
             if (drawing != null) {
                 DrawBox(
                     drawingZippedJson = drawing,
-                    onClick = onClick
+                    onClick = onClick,
+                    onLongClick = onLongClick
                 )
             }
         }

@@ -81,9 +81,9 @@ fun EatPoopYouCatApp(
         composable(
             "games",
         ) {
-            PreviousGamesScreen {
-                navController.navigate("game/${it}")
-            }
+            PreviousGamesScreen (
+                onGameClick = { navController.navigate("game/${it}") }
+            )
         }
         composable(
             "game/{GameId}",

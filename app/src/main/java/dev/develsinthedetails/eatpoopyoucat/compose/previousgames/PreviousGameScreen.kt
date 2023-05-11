@@ -82,7 +82,7 @@ fun EntryListItem(entry: Entry) {
 
     if (drawing != null) {
         DrawBox(
-            drawingZippedJson = drawing,
+            drawingZippedJson = drawing
         )
 
     }

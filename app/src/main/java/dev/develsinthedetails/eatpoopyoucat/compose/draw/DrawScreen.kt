@@ -1,8 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -125,7 +126,7 @@ fun Draw(
         DrawBox(
             drawingLines = linesState.value,
             currentLine = currentLineState.value,
-            currentProperties = currentPropertiesState.value
+            currentProperties = currentPropertiesState.value,
         )
 
         Box(
@@ -183,6 +184,7 @@ fun Draw(
         })
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DrawBox(
     drawingZippedJson: ByteArray = byteArrayOf(),
@@ -190,6 +192,7 @@ fun DrawBox(
     currentLine: List<LineSegment> = listOf(),
     currentProperties: LineProperties = LineProperties(),
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {},
 ) {
     val lines: MutableList<Line> = if (drawingLines.isNotEmpty())
         drawingLines.toMutableList()
@@ -209,7 +212,11 @@ fun DrawBox(
             .padding(all = 8.dp)
             .background(color = Color.White)
             .fillMaxWidth()
-            .clickable { onClick.invoke() }
+            .combinedClickable (
+                onLongClick = {onLongClick.invoke()},
+                onClick = {onClick.invoke()}
+
+            )
             .onPlaced {
                 height = it.size.height
                 width = it.size.width
