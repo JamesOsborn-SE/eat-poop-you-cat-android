@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.compose.Buttons
+import dev.develsinthedetails.eatpoopyoucat.compose.GetFill
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.data.Line
@@ -57,9 +60,12 @@ fun DrawScreen(
     onNavigateToSentence: (String) -> Unit,
     onNavigateToHome: () -> Unit
 ) {
+    val fill = GetFill()
     EatPoopYouCatTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
             if (viewModel.isLoading)
@@ -69,22 +75,14 @@ fun DrawScreen(
                 previousEntry?.sentence?.let {
                     Sentence(it)
                 }
-                Draw()
+                Draw(modifier = fill)
 
                 if (viewModel.isError) {
                     Text(text = stringResource(id = R.string.drawing_error), color = Color.Red)
                 }
-
-                Button(onClick = {
+                Buttons(onSubmit = {
                     viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
-                }) {
-                    Text(stringResource(R.string.accept))
-                }
-
-                Button(onClick = { onNavigateToHome() })
-                {
-                    Text(stringResource(R.string.end_game_for_all))
-                }
+                }, onEnd = { onNavigateToHome() })
             }
         }
     }
@@ -101,11 +99,11 @@ fun Sentence(it: String) {
 
 @Composable
 fun Draw(
+    modifier: Modifier = Modifier,
     drawViewModel: DrawViewModel = hiltViewModel(),
     isReadOnly: Boolean = false,
     drawingLines: ArrayList<Line> = ArrayList(),
 ) {
-
     drawViewModel.isReadOnly(isReadOnly)
 
     if (drawingLines.isNotEmpty()) {
@@ -121,10 +119,9 @@ fun Draw(
 
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(1f)
             .padding(all = 8.dp)
-            .fillMaxWidth()
     ) {
 
 
@@ -132,13 +129,13 @@ fun Draw(
             drawingLines = linesState.value,
             currentLine = currentLineState.value,
             currentProperties = currentPropertiesState.value,
+            modifier = modifier
         )
 
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .aspectRatio(1f)
                 .padding(all = 8.dp)
-                .fillMaxWidth()
                 .onPlaced {
                     drawViewModel.setCanvasResolution(it.size.height, it.size.width)
                 }
@@ -192,6 +189,7 @@ fun Draw(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DrawBox(
+    modifier: Modifier = Modifier,
     drawingZippedJson: ByteArray = byteArrayOf(),
     drawingLines: List<Line> = listOf(),
     currentLine: List<LineSegment> = listOf(),
@@ -212,14 +210,13 @@ fun DrawBox(
     var height = 0
     var width = 0
     Canvas(
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(1f)
             .padding(all = 8.dp)
             .background(color = Color.White)
-            .fillMaxWidth()
-            .combinedClickable (
-                onLongClick = {onLongClick.invoke()},
-                onClick = {onClick.invoke()}
+            .combinedClickable(
+                onLongClick = { onLongClick.invoke() },
+                onClick = { onClick.invoke() }
 
             )
             .onPlaced {
@@ -329,6 +326,7 @@ fun PreviewDawing() {
             onRedo = { },
             setPencilMode = {},
         )
+        Buttons(onSubmit = {}, onEnd = {})
     }
 }
 
@@ -341,5 +339,14 @@ fun PreviewDawingWithSentance() {
     Column {
         Sentence(it = "a cat winks at you")
         DrawBox(drawingLines = lines)
+        DrawingPropertiesMenu(
+            undoCount = 5,
+            redoCount = 0,
+            drawMode = DrawMode.Draw,
+            onUndo = { },
+            onRedo = { },
+            setPencilMode = {},
+        )
+        Buttons(onSubmit = {}, onEnd = {})
     }
 }
