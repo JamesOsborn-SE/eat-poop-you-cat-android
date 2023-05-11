@@ -20,7 +20,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
+import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
@@ -81,7 +81,7 @@ fun EntryListItem(entry: Entry) {
     }
 
     if (drawing != null) {
-        DrawReadOnly(
+        DrawBox(
             drawingZippedJson = drawing,
         )
 

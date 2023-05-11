@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawReadOnly
+import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
 
@@ -57,7 +57,7 @@ fun SentenceScreen(
             Column {
 
                 previousEntry?.drawing?.let {
-                    DrawReadOnly(drawingZippedJson = it)
+                    DrawBox(drawingZippedJson = it)
                 }
 
                 if (viewModel.isError) {

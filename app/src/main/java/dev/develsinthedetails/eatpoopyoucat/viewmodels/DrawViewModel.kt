@@ -6,8 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidPath
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
@@ -52,7 +50,8 @@ class DrawViewModel @Inject constructor(
 
     private var currentResolution: Resolution = Resolution(0, 0)
 
-    private var lineProperties by mutableStateOf(LineProperties())
+    private var lineProperties = MutableStateFlow(LineProperties())
+    val lineProps = lineProperties.asLiveData()
 
     private val playerId = SharedPref.playerId()
     var isError: Boolean by mutableStateOf(false)
@@ -65,10 +64,12 @@ class DrawViewModel @Inject constructor(
 
     val entryId = UUID.randomUUID().toString()
 
-    private var drawingLines = MutableStateFlow(listOf<Line>())
+    var drawingLines = MutableStateFlow(listOf<Line>())
+        private set
     private var undoneLines = MutableStateFlow(listOf<Line>())
 
-    private var lineSegments: MutableList<LineSegment> = mutableListOf()
+    private var lineSegments: MutableStateFlow<List<LineSegment>> = MutableStateFlow(listOf<LineSegment>())
+    val lineSeg = lineSegments.asLiveData()
     private var isReadOnly: Boolean = false
     private var justCleared: Boolean = false
 
@@ -117,11 +118,11 @@ class DrawViewModel @Inject constructor(
 
     fun touchStart(inputChange: PointerInputChange) {
         undoneLines.value = listOf()
-        lineSegments.clear()
+        lineSegments.value = listOf()
 
         currentX = inputChange.position.x
         currentY = inputChange.position.y
-        lineSegments.add(LineSegment(Coordinates(currentX, currentY), Coordinates(currentX, currentY)))
+        lineSegments.value += (LineSegment(Coordinates(currentX, currentY), Coordinates(currentX, currentY)))
         inputChange.consume()
     }
 
@@ -130,7 +131,7 @@ class DrawViewModel @Inject constructor(
         currentY = normalizeLocationY(currentY)
         val motionTouchEventX = normalizeLocationX(inputChange.position.x)
         val motionTouchEventY = normalizeLocationY(inputChange.position.y)
-        lineSegments.add(
+        lineSegments.value += (
             LineSegment(
                 Coordinates(currentX, currentY),
                 Coordinates(motionTouchEventX, motionTouchEventY)
@@ -142,7 +143,7 @@ class DrawViewModel @Inject constructor(
     }
 
     private fun normalizeLocation(x: Float, canvasSize: Int): Float {
-        return max(0f+lineProperties.strokeWidth/2, min(canvasSize.toFloat()-lineProperties.strokeWidth/2, x))
+        return max(0f+lineProperties.value.strokeWidth/2, min(canvasSize.toFloat()-lineProperties.value.strokeWidth/2, x))
     }
     private fun normalizeLocationX(x: Float): Float {
         return normalizeLocation(x, currentResolution.height)
@@ -155,31 +156,18 @@ class DrawViewModel @Inject constructor(
         currentY = normalizeLocationY(currentY)
         val motionTouchEventX = normalizeLocationX(inputChange.position.x)
         val motionTouchEventY = normalizeLocationY(inputChange.position.y)
-        lineSegments.add(
+        lineSegments.value +=(
             LineSegment(
                 Coordinates(currentX, currentY),
                 Coordinates(motionTouchEventX, motionTouchEventY)
             )
         )
-        val daLineSegment = lineSegments.toList()
-        val daLineProperties =  lineProperties.copy()
+        val daLineSegment = lineSegments.value.toList()
+        val daLineProperties =  lineProperties.value.copy()
         drawingLines.value += Line(daLineSegment, daLineProperties, Resolution(height = currentResolution.height, width = currentResolution.width))
-        lineSegments.clear()
+        lineSegments.value = listOf()
         undoneLines.value = listOf()
         inputChange.consume()
-    }
-
-    fun doDraw(
-        drawScope: DrawScope,
-        hasChanged: Boolean,
-    ) {
-        Companion.doDraw(
-            drawingLines = drawingLines.value.toMutableList(),
-            drawScope = drawScope,
-            currentLine = Line(lineSegments, lineProperties, currentResolution),
-            hasChanged = hasChanged,
-            currentResolution = Resolution(height = currentResolution.height, width = currentResolution.width)
-        )
     }
 
     fun undo() = moveLastToOtherList(fromList = drawingLines, toList = undoneLines)
@@ -210,42 +198,16 @@ class DrawViewModel @Inject constructor(
     }
 
     fun setPencileMode(mode: DrawMode) {
-        lineProperties.eraseMode = mode == DrawMode.Erase
+        lineProperties.value.eraseMode = mode == DrawMode.Erase
         drawMode = mode
         if(mode == DrawMode.Erase)
-            lineProperties.strokeWidth = 48f
+            lineProperties.value.strokeWidth = 48f
         else
-            lineProperties.strokeWidth = 12f
+            lineProperties.value.strokeWidth = 12f
     }
 
     companion object {
-        fun doDraw(
-            drawingLines: List<Line>,
-            drawScope: DrawScope,
-            currentLine: Line?,
-            hasChanged: Boolean,
-            currentResolution: Resolution
-        ) {
-            val lines = mutableListOf<Line>()
-            lines.addAll(drawingLines)
-            if (hasChanged && currentLine != null)
-                lines.add(currentLine)
-
-            lines.forEach {
-                val path = it.toPath()
-                val scaledPath = scalePath(path, currentResolution, it.resolution)
-                drawScope.drawPath(
-                    color = it.properties.drawColor(),
-                    path = scaledPath,
-                    style = Stroke(
-                        width = scaleStroke(currentResolution, it.resolution, it.properties.strokeWidth)
-                    ),
-                    blendMode = it.properties.blendMode()
-                )
-            }
-        }
-
-        private fun scalePath(
+        fun scalePath(
             it: Path,
             currentResolution: Resolution,
             originalResolution: Resolution?
@@ -262,7 +224,7 @@ class DrawViewModel @Inject constructor(
             return newPath
         }
 
-        private fun scaleStroke(
+        fun scaleStroke(
             currentResolution: Resolution,
             originalResolution: Resolution?,
             strokeWidth: Float = 12f
