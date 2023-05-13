@@ -69,6 +69,8 @@ android {
 }
 
 dependencies {
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation(platform("androidx.compose:compose-bom:2023.04.01"))
     implementation("androidx.databinding:databinding-adapters:8.0.1")
     implementation("androidx.compose.material:material:1.4.3")
@@ -78,6 +80,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
     implementation("androidx.activity:activity-compose:1.7.1")
     implementation("androidx.compose.ui:ui:1.4.3")
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
@@ -88,14 +91,15 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.04.01"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.04.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     val roomVersion = "2.5.1"
-
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
@@ -114,9 +118,26 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
+    val hiltVersion = "2.45"
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.google.dagger:hilt-android:2.45")
-    kapt("com.google.dagger:hilt-compiler:2.45")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+
+    // For Robolectric tests.
+    testImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    // ...with Kotlin.
+    kaptTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    // ...with Java.
+    testAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
+
+    // For instrumented tests.
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    // ...with Kotlin.
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    // ...with Java.
+    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }

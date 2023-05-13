@@ -8,14 +8,15 @@ import java.util.UUID
 
 object SharedPref {
     private var mSharedPref: SharedPreferences? = null
-    private const val PLAYER_ID = "PLAYER_ID"
+    const val PLAYER_ID = "PLAYER_ID"
     fun init(context: Context) {
         if (mSharedPref == null) mSharedPref =
             context.getSharedPreferences(context.packageName, Activity.MODE_PRIVATE)
     }
+
     fun playerId(): UUID {
         var result: String? = read(PLAYER_ID, null)
-        if(result == null){
+        if (result == null) {
             result = UUID.randomUUID().toString()
             write(PLAYER_ID, result)
         }
@@ -26,7 +27,7 @@ object SharedPref {
         return mSharedPref!!.getString(key, defValue)
     }
 
-    private fun write(key: String, value: String?) {
+    fun write(key: String, value: String?) {
         val prefsEditor = mSharedPref!!.edit()
         prefsEditor.putString(key, value)
         prefsEditor.apply()
