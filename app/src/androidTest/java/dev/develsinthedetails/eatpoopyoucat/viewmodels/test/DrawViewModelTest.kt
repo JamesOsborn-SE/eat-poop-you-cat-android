@@ -9,13 +9,19 @@ import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
+import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
+import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,5 +77,20 @@ class DrawViewModelTest {
         runBlocking {
             assert(testEntries[0].id == getValue(viewModel.previousEntry).id)
         }
+    }
+    @Test
+    fun drawing_is_too_simple() = runTest{
+        val intSharedFlow = MutableStateFlow(listOf<Line>())
+
+        val simpleDrawingLines = Json.decodeFromString<List<Line>>(testSimpleDrawingJson)
+        viewModel.setCanvasResolution(1920, 1080)
+        intSharedFlow.value = simpleDrawingLines
+        val field = DrawViewModel::class.java.getDeclaredField("drawingLines")
+        field.isAccessible = true
+        field.set(viewModel, intSharedFlow)
+
+        viewModel.checkDrawing {}
+
+        assert(viewModel.isError)
     }
 }

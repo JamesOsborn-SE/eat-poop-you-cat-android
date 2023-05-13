@@ -26,6 +26,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -60,7 +61,8 @@ class DrawViewModel @Inject constructor(
         private set
 
     private val previousEntryId: String = checkNotNull(state.get<String>("EntryId"))
-    val previousEntry: LiveData<Entry> = repository.getEntry(previousEntryId).asLiveData()
+    private val prevEnt = repository.getEntry(previousEntryId)
+    val previousEntry: LiveData<Entry> = prevEnt.asLiveData()
 
     val entryId = UUID.randomUUID().toString()
 
@@ -106,14 +108,14 @@ class DrawViewModel @Inject constructor(
             return
         }
         isLoading = true
-        val newEntry: Entry = previousEntry.value!!.copy(
-            id = UUID.fromString(entryId),
-            sentence = null,
-            drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
-            sequence = previousEntry.value!!.sequence.inc(),
-            playerId = playerId
-        )
         viewModelScope.launch {
+            val newEntry: Entry = prevEnt.last().copy(
+                id = UUID.fromString(entryId),
+                sentence = null,
+                drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
+                sequence = previousEntry.value!!.sequence.inc(),
+                playerId = playerId
+            )
             repository.createEntry(newEntry)
             onNavigateToSentence.invoke()
             isLoading = false
