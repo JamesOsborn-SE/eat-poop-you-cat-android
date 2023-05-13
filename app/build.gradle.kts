@@ -28,8 +28,8 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "0.1"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -93,6 +93,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    androidTestImplementation("org.mockito:mockito-android:5.3.1")
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.04.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
