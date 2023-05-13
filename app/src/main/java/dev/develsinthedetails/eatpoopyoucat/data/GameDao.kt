@@ -20,20 +20,8 @@ interface GameDao {
     fun getWithEntries(id: UUID): Flow<GameWithEntries>
 
     @Transaction
-    @Query("SELECT * FROM game WHERE id=:id")
-    fun get(id: UUID): Game
-
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(game: Game)
-
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertWait(game: Game)
-
-    @Transaction
-    @Query("DELETE FROM Game")
-    suspend fun deleteAll()
 
     @Transaction
     @Query("DELETE FROM Game WHERE id=:id")

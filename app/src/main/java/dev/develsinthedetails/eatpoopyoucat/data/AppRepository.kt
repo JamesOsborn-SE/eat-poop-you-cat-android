@@ -14,24 +14,15 @@ class AppRepository @Inject constructor(
     suspend fun createPlayer(player: Player) = playerDao.insert(player)
     suspend fun updatePlayer(player: Player) = playerDao.update(player)
     fun getPlayer(id: UUID): Flow<Player?> = playerDao.get(id)
-    fun getPlayer(id: String): Flow<Player?> = playerDao.get(UUID.fromString(id))
 
     suspend fun createGame(game: Game) = gameDao.insert(game)
     suspend fun deleteGame(id: String)  = gameDao.delete(UUID.fromString(id))
     suspend fun deleteGame(id: UUID)  = gameDao.delete(id)
-    fun getGame(id: UUID) = gameDao.get(id)
-    fun getGame(id: String) = gameDao.get(UUID.fromString(id))
-    fun getAllGames() = gameDao.getAll()
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
     fun getGameWithEntries(id: String) = gameDao.getWithEntries(UUID.fromString(id))
-    fun getGameWithEntries(id: UUID) = gameDao.getWithEntries(id)
 
 
     suspend fun createEntry(entry: Entry) = entryDao.insert(entry)
-    fun getEntry(id: UUID): Flow<Entry> = entryDao.get(id)
     fun getEntry(id: String) = entryDao.get(UUID.fromString(id))
-    suspend fun getAllEntries(): List<Entry> = entryDao.getAll()
-    fun getAllEntriesByGame(id: UUID)= entryDao.getAllEntriesByGame(id)
-    fun getAllEntriesByGame(id: String)= entryDao.getAllEntriesByGame(UUID.fromString(id))
     suspend fun updateEntry(entry: Entry) = entryDao.update(entry)
 }
