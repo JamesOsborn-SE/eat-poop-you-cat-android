@@ -47,7 +47,7 @@
     <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
     <string name="title_activity_sentence_screen">SentenceScreen</string>
     <string name="write_sentence_error">Write a more better sentence!</string>
-    <string name="drawing_error">make a more better picture.</string>
+    <string name="drawing_error">make a more better drawing.</string>
     <string name="turns">Turns: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
     <string name="app_description">Is is a game of telephone where you alternate between sentecnse and drawings</string>

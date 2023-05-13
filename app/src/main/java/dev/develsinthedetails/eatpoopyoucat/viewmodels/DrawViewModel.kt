@@ -99,8 +99,12 @@ class DrawViewModel @Inject constructor(
     }
 
     fun checkDrawing(onNavigateToSentence: () -> Unit) {
-        if (currentResolution.height == 0 || currentResolution.width == 0)
-            isError
+        if (drawingLines.value.count() < 3
+            || currentResolution.height == 0
+            || currentResolution.width == 0){
+            isError = true
+            return
+        }
         isLoading = true
         val newEntry: Entry = previousEntry.value!!.copy(
             id = UUID.fromString(entryId),
@@ -117,6 +121,7 @@ class DrawViewModel @Inject constructor(
     }
 
     fun touchStart(inputChange: PointerInputChange) {
+        isError = false
         undoneLines.value = listOf()
         lineSegments.value = listOf()
 
