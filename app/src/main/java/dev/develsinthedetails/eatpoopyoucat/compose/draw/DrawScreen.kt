@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onPlaced
@@ -104,7 +105,8 @@ fun Sentence(it: String) {
             text = stringResource(R.string.draw_this_sentence),
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
-        Text(modifier = Modifier.padding(8.dp),
+        Text(
+            modifier = Modifier.padding(8.dp),
             text = it,
             color = MaterialTheme.colorScheme.onTertiaryContainer,
             fontSize = 24.sp
@@ -248,21 +250,36 @@ fun DrawBox(
         lines.forEach {
             val path = it.toPath()
             val scaledPath = DrawViewModel.scalePath(path, currentResolution, it.resolution)
-            drawPath(
-                color = it.properties.drawColor(),
-                path = scaledPath,
-                style = Stroke(
-                    width = DrawViewModel.scaleStroke(
-                        currentResolution,
-                        it.resolution,
-                        it.properties.strokeWidth
-                    )
-                ),
-                blendMode = it.properties.blendMode()
+            val scaledStroke = DrawViewModel.scaleStroke(
+                currentResolution,
+                it.resolution,
+                it.properties.strokeWidth
             )
+            val isSinglePoint = it.lineSegments.count() == 2
+                    && it.lineSegments[0] == it.lineSegments[1]
+
+            if (isSinglePoint) {
+                val bounds = scaledPath.getBounds()
+                drawCircle(
+                    color = it.properties.drawColor(),
+                    radius = scaledStroke / 4,
+                    center = Offset(bounds.left, bounds.top),
+                    style = Stroke(
+                        width = scaledStroke / 2
+                    ),
+                    blendMode = it.properties.blendMode()
+                )
+            } else
+                drawPath(
+                    color = it.properties.drawColor(),
+                    path = scaledPath,
+                    style = Stroke(
+                        width = scaledStroke
+                    ),
+                    blendMode = it.properties.blendMode()
+                )
         }
     }
-
 }
 
 @Composable

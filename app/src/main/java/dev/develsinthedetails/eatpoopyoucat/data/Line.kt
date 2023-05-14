@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Line(
-    private val lineSegments: List<LineSegment>,
+    val lineSegments: List<LineSegment>,
     val properties: LineProperties = LineProperties(),
     val resolution: Resolution = Resolution(0,0),
 ) {
