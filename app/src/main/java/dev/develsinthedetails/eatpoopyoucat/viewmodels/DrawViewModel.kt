@@ -26,7 +26,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -109,7 +108,7 @@ class DrawViewModel @Inject constructor(
         }
         isLoading = true
         viewModelScope.launch {
-            val newEntry: Entry = prevEnt.last().copy(
+            val newEntry: Entry = previousEntry.value!!.copy(
                 id = UUID.fromString(entryId),
                 sentence = null,
                 drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),

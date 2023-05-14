@@ -70,8 +70,8 @@ fun EatPoopYouCatApp(
                         popUpTo("home")
                     }
                 },
-                onNavigateToHome = {
-                    navController.navigate("home") {
+                onNavigateToEndedGame = {
+                    navController.navigate("game/${it}") {
                         popUpTo("home")
                     }
                 })
@@ -86,8 +86,8 @@ fun EatPoopYouCatApp(
                 navController.navigate("sentence/${it}") {
                     popUpTo("home")
                 }
-            }, onNavigateToHome = {
-                navController.navigate("home") {
+            }, onNavigateToEndedGame = {
+                navController.navigate("game/${it}") {
                     popUpTo("home")
                 }
             })

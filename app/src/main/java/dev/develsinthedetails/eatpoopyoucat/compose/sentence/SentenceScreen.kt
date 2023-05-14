@@ -41,7 +41,7 @@ fun SentenceScreen(
     modifier: Modifier = Modifier,
     viewModel: SentenceViewModel = hiltViewModel(),
     onNavigateToDraw: (String) -> Unit,
-    onNavigateToHome: () -> Unit
+    onNavigateToEndedGame: (String) -> Unit
 ) {
     val previousEntry by viewModel.previousEntry.observeAsState()
     val isFirstTurn = previousEntry?.sequence == 0
@@ -62,7 +62,7 @@ fun SentenceScreen(
         sentence = viewModel.sentence,
         sentencePromt = sentencePromt,
         drawing = previousEntry?.drawing,
-        onNavigateToHome = onNavigateToHome,
+        onNavigateToEndedGame = { onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString()) },
         onSentenceChange = { viewModel.updateSentence(it) },
         onDeleteGame = { viewModel.deleteGame() },
         onSubmit = { submit() }
@@ -78,7 +78,7 @@ fun SentenceScreen(
     sentence: String = String(),
     sentencePromt: String,
     drawing: ByteArray? = null,
-    onNavigateToHome: () -> Unit,
+    onNavigateToEndedGame: () -> Unit,
     onSentenceChange: (String) -> Unit,
     onDeleteGame: () -> Unit,
     onSubmit: () -> Unit,
@@ -144,7 +144,7 @@ fun SentenceScreen(
                         onEnd = {
                             if (isFirstTurn)
                                 onDeleteGame()
-                            onNavigateToHome()
+                            onNavigateToEndedGame()
                         })
                     if (isFirstTurn)
                         LaunchedEffect(Unit) {
@@ -163,7 +163,7 @@ fun SentenceScreenPreview() {
         sentence = stringResource(id = R.string.app_name),
         sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
         drawing = null,
-        onNavigateToHome = {},
+        onNavigateToEndedGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
         onSubmit = {},
@@ -180,7 +180,7 @@ fun SentenceScreenWithDrawingPreview() {
     SentenceScreen(
         sentencePromt = stringResource(id = R.string.write_a_sentence_to_describe_this_drawing),
         drawing = Gzip.compress(lines),
-        onNavigateToHome = {},
+        onNavigateToEndedGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
         onSubmit = {},
