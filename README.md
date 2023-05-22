@@ -36,7 +36,7 @@ You start with a sentence pass it to the next person and it they draw a picture.
 
 ### Permissions
 
-**No** permissions needed at the moment
+* **No** permissions needed at the moment
 
 ### Tech used
 
