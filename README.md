@@ -23,7 +23,7 @@ everyone has had a turn or boredom takes hold.
 ## Screenshots
 |  |  |  |  |
 |--|--|--|--|
-| ![Welcome](/images/Screenshot-Welcome_Screen.png) | ![First turn](/images/Screenshot-Sentence_Screen.png) | ![Second turn](/images/Screenshot-Draw_Screen.png) | ![Third turn](images/Screenshot-Draw_the_sentence.png) |
+| ![Welcome](/images/Screenshot-Welcome_Screen.png) | ![First turn](/images/Screenshot-Sentence_Screen.png) | ![Second turn](images/Screenshot-Draw_the_sentence.png) | ![Third turn](/images/Screenshot-Draw_Screen.png) |
 |  |  |  |  |
 
 ### Info Needed from user
