@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-//            Spinner()
             EatPoopYouCatApp()
         }
 
@@ -26,8 +25,6 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         PermissionsUtility.requestPermissions(this)
-        PermissionsUtility.requestBackGroundPermission(this)
     }
-
 }
 

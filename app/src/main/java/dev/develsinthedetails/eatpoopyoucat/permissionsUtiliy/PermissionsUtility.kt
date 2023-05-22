@@ -59,6 +59,8 @@ class PermissionsUtility {
         }
 
         fun requestPermissions(activity: Activity) {
+            //TODO use this when features added
+            return
             if (!hasPermissions(activity, requiredPermissions)) {
                 activity.requestPermissions(requiredPermissions, requestCodeRequiredPermissions)
             }
@@ -66,6 +68,8 @@ class PermissionsUtility {
 
         /** Can't ask for ACCESS_BACKGROUND_LOCATION at the same time as location permissions  **/
         fun requestBackGroundPermission(activity: Activity) {
+            //TODO use this when features added
+            return
             if (!hasPermissions(activity, arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)))
                 if (Build.VERSION.SDK_INT >= VERSION_CODES.Q) {
                     activity.requestPermissions(

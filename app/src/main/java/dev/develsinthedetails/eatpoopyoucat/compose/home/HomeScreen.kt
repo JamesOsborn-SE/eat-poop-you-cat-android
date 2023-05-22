@@ -1,5 +1,8 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.home
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
@@ -15,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
+import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
 import java.util.UUID
@@ -46,7 +51,14 @@ fun HomeScreen(
         onNavigateToPreviousGames = onNavigateToPreviousGames,
     )
 }
-
+internal fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    throw IllegalStateException("Permissions should be called in the context of an Activity")
+}
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -56,6 +68,9 @@ fun HomeScreen(
     onStartGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val activity = context.findActivity()
+    PermissionsUtility.requestBackGroundPermission(activity)
     val padding = 20.dp
     EatPoopYouCatTheme {
         // A surface container using the 'background' color from the theme
