@@ -14,11 +14,9 @@
 
 ## Premise
 
-Eat Poop You Cat is a bit like telephone meets Pictionary:tm: where you start with a
-sentence pass it to the next person and it they draw a picture.
-Then they pass it to the next person and they can only see the last entry
-(picture in this case) and they write a sentence. It goes on until
-everyone has had a turn or boredom takes hold.
+Eat Poop You Cat is a bit like telephone meets that one game where you try to get folks to guess the drawing.
+
+You start with a sentence pass it to the next person and it they draw a picture. Then they pass it to the next person and they can only see the last entry (picture in this case) and they write a sentence. It goes on until everyone has had a turn or boredom takes hold.
 
 ## Screenshots
 |  |  |  |  |
@@ -132,7 +130,3 @@ graph TD
     SP --> SRUL[Send and recieve update loop]
     SRUL --> SRUL
 ```
-
-## Disclaimer
-
-This app is not by endorsed or related to Pictionary:tm: or Mattel in anyway.
