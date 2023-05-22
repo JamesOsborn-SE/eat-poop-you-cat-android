@@ -21,11 +21,10 @@ Then they pass it to the next person and they can only see the last entry
 everyone has had a turn or boredom takes hold.
 
 ## Screenshots
-
-[![Welcome](/images/Screenshot-Welcome_Screen-300.png)](/images/Screenshot-Welcome_Screen.png)
-[![First turn](/images/Screenshot-Sentence_Screen-300.png)](/images/Screenshot-Sentence_Screen.png)
-[![Second turn](/images/Screenshot-Draw_Screen-300.png)](/images/Screenshot-Draw_Screen.png)
-[![Third turn](images/Screenshot-Draw_the_sentence-300.png)](images/Screenshot-Draw_the_sentence.png)
+|  |  |  |  |
+|--|--|--|--|
+| ![Welcome](/images/Screenshot-Welcome_Screen.png) | ![First turn](/images/Screenshot-Sentence_Screen.png) | ![Second turn](/images/Screenshot-Draw_Screen.png) | ![Third turn](images/Screenshot-Draw_the_sentence.png) |
+|  |  |  |  |
 
 ### Info Needed from user
 
