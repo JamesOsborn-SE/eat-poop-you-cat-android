@@ -19,6 +19,7 @@ Eat Poop You Cat is a bit like telephone meets that one game where you try to ge
 You start with a sentence pass it to the next person and it they draw a picture. Then they pass it to the next person and they can only see the last entry (picture in this case) and they write a sentence. It goes on until everyone has had a turn or boredom takes hold.
 
 ## Screenshots
+
 |  |  |  |  |
 |--|--|--|--|
 | ![Welcome](/images/Screenshot-Welcome_Screen.png) | ![First turn](/images/Screenshot-Sentence_Screen.png) | ![Second turn](images/Screenshot-Draw_the_sentence.png) | ![Third turn](/images/Screenshot-Draw_Screen.png) |
@@ -32,31 +33,13 @@ You start with a sentence pass it to the next person and it they draw a picture.
 
 * Each person can only play once per Unique game
 * only Monochrome drawings
-* ~~Time Limit~~
-* ~~Turn limit~~
 
-### Permissions ~~needed~~
+### Permissions
 
-**No** permissions needed at the moment but future plans include:
-
-```none
-android.permission.BLUETOOTH
-android.permission.BLUETOOTH_ADMIN
-android.permission.ACCESS_WIFI_STATE
-android.permission.CHANGE_WIFI_STATE
-android.permission.ACCESS_COARSE_LOCATION
-android.permission.ACCESS_FINE_LOCATION
-android.permission.ACCESS_BACKGROUND_LOCATION
-android.permission.BLUETOOTH_SCAN neverForLocation
-android.permission.BLUETOOTH_ADVERTISE
-android.permission.BLUETOOTH_CONNECT
-```
-
-* these are needed to connect using Nearby Connections and will not be used for anything else. No data sent by the core app
+**No** permissions needed at the moment
 
 ### Tech used
 
-* ~~[nearby connections](https://developers.google.com/nearby/connections/overview) to send and receive data~~
 * [ORM - Room](https://developer.android.com/training/data-storage/room/)
 * [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
 
@@ -74,13 +57,7 @@ classDiagram
     
     class Game {
         +UUID Id
-        +int? Timeout in seconds [not implemented]
-        +int? Turns [not implemented]
         +Entry[] Entries
-        .getLastEntry() [not implemented]
-        .getTimeLeft() [not implemented]
-        .isOver() [not implemented]
-        .hasPlayed(playerId) [not implemented]
     }
     
     class Player{
@@ -93,40 +70,5 @@ classDiagram
         +String? Sentence
         +ByteArray? Drawing [gzip Json object]
         +Player Player
-        +int? SecondsPassed [not implemented]
-        .isValid() [not implemented]
     }
-```
-
-### Sequence [not implemented]
-
-```mermaid
-sequenceDiagram
-    autonumber
-    Player1->>Player1: Starts new game<br/>writes sentence
-    Player1->>Player2: Wanna play?
-    Player2->>Player1: Can I play?<br/>check for Player Id in current game
-    Player2-->>Player1: Yes, here is payload
-    Player1->>Player2: Is there an update for Games?
-    loop hasUpdate?
-        Player2->>Player2: check for Player Id in current games
-    end
-    Player2->>Player1: here is update payload
-```
-
-### Flow [not implemented]
-
-```mermaid
-graph TD
-    p[Player] --> TT(Take turn draw / write)
-    TT --> LFNP(Look for next player)
-    LFNP --> FP{Found Player?}
-    FP -->|No| LFNP
-    FP -->|Yes| HPG{Has played in this game?}
-    HPG -->|No| WTP{Want to play?}
-    WTP -->|No| LFNP
-    WTP -->|Yes| SP(Send Payload)
-    HPG -->|Yes| LFNP
-    SP --> SRUL[Send and recieve update loop]
-    SRUL --> SRUL
 ```
