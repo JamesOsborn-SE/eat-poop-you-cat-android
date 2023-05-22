@@ -135,4 +135,4 @@ graph TD
 
 ## Disclaimer
 
-This app is not by indorsed or related to Pictionary:tm: or Mattel in anyway.
+This app is not by endorsed or related to Pictionary:tm: or Mattel in anyway.
