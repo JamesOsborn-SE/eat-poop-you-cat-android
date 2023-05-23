@@ -2,15 +2,15 @@
 
 ## Status
 
-[![maturity beta/wip](https://img.shields.io/badge/maturity-Beta/work%20In%20Progress-red)]()
-
+[![build status](https://img.shields.io/github/actions/workflow/status/JamesOsborn-SE/eat-poop-you-cat-android/android.yml)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android.yml)
+[![deployment status](https://img.shields.io/github/actions/workflow/status/JamesOsborn-SE/eat-poop-you-cat-android/android-package.yml)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml)
+[![current release](https://img.shields.io/github/v/release/JamesOsborn-SE/eat-poop-you-cat-android?include_prereleases)]()
+[![fdroid release](https://img.shields.io/f-droid/v/dev.develsinthedetails.eatpoopyoucat.svg?logo=F-Droid)](https://f-droid.org/en/packages/dev.develsinthedetails.eatpoopyoucat/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/819f04beefcf4d58b9e4248c4f6d643f)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JamesOsborn-SE/eat-poop-you-cat-android&amp;utm_campaign=Badge_Grade)
-
 [![Android Build](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android.yml/badge.svg)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android.yml)
-
 [![Android Package](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml/badge.svg)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml)
-
-[![iOS status](https://img.shields.io/badge/iOS%20Build-Nope-informational?style=plastic&logo=apple)]()
+[![open issues](https://img.shields.io/github/issues/JamesOsborn-SE/eat-poop-you-cat-android)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues)
+[![licence](https://img.shields.io/github/license/JamesOsborn-SE/eat-poop-you-cat-android)]()
 
 ## Premise
 
