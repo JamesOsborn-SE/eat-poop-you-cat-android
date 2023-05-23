@@ -22,7 +22,7 @@ You start with a sentence pass it to the next person and it they draw a picture.
 
 |  |  |  |  |
 |--|--|--|--|
-| ![Welcome](/images/Screenshot-Welcome_Screen.png) | ![First turn](/images/Screenshot-Sentence_Screen.png) | ![Second turn](images/Screenshot-Draw_the_sentence.png) | ![Third turn](/images/Screenshot-Draw_Screen.png) |
+| ![Welcome](metadata/android/en-US/images/1.png) | ![First turn](metadata/android/en-US/images/2.png) | ![Second turn](metadata/android/en-US/images/3.png) | ![Third turn](metadata/android/en-US/images/4.png) |
 |  |  |  |  |
 
 ### Info Needed from user
