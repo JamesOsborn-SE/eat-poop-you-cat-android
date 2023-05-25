@@ -50,5 +50,5 @@
     <string name="drawing_error">make a more better drawing.</string>
     <string name="turns">Turns: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
-    <string name="app_description">Is is a game of telephone where you alternate between sentecnse and drawings</string>
+    <string name="app_description">A game of telephone where you alternate between sentences and drawings</string>
 </resources>
