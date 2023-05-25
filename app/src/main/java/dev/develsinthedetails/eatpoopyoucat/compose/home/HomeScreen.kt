@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.EatPoopYouCatTheme
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
 import java.util.UUID
 
@@ -72,7 +72,7 @@ fun HomeScreen(
     val activity = context.findActivity()
     PermissionsUtility.requestBackGroundPermission(activity)
     val padding = 20.dp
-    EatPoopYouCatTheme {
+    AppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize()

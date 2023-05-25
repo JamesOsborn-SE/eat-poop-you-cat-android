@@ -46,11 +46,11 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Buttons
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.getFill
-import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.catTestDrawingLinesInJson
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawMode
@@ -64,7 +64,7 @@ fun DrawScreen(
     onNavigateToSentence: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit
 ) {
-    EatPoopYouCatTheme {
+    AppTheme {
         Surface(
             modifier = Modifier
                 .fillMaxSize()

@@ -32,7 +32,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Buttons
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
-import dev.develsinthedetails.eatpoopyoucat.compose.ui.theme.EatPoopYouCatTheme
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
 
@@ -83,7 +83,7 @@ fun SentenceScreen(
     onDeleteGame: () -> Unit,
     onSubmit: () -> Unit,
 ) {
-    EatPoopYouCatTheme {
+    AppTheme {
 
         val focusRequester = remember { FocusRequester() }
 
