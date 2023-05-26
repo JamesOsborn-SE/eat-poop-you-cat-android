@@ -2,8 +2,10 @@ package dev.develsinthedetails.eatpoopyoucat.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -139,27 +141,62 @@ fun Buttons(
     onSubmit: () -> Unit,
     onEnd: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Button(
-            modifier = Modifier
-                .padding(top = 15.dp)
-                .align(Alignment.End)
-                .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
-            onClick = { onSubmit() }
-        ) {
-            Text(stringResource(R.string.submit))
+    val portrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    when {
+        portrait -> {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .align(Alignment.End)
+                        .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
+                    onClick = { onSubmit() }
+                ) {
+                    Text(stringResource(R.string.submit))
+                }
+
+                Button(
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .align(Alignment.Start),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+                    onClick = onEnd
+                )
+                {
+                    Text(stringResource(R.string.end_game_for_all))
+                }
+            }
         }
 
-        Button(
-            modifier = Modifier.padding(top = 15.dp)
-                .align(Alignment.Start),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
-            onClick = onEnd
-        )
-        {
-            Text(stringResource(R.string.end_game_for_all))
+        else -> {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .align(Alignment.Top)
+                        .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
+                    onClick = { onSubmit() }
+                ) {
+                    Text(stringResource(R.string.submit))
+                }
+
+                Button(
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                        .align(Alignment.Bottom),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+                    onClick = onEnd
+                )
+                {
+                    Text(stringResource(R.string.end_game_for_all))
+                }
+            }
         }
     }
 }
@@ -183,8 +220,22 @@ fun getFill(): Modifier {
     return fill
 }
 
-@Preview
+@Composable
+fun ErrorText(isError: Boolean, textToDisplay: String) {
+    if (isError)
+        Text(
+            text = stringResource(id = R.string.drawing_error),
+            color = MaterialTheme.colorScheme.error
+        )
+}
+
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=portrait", group = "7in tablet")
 @Composable
 fun ButtonsPreview() {
     Buttons(onSubmit = {}, onEnd = {})
+}
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape", group = "7in tablet")
+@Composable
+fun ButtonsPreviewLandscape() {
+    ButtonsPreview()
 }
