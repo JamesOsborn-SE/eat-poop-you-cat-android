@@ -2,10 +2,8 @@ package dev.develsinthedetails.eatpoopyoucat.compose
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -146,11 +144,12 @@ fun Buttons(
         portrait -> {
             Column(
                 modifier = Modifier.fillMaxSize()
+                    .padding(8.dp)
             ) {
                 Button(
                     modifier = Modifier
                         .padding(top = 15.dp)
-                        .align(Alignment.End)
+                        .align(Alignment.Start)
                         .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
                     onClick = { onSubmit() }
                 ) {
@@ -160,7 +159,7 @@ fun Buttons(
                 Button(
                     modifier = Modifier
                         .padding(top = 15.dp)
-                        .align(Alignment.Start),
+                        .align(Alignment.End),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
                     onClick = onEnd
                 )
@@ -171,15 +170,14 @@ fun Buttons(
         }
 
         else -> {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
+            Column(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(8.dp),
             ) {
                 Button(
                     modifier = Modifier
                         .padding(top = 15.dp)
-                        .align(Alignment.Top)
+                        .align(Alignment.Start)
                         .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
                     onClick = { onSubmit() }
                 ) {
@@ -189,7 +187,7 @@ fun Buttons(
                 Button(
                     modifier = Modifier
                         .padding(top = 15.dp)
-                        .align(Alignment.Bottom),
+                        .align(Alignment.End),
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
                     onClick = onEnd
                 )
@@ -224,8 +222,9 @@ fun getFill(): Modifier {
 fun ErrorText(isError: Boolean, textToDisplay: String) {
     if (isError)
         Text(
-            text = stringResource(id = R.string.drawing_error),
-            color = MaterialTheme.colorScheme.error
+            modifier = Modifier.padding(15.dp),
+            text = textToDisplay,
+            color = MaterialTheme.colorScheme.error,
         )
 }
 
