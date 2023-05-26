@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +35,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Buttons
+import dev.develsinthedetails.eatpoopyoucat.compose.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.getFill
 import dev.develsinthedetails.eatpoopyoucat.data.Line
@@ -75,14 +83,11 @@ fun DrawScreen(
                 Spinner()
             Column {
                 val previousEntry by viewModel.previousEntry.observeAsState()
-                previousEntry?.sentence?.let {
-                    Sentence(it)
-                }
-                Draw(modifier = getFill())
+                Sentence(previousEntry?.sentence)
 
-                if (viewModel.isError) {
-                    Text(text = stringResource(id = R.string.drawing_error), color = Color.Red)
-                }
+                Draw(modifier = getFill())
+                ErrorText(viewModel.isError, stringResource(id = R.string.drawing_error))
+
                 Buttons(onSubmit = {
                     viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
                 }, onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) })
@@ -92,7 +97,9 @@ fun DrawScreen(
 }
 
 @Composable
-fun Sentence(it: String) {
+fun Sentence(sentence: String?) {
+    if(sentence.isNullOrBlank())
+        return
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +114,7 @@ fun Sentence(it: String) {
         )
         Text(
             modifier = Modifier.padding(8.dp),
-            text = it,
+            text = sentence,
             color = MaterialTheme.colorScheme.onTertiaryContainer,
             fontSize = 24.sp
         )
@@ -134,10 +141,54 @@ fun Draw(
     val linesState = drawViewModel.drawingLines.asLiveData().observeAsState(initial = listOf())
     val currentLineState = drawViewModel.lineSeg.observeAsState(initial = listOf())
     val currentPropertiesState = drawViewModel.lineProps.observeAsState(initial = LineProperties())
+    val setCanvasResolution: (IntSize) -> Unit =
+        { drawViewModel.setCanvasResolution(it.height, it.width) }
+    val touchStart: (PointerInputChange) -> Unit = { drawViewModel.touchStart(it) }
+    val touchMove: (PointerInputChange) -> Unit = { drawViewModel.touchMove(it) }
+    val touchEnd: (PointerInputChange) -> Unit = { drawViewModel.touchUp(it) }
+    val setPencilMode: (DrawMode) -> Unit = { drawViewModel.setPencileMode(it) }
+    val undo = { drawViewModel.undo() }
+    val redo = { drawViewModel.redo() }
 
+    Draw(
+        getFill(),
+        linesState,
+        currentLineState,
+        currentPropertiesState,
+        setCanvasResolution,
+        isReadOnly,
+        touchStart,
+        touchMove,
+        touchEnd,
+        undoCount,
+        redoCount,
+        drawViewModel.drawMode,
+        setPencilMode,
+        undo,
+        redo
+    )
+}
 
+@Composable
+private fun Draw(
+    modifier: Modifier,
+    linesState: State<List<Line>>,
+    currentLineState: State<List<LineSegment>>,
+    currentPropertiesState: State<LineProperties>,
+    setCanvasResolution: (IntSize) -> Unit,
+    isReadOnly: Boolean,
+    touchStart: (PointerInputChange) -> Unit,
+    touchMove: (PointerInputChange) -> Unit,
+    touchEnd: (PointerInputChange) -> Unit,
+    undoCount: State<Int>,
+    redoCount: State<Int>,
+    drawMode: DrawMode,
+    setPencilMode: (DrawMode) -> Unit,
+    undo: () -> Unit,
+    redo: () -> Unit
+) {
     Box(
-        modifier = modifier
+        modifier = getFill()
             .aspectRatio(1f)
             .padding(all = 8.dp)
     ) {
@@ -155,10 +206,10 @@ fun Draw(
                 .aspectRatio(1f)
                 .padding(all = 8.dp)
                 .onPlaced {
-                    drawViewModel.setCanvasResolution(it.size.height, it.size.width)
+                    setCanvasResolution(it.size)
                 }
                 .onSizeChanged {
-                    drawViewModel.setCanvasResolution(it.height, it.width)
+                    setCanvasResolution(it)
                 }
                 .dragMotionEvent(
                     onDragStart = { pointerInputChange ->
@@ -166,8 +217,7 @@ fun Draw(
                             pointerInputChange.consume()
 
                         } else {
-                            hasChanged = true
-                            drawViewModel.touchStart(pointerInputChange)
+                            touchStart(pointerInputChange)
                         }
                     },
                     onDrag = { pointerInputChange ->
@@ -175,33 +225,29 @@ fun Draw(
                             pointerInputChange.consume()
 
                         } else {
-                            hasChanged = true
-                            drawViewModel.touchMove(pointerInputChange)
+                            touchMove(pointerInputChange)
                         }
                     },
                     onDragEnd = { pointerInputChange ->
                         if (isReadOnly) {
                             pointerInputChange.consume()
                         } else {
-                            hasChanged = true
-                            drawViewModel.touchUp(pointerInputChange)
+                            touchEnd(pointerInputChange)
                         }
                     })
         )
     }
+
+
     DrawingPropertiesMenu(
         undoCount = undoCount.value,
         redoCount = redoCount.value,
-        drawMode = drawViewModel.drawMode,
-        setPencilMode = { drawViewModel.setPencileMode(it) },
-        onUndo = {
-            drawViewModel.undo()
-            hasChanged = true
-        },
-        onRedo = {
-            drawViewModel.redo()
-            hasChanged = true
-        })
+        drawMode = drawMode,
+        setPencilMode = setPencilMode,
+        onUndo = undo,
+        onRedo = redo
+    )
+
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -274,7 +320,8 @@ fun DrawBox(
                     color = it.properties.drawColor(),
                     path = scaledPath,
                     style = Stroke(
-                        width = scaledStroke
+                        width = scaledStroke,
+                        cap = StrokeCap.Round
                     ),
                     blendMode = it.properties.blendMode()
                 )
@@ -292,72 +339,130 @@ private fun DrawingPropertiesMenu(
     onRedo: () -> Unit,
     setPencilMode: (DrawMode) -> Unit,
 ) {
-    Row(
+    modifier
+        .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+        .shadow(1.dp, RoundedCornerShape(8.dp))
+        .background(Color.White)
+        .padding(4.dp)
+
+    OrientationSwapperEvenly(
         modifier = modifier
             .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
             .shadow(1.dp, RoundedCornerShape(8.dp))
-            .fillMaxWidth()
             .background(Color.White)
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        IconButton(onClick = {
-            setPencilMode(DrawMode.Draw)
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_draw_black_24dp),
-                contentDescription = stringResource(id = R.string.erase),
-                tint = if (drawMode == DrawMode.Draw) Color.Black else Color.LightGray
-            )
+            .padding(4.dp)
+            .fillMaxHeight(),
+        rowModifier = modifier
+            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            .shadow(1.dp, RoundedCornerShape(8.dp))
+            .background(Color.White)
+            .padding(4.dp)
+            .fillMaxWidth(),
+        flip = true,
+        {
+            IconButton(onClick = {
+                setPencilMode(DrawMode.Draw)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_draw_black_24dp),
+                    contentDescription = stringResource(id = R.string.erase),
+                    tint = if (drawMode == DrawMode.Draw) Color.Black else Color.LightGray
+                )
+            }
+        },
+        {
+            IconButton(onClick = {
+                setPencilMode(DrawMode.Erase)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_eraser_black_24dp),
+                    contentDescription = stringResource(id = R.string.erase),
+                    tint = if (drawMode == DrawMode.Erase) Color.Black else Color.LightGray
+                )
+            }
+        },
+        {
+            IconButton(onClick = {
+                onUndo()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_undo_black_24dp),
+                    contentDescription = stringResource(id = R.string.undo),
+                    tint = if (undoCount > 0) Color.Black else Color.LightGray
+                )
+            }
+        },
+        {
+            IconButton(onClick = {
+                onRedo()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_redo_black_24dp),
+                    contentDescription = stringResource(id = R.string.redo),
+                    tint = if (redoCount > 0) Color.Black else Color.LightGray
+                )
+            }
         }
-        IconButton(onClick = {
-            setPencilMode(DrawMode.Erase)
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_eraser_black_24dp),
-                contentDescription = stringResource(id = R.string.erase),
-                tint = if (drawMode == DrawMode.Erase) Color.Black else Color.LightGray
-            )
-        }
-        IconButton(onClick = {
-            onUndo()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_undo_black_24dp),
-                contentDescription = stringResource(id = R.string.undo),
-                tint = if (undoCount > 0) Color.Black else Color.LightGray
-            )
-        }
+    )
+}
 
-        IconButton(onClick = {
-            onRedo()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_redo_black_24dp),
-                contentDescription = stringResource(id = R.string.redo),
-                tint = if (redoCount > 0) Color.Black else Color.LightGray
-            )
+@Composable
+fun OrientationSwapper(
+    modifier: Modifier = Modifier,
+    rowModifier: Modifier = Modifier,
+    flip: Boolean = false,
+    vararg contents: @Composable () -> Unit
+) {
+    val isColumn =
+        flip.xor(LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT)
+    if (isColumn) {
+        Column(
+            modifier = modifier
+        ) {
+            for (content in contents) {
+                content()
+            }
+        }
+    } else {
+        Row(
+            modifier = rowModifier
+        ) {
+            for (content in contents) {
+                content()
+            }
         }
     }
 }
 
-@Preview
 @Composable
-fun PreviewDawing() {
-    Column() {
-
-        val lines = Json.decodeFromString<List<Line>>(catTestDrawingLinesInJson)
-        DrawBox(drawingLines = lines)
-        DrawingPropertiesMenu(
-            undoCount = 5,
-            redoCount = 0,
-            drawMode = DrawMode.Draw,
-            onUndo = { },
-            onRedo = { },
-            setPencilMode = {},
-        )
-        Buttons(onSubmit = {}, onEnd = {})
+fun OrientationSwapperEvenly(
+    modifier: Modifier = Modifier,
+    rowModifier: Modifier = Modifier,
+    flip: Boolean = false,
+    vararg contents: @Composable () -> Unit
+) {
+    val isColumn =
+        flip.xor(LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT)
+    if (isColumn) {
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+        ) {
+            for (content in contents) {
+                content()
+            }
+        }
+    } else {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = rowModifier
+        ) {
+            for (content in contents) {
+                content()
+            }
+        }
     }
 }
 
@@ -365,17 +470,59 @@ fun PreviewDawing() {
 @Composable
 fun PreviewDawingWithSentance() {
     val lines = Json.decodeFromString<List<Line>>(catTestDrawingLinesInJson)
-    Column {
-        Sentence(it = "a cat winks at you with the grace of a toddler on benedryl")
-        DrawBox(drawingLines = lines)
-        DrawingPropertiesMenu(
-            undoCount = 5,
-            redoCount = 0,
-            drawMode = DrawMode.Draw,
-            onUndo = { },
-            onRedo = { },
-            setPencilMode = {},
-        )
-        Buttons(onSubmit = {}, onEnd = {})
+    val lineState = remember {
+        mutableStateOf(lines)
     }
+    val currentLineState = remember {
+        mutableStateOf(listOf<LineSegment>())
+    }
+    val currentPropertiesState = remember {
+        mutableStateOf(LineProperties())
+    }
+    val setCanvasResolution: (IntSize) -> Unit = {}
+    val isReadOnly = false
+    val touch: (PointerInputChange) -> Unit = {}
+    val undoCount = remember {
+        mutableStateOf(1)
+    }
+    val redoCount = remember {
+        mutableStateOf(0)
+    }
+
+    OrientationSwapper(
+        modifier = Modifier,
+        rowModifier = Modifier,
+        flip = false,
+        {
+            Draw(
+                getFill(),
+                linesState = lineState,
+                currentLineState,
+                currentPropertiesState,
+                setCanvasResolution,
+                isReadOnly,
+                touchStart = touch,
+                touchMove = touch,
+                touchEnd = touch,
+                undoCount,
+                redoCount,
+                drawMode = DrawMode.Draw,
+                setPencilMode = {},
+                undo = {}
+            ) {}
+        },
+        {
+            Column {
+                Sentence(sentence = "a cat winks at you with the grace of a toddler on benedryl")
+
+                Buttons(onSubmit = {}, onEnd = {})
+            }
+        }
+    )
+}
+
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Composable
+fun PreviewDawingWithSentanceLandscape() {
+    PreviewDawingWithSentance()
 }
