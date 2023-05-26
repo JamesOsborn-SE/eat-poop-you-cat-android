@@ -3,8 +3,6 @@ package dev.develsinthedetails.eatpoopyoucat.compose
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +15,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -135,67 +132,33 @@ fun PreviewSpinner() {
 }
 
 @Composable
-fun Buttons(
+fun SubmitButton(
+    modifier: Modifier = Modifier,
     onSubmit: () -> Unit,
+) {
+    Button(
+        modifier = modifier
+            .padding(top = 15.dp)
+            .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
+        onClick = onSubmit
+    ) {
+        Text(stringResource(R.string.submit))
+    }
+}
+
+@Composable
+fun EndGameButton(
+    modifier: Modifier = Modifier,
     onEnd: () -> Unit,
 ) {
-    val portrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-    when {
-        portrait -> {
-            Column(
-                modifier = Modifier.fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                Button(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .align(Alignment.Start)
-                        .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
-                    onClick = { onSubmit() }
-                ) {
-                    Text(stringResource(R.string.submit))
-                }
-
-                Button(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
-                    onClick = onEnd
-                )
-                {
-                    Text(stringResource(R.string.end_game_for_all))
-                }
-            }
-        }
-
-        else -> {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(8.dp),
-            ) {
-                Button(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .align(Alignment.Start)
-                        .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
-                    onClick = { onSubmit() }
-                ) {
-                    Text(stringResource(R.string.submit))
-                }
-
-                Button(
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                        .align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
-                    onClick = onEnd
-                )
-                {
-                    Text(stringResource(R.string.end_game_for_all))
-                }
-            }
-        }
+    Button(
+        modifier = modifier
+            .padding(top = 15.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+        onClick = onEnd
+    )
+    {
+        Text(stringResource(R.string.end_game_for_all))
     }
 }
 
@@ -226,15 +189,4 @@ fun ErrorText(isError: Boolean, textToDisplay: String) {
             text = textToDisplay,
             color = MaterialTheme.colorScheme.error,
         )
-}
-
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=portrait", group = "7in tablet")
-@Composable
-fun ButtonsPreview() {
-    Buttons(onSubmit = {}, onEnd = {})
-}
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape", group = "7in tablet")
-@Composable
-fun ButtonsPreviewLandscape() {
-    ButtonsPreview()
 }

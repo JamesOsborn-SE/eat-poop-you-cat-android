@@ -1,6 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -105,19 +104,20 @@ fun StartGame(
     }
 }
 
+/**
+ * Preview Screenshot #1
+ */
 @Preview
 @Composable
-fun HomeScreenPreview() {
+fun PreviewHomeScreen() {
     HomeScreen(
         isLoading = false,
         onStartGame = {},
         onNavigateToPreviousGames = {})
 }
 
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
 @Composable
-fun HomeScreenDarkPreview() {
-    HomeScreenPreview()
+fun PreviewHomeScreenLandscape() {
+    PreviewHomeScreen()
 }
