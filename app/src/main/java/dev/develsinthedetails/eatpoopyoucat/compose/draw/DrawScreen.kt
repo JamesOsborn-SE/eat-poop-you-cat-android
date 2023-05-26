@@ -72,6 +72,7 @@ fun DrawScreen(
     onNavigateToSentence: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit
 ) {
+    val previousEntry by viewModel.previousEntry.observeAsState()
     AppTheme {
         Surface(
             modifier = Modifier
@@ -81,24 +82,27 @@ fun DrawScreen(
         ) {
             if (viewModel.isLoading)
                 Spinner()
-            Column {
-                val previousEntry by viewModel.previousEntry.observeAsState()
-                Sentence(previousEntry?.sentence)
-
-                Draw(modifier = getFill())
-                ErrorText(viewModel.isError, stringResource(id = R.string.drawing_error))
-
-                Buttons(onSubmit = {
-                    viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
-                }, onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) })
-            }
+            OrientationSwapper(
+                modifier = Modifier,
+                rowModifier = Modifier,
+                flip = false,
+                { Draw(modifier = getFill()) },
+                {
+                    Column {
+                        ErrorText(viewModel.isError, stringResource(id = R.string.drawing_error))
+                        Sentence(previousEntry?.sentence)
+                        Buttons(onSubmit = {
+                            viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
+                        }, onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) })
+                    }
+                })
         }
     }
 }
 
 @Composable
 fun Sentence(sentence: String?) {
-    if(sentence.isNullOrBlank())
+    if (sentence.isNullOrBlank())
         return
     Column(
         modifier = Modifier
