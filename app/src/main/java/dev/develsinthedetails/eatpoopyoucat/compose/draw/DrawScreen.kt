@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
@@ -29,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -68,52 +68,11 @@ import kotlinx.serialization.json.Json
 
 @Composable
 fun DrawScreen(
-    viewModel: DrawViewModel = hiltViewModel(),
+    drawViewModel: DrawViewModel = hiltViewModel(),
     onNavigateToSentence: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit
 ) {
-    val previousEntry by viewModel.previousEntry.observeAsState()
-    AppTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            if (viewModel.isLoading)
-                Spinner()
-            OrientationSwapper(
-                modifier = Modifier,
-                rowModifier = Modifier,
-                flip = false,
-                { Draw(modifier = getFill()) },
-                {
-                    Column {
-                        ErrorText(viewModel.isError, stringResource(id = R.string.drawing_error))
-                        Sentence(previousEntry?.sentence)
-                        Buttons(onSubmit = {
-                            viewModel.checkDrawing { onNavigateToSentence(viewModel.entryId) }
-                        }, onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) })
-                    }
-                })
-        }
-    }
-}
-
-@Composable
-fun Draw(
-    modifier: Modifier = Modifier,
-    drawViewModel: DrawViewModel = hiltViewModel(),
-    isReadOnly: Boolean = false,
-    drawingLines: ArrayList<Line> = ArrayList(),
-) {
-    drawViewModel.isReadOnly(isReadOnly)
-
-    if (drawingLines.isNotEmpty()) {
-        drawViewModel.setLines(drawingLines)
-    }
-
-    var hasChanged by remember { mutableStateOf(false) }
+    val previousEntry by drawViewModel.previousEntry.observeAsState()
     val undoCount = drawViewModel.undoCount.observeAsState(initial = 0)
     val redoCount = drawViewModel.redoCount.observeAsState(initial = 0)
     val linesState = drawViewModel.drawingLines.asLiveData().observeAsState(initial = listOf())
@@ -128,24 +87,98 @@ fun Draw(
     val undo = { drawViewModel.undo() }
     val redo = { drawViewModel.redo() }
 
-    Draw(
-        getFill(),
-        linesState,
-        currentLineState,
-        currentPropertiesState,
-        setCanvasResolution,
-        isReadOnly,
-        touchStart,
-        touchMove,
-        touchEnd,
-        undoCount,
-        redoCount,
-        drawViewModel.drawMode,
-        setPencilMode,
-        undo,
-        redo
+    DrawScreen(
+        linesState = linesState,
+        currentLineState = currentLineState,
+        currentPropertiesState = currentPropertiesState,
+        setCanvasResolution = setCanvasResolution,
+        isLoading = drawViewModel.isLoading,
+        touchStart = touchStart,
+        touchMove = touchMove,
+        touchEnd = touchEnd,
+        undoCount = undoCount,
+        redoCount = redoCount,
+        drawMode = drawViewModel.drawMode,
+        isError = drawViewModel.isError,
+        setPencilMode = setPencilMode,
+        undo = undo,
+        redo = redo,
+        sentence = previousEntry?.sentence,
+        onSubmit = { drawViewModel.checkDrawing { onNavigateToSentence(drawViewModel.entryId) } },
+        onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     )
 }
+
+@Composable
+private fun DrawScreen(
+    linesState: State<List<Line>>,
+    currentLineState: State<List<LineSegment>>,
+    currentPropertiesState: State<LineProperties>,
+    setCanvasResolution: (IntSize) -> Unit,
+    isLoading: Boolean = true,
+    touchStart: (PointerInputChange) -> Unit,
+    touchMove: (PointerInputChange) -> Unit,
+    touchEnd: (PointerInputChange) -> Unit,
+    undoCount: State<Int>,
+    redoCount: State<Int>,
+    drawMode: DrawMode,
+    isError: Boolean,
+    setPencilMode: (DrawMode) -> Unit,
+    undo: () -> Unit,
+    redo: () -> Unit,
+    sentence: String?,
+    onSubmit: () -> Unit,
+    onEnd: () -> Unit
+) {
+    AppTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            if (isLoading)
+                Spinner()
+            OrientationSwapper(
+                modifier = Modifier.fillMaxSize(),
+                rowModifier = Modifier.fillMaxSize(),
+                flip = false,
+                {
+                    Draw(
+                        getFill(),
+                        linesState,
+                        currentLineState,
+                        currentPropertiesState,
+                        setCanvasResolution,
+                        touchStart,
+                        touchMove,
+                        touchEnd,
+                    )
+                },
+                {
+                    DrawingPropertiesMenu(
+                        undoCount = undoCount.value,
+                        redoCount = redoCount.value,
+                        drawMode = drawMode,
+                        setPencilMode = setPencilMode,
+                        onUndo = undo,
+                        onRedo = redo
+                    )
+                },
+                {
+                    Column {
+                        ErrorText(
+                            isError,
+                            stringResource(id = R.string.drawing_error)
+                        )
+                        Sentence(sentence)
+                        Buttons(onSubmit = onSubmit, onEnd = onEnd)
+                    }
+                })
+        }
+    }
+}
+
 
 @Composable
 private fun Draw(
@@ -154,16 +187,9 @@ private fun Draw(
     currentLineState: State<List<LineSegment>>,
     currentPropertiesState: State<LineProperties>,
     setCanvasResolution: (IntSize) -> Unit,
-    isReadOnly: Boolean,
     touchStart: (PointerInputChange) -> Unit,
     touchMove: (PointerInputChange) -> Unit,
     touchEnd: (PointerInputChange) -> Unit,
-    undoCount: State<Int>,
-    redoCount: State<Int>,
-    drawMode: DrawMode,
-    setPencilMode: (DrawMode) -> Unit,
-    undo: () -> Unit,
-    redo: () -> Unit
 ) {
     Box(
         modifier = getFill()
@@ -190,41 +216,16 @@ private fun Draw(
                 }
                 .dragMotionEvent(
                     onDragStart = { pointerInputChange ->
-                        if (isReadOnly) {
-                            pointerInputChange.consume()
-
-                        } else {
-                            touchStart(pointerInputChange)
-                        }
+                        touchStart(pointerInputChange)
                     },
                     onDrag = { pointerInputChange ->
-                        if (isReadOnly) {
-                            pointerInputChange.consume()
-
-                        } else {
-                            touchMove(pointerInputChange)
-                        }
+                        touchMove(pointerInputChange)
                     },
                     onDragEnd = { pointerInputChange ->
-                        if (isReadOnly) {
-                            pointerInputChange.consume()
-                        } else {
-                            touchEnd(pointerInputChange)
-                        }
+                        touchEnd(pointerInputChange)
                     })
         )
     }
-
-
-    DrawingPropertiesMenu(
-        undoCount = undoCount.value,
-        redoCount = redoCount.value,
-        drawMode = drawMode,
-        setPencilMode = setPencilMode,
-        onUndo = undo,
-        onRedo = redo
-    )
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -253,8 +254,11 @@ fun DrawBox(
     Canvas(
         modifier = modifier
             .aspectRatio(1f)
-            .padding(all = 8.dp)
-            .background(color = Color.White)
+            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            .shadow(4.dp)
+            .background(Color.White)
+            .border(border = BorderStroke(3.dp, MaterialTheme.colorScheme.onBackground))
+            .padding(4.dp)
             .combinedClickable(
                 onLongClick = { onLongClick.invoke() },
                 onClick = { onClick.invoke() }
@@ -308,7 +312,6 @@ fun DrawBox(
 
 @Composable
 private fun DrawingPropertiesMenu(
-    modifier: Modifier = Modifier,
     undoCount: Int = 0,
     redoCount: Int = 0,
     drawMode: DrawMode,
@@ -316,24 +319,16 @@ private fun DrawingPropertiesMenu(
     onRedo: () -> Unit,
     setPencilMode: (DrawMode) -> Unit,
 ) {
-    modifier
+    val modifier = Modifier
         .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-        .shadow(1.dp, RoundedCornerShape(8.dp))
+        .shadow(4.dp, RoundedCornerShape(8.dp))
         .background(Color.White)
         .padding(4.dp)
 
     OrientationSwapperEvenly(
         modifier = modifier
-            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-            .shadow(1.dp, RoundedCornerShape(8.dp))
-            .background(Color.White)
-            .padding(4.dp)
             .fillMaxHeight(),
         rowModifier = modifier
-            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-            .shadow(1.dp, RoundedCornerShape(8.dp))
-            .background(Color.White)
-            .padding(4.dp)
             .fillMaxWidth(),
         flip = true,
         {
@@ -390,8 +385,10 @@ fun Sentence(sentence: String?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            .shadow(4.dp, RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.tertiaryContainer)
-            .border(2.dp, color = MaterialTheme.colorScheme.onTertiary)
+            .padding(4.dp)
 
     ) {
         Text(
@@ -447,9 +444,9 @@ fun OrientationSwapperEvenly(
         flip.xor(LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT)
     if (isColumn) {
         Column(
+            modifier = modifier,
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
         ) {
             for (content in contents) {
                 content()
@@ -457,9 +454,9 @@ fun OrientationSwapperEvenly(
         }
     } else {
         Row(
+            modifier = rowModifier,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = rowModifier
         ) {
             for (content in contents) {
                 content()
@@ -472,7 +469,7 @@ fun OrientationSwapperEvenly(
 @Composable
 fun PreviewDawingWithSentance() {
     val lines = Json.decodeFromString<List<Line>>(catTestDrawingLinesInJson)
-    val lineState = remember {
+    val linesState = remember {
         mutableStateOf(lines)
     }
     val currentLineState = remember {
@@ -482,49 +479,46 @@ fun PreviewDawingWithSentance() {
         mutableStateOf(LineProperties())
     }
     val setCanvasResolution: (IntSize) -> Unit = {}
-    val isReadOnly = false
-    val touch: (PointerInputChange) -> Unit = {}
     val undoCount = remember {
         mutableStateOf(1)
     }
     val redoCount = remember {
         mutableStateOf(0)
     }
-
-    OrientationSwapper(
-        modifier = Modifier,
-        rowModifier = Modifier,
-        flip = false,
-        {
-            Draw(
-                getFill(),
-                linesState = lineState,
-                currentLineState,
-                currentPropertiesState,
-                setCanvasResolution,
-                isReadOnly,
-                touchStart = touch,
-                touchMove = touch,
-                touchEnd = touch,
-                undoCount,
-                redoCount,
-                drawMode = DrawMode.Draw,
-                setPencilMode = {},
-                undo = {}
-            ) {}
-        },
-        {
-            Column {
-                Sentence(sentence = "a cat winks at you with the grace of a toddler on benedryl")
-
-                Buttons(onSubmit = {}, onEnd = {})
-            }
-        }
+    val sentence = "a cat winks at you with the grace of a toddler on benedryl"
+    DrawScreen(
+        linesState = linesState,
+        currentLineState = currentLineState,
+        currentPropertiesState = currentPropertiesState,
+        setCanvasResolution = setCanvasResolution,
+        isLoading = false,
+        touchStart = { },
+        touchMove = { },
+        touchEnd = { },
+        undoCount = undoCount,
+        redoCount = redoCount,
+        drawMode = DrawMode.Draw,
+        isError = false,
+        setPencilMode = { },
+        undo = { },
+        redo = { },
+        sentence = sentence,
+        onSubmit = { },
+        onEnd = { }
     )
 }
 
 @Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
 @Composable
 fun PreviewDawingWithSentanceLandscape() {
+    PreviewDawingWithSentance()
+}
+
+@Preview(
+    device = "spec:parent=Nexus 7 2013,orientation=landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+fun PreviewDawingWithSentanceLandscapeDarkMode() {
     PreviewDawingWithSentance()
 }
