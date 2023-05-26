@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.Buttons
+import dev.develsinthedetails.eatpoopyoucat.compose.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
@@ -108,16 +108,7 @@ fun SentenceScreen(
                     drawing?.let {
                         DrawBox(drawingZippedJson = it)
                     }
-
-                    if (isError) {
-                        Text(
-                            modifier = Modifier
-                                .padding(15.dp)
-                                .align(Alignment.CenterHorizontally),
-                            text = stringResource(id = R.string.write_sentence_error),
-                            color = Color.Red
-                        )
-                    }
+                    ErrorText(isError, stringResource(id = R.string.write_sentence_error))
                     OutlinedTextField(
                         value = sentence,
                         onValueChange = onSentenceChange,
