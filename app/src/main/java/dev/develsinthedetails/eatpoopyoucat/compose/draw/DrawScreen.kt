@@ -101,32 +101,6 @@ fun DrawScreen(
 }
 
 @Composable
-fun Sentence(sentence: String?) {
-    if (sentence.isNullOrBlank())
-        return
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.tertiaryContainer)
-            .border(2.dp, color = MaterialTheme.colorScheme.onTertiary)
-
-    ) {
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = stringResource(R.string.draw_this_sentence),
-            color = MaterialTheme.colorScheme.onTertiaryContainer
-        )
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = sentence,
-            color = MaterialTheme.colorScheme.onTertiaryContainer,
-            fontSize = 24.sp
-        )
-    }
-}
-
-
-@Composable
 fun Draw(
     modifier: Modifier = Modifier,
     drawViewModel: DrawViewModel = hiltViewModel(),
@@ -196,7 +170,6 @@ private fun Draw(
             .aspectRatio(1f)
             .padding(all = 8.dp)
     ) {
-
 
         DrawBox(
             drawingLines = linesState.value,
@@ -408,6 +381,31 @@ private fun DrawingPropertiesMenu(
             }
         }
     )
+}
+
+@Composable
+fun Sentence(sentence: String?) {
+    if (sentence.isNullOrBlank())
+        return
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.tertiaryContainer)
+            .border(2.dp, color = MaterialTheme.colorScheme.onTertiary)
+
+    ) {
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = stringResource(R.string.draw_this_sentence),
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = sentence,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            fontSize = 24.sp
+        )
+    }
 }
 
 @Composable
