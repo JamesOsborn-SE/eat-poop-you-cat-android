@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">猫のうんちを食べる</string>
+    <string name="status_searching">検索中</string>
+    <string name="status_connected">接続済み</string>
+    <string name="new_game">新しいゲームを開始</string>
+    <string name="welcome_message">Eat Poop You Cat へようこそ！</string>
+    <string name="show">表示</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn ">送信</string>
+    <string name="send_description">作品を送る</string>
+    <string name="undo">元に戻す</string>
+    <string name="nickname">ニックネーム</string>
+    <string name="enter_a_sentence">文章を入力</string>
+    <string name="draw_this_sentence">この文章を描いてください！</string>
+    <string name="clear">クリア</string>
+    <string name="erase_description">ものを消去する</string>
+    <string name="erase">消去</string>
+    <string name="draw_description">ドロー</string>
+    <string name="draw">ドロー</string>
+    <string name="undo_description">今したことを元に戻す</string>
+    <string name="redo_description">元に戻す</string>
+    <string name="redo">やり直し</string>
+    <string name="preferences_header">設定</string>
+    <string name="background_header">バックグラウンドアクティビティ</string>
+    <string name="background_title">アプリがバックグラウンドで通信できるようにする</string>
+    <string name="background_summary_off">アプリが開いていないとゲームを送受信できません</string>
+    <string name="background_summary_on">アプリを閉じてもゲームの送受信が可能</string>
+    <string name="write_a_sentence_to_describe_this_drawing">この図を説明してください</string>
+    <string name="dialog_start_game">ゲームを開始</string>
+    <string name="start">開始</string>
+    <string name="cancel">キャンセル</string>
+    <string name="submit">送信してください！</string>
+    <string name="dialog_accept_turn">%1$sからのターンを受け入れます！</string>
+    <string name="created_by">作成者：%1$s</string>
+    <string name="write_a_funny_sentence">面白い文章を書く</string>
+    <string name="no_really_write_a_funny_sentence">実際に面白い文章を書いてください！</string>
+    <string name="dialog_one_entry_allowed">ゲームごとに 1 つのエントリのみが許可されます</string>
+    <string name="oof">ウーフ</string>
+    <string name="save">保存</string>
+    <string name="find_game">ゲームを見つける</string>
+    <string name="previous_games">前のゲーム</string>
+    <string name="starting_sentence">開始文：%1$s</string>
+    <string name="turn_completed_time">ターン完了時間%1$d：%2$d</string>
+    <string name="time_left_to_complete">%1$dを完了するまでの残り時間：%2$d</string>
+    <string name="turn_passed">通過したターン：%1$s</string>
+    <string name="dashboard">ダッシュボード</string>
+    <string name="default_nickname">名前なし</string>
+    <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
+    <string name="title_activity_sentence_screen">文章画面</string>
+    <string name="write_sentence_error">もっと良い文章を書いてください！</string>
+    <string name="drawing_error">より良い絵を描きます。</string>
+    <string name="turns">ターン：%1$d</string>
+    <string name="end_game_for_all">エンドゲーム・フォー・オール</string>
+    <string name="app_description">文章と絵を交互に繰り返す電話ゲーム。各人が 1 ターンになるとゲームオーバーです。</string>
+    <string name="test_cat_sentence">とても眠そうな幼児の優雅さで猫があなたにウィンクします</string>
+</resources>
