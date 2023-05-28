@@ -51,5 +51,6 @@
     <string name="turns">Voltas: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
     <string name="app_description">Um jogo de telefone onde você alterna entre frases e desenhos. O jogo termina quando cada pessoa tem uma vez.</string>
+    <string name="no_previous_games_found">Nenhum jogo anterior encontrado! Vá jogar!</string>
     <string name="test_cat_sentence">Um gato pisca para você com a graça de uma criança com muito sono</string>
 </resources>

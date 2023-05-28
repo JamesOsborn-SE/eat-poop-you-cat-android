@@ -93,6 +93,7 @@ fun EatPoopYouCatApp(
             "games",
         ) {
             PreviousGamesScreen(
+                onGoHome = { navController.navigate("home") },
                 onGameClick = { navController.navigate("game/${it}") }
             )
         }
