@@ -24,7 +24,7 @@ android {
     compileSdk = 33
     defaultConfig {
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 33
         versionCode = 3
         versionName = "0.22"
