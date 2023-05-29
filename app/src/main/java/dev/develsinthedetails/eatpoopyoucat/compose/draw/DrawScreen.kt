@@ -59,7 +59,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.getFill
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
@@ -159,7 +158,7 @@ private fun DrawScreen(
                             )
                         }
                         Draw(
-                            getFill(),
+                            Modifier,
                             linesState,
                             currentLineState,
                             currentPropertiesState,
@@ -195,28 +194,32 @@ private fun DrawScreen(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.weight(2f)) {
                             Sentence(sentence)
                             ErrorText(
                                 isError,
                                 stringResource(id = R.string.drawing_error)
                             )
                         }
-
-                        Draw(
-                            getFill().weight(1f),
-                            linesState,
-                            currentLineState,
-                            currentPropertiesState,
-                            setCanvasResolution,
-                            touchStart,
-                            touchMove,
-                            touchEnd,
-                        )
-
                         Column(
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(6f)
+                                .padding(8.dp)
+                        ) {
+                            Draw(
+                                Modifier,
+                                linesState,
+                                currentLineState,
+                                currentPropertiesState,
+                                setCanvasResolution,
+                                touchStart,
+                                touchMove,
+                                touchEnd,
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(2f)
                                 .fillMaxHeight(),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -250,8 +253,7 @@ private fun Draw(
     touchEnd: (PointerInputChange) -> Unit,
 ) {
     Box(
-        modifier = getFill()
-            .aspectRatio(1f)
+        modifier = modifier
             .padding(all = 8.dp)
     ) {
 

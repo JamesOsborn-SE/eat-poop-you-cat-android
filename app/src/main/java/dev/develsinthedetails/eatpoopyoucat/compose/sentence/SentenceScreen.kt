@@ -37,7 +37,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapper
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.getFill
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
@@ -144,7 +143,7 @@ fun SentenceScreen(
                     flip = false,
                     {
                         drawing?.let {
-                            DrawBox(drawingZippedJson = it, modifier = getFill())
+                            DrawBox(drawingZippedJson = it)
                         }
                     }
                 )
