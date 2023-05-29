@@ -51,9 +51,9 @@ fun PreviousGamesScreen(
     PreviousGamesScreen(
         modifier,
         games = games,
-        onClick = onGameClick,
+        onGotoGame = onGameClick,
         onGoHome = onGoHome,
-        onLongClick = { viewModel.deleteGame(it) })
+        onDelete = { viewModel.deleteGame(it) })
 }
 
 @Composable
@@ -61,8 +61,8 @@ fun PreviousGamesScreen(
     modifier: Modifier = Modifier,
     games: List<GameWithEntries>,
     onGoHome: () -> Unit = {},
-    onClick: (String) -> Unit = {},
-    onLongClick: (String) -> Unit = {},
+    onGotoGame: (String) -> Unit = {},
+    onDelete: (String) -> Unit = {},
 ) {
     AppTheme {
         // A surface container using the 'background' color from the theme
@@ -103,8 +103,8 @@ fun PreviousGamesScreen(
                         key = { it.game.id }
                     ) { game ->
                         GameListItem(game = game,
-                            onClick = { onClick(game.game.id.toString()) },
-                            onLongClick = { onLongClick(game.game.id.toString()) })
+                            onGotoGame = { onGotoGame(game.game.id.toString()) },
+                            onDelete = { onDelete(game.game.id.toString()) })
                     }
                 }
             }
@@ -113,7 +113,7 @@ fun PreviousGamesScreen(
 }
 
 @Composable
-fun GameListItem(game: GameWithEntries, onClick: () -> Unit, onLongClick: () -> Unit) {
+fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> Unit) {
     val firstSentence = game.entries
         .minBy { it.sequence }.sentence ?: String()
     val lastDrawing = game.entries
@@ -123,8 +123,8 @@ fun GameListItem(game: GameWithEntries, onClick: () -> Unit, onLongClick: () -> 
         sentence = firstSentence,
         drawing = lastDrawing?.drawing,
         turns = game.entries.count(),
-        onClick = onClick,
-        onLongClick = onLongClick
+        onGotoGame = onGotoGame,
+        onDelete = onDelete
     )
 }
 
@@ -133,8 +133,8 @@ fun ListItem(
     sentence: String,
     drawing: ByteArray?,
     turns: Int,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit
+    onGotoGame: () -> Unit,
+    onDelete: () -> Unit
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
@@ -144,9 +144,9 @@ fun ListItem(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
-                        onLongClick()
+                        onDelete()
                     },
-                    onTap = { onClick() }
+                    onTap = { onGotoGame() }
                 )
             }
     ) {
@@ -176,8 +176,8 @@ fun ListItem(
             if (drawing != null) {
                 DrawBox(
                     drawingZippedJson = drawing,
-                    onClick = onClick,
-                    onLongClick = onLongClick
+                    onClick = onGotoGame,
+                    onLongClick = onDelete
                 )
             }
         }
