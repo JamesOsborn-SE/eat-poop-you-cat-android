@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import dev.develsinthedetails.eatpoopyoucat.compose.EatPoopYouCatApp
-import dev.develsinthedetails.eatpoopyoucat.permissionsUtiliy.PermissionsUtility
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,7 +23,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        PermissionsUtility.requestPermissions(this)
     }
 }
 
