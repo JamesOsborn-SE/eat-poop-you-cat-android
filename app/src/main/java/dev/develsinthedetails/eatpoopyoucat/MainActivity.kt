@@ -9,7 +9,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.EatPoopYouCatApp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         SharedPref.init(applicationContext)
@@ -19,10 +18,6 @@ class MainActivity : ComponentActivity() {
             EatPoopYouCatApp()
         }
 
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 }
 
