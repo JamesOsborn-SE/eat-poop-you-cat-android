@@ -12,6 +12,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -440,8 +442,14 @@ fun Sentence(sentence: String?) {
 
     ) {
         Text(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(PaddingValues(top = 8.dp, start = 8.dp)),
             text = stringResource(R.string.draw_this_sentence),
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
+        Text(
+            modifier = Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp)),
+            text = stringResource(R.string.no_words_numbers),
+            fontStyle = FontStyle.Italic,
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
         Text(

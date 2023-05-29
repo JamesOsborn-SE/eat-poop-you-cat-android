@@ -11,6 +11,7 @@
     <string name="nickname">Nickname</string>
     <string name="enter_a_sentence">Enter a sentence</string>
     <string name="draw_this_sentence">Draw this sentence!</string>
+    <string name="no_words_numbers">Do not use words or numbers.</string>
     <string name="clear">clear</string>
     <string name="erase_description">Erase stuff</string>
     <string name="erase">Erase</string>

@@ -11,6 +11,7 @@
     <string name="nickname">Apelido</string>
     <string name="enter_a_sentence">Digite uma frase</string>
     <string name="draw_this_sentence">Desenhe esta frase!</string>
+    <string name="no_words_numbers">Não use palavras ou números.</string>
     <string name="clear">limpar</string>
     <string name="erase_description">Apagar coisas</string>
     <string name="erase">Apagar</string>
