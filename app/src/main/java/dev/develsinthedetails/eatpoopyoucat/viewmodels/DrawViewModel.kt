@@ -69,9 +69,8 @@ class DrawViewModel @Inject constructor(
         private set
     private var undoneLines = MutableStateFlow(listOf<Line>())
 
-    private var lineSegments: MutableStateFlow<List<LineSegment>> = MutableStateFlow(listOf<LineSegment>())
+    private var lineSegments: MutableStateFlow<List<LineSegment>> = MutableStateFlow(listOf())
     val lineSeg = lineSegments.asLiveData()
-    private var isReadOnly: Boolean = false
     private var justCleared: Boolean = false
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -181,10 +180,6 @@ class DrawViewModel @Inject constructor(
 
     fun redo() = moveLastToOtherList(fromList = undoneLines, toList = drawingLines)
 
-    fun setLines(lines: ArrayList<Line>) {
-        drawingLines.value = lines
-    }
-
     private fun <T> moveLastToOtherList(
         fromList: MutableStateFlow<List<T>>,
         toList: MutableStateFlow<List<T>>
@@ -194,10 +189,6 @@ class DrawViewModel @Inject constructor(
             fromList.value -= popped
             toList.value += popped
         }
-    }
-
-    fun isReadOnly(readOnly: Boolean) {
-        isReadOnly = readOnly
     }
 
     fun setCanvasResolution(height: Int, width: Int) {

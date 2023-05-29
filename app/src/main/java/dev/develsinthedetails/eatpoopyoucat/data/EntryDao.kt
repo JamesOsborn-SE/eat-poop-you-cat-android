@@ -6,9 +6,6 @@ import java.util.*
 
 @Dao
 interface EntryDao {
-    @Transaction
-    @Query("SELECT * FROM entry")
-    suspend fun getAll(): List<Entry>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
