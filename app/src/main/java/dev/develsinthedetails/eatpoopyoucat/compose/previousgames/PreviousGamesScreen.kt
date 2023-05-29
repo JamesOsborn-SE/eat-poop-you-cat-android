@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -13,27 +14,36 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
@@ -72,11 +82,13 @@ fun PreviousGamesScreen(
         ) {
             if (games.isEmpty()) {
                 Row(
-                    modifier = Modifier.fillMaxSize().clickable(
-                        onClick = {
-                            onGoHome()
-                        }
-                    ),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            onClick = {
+                                onGoHome()
+                            }
+                        ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -119,13 +131,44 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
     val lastDrawing = game.entries
         .sortedBy { it.sequence }
         .lastOrNull { it.drawing != null }
-    ListItem(
-        sentence = firstSentence,
-        drawing = lastDrawing?.drawing,
-        turns = game.entries.count(),
-        onGotoGame = onGotoGame,
-        onDelete = onDelete
-    )
+    ConstraintLayout(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        ListItem(
+            sentence = firstSentence,
+            drawing = lastDrawing?.drawing,
+            turns = game.entries.count(),
+            onGotoGame = onGotoGame
+        )
+        val deleteGame = createRef()
+        var showDeleteConformation by remember { mutableStateOf(false) }
+        IconButton(modifier = Modifier
+            .background(
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = RoundedCornerShape(32.dp)
+            )
+            .constrainAs(deleteGame)
+            {
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+            },
+            onClick = { showDeleteConformation = true }) {
+            Icon(
+                modifier = Modifier,
+                painter = painterResource(id = R.drawable.ic_delete_forever),
+                contentDescription = stringResource(id = R.string.delete_game),
+            )
+        }
+        if (showDeleteConformation) {
+            ConfirmDialog(
+                action = stringResource(id = R.string.delete_game),
+                onDismiss = { showDeleteConformation = false },
+                onConfirm = {
+                    onDelete()
+                    showDeleteConformation = false
+                })
+        }
+    }
 }
 
 @Composable
@@ -133,8 +176,7 @@ fun ListItem(
     sentence: String,
     drawing: ByteArray?,
     turns: Int,
-    onGotoGame: () -> Unit,
-    onDelete: () -> Unit
+    onGotoGame: () -> Unit
 ) {
     Card(
         shape = MaterialTheme.shapes.small,
@@ -143,9 +185,6 @@ fun ListItem(
             .padding(bottom = dimensionResource(id = R.dimen.card_bottom_margin))
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onLongPress = {
-                        onDelete()
-                    },
                     onTap = { onGotoGame() }
                 )
             }
@@ -176,8 +215,7 @@ fun ListItem(
             if (drawing != null) {
                 DrawBox(
                     drawingZippedJson = drawing,
-                    onClick = onGotoGame,
-                    onLongClick = onDelete
+                    onClick = onGotoGame
                 )
             }
         }

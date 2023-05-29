@@ -59,5 +59,6 @@
     <string name="are_you_sure">これは%1$sになります。続行しますか?</string>
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
+    <string name="delete_game">ゲームを削除</string>
     <string name="test_cat_sentence">とても眠そうな幼児の優雅さで猫があなたにウィンクします</string>
 </resources>

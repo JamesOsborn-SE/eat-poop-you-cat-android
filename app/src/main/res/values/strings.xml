@@ -58,5 +58,6 @@
     <string name="are_you_sure">This will %1$s. Do you still want to continue?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="delete_game">Delete Game</string>
     <string name="test_cat_sentence">A cat winks at you with the grace of a very sleepy toddler</string>
 </resources>
