@@ -168,3 +168,21 @@ fun ConfirmDialog(
         }
     )
 }
+@Composable
+fun getFill(): Modifier {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    val fill = when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            val screenMax = floor(screenHeight.toDouble()).dp
+            Modifier
+                .width(screenMax)
+                .height(screenMax)
+        }
+
+        else -> {
+            Modifier.fillMaxWidth()
+        }
+    }
+    return fill
+}

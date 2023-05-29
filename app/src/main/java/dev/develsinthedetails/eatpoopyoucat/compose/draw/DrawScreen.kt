@@ -58,8 +58,8 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Square
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.getFill
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
@@ -111,9 +111,9 @@ fun DrawScreen(
         redo = redo,
         sentence = previousEntry?.sentence,
         onSubmit = {
-            if(drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+            if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
                 Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-                   },
+        },
         onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     )
 }
@@ -158,18 +158,16 @@ private fun DrawScreen(
                                 stringResource(id = R.string.drawing_error)
                             )
                         }
-                        Square {
-                            Draw(
-                                Modifier,
-                                linesState,
-                                currentLineState,
-                                currentPropertiesState,
-                                setCanvasResolution,
-                                touchStart,
-                                touchMove,
-                                touchEnd,
-                            )
-                        }
+                        Draw(
+                            getFill(),
+                            linesState,
+                            currentLineState,
+                            currentPropertiesState,
+                            setCanvasResolution,
+                            touchStart,
+                            touchMove,
+                            touchEnd,
+                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -204,18 +202,18 @@ private fun DrawScreen(
                                 stringResource(id = R.string.drawing_error)
                             )
                         }
-                        Square {
-                            Draw(
-                                Modifier.weight(1f),
-                                linesState,
-                                currentLineState,
-                                currentPropertiesState,
-                                setCanvasResolution,
-                                touchStart,
-                                touchMove,
-                                touchEnd,
-                            )
-                        }
+
+                        Draw(
+                            getFill().weight(1f),
+                            linesState,
+                            currentLineState,
+                            currentPropertiesState,
+                            setCanvasResolution,
+                            touchStart,
+                            touchMove,
+                            touchEnd,
+                        )
+
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -252,8 +250,8 @@ private fun Draw(
     touchEnd: (PointerInputChange) -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = getFill()
+            .aspectRatio(1f)
             .padding(all = 8.dp)
     ) {
 
@@ -266,7 +264,7 @@ private fun Draw(
 
         Box(
             modifier = modifier
-                .fillMaxSize()
+                .aspectRatio(1f)
                 .padding(all = 8.dp)
                 .onPlaced {
                     setCanvasResolution(it.size)
@@ -472,7 +470,8 @@ fun Sentence(sentence: String?) {
 @Preview
 @Composable
 fun PreviewDawingWithSentance() {
-    val lines = Json.decodeFromString<List<Line>>(dev.develsinthedetails.eatpoopyoucat.utilities.catTestDrawingLinesInJson)
+    val lines =
+        Json.decodeFromString<List<Line>>(dev.develsinthedetails.eatpoopyoucat.utilities.catTestDrawingLinesInJson)
     val linesState = remember {
         mutableStateOf(lines)
     }

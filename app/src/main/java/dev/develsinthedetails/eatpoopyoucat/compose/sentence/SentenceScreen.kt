@@ -36,15 +36,14 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapper
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Square
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.getFill
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
 
 @Composable
 fun SentenceScreen(
-    modifier: Modifier = Modifier,
     viewModel: SentenceViewModel = hiltViewModel(),
     onNavigateToDraw: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit
@@ -144,10 +143,8 @@ fun SentenceScreen(
                     rowModifier = Modifier.fillMaxSize(),
                     flip = false,
                     {
-                        Square {
-                            drawing?.let {
-                                DrawBox(drawingZippedJson = it)
-                            }
+                        drawing?.let {
+                            DrawBox(drawingZippedJson = it, modifier = getFill())
                         }
                     }
                 )
