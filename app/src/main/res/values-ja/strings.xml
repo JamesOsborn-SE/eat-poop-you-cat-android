@@ -56,5 +56,8 @@
     <string name="no_previous_games_found">以前のゲームが見つかりませんでした!遊びに行こう!</string>
     <string name="pass_to_the_next">この仕掛けを次のプレイヤーに渡そう!</string>
     <string name="scroll_to_top">トップにスクロール</string>
+    <string name="are_you_sure">これは%1$sになります。続行しますか?</string>
+    <string name="yes">はい</string>
+    <string name="no">いいえ</string>
     <string name="test_cat_sentence">とても眠そうな幼児の優雅さで猫があなたにウィンクします</string>
 </resources>
