@@ -1,22 +1,27 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +30,7 @@ import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -43,26 +49,39 @@ fun PreviousGameScreen(
     modifier: Modifier = Modifier,
 ) {
     AppTheme {
-        // A surface container using the 'background' color from the theme
+        val coroutineScope = rememberCoroutineScope()
+        val listState = rememberLazyGridState()
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(1),
-                modifier = modifier.testTag("Entry_list"),
-                contentPadding = PaddingValues(
-                    horizontal = dimensionResource(id = R.dimen.card_side_margin),
-                    vertical = dimensionResource(id = R.dimen.header_margin)
-                )
-            ) {
-                items(
-                    items = entries,
-                    key = { it.id }
-                ) {
-                    EntryListItem(it)
+            Scaffold(floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_arrow_upward_24),
+                        contentDescription = stringResource(id = R.string.scroll_to_top)
+                    )
                 }
-            }
+            },
+                content = { contentPadding ->
+                    LazyVerticalGrid(
+                        modifier = modifier.testTag("Entry_list"),
+                        state = listState,
+                        columns = GridCells.Fixed(1),
+                        contentPadding = contentPadding,
+                    ) {
+                        items(
+                            items = entries,
+                            key = { it.id }
+                        ) {
+                            EntryListItem(it)
+                        }
+                    }
+                })
         }
     }
 }
