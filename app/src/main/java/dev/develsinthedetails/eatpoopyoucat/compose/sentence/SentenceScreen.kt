@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 
 import android.widget.Toast
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -30,14 +28,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.EndGameButton
-import dev.develsinthedetails.eatpoopyoucat.compose.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
-import dev.develsinthedetails.eatpoopyoucat.compose.getFill
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapper
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Square
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
@@ -102,21 +102,13 @@ fun SentenceScreen(
         ) {
             if (isLoading)
                 Spinner()
-            Column() {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.CenterHorizontally)
-                        .padding(15.dp),
-                ) {
-
-                    drawing?.let {
-                        DrawBox(
-                            modifier = getFill(),
-                            drawingZippedJson = it
-                        )
-                    }
-                    ErrorText(isError, stringResource(id = R.string.write_sentence_error))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp),
+            ) {
+                ErrorText(isError, stringResource(id = R.string.write_sentence_error))
+                Row(modifier = Modifier) {
                     OutlinedTextField(
                         value = sentence,
                         onValueChange = onSentenceChange,
@@ -125,8 +117,9 @@ fun SentenceScreen(
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = { onSubmit() }),
-                        modifier = modifier
+                        modifier = Modifier
                             .fillMaxWidth()
+                            .weight(.6f)
                             .focusRequester(focusRequester),
                         enabled = true,
                         readOnly = false,
@@ -139,32 +132,47 @@ fun SentenceScreen(
                             )
                         },
                     )
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            SubmitButton(onSubmit = onSubmit)
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-
-                            EndGameButton(onEnd = {
-                                if (isFirstTurn)
-                                    onDeleteGame()
-                                onNavigateToEndedGame()
-                            })
-                        }
-                    }
+                    SubmitButton(
+                        modifier = Modifier
+                            .weight(.4f)
+                            .padding(top = 15.dp, start = 15.dp),
+                        onSubmit = onSubmit
+                    )
                 }
-                if (isFirstTurn)
-                    LaunchedEffect(Unit) {
-                        focusRequester.requestFocus()
+                OrientationSwapper(
+                    modifier = Modifier.fillMaxSize(),
+                    rowModifier = Modifier.fillMaxSize(),
+                    flip = false,
+                    {
+                        Square {
+                            drawing?.let {
+                                DrawBox(drawingZippedJson = it)
+                            }
+                        }
                     }
+                )
+            }
+
+            ConstraintLayout(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                val button = createRef()
+
+                EndGameButton(modifier = Modifier.constrainAs(button) {
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+                },
+                    onEnd = {
+                        if (isFirstTurn)
+                            onDeleteGame()
+                        onNavigateToEndedGame()
+                    })
             }
         }
+        if (isFirstTurn)
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
     }
 }
 
@@ -178,6 +186,7 @@ fun PreviewSentenceScreen() {
         sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence,
         sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
         drawing = null,
+        isError = true,
         onNavigateToEndedGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
@@ -202,6 +211,7 @@ fun PreviewSentenceScreenWithDrawing() {
     SentenceScreen(
         sentencePromt = stringResource(id = R.string.write_a_sentence_to_describe_this_drawing),
         drawing = Gzip.compress(lines),
+        isError = true,
         onNavigateToEndedGame = {},
         onSentenceChange = {},
         onDeleteGame = {},

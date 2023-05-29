@@ -54,11 +54,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.EndGameButton
-import dev.develsinthedetails.eatpoopyoucat.compose.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.SubmitButton
-import dev.develsinthedetails.eatpoopyoucat.compose.getFill
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Square
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
@@ -157,16 +158,18 @@ private fun DrawScreen(
                                 stringResource(id = R.string.drawing_error)
                             )
                         }
-                        Draw(
-                            getFill(),
-                            linesState,
-                            currentLineState,
-                            currentPropertiesState,
-                            setCanvasResolution,
-                            touchStart,
-                            touchMove,
-                            touchEnd,
-                        )
+                        Square {
+                            Draw(
+                                Modifier,
+                                linesState,
+                                currentLineState,
+                                currentPropertiesState,
+                                setCanvasResolution,
+                                touchStart,
+                                touchMove,
+                                touchEnd,
+                            )
+                        }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -201,16 +204,18 @@ private fun DrawScreen(
                                 stringResource(id = R.string.drawing_error)
                             )
                         }
-                        Draw(
-                            getFill().weight(1f),
-                            linesState,
-                            currentLineState,
-                            currentPropertiesState,
-                            setCanvasResolution,
-                            touchStart,
-                            touchMove,
-                            touchEnd,
-                        )
+                        Square {
+                            Draw(
+                                Modifier.weight(1f),
+                                linesState,
+                                currentLineState,
+                                currentPropertiesState,
+                                setCanvasResolution,
+                                touchStart,
+                                touchMove,
+                                touchEnd,
+                            )
+                        }
                         Column(
                             modifier = Modifier
                                 .weight(1f)
@@ -247,8 +252,8 @@ private fun Draw(
     touchEnd: (PointerInputChange) -> Unit,
 ) {
     Box(
-        modifier = getFill()
-            .aspectRatio(1f)
+        modifier = Modifier
+            .fillMaxSize()
             .padding(all = 8.dp)
     ) {
 
@@ -261,7 +266,7 @@ private fun Draw(
 
         Box(
             modifier = modifier
-                .aspectRatio(1f)
+                .fillMaxSize()
                 .padding(all = 8.dp)
                 .onPlaced {
                     setCanvasResolution(it.size)
@@ -287,7 +292,7 @@ private fun Draw(
 @Composable
 fun DrawBox(
     modifier: Modifier = Modifier,
-    drawingZippedJson: ByteArray = byteArrayOf(),
+    drawingZippedJson: ByteArray? = byteArrayOf(),
     drawingLines: List<Line> = listOf(),
     currentLine: List<LineSegment> = listOf(),
     currentProperties: LineProperties = LineProperties(),
@@ -296,7 +301,7 @@ fun DrawBox(
 ) {
     val lines: MutableList<Line> = if (drawingLines.isNotEmpty())
         drawingLines.toMutableList()
-    else if (drawingZippedJson.isNotEmpty())
+    else if (drawingZippedJson!!.isNotEmpty())
         Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
     else
         mutableListOf()
@@ -461,37 +466,6 @@ fun Sentence(sentence: String?) {
     }
 }
 
-@Composable
-fun OrientationSwapperEvenly(
-    modifier: Modifier = Modifier,
-    rowModifier: Modifier = Modifier,
-    flip: Boolean = false,
-    vararg contents: @Composable () -> Unit
-) {
-    val isColumn =
-        flip.xor(LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT)
-    if (isColumn) {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            for (content in contents) {
-                content()
-            }
-        }
-    } else {
-        Row(
-            modifier = rowModifier,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
-        ) {
-            for (content in contents) {
-                content()
-            }
-        }
-    }
-}
 /**
  * Preview Screenshot #3
  */

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.Spinner
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
 import java.util.UUID
