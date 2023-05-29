@@ -12,7 +12,7 @@
     <string name="nickname">ニックネーム</string>
     <string name="enter_a_sentence">文章を入力</string>
     <string name="draw_this_sentence">この文章を描いてください！</string>
-    <string name="no_words_numbers">単語や数字は使用しないでください。</string>
+    <string name="no_letters_or_numbers">文字や数字は使用しないでください。</string>
     <string name="clear">クリア</string>
     <string name="erase_description">ものを消去する</string>
     <string name="erase">消去</string>

@@ -453,7 +453,7 @@ fun Sentence(sentence: String?) {
         )
         Text(
             modifier = Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp)),
-            text = stringResource(R.string.no_words_numbers),
+            text = stringResource(R.string.no_letters_or_numbers),
             fontStyle = FontStyle.Italic,
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
