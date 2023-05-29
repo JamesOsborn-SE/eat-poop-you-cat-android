@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -41,6 +42,7 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -86,7 +88,8 @@ fun DrawScreen(
     val setPencilMode: (DrawMode) -> Unit = { drawViewModel.setPencileMode(it) }
     val undo = { drawViewModel.undo() }
     val redo = { drawViewModel.redo() }
-
+    val context = LocalContext.current
+    val toastText = stringResource(id = R.string.pass_to_the_next)
     DrawScreen(
         linesState = linesState,
         currentLineState = currentLineState,
@@ -104,7 +107,10 @@ fun DrawScreen(
         undo = undo,
         redo = redo,
         sentence = previousEntry?.sentence,
-        onSubmit = { drawViewModel.checkDrawing { onNavigateToSentence(drawViewModel.entryId) } },
+        onSubmit = {
+            if(drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+                Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+                   },
         onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     )
 }

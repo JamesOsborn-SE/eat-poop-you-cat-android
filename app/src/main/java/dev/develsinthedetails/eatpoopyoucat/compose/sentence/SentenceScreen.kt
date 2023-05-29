@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 
+import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,9 +56,12 @@ fun SentenceScreen(
     val sentencePromt =
         if (isFirstTurn) stringResource(R.string.write_a_funny_sentence) else stringResource(R.string.write_a_sentence_to_describe_this_drawing)
 
+    val context = LocalContext.current
+    val toastText = stringResource(id = R.string.pass_to_the_next)
     fun submit() {
         if (!viewModel.checkSentence() && previousEntry != null) {
             viewModel.saveEntry { onNavigateToDraw(idToSend) }
+            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
         }
     }
     SentenceScreen(
@@ -106,8 +111,10 @@ fun SentenceScreen(
                 ) {
 
                     drawing?.let {
-                        DrawBox(modifier= getFill(),
-                            drawingZippedJson = it)
+                        DrawBox(
+                            modifier = getFill(),
+                            drawingZippedJson = it
+                        )
                     }
                     ErrorText(isError, stringResource(id = R.string.write_sentence_error))
                     OutlinedTextField(

@@ -89,7 +89,7 @@ class DrawViewModelTest {
         field.isAccessible = true
         field.set(viewModel, intSharedFlow)
 
-        viewModel.checkDrawing {}
+        viewModel.isValidDrawing {}
 
         assert(viewModel.isError)
     }

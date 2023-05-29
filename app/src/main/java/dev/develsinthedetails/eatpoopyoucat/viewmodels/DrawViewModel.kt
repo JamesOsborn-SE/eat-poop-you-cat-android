@@ -99,12 +99,12 @@ class DrawViewModel @Inject constructor(
         drawingLines.value = listOf()
     }
 
-    fun checkDrawing(onNavigateToSentence: () -> Unit) {
+    fun isValidDrawing(onNavigateToSentence: () -> Unit): Boolean {
         if (drawingLines.value.count() < 3
             || currentResolution.height == 0
             || currentResolution.width == 0){
             isError = true
-            return
+            return false
         }
         isLoading = true
         viewModelScope.launch {
@@ -119,6 +119,7 @@ class DrawViewModel @Inject constructor(
             onNavigateToSentence.invoke()
             isLoading = false
         }
+        return true
     }
 
     fun touchStart(inputChange: PointerInputChange) {

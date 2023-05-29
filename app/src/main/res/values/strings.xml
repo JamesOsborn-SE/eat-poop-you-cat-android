@@ -52,5 +52,6 @@
     <string name="end_game_for_all">End Game For All</string>
     <string name="app_description">A game of telephone where you alternate between sentences and drawings. The game is over when each person has one turn.</string>
     <string name="no_previous_games_found">No previous games found! Go play!</string>
+    <string name="pass_to_the_next">Pass this device to the next player!</string>
     <string name="test_cat_sentence">A cat winks at you with the grace of a very sleepy toddler</string>
 </resources>
