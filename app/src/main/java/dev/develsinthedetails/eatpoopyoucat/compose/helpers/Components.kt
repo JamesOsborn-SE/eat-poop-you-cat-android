@@ -90,7 +90,7 @@ fun SubmitButton(
 ) {
     Button(
         modifier = modifier
-            .shadow(15.dp, shape = RoundedCornerShape(50.dp)),
+            .shadow(8.dp, shape = RoundedCornerShape(50.dp)),
         onClick = onSubmit
     ) {
         Text(stringResource(R.string.submit))
