@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +22,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,19 +44,19 @@ fun PreviousGameScreen(
     viewModel: PreviousGameViewModel = hiltViewModel(),
 ) {
     val game by viewModel.gameWithEntries.observeAsState()
-    game?.let { PreviousGameScreen(entries = it.entries, modifier) }
+    game?.let { PreviousGameScreen(entries = it.entries, modifier = modifier) }
 }
 
 @Composable
 fun PreviousGameScreen(
-    entries: List<Entry>,
     modifier: Modifier = Modifier,
+    entries: List<Entry>,
 ) {
     AppTheme {
         val coroutineScope = rememberCoroutineScope()
-        val listState = rememberLazyGridState()
+        val listState = rememberLazyListState()
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
             Scaffold(floatingActionButton = {
@@ -74,17 +72,18 @@ fun PreviousGameScreen(
                 }
             },
                 content = { contentPadding ->
-                    LazyVerticalGrid(
-                        modifier = modifier.testTag("Entry_list"),
+                    LazyColumn(
                         state = listState,
-                        columns = GridCells.Fixed(1),
                         contentPadding = contentPadding,
                     ) {
                         items(
                             items = entries,
-                            key = { it.id }
+                            key = { entry ->
+                                entry.id
+                            }
                         ) {
-                            EntryListItem(it)
+                            entry ->
+                            EntryListItem(entry)
                         }
                     }
                 })
