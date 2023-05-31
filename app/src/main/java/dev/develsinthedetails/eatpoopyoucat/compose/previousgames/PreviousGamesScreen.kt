@@ -141,7 +141,7 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
             onGotoGame = onGotoGame
         )
         val deleteGame = createRef()
-        var showDeleteConformation by remember { mutableStateOf(false) }
+        var showDeleteConfirmation by remember { mutableStateOf(false) }
         IconButton(modifier = Modifier
             .background(
                 color = MaterialTheme.colorScheme.tertiaryContainer,
@@ -152,20 +152,20 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
                 end.linkTo(parent.end)
                 bottom.linkTo(parent.bottom)
             },
-            onClick = { showDeleteConformation = true }) {
+            onClick = { showDeleteConfirmation = true }) {
             Icon(
                 modifier = Modifier,
                 painter = painterResource(id = R.drawable.ic_delete_forever),
                 contentDescription = stringResource(id = R.string.delete_game),
             )
         }
-        if (showDeleteConformation) {
+        if (showDeleteConfirmation) {
             ConfirmDialog(
                 action = stringResource(id = R.string.delete_game),
-                onDismiss = { showDeleteConformation = false },
+                onDismiss = { showDeleteConfirmation = false },
                 onConfirm = {
                     onDelete()
-                    showDeleteConformation = false
+                    showDeleteConfirmation = false
                 })
         }
     }
