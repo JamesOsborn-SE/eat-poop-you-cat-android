@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.compose.draw
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -54,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
@@ -92,6 +95,24 @@ fun DrawScreen(
     val redo = { drawViewModel.redo() }
     val context = LocalContext.current
     val toastText = stringResource(id = R.string.pass_to_the_next)
+
+    val onEndedGame =
+        { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
+    var showEndGameConfirm by remember { mutableStateOf(false) }
+
+    BackHandler(
+        enabled = true
+    ) {
+        showEndGameConfirm = true
+    }
+    if (showEndGameConfirm) {
+        ConfirmDialog(
+            onDismiss = { showEndGameConfirm = false },
+            onConfirm = onEndedGame,
+            action = stringResource(R.string.end_game_for_all)
+        )
+    }
+
     DrawScreen(
         linesState = linesState,
         currentLineState = currentLineState,
@@ -113,7 +134,7 @@ fun DrawScreen(
             if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
                 Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
         },
-        onEnd = { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
+        onEnd = onEndedGame
     )
 }
 

@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -32,6 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapper
@@ -62,6 +66,23 @@ fun SentenceScreen(
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
         }
     }
+
+    val onEndGame = { onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString()) }
+    var showEndGameConfirm by remember { mutableStateOf(false) }
+
+    BackHandler(
+        enabled = true
+    ) {
+        showEndGameConfirm = true
+    }
+    if (showEndGameConfirm) {
+        ConfirmDialog(
+            onDismiss = { showEndGameConfirm = false },
+            onConfirm = onEndGame,
+            action = stringResource(R.string.end_game_for_all)
+        )
+    }
+
     SentenceScreen(
         isLoading = viewModel.isLoading,
         isError = viewModel.isError,
@@ -69,7 +90,7 @@ fun SentenceScreen(
         sentence = viewModel.sentence,
         sentencePromt = sentencePromt,
         drawing = previousEntry?.drawing,
-        onNavigateToEndedGame = { onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString()) },
+        onNavigateToEndedGame = onEndGame,
         onSentenceChange = { viewModel.updateSentence(it) },
         onDeleteGame = { viewModel.deleteGame() },
         onSubmit = { submit() }
