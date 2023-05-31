@@ -60,7 +60,7 @@ fun PreviousGamesScreen(
     val games by viewModel.games.observeAsState(initial = emptyList())
     PreviousGamesScreen(
         modifier,
-        games = games,
+        games = games.filter{ it.entries.isNotEmpty() },
         onGotoGame = onGameClick,
         onGoHome = onGoHome,
         onDelete = { viewModel.deleteGame(it) })
