@@ -413,7 +413,7 @@ private fun DrawingPropertiesMenu(
                 setPencilMode(DrawMode.Draw)
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_draw_black_24dp),
+                    painter = painterResource(id = R.drawable.ic_draw_black_24),
                     contentDescription = stringResource(id = R.string.erase),
                     tint = if (drawMode == DrawMode.Draw) Color.Black else Color.LightGray
                 )
@@ -424,7 +424,7 @@ private fun DrawingPropertiesMenu(
                 setPencilMode(DrawMode.Erase)
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_eraser_black_24dp),
+                    painter = painterResource(id = R.drawable.ic_eraser_black_24),
                     contentDescription = stringResource(id = R.string.erase),
                     tint = if (drawMode == DrawMode.Erase) Color.Black else Color.LightGray
                 )
@@ -435,7 +435,7 @@ private fun DrawingPropertiesMenu(
                 onUndo()
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_undo_black_24dp),
+                    painter = painterResource(id = R.drawable.ic_undo_black_24),
                     contentDescription = stringResource(id = R.string.undo),
                     tint = if (undoCount > 0) Color.Black else Color.LightGray
                 )
@@ -446,7 +446,7 @@ private fun DrawingPropertiesMenu(
                 onRedo()
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_redo_black_24dp),
+                    painter = painterResource(id = R.drawable.ic_redo_black_24),
                     contentDescription = stringResource(id = R.string.redo),
                     tint = if (redoCount > 0) Color.Black else Color.LightGray
                 )

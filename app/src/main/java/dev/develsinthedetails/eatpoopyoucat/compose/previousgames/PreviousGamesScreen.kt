@@ -155,7 +155,7 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
             onClick = { showDeleteConfirmation = true }) {
             Icon(
                 modifier = Modifier,
-                painter = painterResource(id = R.drawable.ic_delete_forever),
+                painter = painterResource(id = R.drawable.ic_delete_forever_24),
                 contentDescription = stringResource(id = R.string.delete_game),
             )
         }
