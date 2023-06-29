@@ -99,43 +99,52 @@ fun DrawScreen(
     val onEndedGame =
         { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     var showEndGameConfirm by remember { mutableStateOf(false) }
+    AppTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            BackHandler(
+                enabled = true
+            ) {
+                showEndGameConfirm = true
+            }
+            if (showEndGameConfirm) {
+                ConfirmDialog(
+                    onDismiss = { showEndGameConfirm = false },
+                    onConfirm = onEndedGame,
+                    action = stringResource(R.string.end_game_for_all)
+                )
 
-    BackHandler(
-        enabled = true
-    ) {
-        showEndGameConfirm = true
-    }
-    if (showEndGameConfirm) {
-        ConfirmDialog(
-            onDismiss = { showEndGameConfirm = false },
-            onConfirm = onEndedGame,
-            action = stringResource(R.string.end_game_for_all)
-        )
-    }
+            }
 
-    DrawScreen(
-        linesState = linesState,
-        currentLineState = currentLineState,
-        currentPropertiesState = currentPropertiesState,
-        setCanvasResolution = setCanvasResolution,
-        isLoading = drawViewModel.isLoading,
-        touchStart = touchStart,
-        touchMove = touchMove,
-        touchEnd = touchEnd,
-        undoCount = undoCount,
-        redoCount = redoCount,
-        drawMode = drawViewModel.drawMode,
-        isError = drawViewModel.isError,
-        setPencilMode = setPencilMode,
-        undo = undo,
-        redo = redo,
-        sentence = previousEntry?.sentence,
-        onSubmit = {
-            if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
-                Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-        },
-        onEnd = onEndedGame
-    )
+            DrawScreen(
+                linesState = linesState,
+                currentLineState = currentLineState,
+                currentPropertiesState = currentPropertiesState,
+                setCanvasResolution = setCanvasResolution,
+                isLoading = drawViewModel.isLoading,
+                touchStart = touchStart,
+                touchMove = touchMove,
+                touchEnd = touchEnd,
+                undoCount = undoCount,
+                redoCount = redoCount,
+                drawMode = drawViewModel.drawMode,
+                isError = drawViewModel.isError,
+                setPencilMode = setPencilMode,
+                undo = undo,
+                redo = redo,
+                sentence = previousEntry?.sentence,
+                onSubmit = {
+                    if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+                        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+                },
+                onEnd = onEndedGame
+            )
+        }
+    }
 }
 
 @Composable
@@ -159,107 +168,99 @@ private fun DrawScreen(
     onSubmit: () -> Unit,
     onEnd: () -> Unit
 ) {
-    AppTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            if (isLoading)
-                Spinner()
-            when (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                (true) -> {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Column(modifier = Modifier.fillMaxSize()) {
-                            Sentence(sentence)
-                            ErrorText(
-                                isError,
-                                stringResource(id = R.string.drawing_error)
-                            )
-                        }
-                        Draw(
-                            Modifier,
-                            linesState,
-                            currentLineState,
-                            currentPropertiesState,
-                            setCanvasResolution,
-                            touchStart,
-                            touchMove,
-                            touchEnd,
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            DrawingPropertiesMenu(
-                                undoCount = undoCount.value,
-                                redoCount = redoCount.value,
-                                drawMode = drawMode,
-                                setPencilMode = setPencilMode,
-                                onUndo = undo,
-                                onRedo = redo
-                            )
-                            SubmitButton(onSubmit = onSubmit)
-                        }
-                        Row(modifier = Modifier.padding(4.dp)) {
-
-                            EndGameButton(onEnd = onEnd)
-                        }
-                    }
+    if (isLoading)
+        Spinner()
+    when (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        (true) -> {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Sentence(sentence)
+                    ErrorText(
+                        isError,
+                        stringResource(id = R.string.drawing_error)
+                    )
                 }
+                Draw(
+                    Modifier,
+                    linesState,
+                    currentLineState,
+                    currentPropertiesState,
+                    setCanvasResolution,
+                    touchStart,
+                    touchMove,
+                    touchEnd,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    DrawingPropertiesMenu(
+                        undoCount = undoCount.value,
+                        redoCount = redoCount.value,
+                        drawMode = drawMode,
+                        setPencilMode = setPencilMode,
+                        onUndo = undo,
+                        onRedo = redo
+                    )
+                    SubmitButton(onSubmit = onSubmit)
+                }
+                Row(modifier = Modifier.padding(4.dp)) {
 
-                else -> {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(modifier = Modifier.weight(2f)) {
-                            Sentence(sentence)
-                            ErrorText(
-                                isError,
-                                stringResource(id = R.string.drawing_error)
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(6f)
-                                .padding(8.dp)
-                        ) {
-                            Draw(
-                                Modifier,
-                                linesState,
-                                currentLineState,
-                                currentPropertiesState,
-                                setCanvasResolution,
-                                touchStart,
-                                touchMove,
-                                touchEnd,
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(2f)
-                                .fillMaxHeight(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            EndGameButton(onEnd = onEnd)
-                            DrawingPropertiesMenu(
-                                undoCount = undoCount.value,
-                                redoCount = redoCount.value,
-                                drawMode = drawMode,
-                                setPencilMode = setPencilMode,
-                                onUndo = undo,
-                                onRedo = redo
-                            )
-                            SubmitButton(onSubmit = onSubmit)
-                        }
-                    }
+                    EndGameButton(onEnd = onEnd)
+                }
+            }
+        }
+
+        else -> {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(2f)) {
+                    Sentence(sentence)
+                    ErrorText(
+                        isError,
+                        stringResource(id = R.string.drawing_error)
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(6f)
+                        .padding(8.dp)
+                ) {
+                    Draw(
+                        Modifier,
+                        linesState,
+                        currentLineState,
+                        currentPropertiesState,
+                        setCanvasResolution,
+                        touchStart,
+                        touchMove,
+                        touchEnd,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    EndGameButton(onEnd = onEnd)
+                    DrawingPropertiesMenu(
+                        undoCount = undoCount.value,
+                        redoCount = redoCount.value,
+                        drawMode = drawMode,
+                        setPencilMode = setPencilMode,
+                        onUndo = undo,
+                        onRedo = redo
+                    )
+                    SubmitButton(onSubmit = onSubmit)
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -512,26 +513,35 @@ fun PreviewDawingWithSentance() {
         mutableStateOf(0)
     }
     val sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence
-    DrawScreen(
-        linesState = linesState,
-        currentLineState = currentLineState,
-        currentPropertiesState = currentPropertiesState,
-        setCanvasResolution = setCanvasResolution,
-        isLoading = false,
-        touchStart = { },
-        touchMove = { },
-        touchEnd = { },
-        undoCount = undoCount,
-        redoCount = redoCount,
-        drawMode = DrawMode.Draw,
-        isError = false,
-        setPencilMode = { },
-        undo = { },
-        redo = { },
-        sentence = sentence,
-        onSubmit = { },
-        onEnd = { }
-    )
+    AppTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            DrawScreen(
+                linesState = linesState,
+                currentLineState = currentLineState,
+                currentPropertiesState = currentPropertiesState,
+                setCanvasResolution = setCanvasResolution,
+                isLoading = false,
+                touchStart = { },
+                touchMove = { },
+                touchEnd = { },
+                undoCount = undoCount,
+                redoCount = redoCount,
+                drawMode = DrawMode.Draw,
+                isError = false,
+                setPencilMode = { },
+                undo = { },
+                redo = { },
+                sentence = sentence,
+                onSubmit = { },
+                onEnd = { }
+            )
+        }
+    }
 }
 
 
