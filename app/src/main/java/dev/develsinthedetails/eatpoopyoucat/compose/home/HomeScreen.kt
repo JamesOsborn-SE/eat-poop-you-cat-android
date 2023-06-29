@@ -2,17 +2,21 @@ package dev.develsinthedetails.eatpoopyoucat.compose.home
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -90,6 +94,11 @@ fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
             navTo()
         }) {
         Text(stringResource(id = R.string.previous_games))
+        Spacer(modifier = Modifier.size(5.dp))
+        Icon(
+            contentDescription = stringResource(id = R.string.previous_games),
+            painter = painterResource(id = R.drawable.ic_history_24),
+        )
     }
 }
 
@@ -101,6 +110,11 @@ fun StartGame(
     Button(onClick = onStartGame,
         modifier = modifier ) {
         Text(stringResource(id = R.string.dialog_start_game))
+        Spacer(modifier = Modifier.size(5.dp))
+        Icon(
+            contentDescription = stringResource(id = R.string.dialog_start_game),
+            painter = painterResource(id = R.drawable.ic_start_24),
+        )
     }
 }
 
