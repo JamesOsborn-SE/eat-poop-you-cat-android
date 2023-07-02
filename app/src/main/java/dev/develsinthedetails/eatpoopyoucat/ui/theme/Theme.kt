@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 
 private val LightColors = lightColorScheme(
@@ -38,7 +39,25 @@ private val LightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
+interface WarningColors {
+    val warning: Color
+    val onWarning: Color
+    val warningContainer: Color
+    val onWarningContainer: Color
+}
+private class LightWarnings:WarningColors {
+        override val warning: Color =  light_warning
+        override val onWarning = light_onWarning
+        override val warningContainer = light_warningContainer
+        override val onWarningContainer = light_onWarningContainer
+}
 
+private class DarkWarnings:WarningColors {
+    override val warning: Color =  dark_warning
+    override val onWarning = dark_onWarning
+    override val warningContainer = dark_warningContainer
+    override val onWarningContainer = dark_onWarningContainer
+}
 
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -87,4 +106,13 @@ fun AppTheme(
     colorScheme = colors,
     content = content
   )
+}
+
+@Composable
+fun warningColors(useDarkTheme: Boolean = isSystemInDarkTheme()): WarningColors {
+    return if (!useDarkTheme) {
+        LightWarnings()
+    } else{
+        DarkWarnings()
+    }
 }

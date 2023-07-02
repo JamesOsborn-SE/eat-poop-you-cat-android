@@ -64,4 +64,14 @@ val md_theme_dark_outlineVariant = Color(0xFF43483F)
 val md_theme_dark_scrim = Color(0xFF000000)
 
 
-val seed = Color(0xFF008000)
+val seed = Color(0xFF008000) //Primary on https://m3.material.io/theme-builder#/custom
+
+val warning = Color(0xFFFFFF00)
+val light_warning = Color(0xFF626200)
+val light_onWarning = Color(0xFFFFFFFF)
+val light_warningContainer = Color(0xFFEAEA00)
+val light_onWarningContainer = Color(0xFF1D1D00)
+val dark_warning = Color(0xFFCDCD00)
+val dark_onWarning = Color(0xFF323200)
+val dark_warningContainer = Color(0xFF494900)
+val dark_onWarningContainer = Color(0xFFEAEA00)
