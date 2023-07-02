@@ -40,7 +40,7 @@ class SentenceViewModel @Inject constructor(
     }
 
     fun checkSentence(): Boolean {
-        val hasThreeOrMoreWords = sentence.contains("([a-z0-9A-Z]+ +){3,}".toRegex())
+        val hasThreeOrMoreWords = sentence.contains("(\\p{L}+ +){3,}".toRegex())
         isError = !hasThreeOrMoreWords
         return isError
     }
