@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
@@ -68,20 +69,6 @@ fun SentenceScreen(
     }
 
     val onEndGame = { onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString()) }
-    var showEndGameConfirm by remember { mutableStateOf(false) }
-
-    BackHandler(
-        enabled = true
-    ) {
-        showEndGameConfirm = true
-    }
-    if (showEndGameConfirm) {
-        ConfirmDialog(
-            onDismiss = { showEndGameConfirm = false },
-            onConfirm = onEndGame,
-            action = stringResource(R.string.end_game_for_all)
-        )
-    }
 
     SentenceScreen(
         isLoading = viewModel.isLoading,
@@ -90,7 +77,7 @@ fun SentenceScreen(
         sentence = viewModel.sentence,
         sentencePromt = sentencePromt,
         drawing = previousEntry?.drawing,
-        onNavigateToEndedGame = onEndGame,
+        onEndGame = onEndGame,
         onSentenceChange = { viewModel.updateSentence(it) },
         onDeleteGame = { viewModel.deleteGame() },
         onSubmit = { submit() }
@@ -106,19 +93,33 @@ fun SentenceScreen(
     sentence: String = String(),
     sentencePromt: String,
     drawing: ByteArray? = null,
-    onNavigateToEndedGame: () -> Unit,
+    onEndGame: () -> Unit,
     onSentenceChange: (String) -> Unit,
     onDeleteGame: () -> Unit,
     onSubmit: () -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
     AppTheme {
-        val focusRequester = remember { FocusRequester() }
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
+            var showEndGameConfirm by remember { mutableStateOf(false) }
+
+            BackHandler(
+                enabled = true
+            ) {
+                showEndGameConfirm = true
+            }
+            if (showEndGameConfirm) {
+                ConfirmDialog(
+                    onDismiss = { showEndGameConfirm = false },
+                    onConfirm = onEndGame,
+                    action = stringResource(R.string.end_game_for_all)
+                )
+            }
             if (isLoading)
                 Spinner()
             Column(
@@ -182,7 +183,7 @@ fun SentenceScreen(
                     onEnd = {
                         if (isFirstTurn)
                             onDeleteGame()
-                        onNavigateToEndedGame()
+                        onEndGame()
                     })
             }
         }
@@ -204,7 +205,7 @@ fun PreviewSentenceScreen() {
         sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
         drawing = null,
         isError = true,
-        onNavigateToEndedGame = {},
+        onEndGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
         onSubmit = {},
@@ -229,7 +230,7 @@ fun PreviewSentenceScreenWithDrawing() {
         sentencePromt = stringResource(id = R.string.write_a_sentence_to_describe_this_drawing),
         drawing = Gzip.compress(lines),
         isError = true,
-        onNavigateToEndedGame = {},
+        onEndGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
         onSubmit = {},
