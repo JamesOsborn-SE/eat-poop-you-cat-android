@@ -17,6 +17,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 
 @Composable
 fun Spinner(
@@ -58,19 +60,19 @@ fun SubmitButton(
     modifier: Modifier = Modifier,
     onSubmit: () -> Unit,
 ) {
-        Button(
-            modifier = modifier
-                .shadow(8.dp, shape = RoundedCornerShape(50.dp)),
-            onClick = onSubmit
-        ) {
+    Button(
+        modifier = modifier
+            .shadow(8.dp, shape = RoundedCornerShape(50.dp)),
+        onClick = onSubmit
+    ) {
 
-            Text(stringResource(R.string.submit))
-            Spacer(modifier = Modifier.size(5.dp))
-            Icon(
-                contentDescription = stringResource(id = R.string.submit),
-                painter = painterResource(id = R.drawable.ic_send_24),
-            )
-        }
+        Text(stringResource(R.string.submit))
+        Spacer(modifier = Modifier.size(5.dp))
+        Icon(
+            contentDescription = stringResource(id = R.string.submit),
+            painter = painterResource(id = R.drawable.ic_send_24)
+        )
+    }
 
 }
 
@@ -83,7 +85,10 @@ fun EndGameButton(
     Button(
         modifier = modifier
             .padding(top = 15.dp),
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+        colors = ButtonDefaults.buttonColors(
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
         onClick = { showEndGameConfirm = true }
     )
     {
@@ -91,7 +96,7 @@ fun EndGameButton(
         Spacer(modifier = Modifier.size(5.dp))
         Icon(
             contentDescription = stringResource(id = R.string.end_game_for_all),
-            painter = painterResource(id = R.drawable.ic_cancel_24),
+            painter = painterResource(id = R.drawable.ic_dangerous_24),
         )
     }
     if (showEndGameConfirm) {
@@ -127,11 +132,25 @@ fun ConfirmDialog(
         content = {
             Column(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .background(MaterialTheme.colorScheme.surface)
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                Text(text = stringResource(R.string.are_you_sure, action))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Icon(
+                        contentDescription = stringResource(id = R.string.end_game_for_all),
+                        painter = painterResource(id = R.drawable.ic_warning_24),
+                        tint = MaterialTheme.colorScheme.inverseSurface,
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(
+                        text = stringResource(R.string.are_you_sure, action),
+                        modifier = Modifier.align(Alignment.Bottom)
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -146,12 +165,18 @@ fun ConfirmDialog(
                             painter = painterResource(id = R.drawable.ic_check_24),
                         )
                     }
-                    Button(onClick = onDismiss) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            MaterialTheme.colorScheme.secondaryContainer,
+                            MaterialTheme.colorScheme.onSecondaryContainer,
+                        ),
+                        onClick = onDismiss
+                    ) {
                         Text(stringResource(R.string.no))
                         Spacer(modifier = Modifier.size(5.dp))
                         Icon(
                             contentDescription = stringResource(id = R.string.end_game_for_all),
-                            painter = painterResource(id = R.drawable.ic_cancel_24),
+                            painter = painterResource(id = R.drawable.ic_undo_black_24),
                         )
                     }
                 }
@@ -161,12 +186,12 @@ fun ConfirmDialog(
     )
 }
 
-
 @Preview
 @Composable
 fun PreviewSubmit() {
     SubmitButton(onSubmit = {})
 }
+
 @Preview
 @Composable
 fun PreviewEndGame() {
@@ -182,9 +207,13 @@ fun PreviewSpinner() {
 @Preview
 @Composable
 fun PreviewConfirmDialog() {
-    ConfirmDialog(
-        action = "Oof",
-        onDismiss = {},
-        onConfirm = {},
-    )
+    AppTheme() {
+        Surface() {
+            ConfirmDialog(
+                action = "Oof",
+                onDismiss = {},
+                onConfirm = {},
+            )
+        }
+    }
 }
