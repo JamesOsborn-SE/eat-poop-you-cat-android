@@ -51,7 +51,8 @@
     <string name="drawing_error">faça um desenho melhor.</string>
     <string name="turns">Voltas: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
-    <string name="app_description">Um jogo de telefone onde você alterna entre frases e desenhos. O jogo termina quando cada pessoa tem uma vez.</string>
+    <string name="app_description">Um jogo de telefone onde você alterna entre frases e desenhos. O jogo termina quando cada pessoa tem uma vez. *</string>
+    <string name="app_warning">* Família e amigos não estão incluídos!</string>
     <string name="no_previous_games_found">Nenhum jogo anterior encontrado! Vá jogar!</string>
     <string name="pass_to_the_next">Passe este dispositivo para o próximo jogador!</string>
     <string name="scroll_to_top">Voltar ao topo</string>

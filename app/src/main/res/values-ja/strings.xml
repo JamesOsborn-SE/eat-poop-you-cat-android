@@ -52,7 +52,8 @@
     <string name="drawing_error">より良い絵を描きます。</string>
     <string name="turns">ターン：%1$d</string>
     <string name="end_game_for_all">エンドゲーム・フォー・オール</string>
-    <string name="app_description">文章と絵を交互に繰り返す電話ゲーム。各人が 1 ターンになるとゲームオーバーです。</string>
+    <string name="app_description">文章と絵を交互に繰り返す電話ゲーム。各人が 1 ターンになるとゲームオーバーです。*</string>
+    <string name="app_warning">* 家族や友人は含まれていません!</string>
     <string name="no_previous_games_found">以前のゲームが見つかりませんでした!遊びに行こう!</string>
     <string name="pass_to_the_next">この仕掛けを次のプレイヤーに渡そう!</string>
     <string name="scroll_to_top">トップにスクロール</string>
