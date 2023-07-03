@@ -79,6 +79,7 @@ fun HomeScreen(
                     StartGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
                     Text(text = stringResource(id = R.string.app_description), modifier = defaultModifier)
+                    Text(text = stringResource(id = R.string.app_warning), modifier = defaultModifier, fontSize = 12.sp)
                 }
             }
         }

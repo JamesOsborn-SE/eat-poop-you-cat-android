@@ -51,7 +51,8 @@
     <string name="drawing_error">make a more better drawing.</string>
     <string name="turns">Turns: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
-    <string name="app_description">A game of telephone where you alternate between sentences and drawings. The game is over when each person has one turn.</string>
+    <string name="app_description">A game of telephone where you take turns writing sentences and making drawings. The game is over when each person has one turn.*</string>
+    <string name="app_warning">* Family and friends are not included!</string>
     <string name="no_previous_games_found">No previous games found! Go play!</string>
     <string name="pass_to_the_next">Pass this device to the next player!</string>
     <string name="scroll_to_top">scroll to top</string>
