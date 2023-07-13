@@ -74,7 +74,8 @@ fun PreviousGameScreen(
                 content = { contentPadding ->
                     LazyColumn(
                         state = listState,
-                        contentPadding = contentPadding,
+                        modifier = Modifier.padding(contentPadding),
+                        contentPadding = PaddingValues(bottom = 80.dp)
                     ) {
                         items(
                             items = entries,
