@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.data.tests
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
 import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
@@ -15,6 +14,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerTwo
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
