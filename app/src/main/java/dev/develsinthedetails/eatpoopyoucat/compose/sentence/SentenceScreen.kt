@@ -1,14 +1,15 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -169,22 +170,22 @@ fun SentenceScreen(
                         }
                     }
                 )
-            }
+                Spacer(modifier = Modifier.size(100.dp))
+                ConstraintLayout(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val button = createRef()
 
-            ConstraintLayout(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val button = createRef()
-
-                EndGameButton(modifier = Modifier.constrainAs(button) {
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                },
-                    onEnd = {
-                        if (isFirstTurn)
-                            onDeleteGame()
-                        onEndGame()
-                    })
+                    EndGameButton(modifier = Modifier.constrainAs(button) {
+                        bottom.linkTo(parent.bottom, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
+                    },
+                        onEnd = {
+                            if (isFirstTurn)
+                                onDeleteGame()
+                            onEndGame()
+                        })
+                }
             }
         }
         if (isFirstTurn)
