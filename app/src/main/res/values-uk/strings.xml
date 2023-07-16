@@ -49,7 +49,7 @@
     <string name="dashboard">Інформаційна панель</string>
     <string name="default_nickname">Без ім\'я</string>
     <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
-    <string name="app_description">Гра для телефонів, в якій ви чергуєте речення та малюнки. Гра закінчується, коли кожна людина зробить один хід.</string>
+    <string name="app_description">Гра в телефон, де ви по черзі пишете речення та малюєте малюнки. Гра закінчується, коли кожна людина зробить один хід.*</string>
     <string name="are_you_sure">Це буде %1$s. Ви все ще хочете продовжувати\?</string>
     <string name="yes">Так</string>
     <string name="status_connected">Підключено</string>
@@ -61,4 +61,5 @@
     <string name="oof">Ой</string>
     <string name="previous_games">Попередні ігри</string>
     <string name="pass_to_the_next">Передайте цей пристрій наступному гравцеві!</string>
+    <string name="app_warning">* Родина та друзі не враховуються!</string>
 </resources>
