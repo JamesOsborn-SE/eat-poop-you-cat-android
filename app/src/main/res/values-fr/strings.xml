@@ -1,2 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="background_summary_off">Vous ne pourrez pas envoyer ou recevoir de parties si l\'application n\'est pas ouverte</string>
+    <string name="submit">Soumettre !</string>
+    <string name="dialog_accept_turn">Acceptez votre tour de %1$s !</string>
+    <string name="created_by">Créé par : %1$s</string>
+    <string name="write_a_funny_sentence">Écrivez une phrase amusante</string>
+    <string name="no_really_write_a_funny_sentence">Pour de vrai, écrivez une phrase amusante !</string>
+    <string name="app_name">Eat Poop You Cat</string>
+    <string name="write_a_sentence_to_describe_this_drawing">Décrivez ce dessin</string>
+    <string name="dialog_one_entry_allowed">Une seule participation par jeu est autorisée</string>
+    <string name="oof">Ouf</string>
+    <string name="save">Enregistrer</string>
+    <string name="find_game">Chercher une partie</string>
+    <string name="previous_games">Parties précédentes</string>
+    <string name="starting_sentence">Phrase initiale : %1$s</string>
+    <string name="turn_completed_time">Durée totale du tour %1$d:%2$d</string>
+    <string name="time_left_to_complete">Temps restant pour finir %1$d:%2$d</string>
+    <string name="turn_passed">Tour passé : %1$s</string>
+    <string name="dashboard">Tableau de bord</string>
+    <string name="default_nickname">Sans nom</string>
+    <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
+    <string name="status_searching">Recherche en cours</string>
+    <string name="erase">Gommer</string>
+    <string name="status_connected">Connecté</string>
+    <string name="new_game">Nouvelle partie</string>
+    <string name="show">Afficher</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn ">Envoyer</string>
+    <string name="send_description">Envoyer votre travail</string>
+    <string name="undo">Annuler</string>
+    <string name="nickname">Pseudo</string>
+    <string name="enter_a_sentence">Saisissez une phrase</string>
+    <string name="background_title">"Autoriser l\'appli à communiquer en arrière-plan "</string>
+    <string name="welcome_message">Bienvenue dans Eat Poop You Cat !</string>
+    <string name="draw_this_sentence">Dessinez cette phrase !</string>
+    <string name="no_letters_or_numbers">NE PAS utiliser de lettres ou de nombres.</string>
+    <string name="clear">Effacer</string>
+    <string name="erase_description">Effacer des choses</string>
+    <string name="draw_description">Dessiner</string>
+    <string name="draw">Dessiner</string>
+    <string name="undo_description">Annuler ce que vous venez de faire</string>
+    <string name="redo_description">Annuler l\'annulation</string>
+    <string name="redo">Refaire</string>
+    <string name="preferences_header">Préférences</string>
+    <string name="background_header">Activités d\'arrière-plan</string>
+    <string name="background_summary_on">Vous pourrez envoyer ou recevoir des parties même si l\'application est fermée</string>
+    <string name="dialog_start_game">Démarrer la partie</string>
+    <string name="start">Commencer</string>
+    <string name="cancel">Annuler</string>
+</resources>
