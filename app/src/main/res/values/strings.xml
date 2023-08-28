@@ -5,7 +5,7 @@
     <string name="new_game">Start New Game</string>
     <string name="welcome_message">Welcome to Eat Poop You Cat!</string>
     <string name="show">Show</string>
-    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn ">Send</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">Send</string>
     <string name="send_description">send your work</string>
     <string name="undo">Undo</string>
     <string name="nickname">Nickname</string>
@@ -22,7 +22,7 @@
     <string name="redo">Redo</string>
     <string name="preferences_header">Preferences</string>
     <string name="background_header">Background activity</string>
-    <string name="background_title">"Allow app to communicate in the background "</string>
+    <string name="background_title">"Allow app to communicate in the background"</string>
     <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
     <string name="background_summary_on">You will be able to send or receive games even if the app is closed</string>
     <string name="write_a_sentence_to_describe_this_drawing">Describe this drawing</string>
