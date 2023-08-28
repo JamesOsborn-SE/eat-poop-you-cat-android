@@ -6,7 +6,7 @@
     <string name="new_game">新しいゲームを開始</string>
     <string name="welcome_message">Eat Poop You Cat へようこそ！</string>
     <string name="show">表示</string>
-    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn ">送信</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">送信</string>
     <string name="send_description">作品を送る</string>
     <string name="undo">元に戻す</string>
     <string name="nickname">ニックネーム</string>
