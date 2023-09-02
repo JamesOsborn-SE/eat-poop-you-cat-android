@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +59,8 @@ fun HomeScreen(
     AppTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = modifier.fillMaxSize()
+            modifier = modifier
+                .fillMaxSize()
                 .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
@@ -68,9 +70,11 @@ fun HomeScreen(
                 val defaultModifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(padding)
-                Column(modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(padding)) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(padding)
+                ) {
                     Text(
                         text = stringResource(R.string.welcome_message),
                         modifier = defaultModifier,
@@ -78,8 +82,17 @@ fun HomeScreen(
                     )
                     StartGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
-                    Text(text = stringResource(id = R.string.app_description), modifier = defaultModifier)
-                    Text(text = stringResource(id = R.string.app_warning), modifier = defaultModifier, fontSize = 12.sp)
+                    Text(
+                        text = stringResource(id = R.string.app_description),
+                        modifier = defaultModifier
+                    )
+                    Text(
+                        text = stringResource(id = R.string.app_warning),
+                        modifier = defaultModifier,
+                        fontSize = 12.sp
+                    )
+
+                    PrivacyPolicy(defaultModifier)
                 }
             }
         }
@@ -89,7 +102,7 @@ fun HomeScreen(
 @Composable
 fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
     Button(
-        modifier=modifier,
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
         onClick = {
             navTo()
@@ -108,14 +121,34 @@ fun StartGame(
     modifier: Modifier,
     onStartGame: () -> Unit,
 ) {
-    Button(onClick = onStartGame,
-        modifier = modifier ) {
+    Button(
+        onClick = onStartGame,
+        modifier = modifier
+    ) {
         Text(stringResource(id = R.string.dialog_start_game))
         Spacer(modifier = Modifier.size(5.dp))
         Icon(
             contentDescription = stringResource(id = R.string.dialog_start_game),
             painter = painterResource(id = R.drawable.ic_start_24),
         )
+    }
+}
+
+@Composable
+fun PrivacyPolicy(
+    modifier: Modifier,
+) {
+    val uriHandler = LocalUriHandler.current
+    Button(
+        onClick = {
+            val privacyPolicy =
+                "https://www.develsinthedetails.dev/p/eat-poop-you-cat-privacy-policy.html"
+            uriHandler.openUri(privacyPolicy)
+        },
+        modifier = modifier
+    ) {
+        Text(stringResource(id = R.string.privacy_policy))
+        Spacer(modifier = Modifier.size(5.dp))
     }
 }
 
