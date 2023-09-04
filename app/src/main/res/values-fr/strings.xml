@@ -30,7 +30,7 @@
     <string name="undo">Annuler</string>
     <string name="nickname">Pseudo</string>
     <string name="enter_a_sentence">Saisissez une phrase</string>
-    <string name="background_title">"Autoriser l\'appli à communiquer en arrière-plan "</string>
+    <string name="background_title">Autoriser l\'appli à communiquer en arrière-plan</string>
     <string name="welcome_message">Bienvenue dans Eat Poop You Cat !</string>
     <string name="draw_this_sentence">Dessinez cette phrase !</string>
     <string name="no_letters_or_numbers">NE PAS utiliser de lettres ou de nombres.</string>
@@ -47,4 +47,20 @@
     <string name="dialog_start_game">Démarrer la partie</string>
     <string name="start">Commencer</string>
     <string name="cancel">Annuler</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="title_activity_sentence_screen">SentenceScreen</string>
+    <string name="write_sentence_error">Rédigez une meilleure phrase !</string>
+    <string name="drawing_error">faire un meilleur dessin.</string>
+    <string name="turns">Tours : %1$d</string>
+    <string name="end_game_for_all">Fin du jeu pour tous</string>
+    <string name="app_description">Un jeu de téléphone où, à tour de rôle, on écrit des phrases et on fait des dessins. Le jeu est terminé lorsque chaque personne a eu son tour.*</string>
+    <string name="app_warning">* La famille et les amis ne sont pas inclus !</string>
+    <string name="no_previous_games_found">Aucune partie précédente n\'a été trouvée ! Jouer !</string>
+    <string name="pass_to_the_next">Passez l\'appareil au joueur suivant !</string>
+    <string name="scroll_to_top">Remonter en haut de la page</string>
+    <string name="are_you_sure">Cela fera %1$s. Voulez-vous toujours continuer \?</string>
+    <string name="yes">Oui</string>
+    <string name="no">Non</string>
+    <string name="delete_game">Supprimer la partie</string>
+    <string name="test_cat_sentence">Un chat vous fait un clin d\'œil avec la grâce d\'un enfant très endormi.</string>
 </resources>
