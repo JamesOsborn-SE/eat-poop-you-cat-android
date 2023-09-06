@@ -1,3 +1,13 @@
+Privacy Policy for Eat Poop You Cat
+
 This application does not collect or store personal data.
 
-If you installed this application from Google Play, then Google Play does collect some personal data. Please see the privacy policy for Google Play Services here: https://policies.google.com/privacy
+Eat Poop You Cat does not collect, use, or distribute any information about its users.
+
+Refer to the Google Play user agreement and privacy policy for more information about what information Google collects from users on behalf of app developers, including but not limited to:
+
+1) Device type and Android version.
+
+2) Crash reports.
+
+3) Installation activity and number of installs.
