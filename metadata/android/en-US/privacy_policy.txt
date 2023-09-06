@@ -11,5 +11,3 @@ Refer to the Google Play user agreement and privacy policy for more information 
 2) Crash reports.
 
 3) Installation activity and number of installs.
-
-Developer James Osborn can be reached at james.osborn.286+epycapolicy@gmail.com
