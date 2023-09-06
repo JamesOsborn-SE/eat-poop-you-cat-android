@@ -142,7 +142,7 @@ fun PrivacyPolicy(
     Button(
         onClick = {
             val privacyPolicy =
-                "https://www.develsinthedetails.dev/p/eat-poop-you-cat-privacy-policy.html"
+                "https://raw.githubusercontent.com/JamesOsborn-SE/eat-poop-you-cat-android/063385dacb9fa34326c98ef9f1a46da10c7add42/metadata/android/en-US/privacy_policy.txt"
             uriHandler.openUri(privacyPolicy)
         },
         modifier = modifier
