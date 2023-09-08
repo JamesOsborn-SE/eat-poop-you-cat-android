@@ -12,6 +12,10 @@
 [![open issues](https://img.shields.io/github/issues/JamesOsborn-SE/eat-poop-you-cat-android)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues)
 [![licence](https://img.shields.io/github/license/JamesOsborn-SE/eat-poop-you-cat-android)]()
 
+## Translation Status
+
+[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/multi-blue.svg)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
+
 ## Premise
 
 Eat Poop You Cat is a bit like telephone meets that one game where you try to get folks to guess the drawing.
