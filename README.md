@@ -2,9 +2,18 @@
 
 ## Get it on!
 
-[![Get it on F-driod](https://fdroid.gitlab.io/artwork/badge/get-it-on.png)](https://f-droid.org/en/packages/dev.develsinthedetails.eatpoopyoucat/)
+<a href="https://f-droid.org/packages/dev.develsinthedetails.eatpoopyoucat">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">
+</a>
 
-[![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=dev.develsinthedetails.eatpoopyoucat&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+<a href='https://play.google.com/store/apps/details?id=dev.develsinthedetails.eatpoopyoucat&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+    <img src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
+        alt='Get it on Google Play' 
+        height="80"
+        />
+</a>
 
 ## Status
 
