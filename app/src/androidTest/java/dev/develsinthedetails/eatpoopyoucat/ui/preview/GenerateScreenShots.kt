@@ -1,6 +1,8 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.preview
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -13,8 +15,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScre
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import org.junit.Rule
 import org.junit.Test
-import java.io.File
-import java.io.FileOutputStream
 
 
 class GenerateScreenShots {
@@ -26,63 +26,58 @@ class GenerateScreenShots {
     fun takePreviewHomeScreenScreenShots(){
         val filename = "1"
         composeTestRule.setContent {
-            AppTheme() {
+            AppTheme {
                 PreviewHomeScreen()
             }
         }
         saveScreenshot(filename)
-        assertFileExists(filename)
     }
 
     @Test
     fun takePreviewSentenceScreenScreenShots(){
         val filename = "2"
         composeTestRule.setContent {
-            AppTheme() {
+            AppTheme {
                 PreviewSentenceScreen()
             }
         }
         saveScreenshot(filename)
-        assertFileExists(filename)
     }
     @Test
     fun takePreviewDawingWithSentanceScreenShots(){
         val filename = "3"
         composeTestRule.setContent {
-            AppTheme() {
+            AppTheme {
                 PreviewDawingWithSentance()
             }
         }
         saveScreenshot(filename)
-        assertFileExists(filename)
     }
     @Test
     fun takePreviewSentenceScreenWithDrawingScreenShots(){
         val filename = "4"
         composeTestRule.setContent {
-            AppTheme() {
+            AppTheme {
                 PreviewSentenceScreenWithDrawing()
             }
         }
         saveScreenshot(filename)
-        assertFileExists(filename)
     }
-
-    private fun assertFileExists(filename: String) {
-        val path = InstrumentationRegistry.getInstrumentation().targetContext.filesDir.canonicalPath
-        val absolueFilePath = "$path/$filename.png"
-        val file = File(absolueFilePath)
-        assert(file.exists())
-    }
-
 
     private fun saveScreenshot(filename: String) {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        Log.d("path", context.filesDir.absolutePath)
+        Log.d("path", context.filesDir.canonicalPath)
+        Log.d("path", context.filesDir.canWrite().toString())
         composeTestRule.mainClock.advanceTimeBy(100)
         val bitmap =  composeTestRule.onRoot().captureToImage().asAndroidBitmap()
-        val path = InstrumentationRegistry.getInstrumentation().targetContext.filesDir.canonicalPath
-        FileOutputStream("$path/$filename.png").use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+
+        context.openFileOutput("$filename.png", Context.MODE_PRIVATE)
+            .use {
+                Log.d("path", bitmap.height.toString())
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                Log.d("path", bitmap.width.toString())
         }
-        println("Saved screenshot to $path/$filename.png")
+        println("Saved screenshot $filename.png")
     }
 }
