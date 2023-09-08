@@ -1,5 +1,11 @@
 # Eat Poop You Cat for Android
 
+## Get it on!
+
+[![Get it on F-driod](https://fdroid.gitlab.io/artwork/badge/get-it-on.png)](https://f-droid.org/en/packages/dev.develsinthedetails.eatpoopyoucat/)
+
+[![Get it on Google Play](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=dev.develsinthedetails.eatpoopyoucat&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+
 ## Status
 
 [![build status](https://img.shields.io/github/actions/workflow/status/JamesOsborn-SE/eat-poop-you-cat-android/android.yml)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android.yml)
