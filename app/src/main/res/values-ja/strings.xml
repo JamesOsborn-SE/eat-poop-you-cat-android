@@ -63,4 +63,7 @@
     <string name="delete_game">ゲームを削除</string>
     <string name="test_cat_sentence">とても眠そうな幼児の優雅さで猫があなたにウィンクします</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <plurals name="minimum_words">
+        <item quantity="other">minimum %d words.</item>
+    </plurals>
 </resources>

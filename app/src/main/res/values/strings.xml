@@ -62,4 +62,8 @@
     <string name="delete_game">Delete Game</string>
     <string name="test_cat_sentence">A cat winks at you with the grace of a very sleepy toddler</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <plurals name="minimum_words">
+        <item quantity="one">minimum %d word.</item>
+        <item quantity="other">minimum %d words.</item>
+    </plurals>
 </resources>
