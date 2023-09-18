@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat.ui.preview
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -66,17 +65,12 @@ class GenerateScreenShots {
 
     private fun saveScreenshot(filename: String) {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        Log.d("path", context.filesDir.absolutePath)
-        Log.d("path", context.filesDir.canonicalPath)
-        Log.d("path", context.filesDir.canWrite().toString())
         composeTestRule.mainClock.advanceTimeBy(100)
         val bitmap =  composeTestRule.onRoot().captureToImage().asAndroidBitmap()
 
         context.openFileOutput("$filename.png", Context.MODE_PRIVATE)
             .use {
-                Log.d("path", bitmap.height.toString())
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-                Log.d("path", bitmap.width.toString())
         }
         println("Saved screenshot $filename.png")
     }
