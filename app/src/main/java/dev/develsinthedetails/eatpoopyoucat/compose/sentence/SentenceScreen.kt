@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,6 +75,7 @@ fun SentenceScreen(
     SentenceScreen(
         isLoading = viewModel.isLoading,
         isError = viewModel.isError,
+        minimumWords = viewModel.minimumWords,
         isFirstTurn = isFirstTurn,
         sentence = viewModel.sentence,
         sentencePromt = sentencePromt,
@@ -90,6 +92,7 @@ fun SentenceScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean = false,
     isError: Boolean = false,
+    minimumWords: Int,
     isFirstTurn: Boolean = false,
     sentence: String = String(),
     sentencePromt: String,
@@ -128,7 +131,14 @@ fun SentenceScreen(
                     .fillMaxSize()
                     .padding(15.dp),
             ) {
-                ErrorText(isError, stringResource(id = R.string.write_sentence_error))
+                val errorText = stringResource(id = R.string.write_sentence_error)
+                val errorDetails = pluralStringResource(
+                    id = R.plurals.minimum_words,
+                    count = minimumWords,
+                    minimumWords
+                )
+
+                ErrorText(isError, errorText, errorDetails)
                 Row(modifier = Modifier) {
                     OutlinedTextField(
                         value = sentence,
@@ -206,6 +216,7 @@ fun PreviewSentenceScreen() {
         sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
         drawing = null,
         isError = true,
+        minimumWords = 4,
         onEndGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
@@ -231,6 +242,7 @@ fun PreviewSentenceScreenWithDrawing() {
         sentencePromt = stringResource(id = R.string.write_a_sentence_to_describe_this_drawing),
         drawing = Gzip.compress(lines),
         isError = true,
+        minimumWords = 4,
         onEndGame = {},
         onSentenceChange = {},
         onDeleteGame = {},
