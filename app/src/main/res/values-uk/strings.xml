@@ -63,4 +63,10 @@
     <string name="pass_to_the_next">Передайте цей пристрій наступному гравцеві!</string>
     <string name="app_warning">* Родина та друзі не враховуються!</string>
     <string name="privacy_policy">Політика конфіденційності</string>
+    <plurals name="minimum_words">
+        <item quantity="one">minimum %d word.</item>
+        <item quantity="few">minimum %d words.</item>
+        <item quantity="many">minimum %d words.</item>
+        <item quantity="other">minimum %d words.</item>
+    </plurals>
 </resources>

@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.develsinthedetails.eatpoopyoucat.R
@@ -109,13 +110,22 @@ fun EndGameButton(
 }
 
 @Composable
-fun ErrorText(isError: Boolean, textToDisplay: String) {
-    if (isError)
-        Text(
-            modifier = Modifier.padding(15.dp),
-            text = textToDisplay,
-            color = MaterialTheme.colorScheme.error,
-        )
+fun ErrorText(isError: Boolean, textToDisplay: String, errorDetails: String = "") {
+
+    if (isError) {
+        Column(modifier = Modifier.padding(top=15.dp, bottom = 15.dp)) {
+            Text(
+                text = textToDisplay,
+                color = MaterialTheme.colorScheme.error,
+            )
+            if (errorDetails.isNotBlank())
+                Text(
+                    text = errorDetails,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 11.sp
+                )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
