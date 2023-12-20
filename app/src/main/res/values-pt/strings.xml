@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <string name="app_name">Coma cocô, seu gato</string>
     <string name="status_searching">Pesquisando</string>
     <string name="status_connected">Conectado</string>
@@ -22,7 +23,7 @@
     <string name="redo">Refazer</string>
     <string name="preferences_header">Preferências</string>
     <string name="background_header">Atividade em segundo plano</string>
-    <string name="background_title">Permitir que o app se comunique em segundo plano </string>
+    <string name="background_title">Permitir que a app comunique em segundo plano</string>
     <string name="background_summary_off">Você não poderá enviar ou receber jogos, a menos que o aplicativo esteja aberto</string>
     <string name="background_summary_on">Você poderá enviar ou receber jogos mesmo se o aplicativo estiver fechado</string>
     <string name="write_a_sentence_to_describe_this_drawing">Descreva este desenho</string>
