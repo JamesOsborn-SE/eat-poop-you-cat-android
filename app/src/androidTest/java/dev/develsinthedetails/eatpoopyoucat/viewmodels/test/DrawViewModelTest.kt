@@ -16,11 +16,11 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.testEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Rule
@@ -29,7 +29,6 @@ import org.junit.rules.RuleChain
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
 import java.util.UUID
-import javax.inject.Inject
 
 
 @HiltAndroidTest
@@ -43,7 +42,6 @@ class DrawViewModelTest {
         .outerRule(hiltRule)
         .around(instantTaskExecutorRule)
 
-    @set:Inject
     private lateinit var appRepository: AppRepository
 
     @Before
@@ -78,6 +76,7 @@ class DrawViewModelTest {
             assert(testEntries[0].id == getValue(viewModel.previousEntry).id)
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun drawing_is_too_simple() = runTest{
         val intSharedFlow = MutableStateFlow(listOf<Line>())

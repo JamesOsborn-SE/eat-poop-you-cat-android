@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 
-private val LightColors = lightColorScheme(
+private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -59,7 +59,7 @@ private class DarkWarnings:WarningColors {
     override val onWarningContainer = dark_onWarningContainer
 }
 
-private val DarkColors = darkColorScheme(
+private val darkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -97,9 +97,9 @@ fun AppTheme(
   content: @Composable () -> Unit
 ) {
   val colors = if (!useDarkTheme) {
-    LightColors
+    lightColors
   } else {
-    DarkColors
+    darkColors
   }
 
   MaterialTheme(

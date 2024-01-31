@@ -217,8 +217,8 @@ fun PreviewSpinner() {
 @Preview
 @Composable
 fun PreviewConfirmDialog() {
-    AppTheme() {
-        Surface() {
+    AppTheme {
+        Surface {
             ConfirmDialog(
                 action = "Oof",
                 onDismiss = {},

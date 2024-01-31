@@ -47,7 +47,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Composable

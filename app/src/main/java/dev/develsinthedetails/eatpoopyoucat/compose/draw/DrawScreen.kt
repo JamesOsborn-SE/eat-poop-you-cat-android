@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -70,7 +71,6 @@ import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 @Composable
@@ -507,10 +507,10 @@ fun PreviewDawingWithSentance() {
     }
     val setCanvasResolution: (IntSize) -> Unit = {}
     val undoCount = remember {
-        mutableStateOf(1)
+        mutableIntStateOf(1)
     }
     val redoCount = remember {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence
     AppTheme {
