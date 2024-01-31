@@ -51,7 +51,7 @@ fun Spinner(
                 .size(100.dp)
                 .background(Color.White, shape = RoundedCornerShape(8.dp))
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator( progress = 0.89f )
         }
     }
 }

@@ -72,10 +72,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.1.2")
+    implementation("androidx.databinding:databinding-adapters:8.2.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.navigation:navigation-compose:2.7.3")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
     val lifecycleVersion ="2.7.0"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
@@ -91,7 +91,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-test:$composeVersion")
 
     implementation("androidx.compose.material3:material3:1.1.2")
-    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation("androidx.activity:activity-compose:1.8.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
