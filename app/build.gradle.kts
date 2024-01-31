@@ -3,10 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
-    id("kotlin-kapt")
+    id("kotlin-kapt") apply true
 }
-
-apply(plugin = "kotlin-kapt")
 
 android {
     signingConfigs {
@@ -66,39 +64,34 @@ android {
     buildFeatures {
         compose = true
     }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation(platform("androidx.compose:compose-bom:2023.09.01"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.compose.ui:ui-test:1.5.1")
     implementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation(platform("androidx.compose:compose-bom:2023.09.01"))
-    implementation("androidx.databinding:databinding-adapters:8.1.1")
-    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.databinding:databinding-adapters:8.1.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.3")
 
-    val lifecycleVersion ="2.6.2"
+    val lifecycleVersion ="2.7.0"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
-    val composeVersion = "1.5.1"
-    implementation("androidx.activity:activity-compose:1.7.2")
+    val composeVersion = "1.6.0"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui-graphics:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.compose.ui:ui-test:$composeVersion")
+
     implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.activity:activity-compose:1.7.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -108,13 +101,14 @@ dependencies {
 
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.09.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.09.01"))
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
 
-    val roomVersion = "2.5.2"
+    val roomVersion = "2.6.1"
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
+
+    //noinspection KaptUsageInsteadOfKsp not supported by Hilt yet
     kapt("androidx.room:room-compiler:$roomVersion")
 
     // optional - RxJava2 support for Room
@@ -132,7 +126,7 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
     val hiltVersion = "2.48"
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
