@@ -22,10 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +58,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
@@ -104,24 +99,9 @@ fun DrawScreen(
     val onEndedGame =
         { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     var showEndGameConfirm by remember { mutableStateOf(false) }
-    var showMenu by remember { mutableStateOf(false) }
-
     Scaffolds.InGame(title = stringResource(R.string.draw_turn_title),
-        actions = {
-            IconButton(onClick = { showMenu = !showMenu }) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "open"
-                )
-            }
-            DropdownMenu(expanded = showMenu,
-                onDismissRequest = { showMenu = false }
-            ) {
-                DropdownMenuItem(
-                    onClick = { showEndGameConfirm = true },
-                    text = { Text(stringResource(id = R.string.end_game_for_all)) })
-            }
-        })
+        showEndGameConfirm = { showEndGameConfirm = true }
+        )
     {
         Surface(
             modifier = Modifier
@@ -164,7 +144,6 @@ fun DrawScreen(
                     if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
                         Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
                 },
-                onEnd = onEndedGame
             )
         }
     }
@@ -189,7 +168,6 @@ private fun DrawScreen(
     redo: () -> Unit,
     sentence: String?,
     onSubmit: () -> Unit,
-    onEnd: () -> Unit
 ) {
     if (isLoading)
         Spinner()
@@ -265,7 +243,6 @@ private fun DrawScreen(
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    EndGameButton(onEnd = onEnd)
                     DrawingPropertiesMenu(
                         undoCount = undoCount.value,
                         redoCount = redoCount.value,
@@ -557,7 +534,6 @@ fun PreviewDawingWithSentance() {
                 redo = { },
                 sentence = sentence,
                 onSubmit = { },
-                onEnd = { }
             )
         }
     }

@@ -12,12 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -105,7 +99,6 @@ fun SentenceScreen(
     onSubmit: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-    var showMenu by remember { mutableStateOf(false) }
     var showEndGameConfirm by remember { mutableStateOf(false) }
     val onEnd = {
         if (isFirstTurn)
@@ -113,22 +106,10 @@ fun SentenceScreen(
         onEndGame()
     }
 
-    Scaffolds.InGame(title = stringResource(R.string.sentence_turn_title),
-        actions = {
-            IconButton(onClick = { showMenu = !showMenu }) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "open"
-                )
-            }
-            DropdownMenu(expanded = showMenu,
-                onDismissRequest = { showMenu = false }
-            ) {
-                DropdownMenuItem(
-                    onClick = { showEndGameConfirm = true },
-                    text = { Text(stringResource(id = R.string.end_game_for_all)) })
-            }
-        })
+    Scaffolds.InGame(
+        title = stringResource(R.string.sentence_turn_title),
+        showEndGameConfirm = { showEndGameConfirm = true }
+    )
     {
         Surface(
             modifier = Modifier
@@ -191,6 +172,7 @@ fun SentenceScreen(
             }
         }
     }
+
     if (isFirstTurn)
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
