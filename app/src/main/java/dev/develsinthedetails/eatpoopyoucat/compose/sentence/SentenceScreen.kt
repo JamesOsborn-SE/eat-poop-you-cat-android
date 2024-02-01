@@ -165,7 +165,7 @@ fun SentenceScreen(
                 )
 
                 ErrorText(isError, errorText, errorDetails)
-                sentenceInput(
+                SentenceInput(
                     sentence,
                     onSentenceChange,
                     onSubmit,
@@ -183,8 +183,8 @@ fun SentenceScreen(
                 }
                 Row(modifier = Modifier)
                 {
-                    drawing?.let {
-                        DrawBox(drawingZippedJson = it)
+                    drawing?.let { bytes ->
+                        DrawBox(drawingZippedJson = bytes)
                     }
 
                 }
@@ -198,7 +198,7 @@ fun SentenceScreen(
 }
 
 @Composable
-private fun sentenceInput(
+private fun SentenceInput(
     sentence: String,
     onSentenceChange: (String) -> Unit,
     onSubmit: () -> Unit,
