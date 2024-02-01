@@ -56,44 +56,42 @@ fun HomeScreen(
     onNavigateToPreviousGames: () -> Unit,
 ) {
     val padding = 20.dp
-    AppTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            if (isLoading)
-                Spinner()
-            Column {
-                val defaultModifier = Modifier
+    // A surface container using the 'background' color from the theme
+    Surface(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(ScrollState(0)),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        if (isLoading)
+            Spinner()
+        Column {
+            val defaultModifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(padding)
+            Column(
+                modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(padding)
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(padding)
-                ) {
-                    Text(
-                        text = stringResource(R.string.welcome_message),
-                        modifier = defaultModifier,
-                        fontSize = 18.sp
-                    )
-                    StartGame(defaultModifier, onStartGame)
-                    ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
-                    Text(
-                        text = stringResource(id = R.string.app_description),
-                        modifier = defaultModifier
-                    )
-                    Text(
-                        text = stringResource(id = R.string.app_warning),
-                        modifier = defaultModifier,
-                        fontSize = 12.sp
-                    )
+            ) {
+                Text(
+                    text = stringResource(R.string.welcome_message),
+                    modifier = defaultModifier,
+                    fontSize = 18.sp
+                )
+                StartGame(defaultModifier, onStartGame)
+                ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
+                Text(
+                    text = stringResource(id = R.string.app_description),
+                    modifier = defaultModifier
+                )
+                Text(
+                    text = stringResource(id = R.string.app_warning),
+                    modifier = defaultModifier,
+                    fontSize = 12.sp
+                )
 
-                    PrivacyPolicy(defaultModifier)
-                }
+                PrivacyPolicy(defaultModifier)
             }
         }
     }
@@ -158,10 +156,12 @@ fun PrivacyPolicy(
 @Preview
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen(
-        isLoading = false,
-        onStartGame = {},
-        onNavigateToPreviousGames = {})
+    AppTheme {
+        HomeScreen(
+            isLoading = false,
+            onStartGame = {},
+            onNavigateToPreviousGames = {})
+    }
 }
 
 @Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")

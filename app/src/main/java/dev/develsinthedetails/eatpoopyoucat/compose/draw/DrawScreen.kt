@@ -99,51 +99,49 @@ fun DrawScreen(
     val onEndedGame =
         { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     var showEndGameConfirm by remember { mutableStateOf(false) }
-    AppTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(ScrollState(0)),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        BackHandler(
+            enabled = true
         ) {
-            BackHandler(
-                enabled = true
-            ) {
-                showEndGameConfirm = true
-            }
-            if (showEndGameConfirm) {
-                ConfirmDialog(
-                    onDismiss = { showEndGameConfirm = false },
-                    onConfirm = onEndedGame,
-                    action = stringResource(R.string.end_game_for_all)
-                )
-
-            }
-
-            DrawScreen(
-                linesState = linesState,
-                currentLineState = currentLineState,
-                currentPropertiesState = currentPropertiesState,
-                setCanvasResolution = setCanvasResolution,
-                isLoading = drawViewModel.isLoading,
-                touchStart = touchStart,
-                touchMove = touchMove,
-                touchEnd = touchEnd,
-                undoCount = undoCount,
-                redoCount = redoCount,
-                drawMode = drawViewModel.drawMode,
-                isError = drawViewModel.isError,
-                setPencilMode = setPencilMode,
-                undo = undo,
-                redo = redo,
-                sentence = previousEntry?.sentence,
-                onSubmit = {
-                    if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
-                        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-                },
-                onEnd = onEndedGame
-            )
+            showEndGameConfirm = true
         }
+        if (showEndGameConfirm) {
+            ConfirmDialog(
+                onDismiss = { showEndGameConfirm = false },
+                onConfirm = onEndedGame,
+                action = stringResource(R.string.end_game_for_all)
+            )
+
+        }
+
+        DrawScreen(
+            linesState = linesState,
+            currentLineState = currentLineState,
+            currentPropertiesState = currentPropertiesState,
+            setCanvasResolution = setCanvasResolution,
+            isLoading = drawViewModel.isLoading,
+            touchStart = touchStart,
+            touchMove = touchMove,
+            touchEnd = touchEnd,
+            undoCount = undoCount,
+            redoCount = redoCount,
+            drawMode = drawViewModel.drawMode,
+            isError = drawViewModel.isError,
+            setPencilMode = setPencilMode,
+            undo = undo,
+            redo = redo,
+            sentence = previousEntry?.sentence,
+            onSubmit = {
+                if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+                    Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+            },
+            onEnd = onEndedGame
+        )
     }
 }
 

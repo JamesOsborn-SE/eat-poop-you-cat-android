@@ -198,19 +198,25 @@ fun ConfirmDialog(
 @Preview
 @Composable
 fun PreviewSubmit() {
-    SubmitButton(onSubmit = {})
+    AppTheme {
+        SubmitButton(onSubmit = {})
+    }
 }
 
 @Preview
 @Composable
 fun PreviewEndGame() {
-    EndGameButton(onEnd = {})
+    AppTheme {
+        EndGameButton(onEnd = {})
+    }
 }
 
 @Preview
 @Composable
 fun PreviewSpinner() {
-    Spinner()
+    AppTheme {
+        Spinner()
+    }
 }
 
 @Preview
