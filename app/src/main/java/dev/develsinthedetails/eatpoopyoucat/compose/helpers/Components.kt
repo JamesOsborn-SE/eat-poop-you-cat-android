@@ -84,8 +84,7 @@ fun EndGameButton(
 ) {
     var showEndGameConfirm by remember { mutableStateOf(false) }
     Button(
-        modifier = modifier
-            .padding(top = 15.dp),
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             MaterialTheme.colorScheme.secondaryContainer,
             MaterialTheme.colorScheme.onSecondaryContainer,
