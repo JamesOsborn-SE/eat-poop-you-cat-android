@@ -22,6 +22,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,6 +65,7 @@ import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.data.Line
@@ -99,49 +104,69 @@ fun DrawScreen(
     val onEndedGame =
         { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
     var showEndGameConfirm by remember { mutableStateOf(false) }
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        BackHandler(
-            enabled = true
+    var showMenu by remember { mutableStateOf(false) }
+
+    Scaffolds.InGame(title = stringResource(R.string.draw_turn_title),
+        actions = {
+            IconButton(onClick = { showMenu = !showMenu }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "open"
+                )
+            }
+            DropdownMenu(expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(
+                    onClick = { showEndGameConfirm = true },
+                    text = { Text(stringResource(id = R.string.end_game_for_all)) })
+            }
+        })
+    {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
         ) {
-            showEndGameConfirm = true
-        }
-        if (showEndGameConfirm) {
-            ConfirmDialog(
-                onDismiss = { showEndGameConfirm = false },
-                onConfirm = onEndedGame,
-                action = stringResource(R.string.end_game_for_all)
+            BackHandler(
+                enabled = true
+            ) {
+                showEndGameConfirm = true
+            }
+            if (showEndGameConfirm) {
+                ConfirmDialog(
+                    onDismiss = { showEndGameConfirm = false },
+                    onConfirm = onEndedGame,
+                    action = stringResource(R.string.end_game_for_all)
+                )
+
+            }
+
+            DrawScreen(
+                linesState = linesState,
+                currentLineState = currentLineState,
+                currentPropertiesState = currentPropertiesState,
+                setCanvasResolution = setCanvasResolution,
+                isLoading = drawViewModel.isLoading,
+                touchStart = touchStart,
+                touchMove = touchMove,
+                touchEnd = touchEnd,
+                undoCount = undoCount,
+                redoCount = redoCount,
+                drawMode = drawViewModel.drawMode,
+                isError = drawViewModel.isError,
+                setPencilMode = setPencilMode,
+                undo = undo,
+                redo = redo,
+                sentence = previousEntry?.sentence,
+                onSubmit = {
+                    if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+                        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+                },
+                onEnd = onEndedGame
             )
-
         }
-
-        DrawScreen(
-            linesState = linesState,
-            currentLineState = currentLineState,
-            currentPropertiesState = currentPropertiesState,
-            setCanvasResolution = setCanvasResolution,
-            isLoading = drawViewModel.isLoading,
-            touchStart = touchStart,
-            touchMove = touchMove,
-            touchEnd = touchEnd,
-            undoCount = undoCount,
-            redoCount = redoCount,
-            drawMode = drawViewModel.drawMode,
-            isError = drawViewModel.isError,
-            setPencilMode = setPencilMode,
-            undo = undo,
-            redo = redo,
-            sentence = previousEntry?.sentence,
-            onSubmit = {
-                if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
-                    Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-            },
-            onEnd = onEndedGame
-        )
     }
 }
 
@@ -202,10 +227,6 @@ private fun DrawScreen(
                         onRedo = redo
                     )
                     SubmitButton(onSubmit = onSubmit)
-                }
-                Row(modifier = Modifier.padding(4.dp)) {
-
-                    EndGameButton(onEnd = onEnd)
                 }
             }
         }

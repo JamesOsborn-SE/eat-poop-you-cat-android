@@ -5,15 +5,19 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -34,13 +38,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
@@ -102,91 +105,97 @@ fun SentenceScreen(
     onSubmit: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        var showEndGameConfirm by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showEndGameConfirm by remember { mutableStateOf(false) }
+    val onEnd = {
+        if (isFirstTurn)
+            onDeleteGame()
+        onEndGame()
+    }
 
-        BackHandler(
-            enabled = true
-        ) {
-            showEndGameConfirm = true
-        }
-        if (showEndGameConfirm) {
-            ConfirmDialog(
-                onDismiss = { showEndGameConfirm = false },
-                onConfirm = onEndGame,
-                action = stringResource(R.string.end_game_for_all)
-            )
-        }
-        if (isLoading)
-            Spinner()
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp),
-        ) {
-            val errorText = stringResource(id = R.string.write_sentence_error)
-            val errorDetails = pluralStringResource(
-                id = R.plurals.minimum_words,
-                count = minimumWords,
-                minimumWords
-            )
-
-            ErrorText(isError, errorText, errorDetails)
-            sentenceInput(
-                sentence,
-                onSentenceChange,
-                onSubmit,
-                focusRequester,
-                sentencePromt,
-                modifier
-            )
-            Row(modifier = Modifier) {
-                SubmitButton(
-                    modifier = Modifier
-                        .weight(.4f)
-                        .padding(top = 15.dp),
-                    onSubmit = onSubmit
+    Scaffolds.InGame(title = stringResource(R.string.sentence_turn_title),
+        actions = {
+            IconButton(onClick = { showMenu = !showMenu }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "open"
                 )
             }
-            Row(modifier = Modifier)
-            {
-                drawing?.let {
-                    DrawBox(drawingZippedJson = it)
-                }
-
-            }
-            Spacer(modifier = Modifier.size(100.dp))
-            ConstraintLayout(
-                modifier = Modifier.fillMaxWidth()
+            DropdownMenu(expanded = showMenu,
+                onDismissRequest = { showMenu = false }
             ) {
-                val button = createRef()
+                DropdownMenuItem(
+                    onClick = { showEndGameConfirm = true },
+                    text = { Text(stringResource(id = R.string.end_game_for_all)) })
+            }
+        })
+    {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            BackHandler(
+                enabled = true
+            ) {
+                showEndGameConfirm = true
+            }
+            if (showEndGameConfirm) {
+                ConfirmDialog(
+                    onDismiss = { showEndGameConfirm = false },
+                    onConfirm = onEnd,
+                    action = stringResource(R.string.end_game_for_all)
+                )
+            }
+            if (isLoading)
+                Spinner()
 
-                EndGameButton(modifier = Modifier.constrainAs(button) {
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
-                },
-                    onEnd = {
-                        if (isFirstTurn)
-                            onDeleteGame()
-                        onEndGame()
-                    })
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 15.dp),
+            ) {
+                val errorText = stringResource(id = R.string.write_sentence_error)
+                val errorDetails = pluralStringResource(
+                    id = R.plurals.minimum_words,
+                    count = minimumWords,
+                    minimumWords
+                )
+
+                ErrorText(isError, errorText, errorDetails)
+                sentenceInput(
+                    sentence,
+                    onSentenceChange,
+                    onSubmit,
+                    focusRequester,
+                    sentencePromt,
+                    modifier
+                )
+                Row(modifier = Modifier) {
+                    SubmitButton(
+                        modifier = Modifier
+                            .weight(.4f)
+                            .padding(top = 15.dp),
+                        onSubmit = onSubmit
+                    )
+                }
+                Row(modifier = Modifier)
+                {
+                    drawing?.let {
+                        DrawBox(drawingZippedJson = it)
+                    }
+
+                }
             }
         }
     }
-
     if (isFirstTurn)
         LaunchedEffect(Unit) {
             focusRequester.requestFocus()
         }
-
 }
-
 
 @Composable
 private fun sentenceInput(

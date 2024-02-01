@@ -63,6 +63,8 @@
     <string name="no">Non</string>
     <string name="delete_game">Supprimer la partie</string>
     <string name="test_cat_sentence">Un chat vous fait un clin d\'œil avec la grâce d\'un enfant qui s\'endort</string>
+    <string name="sentence_turn_title">Write Something!</string>
+    <string name="draw_turn_title">Draw something!</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="many">minimum %d words.</item>
