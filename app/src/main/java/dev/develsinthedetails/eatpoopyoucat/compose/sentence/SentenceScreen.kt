@@ -41,7 +41,6 @@ import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.EndGameButton
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapper
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
@@ -126,6 +125,7 @@ fun SentenceScreen(
             }
             if (isLoading)
                 Spinner()
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -163,23 +163,22 @@ fun SentenceScreen(
                             )
                         },
                     )
+                }
+                Row(modifier = Modifier) {
                     SubmitButton(
                         modifier = Modifier
                             .weight(.4f)
-                            .padding(top = 15.dp, start = 15.dp),
+                            .padding(top = 15.dp),
                         onSubmit = onSubmit
                     )
                 }
-                OrientationSwapper(
-                    modifier = Modifier.fillMaxSize(),
-                    rowModifier = Modifier.fillMaxSize(),
-                    flip = false,
-                    {
-                        drawing?.let {
-                            DrawBox(drawingZippedJson = it)
-                        }
+                Row(modifier = Modifier)
+                {
+                    drawing?.let {
+                        DrawBox(drawingZippedJson = it)
                     }
-                )
+
+                }
                 Spacer(modifier = Modifier.size(100.dp))
                 ConstraintLayout(
                     modifier = Modifier.fillMaxWidth()
@@ -198,12 +197,15 @@ fun SentenceScreen(
                 }
             }
         }
+
         if (isFirstTurn)
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
             }
+
     }
 }
+
 
 /**
  * Preview Screenshot #2
@@ -227,6 +229,18 @@ fun PreviewSentenceScreen() {
 @Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
 fun PreviewSentenceScreenLandscape() {
+    PreviewSentenceScreen()
+}
+
+@Preview(device = "spec:parent=4.65in 720p (Galaxy Nexus)")
+@Composable
+fun PreviewSentenceScreenSmall() {
+    PreviewSentenceScreen()
+}
+
+@Preview(device = "spec:parent=4.65in 720p (Galaxy Nexus),orientation=landscape")
+@Composable
+fun PreviewSentenceScreenSmallLandscape() {
     PreviewSentenceScreen()
 }
 
@@ -255,4 +269,3 @@ fun PreviewSentenceScreenWithDrawing() {
 fun PreviewSentenceScreenWithDrawingLandscape() {
     PreviewSentenceScreenWithDrawing()
 }
-
