@@ -41,6 +41,7 @@ fun EatPoopYouCatApp(
                         popUpTo("home")
                     }
                 },
+                onNavigateToHome = {navController.navigate("home")},
                 onNavigateToEndedGame = {
                     navController.navigate("game/${it}") {
                         popUpTo("home")
