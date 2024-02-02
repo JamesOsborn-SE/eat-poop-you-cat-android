@@ -29,7 +29,7 @@
     <string name="dialog_start_game">Start Game</string>
     <string name="start">Start</string>
     <string name="cancel">Cancel</string>
-    <string name="submit">Next Trun!</string>
+    <string name="submit">End My Turn!</string>
     <string name="dialog_accept_turn">Accept turn from %1$s!</string>
     <string name="created_by">Created By: %1$s</string>
     <string name="write_a_funny_sentence">Write a funny sentence</string>
