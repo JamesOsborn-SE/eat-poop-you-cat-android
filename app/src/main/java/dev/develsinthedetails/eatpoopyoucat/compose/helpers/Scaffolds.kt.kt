@@ -27,6 +27,7 @@ object Scaffolds {
     fun InGame(
         title: String,
         showEndGameConfirm: () -> Unit = {},
+        bottomBar: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
         var showMenu by remember { mutableStateOf(false) }
@@ -55,9 +56,10 @@ object Scaffolds {
                                 onClick = showEndGameConfirm,
                                 text = { Text(stringResource(id = R.string.end_game_for_all)) })
                         }
-                    }
+                    },
                 )
             },
+            bottomBar = bottomBar,
             content = content
         )
     }

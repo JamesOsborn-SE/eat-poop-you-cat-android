@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -35,7 +35,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -59,7 +58,6 @@ import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.OrientationSwapperEvenly
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
@@ -98,55 +96,32 @@ fun DrawScreen(
 
     val onEndedGame =
         { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
-    var showEndGameConfirm by remember { mutableStateOf(false) }
-    Scaffolds.InGame(title = stringResource(R.string.draw_turn_title),
-        showEndGameConfirm = { showEndGameConfirm = true }
-        )
-    {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            BackHandler(
-                enabled = true
-            ) {
-                showEndGameConfirm = true
-            }
-            if (showEndGameConfirm) {
-                ConfirmDialog(
-                    onDismiss = { showEndGameConfirm = false },
-                    onConfirm = onEndedGame,
-                    action = stringResource(R.string.end_game_for_all)
-                )
 
-            }
-
-            DrawScreen(
-                linesState = linesState,
-                currentLineState = currentLineState,
-                currentPropertiesState = currentPropertiesState,
-                setCanvasResolution = setCanvasResolution,
-                isLoading = drawViewModel.isLoading,
-                touchStart = touchStart,
-                touchMove = touchMove,
-                touchEnd = touchEnd,
-                undoCount = undoCount,
-                redoCount = redoCount,
-                drawMode = drawViewModel.drawMode,
-                isError = drawViewModel.isError,
-                setPencilMode = setPencilMode,
-                undo = undo,
-                redo = redo,
-                sentence = previousEntry?.sentence,
-                onSubmit = {
-                    if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
-                        Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
-                },
-            )
-        }
+    val onSubmit = {
+        if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
     }
+
+    DrawScreen(
+        linesState = linesState,
+        currentLineState = currentLineState,
+        currentPropertiesState = currentPropertiesState,
+        setCanvasResolution = setCanvasResolution,
+        isLoading = drawViewModel.isLoading,
+        touchStart = touchStart,
+        touchMove = touchMove,
+        touchEnd = touchEnd,
+        isError = drawViewModel.isError,
+        sentence = previousEntry?.sentence,
+        onEndedGame = onEndedGame,
+        undoCount = undoCount,
+        redoCount = redoCount,
+        drawMode = drawViewModel.drawMode,
+        setPencilMode = setPencilMode,
+        onUndo = undo,
+        onRedo = redo,
+        onSubmit = onSubmit
+    )
 }
 
 @Composable
@@ -159,73 +134,96 @@ private fun DrawScreen(
     touchStart: (PointerInputChange) -> Unit,
     touchMove: (PointerInputChange) -> Unit,
     touchEnd: (PointerInputChange) -> Unit,
+    isError: Boolean,
+    sentence: String?,
+    onEndedGame: () -> Unit,
     undoCount: State<Int>,
     redoCount: State<Int>,
     drawMode: DrawMode,
-    isError: Boolean,
     setPencilMode: (DrawMode) -> Unit,
-    undo: () -> Unit,
-    redo: () -> Unit,
-    sentence: String?,
+    onUndo: () -> Unit,
+    onRedo: () -> Unit,
     onSubmit: () -> Unit,
-) {
-    if (isLoading)
-        Spinner()
-    when (LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT) {
-        (true) -> {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Sentence(sentence)
-                    ErrorText(
-                        isError,
-                        stringResource(id = R.string.drawing_error)
-                    )
-                }
-                Draw(
-                    Modifier,
-                    linesState,
-                    currentLineState,
-                    currentPropertiesState,
-                    setCanvasResolution,
-                    touchStart,
-                    touchMove,
-                    touchEnd,
+
+    ) {
+    val height = remember { mutableIntStateOf(0) }
+    val width = remember { mutableIntStateOf(0) }
+    var showEndGameConfirm by remember { mutableStateOf(false) }
+    Scaffolds.InGame(
+        title = stringResource(R.string.draw_turn_title),
+        showEndGameConfirm = { showEndGameConfirm = true },
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                DrawingPropertiesMenu(
+                    undoCount = undoCount.value,
+                    redoCount = redoCount.value,
+                    drawMode = drawMode,
+                    setPencilMode = setPencilMode,
+                    onUndo = onUndo,
+                    onRedo = onRedo
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    DrawingPropertiesMenu(
-                        undoCount = undoCount.value,
-                        redoCount = redoCount.value,
-                        drawMode = drawMode,
-                        setPencilMode = setPencilMode,
-                        onUndo = undo,
-                        onRedo = redo
-                    )
-                    SubmitButton(onSubmit = onSubmit)
-                }
+                SubmitButton(onSubmit = onSubmit)
             }
         }
+    )
+    { innerPadding ->
+        BackHandler(
+            enabled = true
+        ) {
+            showEndGameConfirm = true
+        }
+        if (showEndGameConfirm) {
+            ConfirmDialog(
+                onDismiss = { showEndGameConfirm = false },
+                onConfirm = onEndedGame,
+                action = stringResource(R.string.end_game_for_all)
+            )
+        }
 
-        else -> {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(modifier = Modifier.weight(2f)) {
+        Surface(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 15.dp)
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            if (isLoading)
+                Spinner()
+            Column(
+                modifier = Modifier
+                    .onPlaced {
+                        height.intValue = it.size.height
+                        width.intValue = it.size.width
+                    }
+                    .onSizeChanged {
+                        height.intValue = it.height
+                        width.intValue = it.width
+                    }) {
+                Column(modifier = Modifier) {
                     Sentence(sentence)
                     ErrorText(
                         isError,
                         stringResource(id = R.string.drawing_error)
                     )
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(6f)
-                        .padding(8.dp)
-                ) {
+                var modifier = Modifier.padding(0.dp)
+                modifier =
+                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        val size =
+                            (height.intValue.coerceAtMost(width.intValue) / 2).dp - innerPadding.calculateTopPadding() - innerPadding.calculateBottomPadding()
+                        modifier.then(Modifier.size(size))
+                    } else {
+                        modifier.then(Modifier.fillMaxSize())
+                    }
+
+                Row(modifier = modifier)
+                {
                     Draw(
                         Modifier,
                         linesState,
@@ -237,26 +235,9 @@ private fun DrawScreen(
                         touchEnd,
                     )
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(2f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    DrawingPropertiesMenu(
-                        undoCount = undoCount.value,
-                        redoCount = redoCount.value,
-                        drawMode = drawMode,
-                        setPencilMode = setPencilMode,
-                        onUndo = undo,
-                        onRedo = redo
-                    )
-                    SubmitButton(onSubmit = onSubmit)
-                }
             }
         }
     }
-
 }
 
 @Composable
@@ -395,62 +376,53 @@ private fun DrawingPropertiesMenu(
     onRedo: () -> Unit,
     setPencilMode: (DrawMode) -> Unit,
 ) {
-    val modifier = Modifier
-        .padding(8.dp)
-        .shadow(4.dp, RoundedCornerShape(8.dp))
-        .background(Color.White)
-        .padding(4.dp)
-
-    OrientationSwapperEvenly(
-        modifier = modifier,
-        rowModifier = modifier,
-        flip = true,
-        {
-            IconButton(onClick = {
+    Row {
+        IconButton(
+            onClick = {
                 setPencilMode(DrawMode.Draw)
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_draw_black_24),
-                    contentDescription = stringResource(id = R.string.erase),
-                    tint = if (drawMode == DrawMode.Draw) Color.Black else Color.LightGray
-                )
-            }
-        },
-        {
-            IconButton(onClick = {
-                setPencilMode(DrawMode.Erase)
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_eraser_black_24),
-                    contentDescription = stringResource(id = R.string.erase),
-                    tint = if (drawMode == DrawMode.Erase) Color.Black else Color.LightGray
-                )
-            }
-        },
-        {
-            IconButton(onClick = {
-                onUndo()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_undo_black_24),
-                    contentDescription = stringResource(id = R.string.undo),
-                    tint = if (undoCount > 0) Color.Black else Color.LightGray
-                )
-            }
-        },
-        {
-            IconButton(onClick = {
-                onRedo()
-            }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_redo_black_24),
-                    contentDescription = stringResource(id = R.string.redo),
-                    tint = if (redoCount > 0) Color.Black else Color.LightGray
-                )
-            }
+            }, enabled = (drawMode == DrawMode.Draw)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_draw_black_24),
+                contentDescription = stringResource(id = R.string.erase),
+            )
         }
-    )
+        IconButton(
+            onClick = {
+                setPencilMode(DrawMode.Erase)
+            },
+            enabled = (drawMode == DrawMode.Erase)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_eraser_black_24),
+                contentDescription = stringResource(id = R.string.erase),
+            )
+        }
+        IconButton(
+            onClick = {
+                onUndo()
+            },
+            enabled = (undoCount > 0)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_undo_black_24),
+                contentDescription = stringResource(id = R.string.undo),
+            )
+        }
+        IconButton(
+            onClick = {
+                onRedo()
+            },
+            enabled = (redoCount > 0)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_redo_black_24),
+                contentDescription = stringResource(id = R.string.redo),
+            )
+        }
+    }
 }
+
 
 @Composable
 fun Sentence(sentence: String?) {
@@ -464,11 +436,6 @@ fun Sentence(sentence: String?) {
             .padding(4.dp)
 
     ) {
-        Text(
-            modifier = Modifier.padding(PaddingValues(top = 8.dp, start = 8.dp)),
-            text = stringResource(R.string.draw_this_sentence),
-            color = MaterialTheme.colorScheme.onTertiaryContainer
-        )
         Text(
             modifier = Modifier.padding(PaddingValues(bottom = 8.dp, start = 8.dp)),
             text = stringResource(R.string.no_letters_or_numbers),
@@ -488,6 +455,10 @@ fun Sentence(sentence: String?) {
  * Preview Screenshot #3
  */
 @Preview
+@Preview(device = "spec:parent=Nexus 7 2013")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape",uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewDawingWithSentance() {
     val lines =
@@ -510,38 +481,26 @@ fun PreviewDawingWithSentance() {
     }
     val sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence
     AppTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            DrawScreen(
-                linesState = linesState,
-                currentLineState = currentLineState,
-                currentPropertiesState = currentPropertiesState,
-                setCanvasResolution = setCanvasResolution,
-                isLoading = false,
-                touchStart = { },
-                touchMove = { },
-                touchEnd = { },
-                undoCount = undoCount,
-                redoCount = redoCount,
-                drawMode = DrawMode.Draw,
-                isError = false,
-                setPencilMode = { },
-                undo = { },
-                redo = { },
-                sentence = sentence,
-                onSubmit = { },
-            )
-        }
+        DrawScreen(
+            linesState = linesState,
+            currentLineState = currentLineState,
+            currentPropertiesState = currentPropertiesState,
+            setCanvasResolution = setCanvasResolution,
+            isLoading = false,
+            touchStart = { },
+            touchMove = { },
+            touchEnd = { },
+            isError = false,
+            sentence = sentence,
+            onEndedGame = {},
+            onRedo = {},
+            onUndo = {},
+            onSubmit = {},
+            undoCount = undoCount,
+            redoCount = redoCount,
+            drawMode = DrawMode.Draw,
+            setPencilMode = {}
+        )
     }
 }
 
-
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Composable
-fun PreviewDawingWithSentanceLandscape() {
-    PreviewDawingWithSentance()
-}

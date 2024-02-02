@@ -3,10 +3,14 @@ package dev.develsinthedetails.eatpoopyoucat.compose.sentence
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,12 +24,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -104,7 +111,7 @@ fun SentenceScreen(
     val focusRequester = remember { FocusRequester() }
     var showEndGameConfirm by remember { mutableStateOf(false) }
     val onEnd = {
-        if (isFirstTurn){
+        if (isFirstTurn) {
             onDeleteGame()
             onNavigateToHome()
         } else {
@@ -114,13 +121,13 @@ fun SentenceScreen(
 
     Scaffolds.InGame(
         title = stringResource(R.string.sentence_turn_title),
-        showEndGameConfirm = { showEndGameConfirm = true }
+        showEndGameConfirm = { showEndGameConfirm = true },
     )
-    {
+    { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(innerPadding)
                 .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
@@ -136,21 +143,35 @@ fun SentenceScreen(
                     action = stringResource(R.string.end_game_for_all)
                 )
             }
+            // set up all transformation states
+            var scale by remember { mutableFloatStateOf(1f) }
+            val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+                scale *= zoomChange
+            }
             if (isLoading)
                 Spinner()
-
+            val errorText = stringResource(id = R.string.write_sentence_error)
+            val errorDetails = pluralStringResource(
+                id = R.plurals.minimum_words,
+                count = minimumWords,
+                minimumWords
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                val errorText = stringResource(id = R.string.write_sentence_error)
-                val errorDetails = pluralStringResource(
-                    id = R.plurals.minimum_words,
-                    count = minimumWords,
-                    minimumWords
-                )
-
+                Row(modifier=Modifier.graphicsLayer(
+                        scaleX = scale.coerceAtMost(1f),
+                        scaleY = scale.coerceAtMost(1f),
+                    )
+                    .transformable(state = state)
+                    .fillMaxSize()) {
+                    drawing?.let { bytes ->
+                        DrawBox(drawingZippedJson = bytes)
+                    }
+                }
                 ErrorText(isError, errorText, errorDetails)
                 SentenceInput(
                     sentence,
@@ -168,13 +189,7 @@ fun SentenceScreen(
                         onSubmit = onSubmit
                     )
                 }
-                Row(modifier = Modifier)
-                {
-                    drawing?.let { bytes ->
-                        DrawBox(drawingZippedJson = bytes)
-                    }
-
-                }
+                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
         }
     }
@@ -266,6 +281,7 @@ fun PreviewSentenceScreenSmallLandscape() {
  * Preview Screenshot #4
  */
 @Preview
+@Preview(device = "spec:parent=pixel_5,orientation=landscape")
 @Composable
 fun PreviewSentenceScreenWithDrawing() {
     AppTheme {
@@ -283,10 +299,4 @@ fun PreviewSentenceScreenWithDrawing() {
             onNavigateToHome = {}
         )
     }
-}
-
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
-@Composable
-fun PreviewSentenceScreenWithDrawingLandscape() {
-    PreviewSentenceScreenWithDrawing()
 }
