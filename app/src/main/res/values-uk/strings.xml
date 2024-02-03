@@ -14,7 +14,7 @@
     <string name="dialog_start_game">Почати гру</string>
     <string name="start">Початок</string>
     <string name="cancel">Скасувати</string>
-    <string name="submit">Надіслати!</string>
+    <string name="submit">Закінчити мій хід!</string>
     <string name="dialog_accept_turn">Приймаємо черги від %1$s!</string>
     <string name="created_by">Створено: %1$s</string>
     <string name="write_a_funny_sentence">Напишіть смішне речення</string>
@@ -63,12 +63,12 @@
     <string name="pass_to_the_next">Передайте цей пристрій наступному гравцеві!</string>
     <string name="app_warning">* Родина та друзі не враховуються!</string>
     <string name="privacy_policy">Політика конфіденційності</string>
-    <string name="sentence_turn_title">Write Something!</string>
+    <string name="sentence_turn_title">Напишіть що-небудь!</string>
     <string name="draw_turn_title">Draw something!</string>
     <plurals name="minimum_words">
-        <item quantity="one">minimum %d word.</item>
-        <item quantity="few">minimum %d words.</item>
-        <item quantity="many">minimum %d words.</item>
-        <item quantity="other">minimum %d words.</item>
+        <item quantity="one">мінімум %d слово.</item>
+        <item quantity="few">мінімум %d слова.</item>
+        <item quantity="many">мінімум %d слів.</item>
+        <item quantity="other">мінімум %d слів.</item>
     </plurals>
 </resources>
