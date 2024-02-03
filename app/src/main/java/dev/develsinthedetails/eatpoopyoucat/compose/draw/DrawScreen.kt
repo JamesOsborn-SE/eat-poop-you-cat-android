@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -377,21 +379,25 @@ private fun DrawingPropertiesMenu(
     setPencilMode: (DrawMode) -> Unit,
 ) {
     Row {
+        val drawAlpha = if (drawMode == DrawMode.Draw) 1f else ContentAlpha.disabled
         IconButton(
             onClick = {
                 setPencilMode(DrawMode.Draw)
-            }, enabled = (drawMode == DrawMode.Draw)
+            },
+            modifier = Modifier.alpha(drawAlpha)
+
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_draw_black_24),
                 contentDescription = stringResource(id = R.string.erase),
             )
         }
+        val eraseAlpha = if (drawMode == DrawMode.Erase) 1f else ContentAlpha.disabled
         IconButton(
             onClick = {
                 setPencilMode(DrawMode.Erase)
             },
-            enabled = (drawMode == DrawMode.Erase)
+            modifier = Modifier.alpha(eraseAlpha)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_eraser_black_24),
