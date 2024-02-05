@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.home
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,15 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
 import java.util.UUID
 
@@ -35,6 +36,8 @@ fun HomeScreen(
     viewModel: GreetingViewModel = hiltViewModel(),
     onNavigateToSentence: (String) -> Unit,
     onNavigateToPreviousGames: () -> Unit,
+    onNavigateToCredits: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
 ) {
     HomeScreen(
         isLoading = viewModel.isLoading,
@@ -45,6 +48,8 @@ fun HomeScreen(
             ) { onNavigateToSentence(entryId.toString()) }
         },
         onNavigateToPreviousGames = onNavigateToPreviousGames,
+        onNavigateToCredits = onNavigateToCredits,
+        onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
     )
 }
 
@@ -54,6 +59,8 @@ fun HomeScreen(
     isLoading: Boolean,
     onStartGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
+    onNavigateToCredits: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
 ) {
     val padding = 20.dp
     // A surface container using the 'background' color from the theme
@@ -91,7 +98,17 @@ fun HomeScreen(
                     fontSize = 12.sp
                 )
 
-                PrivacyPolicy(defaultModifier)
+                TextButton(
+                    modifier = defaultModifier,
+                    onClick = onNavigateToCredits,
+                ) {
+                    Text(stringResource(id = R.string.About))
+                }
+                TextButton(
+                    modifier = defaultModifier,
+                    onClick = onNavigateToPrivacyPolicy) {
+                    Text(stringResource(id = R.string.privacy_policy))
+                }
             }
         }
     }
@@ -101,7 +118,7 @@ fun HomeScreen(
 fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
     Button(
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.onSecondaryContainer),
+        colors = secondaryButtonColors(),
         onClick = {
             navTo()
         }) {
@@ -132,40 +149,24 @@ fun StartGame(
     }
 }
 
-@Composable
-fun PrivacyPolicy(
-    modifier: Modifier,
-) {
-    val uriHandler = LocalUriHandler.current
-    Button(
-        onClick = {
-            val privacyPolicy =
-                "https://raw.githubusercontent.com/JamesOsborn-SE/eat-poop-you-cat-android/063385dacb9fa34326c98ef9f1a46da10c7add42/metadata/android/en-US/privacy_policy.txt"
-            uriHandler.openUri(privacyPolicy)
-        },
-        modifier = modifier
-    ) {
-        Text(stringResource(id = R.string.privacy_policy))
-        Spacer(modifier = Modifier.size(5.dp))
-    }
-}
-
 /**
  * Preview Screenshot #1
  */
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    device = "spec:parent=Nexus 7 2013,orientation=landscape"
+)
 @Composable
 fun PreviewHomeScreen() {
     AppTheme {
         HomeScreen(
             isLoading = false,
             onStartGame = {},
-            onNavigateToPreviousGames = {})
+            onNavigateToPreviousGames = {},
+            onNavigateToCredits = {},
+            onNavigateToPrivacyPolicy = {},)
     }
-}
-
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Composable
-fun PreviewHomeScreenLandscape() {
-    PreviewHomeScreen()
 }
