@@ -65,6 +65,9 @@
     <string name="privacy_policy">Політика конфіденційності</string>
     <string name="sentence_turn_title">Write Something!</string>
     <string name="draw_turn_title">Draw something!</string>
+    <string name="About">About this app</string>
+    <string name="translations_welcome">Translation contributions welcome</string>
+    <string name="issues">Issues</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="few">minimum %d words.</item>

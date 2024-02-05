@@ -1,1 +1,18 @@
 Submit a sentence pass it to the next person and they draw a picture. The next person can only see the last entry (picture in this case) and they write a sentence. It goes on until everyone has had a turn or boredom takes hold.
+
+Credits:
+Shout out to my friends and family who have given feedback and put up with me so far
+
+Huge thanks to the translation folks for their time and energy
+
+* Сергій
+* cwpute
+* Dan
+* Jérôme Herbinet
+* ssantos
+
+Thanks to all the open source contributors and projects that this project relies on.
+
+This app is available on F-Droid and Google Play
+
+<a href="https://hosted.weblate.org/engage/eat-poop-you-cat-android/">Translation contributions welcome!</a>
