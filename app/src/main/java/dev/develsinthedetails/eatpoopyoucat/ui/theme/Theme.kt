@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -107,6 +108,18 @@ fun AppTheme(
     content = content
   )
 }
+
+@Composable
+fun secondaryButtonColors() = ButtonDefaults.buttonColors(
+    MaterialTheme.colorScheme.secondaryContainer,
+    MaterialTheme.colorScheme.onSecondaryContainer,
+)
+
+@Composable
+fun primaryButtonColors() = ButtonDefaults.buttonColors(
+    MaterialTheme.colorScheme.primaryContainer,
+    MaterialTheme.colorScheme.onPrimaryContainer
+)
 
 @Composable
 fun warningColors(useDarkTheme: Boolean = isSystemInDarkTheme()): WarningColors {
