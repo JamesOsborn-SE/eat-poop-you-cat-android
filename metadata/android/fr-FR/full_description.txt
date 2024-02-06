@@ -1,0 +1,1 @@
+On écrit une phrase, on passe au joueur suivant, on dessine la phrase reçue. Chaque joueur qui suit ne peut voir que l'entrée précédente, et doit la décrire (si c'est un dessin) ou la dessiner (si c'est une phrase). On continue jusqu'à ce que tout le monde ait joué ou que l'ennui s'installe.

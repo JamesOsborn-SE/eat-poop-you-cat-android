@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="background_summary_off">Vous ne pourrez pas envoyer ou recevoir de parties si l\'application n\'est pas ouverte</string>
-    <string name="submit">Soumettre !</string>
+    <string name="submit">J\'ai fini mon tour !</string>
     <string name="dialog_accept_turn">Acceptez votre tour de %1$s !</string>
     <string name="created_by">Créé par : %1$s</string>
     <string name="write_a_funny_sentence">Écrivez une phrase amusante</string>
