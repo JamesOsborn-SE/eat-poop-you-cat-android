@@ -57,10 +57,18 @@ You start with a sentence pass it to the next person and it they draw a picture.
 
 * **No** permissions needed at the moment
 
+## Contributors
+
+AKA the Kool Kids 😎
+
+[![EatPoopYouCat Contributors](https://contrib.rocks/image?repo=JamesOsborn-SE/eat-poop-you-cat-android)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/graphs/contributors)
+
 ### Tech used
 
 * [ORM - Room](https://developer.android.com/training/data-storage/room/)
 * [Wireframes - Figma](https://www.figma.com/file/N5rf2UZaGy0LhD4S7r28OI/EPYC?node-id=0%3A1)
+
+## Dev Stuff
 
 ### Run locally
 
