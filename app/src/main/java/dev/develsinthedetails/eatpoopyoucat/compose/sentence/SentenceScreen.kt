@@ -145,7 +145,7 @@ fun SentenceScreen(
             }
             // set up all transformation states
             var scale by remember { mutableFloatStateOf(1f) }
-            val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+            val state = rememberTransformableState { zoomChange, _, _ ->
                 scale *= zoomChange
             }
             if (isLoading)
