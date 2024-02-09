@@ -32,86 +32,87 @@ import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameSc
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.utilities.AppNavigation
 import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
 
 @Composable
 fun EatPoopYouCatApp(
 ) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
+    NavHost(navController = navController, startDestination = AppNavigation.home) {
+        composable(AppNavigation.home) {
             HomeScreen(
                 onNavigateToSentence = {
-                    navController.navigate("sentence/${it}") {
-                        popUpTo("home")
+                    navController.navigate("${AppNavigation.sentence}/${it}") {
+                        popUpTo(AppNavigation.home)
                     }
                 },
                 onNavigateToPreviousGames = {
-                    navController.navigate("games")
+                    navController.navigate(AppNavigation.games)
                 },
                 onNavigateToCredits = {
-                    navController.navigate("credits")
+                    navController.navigate(AppNavigation.credits)
                 },
                 onNavigateToPrivacyPolicy = {
-                    navController.navigate("privacypolicy")
+                    navController.navigate(AppNavigation.privacyPolicy)
                 })
         }
 
         composable(
-            "sentence/{EntryId}",
+            "${AppNavigation.sentence}/{${AppNavigation.EntryId}}",
             arguments = listOf(
-                navArgument("EntryId") { type = NavType.StringType }
+                navArgument(AppNavigation.EntryId) { type = NavType.StringType }
             )
         ) {
             SentenceScreen(
                 onNavigateToDraw = {
-                    navController.navigate("draw/${it}") {
-                        popUpTo("home")
+                    navController.navigate("${AppNavigation.draw}/${it}") {
+                        popUpTo(AppNavigation.home)
                     }
                 },
-                onNavigateToHome = { navController.navigate("home") },
+                onNavigateToHome = { navController.navigate(AppNavigation.home) },
                 onNavigateToEndedGame = {
-                    navController.navigate("game/${it}") {
-                        popUpTo("home")
+                    navController.navigate("${AppNavigation.game}/${it}") {
+                        popUpTo(AppNavigation.home)
                     }
                 })
         }
         composable(
-            "draw/{EntryId}",
+            "${AppNavigation.draw}/${AppNavigation.EntryId}",
             arguments = listOf(
-                navArgument("EntryId") { type = NavType.StringType }
+                navArgument(AppNavigation.EntryId) { type = NavType.StringType }
             )
         ) {
             DrawScreen(onNavigateToSentence = {
-                navController.navigate("sentence/${it}") {
-                    popUpTo("home")
+                navController.navigate("${AppNavigation.sentence}/${it}") {
+                    popUpTo(AppNavigation.home)
                 }
             }, onNavigateToEndedGame = {
-                navController.navigate("game/${it}") {
-                    popUpTo("home")
+                navController.navigate("${AppNavigation.game}/${it}") {
+                    popUpTo(AppNavigation.home)
                 }
             })
         }
         composable(
-            "games",
+            AppNavigation.games,
         ) {
             PreviousGamesScreen(
-                onGoHome = { navController.navigate("home") },
-                onGameClick = { navController.navigate("game/${it}") }
+                onGoHome = { navController.navigate(AppNavigation.home) },
+                onGameClick = { navController.navigate("${AppNavigation.game}/${it}") }
             )
         }
         composable(
-            "game/{GameId}",
+            "${AppNavigation.game}/{GameId}",
             arguments = listOf(
-                navArgument("GameId") { type = NavType.StringType }
+                navArgument(AppNavigation.GameId) { type = NavType.StringType }
             )
         ) {
             PreviousGameScreen()
         }
-        composable("credits") {
+        composable(AppNavigation.credits) {
             CreditsScreen()
         }
-        composable("privacypolicy") {
+        composable(AppNavigation.privacyPolicy) {
             PrivacyPolicyScreen()
         }
     }
