@@ -51,6 +51,7 @@ data class Entry(
     @PrimaryKey val id: UUID,
     @Serializable(with = UUIDSerializer::class)
     val playerId: UUID,
+    val localPlayerName: String? = null,
     val sequence: Int,
     @Serializable(with = UUIDSerializer::class)
     val gameId: UUID,
@@ -65,9 +66,7 @@ data class Entry(
         other as Entry
 
         if (id != other.id) return false
-        if (gameId != other.gameId) return false
-
-        return true
+        return gameId == other.gameId
     }
 
     override fun hashCode(): Int {

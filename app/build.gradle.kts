@@ -152,4 +152,7 @@ dependencies {
 kapt {
     correctErrorTypes = true
     useBuildCache = false
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
