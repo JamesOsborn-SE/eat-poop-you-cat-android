@@ -11,6 +11,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
@@ -64,7 +65,7 @@ class DrawViewModelTest {
         )
 
         val savedStateHandle: SavedStateHandle = SavedStateHandle().apply {
-            set("EntryId", testEntries[0].id.toString())
+            set(ID, testEntries[0].id.toString())
         }
         viewModel = DrawViewModel(savedStateHandle, appRepository)
     }

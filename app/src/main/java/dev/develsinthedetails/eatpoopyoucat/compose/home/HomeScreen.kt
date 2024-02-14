@@ -102,7 +102,7 @@ fun HomeScreen(
                     modifier = defaultModifier,
                     onClick = onNavigateToCredits,
                 ) {
-                    Text(stringResource(id = R.string.About))
+                    Text(stringResource(id = R.string.about))
                 }
                 TextButton(
                     modifier = defaultModifier,

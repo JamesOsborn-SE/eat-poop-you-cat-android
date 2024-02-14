@@ -22,6 +22,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
+import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -59,7 +60,7 @@ class DrawViewModel @Inject constructor(
     var isLoading: Boolean by mutableStateOf(false)
         private set
 
-    private val previousEntryId: String = checkNotNull(state.get<String>("EntryId"))
+    private val previousEntryId: String = checkNotNull(state.get<String>(ID))
     private val prevEnt = repository.getEntry(previousEntryId)
     val previousEntry: LiveData<Entry> = prevEnt.asLiveData()
 

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -53,7 +53,9 @@ fun Spinner(
                 .size(100.dp)
                 .background(Color.White, shape = RoundedCornerShape(8.dp))
         ) {
-            CircularProgressIndicator(progress = 0.89f)
+            CircularProgressIndicator(
+                progress = { 0.89f },
+            )
         }
     }
 }
@@ -98,9 +100,8 @@ fun ConfirmDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
-    AlertDialog(
+    BasicAlertDialog(onDismissRequest = { onDismiss() },
         modifier = Modifier.fillMaxWidth(),
-        onDismissRequest = { onDismiss() },
         properties = DialogProperties(),
         content = {
             Column(

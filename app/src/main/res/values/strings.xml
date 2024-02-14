@@ -64,7 +64,7 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="sentence_turn_title">Write Something!</string>
     <string name="draw_turn_title">Draw this sentence!</string>
-    <string name="About">About this app</string>
+    <string name="about">About this app</string>
     <string name="translations_welcome">Translation contributions welcome</string>
     <string name="issues">Issues</string>
     <plurals name="minimum_words">

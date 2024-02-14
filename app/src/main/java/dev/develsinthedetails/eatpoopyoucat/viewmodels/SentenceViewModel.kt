@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -30,7 +31,7 @@ class SentenceViewModel @Inject constructor(
     var isLoading: Boolean by mutableStateOf(false)
         private set
 
-    private val previousEntryId: String = checkNotNull(state.get<String>("EntryId"))
+    private val previousEntryId: String = checkNotNull(state.get<String>(ID))
     val previousEntry: LiveData<Entry> = repository.getEntry(previousEntryId).asLiveData()
 
     val entryId = UUID.randomUUID().toString()
