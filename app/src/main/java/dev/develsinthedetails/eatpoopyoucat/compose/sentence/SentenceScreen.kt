@@ -162,12 +162,14 @@ fun SentenceScreen(
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Row(modifier=Modifier.graphicsLayer(
+                Row(modifier=Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
                         scaleX = scale.coerceAtMost(1f),
                         scaleY = scale.coerceAtMost(1f),
                     )
                     .transformable(state = state)
-                    .fillMaxSize()) {
+                    ) {
                     drawing?.let { bytes ->
                         DrawBox(drawingZippedJson = bytes)
                     }
