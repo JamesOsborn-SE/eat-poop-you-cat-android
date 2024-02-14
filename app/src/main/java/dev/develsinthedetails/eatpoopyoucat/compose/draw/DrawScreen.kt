@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +36,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -189,9 +187,9 @@ private fun DrawScreen(
 
         Surface(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 15.dp)
-                .fillMaxSize()
                 .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
@@ -379,27 +377,27 @@ private fun DrawingPropertiesMenu(
     setPencilMode: (DrawMode) -> Unit,
 ) {
     Row {
-        val drawAlpha = if (drawMode == DrawMode.Draw) 1f else ContentAlpha.disabled
         IconButton(
             onClick = {
                 setPencilMode(DrawMode.Draw)
             },
-            modifier = Modifier.alpha(drawAlpha)
+            modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Draw))
 
         ) {
             Icon(
+                tint = selectedTint(drawMode, DrawMode.Draw),
                 painter = painterResource(id = R.drawable.ic_draw_black_24),
                 contentDescription = stringResource(id = R.string.erase),
             )
         }
-        val eraseAlpha = if (drawMode == DrawMode.Erase) 1f else ContentAlpha.disabled
         IconButton(
             onClick = {
                 setPencilMode(DrawMode.Erase)
             },
-            modifier = Modifier.alpha(eraseAlpha)
+            modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Erase))
         ) {
             Icon(
+                tint = selectedTint(drawMode, DrawMode.Erase),
                 painter = painterResource(id = R.drawable.ic_eraser_black_24),
                 contentDescription = stringResource(id = R.string.erase),
             )
@@ -428,6 +426,15 @@ private fun DrawingPropertiesMenu(
         }
     }
 }
+
+@Composable
+private fun selectedTint(selected: DrawMode, drawMode: DrawMode) =
+    if (drawMode == selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer
+
+@Composable
+private fun selectedBackground(selected: DrawMode, drawMode: DrawMode) =
+    if (drawMode == selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
+
 
 
 @Composable
