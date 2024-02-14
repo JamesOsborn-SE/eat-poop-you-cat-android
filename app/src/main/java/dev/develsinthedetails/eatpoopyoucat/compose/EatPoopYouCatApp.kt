@@ -171,8 +171,8 @@ fun CreditsScreen() {
 fun PrivacyPolicyScreen() {
     Surface(
         modifier = Modifier
-            .verticalScroll(ScrollState(0))
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(ScrollState(0)),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
@@ -181,7 +181,6 @@ fun PrivacyPolicyScreen() {
                 .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
                 modifier = Modifier
                     .padding(8.dp),
