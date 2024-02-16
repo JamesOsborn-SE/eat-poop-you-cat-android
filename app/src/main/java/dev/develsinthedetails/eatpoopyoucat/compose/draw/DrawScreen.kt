@@ -10,23 +10,23 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -153,12 +153,8 @@ private fun DrawScreen(
         title = stringResource(R.string.draw_turn_title),
         showEndGameConfirm = { showEndGameConfirm = true },
         bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
+            BottomAppBar(actions =
+            {
                 DrawingPropertiesMenu(
                     undoCount = undoCount.value,
                     redoCount = redoCount.value,
@@ -167,8 +163,9 @@ private fun DrawScreen(
                     onUndo = onUndo,
                     onRedo = onRedo
                 )
-                SubmitButton(onSubmit = onSubmit)
-            }
+            },
+                floatingActionButton = { SubmitButton(onSubmit = onSubmit) }
+        )
         }
     )
     { innerPadding ->
@@ -376,7 +373,6 @@ private fun DrawingPropertiesMenu(
     onRedo: () -> Unit,
     setPencilMode: (DrawMode) -> Unit,
 ) {
-    Row {
         IconButton(
             onClick = {
                 setPencilMode(DrawMode.Draw)
@@ -424,17 +420,15 @@ private fun DrawingPropertiesMenu(
                 contentDescription = stringResource(id = R.string.redo),
             )
         }
-    }
 }
 
 @Composable
 private fun selectedTint(selected: DrawMode, drawMode: DrawMode) =
-    if (drawMode == selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer
+    if (drawMode == selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
 
 @Composable
 private fun selectedBackground(selected: DrawMode, drawMode: DrawMode) =
-    if (drawMode == selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer
-
+    if (drawMode == selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
 
 
 @Composable
@@ -443,7 +437,7 @@ fun Sentence(sentence: String?) {
         return
     Column(
         modifier = Modifier
-            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+            .padding(8.dp)
             .shadow(4.dp, RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.tertiaryContainer)
             .padding(4.dp)
@@ -471,7 +465,10 @@ fun Sentence(sentence: String?) {
 @Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape",uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    device = "spec:parent=Nexus 7 2013,orientation=landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PreviewDawingWithSentance() {
     val lines =

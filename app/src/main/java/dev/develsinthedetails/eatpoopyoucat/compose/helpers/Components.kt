@@ -154,7 +154,7 @@ fun ConfirmDialog(
 fun AppButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    @StringRes text: Int,
+    @StringRes text: Int? = null,
     @DrawableRes icon: Int? = null,
     @StringRes iconDescription: Int? = null,
     enabled: Boolean = true,
@@ -168,10 +168,12 @@ fun AppButton(
         colors = colors,
         elevation = elevation,
     ) {
-        Text(stringResource(id = text))
+        if(text!=null)
+            Text(stringResource(id = text))
+
         if (icon != null && iconDescription != null) {
-            Spacer(modifier = Modifier.size(5.dp))
             Icon(
+                modifier = Modifier.padding(start = 5.dp),
                 contentDescription = stringResource(id = iconDescription),
                 painter = painterResource(id = icon),
             )
