@@ -99,3 +99,5 @@ classDiagram
         +Player Player
     }
 ```
+
+[![Star History Chart](https://api.star-history.com/svg?repos=JamesOsborn-SE/eat-poop-you-cat-android&type=Date)](https://star-history.com/#JamesOsborn-SE/eat-poop-you-cat-android&Date)
