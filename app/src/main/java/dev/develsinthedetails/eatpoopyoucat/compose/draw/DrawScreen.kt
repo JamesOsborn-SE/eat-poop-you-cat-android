@@ -28,7 +28,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -104,9 +103,9 @@ fun DrawScreen(
     }
 
     DrawScreen(
-        linesState = linesState,
-        currentLineState = currentLineState,
-        currentPropertiesState = currentPropertiesState,
+        linesState = linesState.value,
+        currentLineState = currentLineState.value,
+        currentPropertiesState = currentPropertiesState.value,
         setCanvasResolution = setCanvasResolution,
         isLoading = drawViewModel.isLoading,
         touchStart = touchStart,
@@ -115,8 +114,8 @@ fun DrawScreen(
         isError = drawViewModel.isError,
         sentence = previousEntry?.sentence,
         onEndedGame = onEndedGame,
-        undoCount = undoCount,
-        redoCount = redoCount,
+        undoCount = undoCount.value,
+        redoCount = redoCount.value,
         drawMode = drawViewModel.drawMode,
         setPencilMode = setPencilMode,
         onUndo = undo,
@@ -127,9 +126,9 @@ fun DrawScreen(
 
 @Composable
 private fun DrawScreen(
-    linesState: State<List<Line>>,
-    currentLineState: State<List<LineSegment>>,
-    currentPropertiesState: State<LineProperties>,
+    linesState: List<Line>,
+    currentLineState: List<LineSegment>,
+    currentPropertiesState: LineProperties = LineProperties(),
     setCanvasResolution: (IntSize) -> Unit,
     isLoading: Boolean = true,
     touchStart: (PointerInputChange) -> Unit,
@@ -138,8 +137,8 @@ private fun DrawScreen(
     isError: Boolean,
     sentence: String?,
     onEndedGame: () -> Unit,
-    undoCount: State<Int>,
-    redoCount: State<Int>,
+    undoCount: Int,
+    redoCount: Int,
     drawMode: DrawMode,
     setPencilMode: (DrawMode) -> Unit,
     onUndo: () -> Unit,
@@ -157,8 +156,8 @@ private fun DrawScreen(
             BottomAppBar(actions =
             {
                 DrawingPropertiesMenu(
-                    undoCount = undoCount.value,
-                    redoCount = redoCount.value,
+                    undoCount = undoCount,
+                    redoCount = redoCount,
                     drawMode = drawMode,
                     setPencilMode = setPencilMode,
                     onUndo = onUndo,
@@ -241,9 +240,9 @@ private fun DrawScreen(
 @Composable
 private fun Draw(
     modifier: Modifier,
-    linesState: State<List<Line>>,
-    currentLineState: State<List<LineSegment>>,
-    currentPropertiesState: State<LineProperties>,
+    linesState: List<Line>,
+    currentLineState: List<LineSegment>,
+    currentPropertiesState: LineProperties = LineProperties(),
     setCanvasResolution: (IntSize) -> Unit,
     touchStart: (PointerInputChange) -> Unit,
     touchMove: (PointerInputChange) -> Unit,
@@ -255,8 +254,8 @@ private fun Draw(
     ) {
 
         DrawBox(
-            drawingLines = linesState.value,
-            currentLine = currentLineState.value,
+            drawingLines = linesState,
+            currentLine = currentLineState,
             currentProperties = currentPropertiesState,
             modifier = modifier
         )
@@ -292,7 +291,7 @@ fun DrawBox(
     drawingZippedJson: ByteArray? = byteArrayOf(),
     drawingLines: List<Line> = listOf(),
     currentLine: List<LineSegment> = listOf(),
-    currentProperties: State<LineProperties> = mutableStateOf(LineProperties()),
+    currentProperties: LineProperties = LineProperties(),
     onClick: () -> Unit = {},
     onLongClick: () -> Unit = {},
 ) {
@@ -304,7 +303,7 @@ fun DrawBox(
         mutableListOf()
 
     if (currentLine.isNotEmpty())
-        lines.add(Line(currentLine, currentProperties.value))
+        lines.add(Line(currentLine, currentProperties))
 
     val drawingBackground = MaterialTheme.colorScheme.drawingBackground
     val drawingPen = MaterialTheme.colorScheme.drawingPen
@@ -478,28 +477,15 @@ fun Sentence(sentence: String?) {
 fun PreviewDawingWithSentance() {
     val lines =
         Json.decodeFromString<List<Line>>(dev.develsinthedetails.eatpoopyoucat.utilities.catTestDrawingLinesInJson)
-    val linesState = remember {
-        mutableStateOf(lines)
-    }
-    val currentLineState = remember {
-        mutableStateOf(listOf<LineSegment>())
-    }
-    val currentPropertiesState = remember {
-        mutableStateOf(LineProperties())
-    }
+
     val setCanvasResolution: (IntSize) -> Unit = {}
-    val undoCount = remember {
-        mutableIntStateOf(1)
-    }
-    val redoCount = remember {
-        mutableIntStateOf(0)
-    }
+
     val sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence
     AppTheme {
         DrawScreen(
-            linesState = linesState,
-            currentLineState = currentLineState,
-            currentPropertiesState = currentPropertiesState,
+            linesState = lines,
+            currentLineState = listOf(),
+            currentPropertiesState = LineProperties(),
             setCanvasResolution = setCanvasResolution,
             isLoading = false,
             touchStart = { },
@@ -511,8 +497,8 @@ fun PreviewDawingWithSentance() {
             onRedo = {},
             onUndo = {},
             onSubmit = {},
-            undoCount = undoCount,
-            redoCount = redoCount,
+            undoCount = 1,
+            redoCount = 0,
             drawMode = DrawMode.Draw,
             setPencilMode = {}
         )
