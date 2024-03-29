@@ -44,3 +44,5 @@ google-services.json
 # Android Profiling
 *.hprof
 app/debug/
+
+tmp/
