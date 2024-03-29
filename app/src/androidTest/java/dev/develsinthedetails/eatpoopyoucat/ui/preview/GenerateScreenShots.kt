@@ -77,7 +77,7 @@ class GenerateScreenShots {
         }
         println("Saved screenshot $filename.png")
         runBlocking {
-            delay(3_000)
+            delay(8_000)
         }
     }
 }

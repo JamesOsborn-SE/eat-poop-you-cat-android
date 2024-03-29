@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -127,5 +128,23 @@ fun warningColors(useDarkTheme: Boolean = isSystemInDarkTheme()): WarningColors 
         LightWarnings()
     } else{
         DarkWarnings()
+    }
+}
+
+val ColorScheme.drawingBackground: Color @Composable
+get() {
+    return if (isSystemInDarkTheme()) {
+        md_theme_dark_drawing_background
+    } else {
+        md_theme_light_drawing_background
+    }
+}
+
+val ColorScheme.drawingPen: Color @Composable
+get() {
+    return if (isSystemInDarkTheme()) {
+        md_theme_dark_drawing_pen
+    } else {
+        md_theme_light_drawing_pen
     }
 }

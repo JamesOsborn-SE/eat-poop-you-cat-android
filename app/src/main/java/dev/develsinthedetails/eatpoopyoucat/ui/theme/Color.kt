@@ -32,6 +32,9 @@ val md_theme_light_surfaceTint = Color(0xFF006E00)
 val md_theme_light_outlineVariant = Color(0xFFC3C8BC)
 val md_theme_light_scrim = Color(0xFF000000)
 
+val md_theme_light_drawing_background = Color(0xFFFFFFFF)
+val md_theme_light_drawing_pen = Color(0xFF000000)
+
 val md_theme_dark_primary = Color(0xFF72DE5E)
 val md_theme_dark_onPrimary = Color(0xFF003A00)
 val md_theme_dark_primaryContainer = Color(0xFF005300)
@@ -63,6 +66,8 @@ val md_theme_dark_surfaceTint = Color(0xFF72DE5E)
 val md_theme_dark_outlineVariant = Color(0xFF43483F)
 val md_theme_dark_scrim = Color(0xFF000000)
 
+val md_theme_dark_drawing_background = Color(0xFF000000)
+val md_theme_dark_drawing_pen = Color(0xFFFFFFFF)
 
 val seed = Color(0xFF008000) //Primary on https://m3.material.io/theme-builder#/custom
 
