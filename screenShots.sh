@@ -2,24 +2,35 @@
 
 # shellcheck disable=SC2034
 applicationId=$(grep "applicationId" app/build.gradle.kts |cut -d'"' -f2)
+echo "$applicationId"
 
 # Key is the avd_name from getprop and the value is the output directory for the screen shots
-Nexus_7_2012_API_30="metadata/android/en-US/images/sevenInchScreenshots"
+Nexus_7_2012_API_33="metadata/android/en-US/images/sevenInchScreenshots"
 Pixel_6_API_33="metadata/android/en-US/images/phoneScreenshots"
-Nexus_10_API_30="metadata/android/en-US/images/tenInchScreenshots"
-number_of_shots=4
+Nexus_10_API_33="metadata/android/en-US/images/tenInchScreenshots"
 
-devices=$(adb devices -l | grep emu | cut -f1 -d ' ')
-for device in $devices; do
-  adb -s "$device" root
-
-  currentDevice=$(adb -s "$device" shell getprop | grep -e "ro.kernel.qemu.avd_name" -e "ro.boot.qemu.avd_name" | cut -d' ' -f2 | tr -d "[]")
+devices=("Nexus_10_API_33" "Nexus_7_2012_API_33" "Pixel_6_API_33")
+for currentDevice in "${devices[@]}"; do
+  killall qemu-system-x86_64
   echo "$currentDevice"
-  if [ -v "$currentDevice" ]; then
-    echo "$device"
-    for i in $(seq 1 $number_of_shots); do
-      adb -s "$device" pull "/data/data/$applicationId/files/${i}.png" "$(eval "echo \$$currentDevice")"
-    done
-  fi
+  "${ANDROID_HOME}/emulator/emulator" -avd "$currentDevice" &
+  sleep 10
+  adb shell "cmd uimode night yes"
+  ./gradlew connectedDebugAndroidTest &
 
+  adb root
+  end=$((SECONDS+120))
+  while [ $SECONDS -lt $end ]; do
+      adbsync --force pull "/data/data/$applicationId/files/" "tmp/dark-$(eval "echo \$$currentDevice")"
+      sleep 1
+  done
+
+  adb shell "cmd uimode night no"
+  ./gradlew connectedDebugAndroidTest &
+  end=$((SECONDS+120))
+  while [ $SECONDS -lt $end ]; do
+      adbsync --force pull "/data/data/$applicationId/files/" "tmp/light-$(eval "echo \$$currentDevice")"
+      sleep 1
+  done
 done
+

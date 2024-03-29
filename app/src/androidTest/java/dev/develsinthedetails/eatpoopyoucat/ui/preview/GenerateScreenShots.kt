@@ -12,6 +12,8 @@ import dev.develsinthedetails.eatpoopyoucat.compose.home.PreviewHomeScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreenWithDrawing
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 
@@ -51,6 +53,7 @@ class GenerateScreenShots {
             }
         }
         saveScreenshot(filename)
+
     }
     @Test
     fun takePreviewSentenceScreenWithDrawingScreenShots(){
@@ -73,5 +76,8 @@ class GenerateScreenShots {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
         }
         println("Saved screenshot $filename.png")
+        runBlocking {
+            delay(3_000)
+        }
     }
 }
