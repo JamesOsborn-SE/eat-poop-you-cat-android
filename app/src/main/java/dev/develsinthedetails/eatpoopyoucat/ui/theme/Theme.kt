@@ -41,21 +41,23 @@ private val lightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
+
 interface WarningColors {
     val warning: Color
     val onWarning: Color
     val warningContainer: Color
     val onWarningContainer: Color
 }
-private class LightWarnings:WarningColors {
-        override val warning: Color =  light_warning
-        override val onWarning = light_onWarning
-        override val warningContainer = light_warningContainer
-        override val onWarningContainer = light_onWarningContainer
+
+private class LightWarnings : WarningColors {
+    override val warning: Color = light_warning
+    override val onWarning = light_onWarning
+    override val warningContainer = light_warningContainer
+    override val onWarningContainer = light_onWarningContainer
 }
 
-private class DarkWarnings:WarningColors {
-    override val warning: Color =  dark_warning
+private class DarkWarnings : WarningColors {
+    override val warning: Color = dark_warning
     override val onWarning = dark_onWarning
     override val warningContainer = dark_warningContainer
     override val onWarningContainer = dark_onWarningContainer
@@ -95,19 +97,19 @@ private val darkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
-  content: @Composable () -> Unit
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
 ) {
-  val colors = if (!useDarkTheme) {
-    lightColors
-  } else {
-    darkColors
-  }
+    val colors = if (!useDarkTheme) {
+        lightColors
+    } else {
+        darkColors
+    }
 
-  MaterialTheme(
-    colorScheme = colors,
-    content = content
-  )
+    MaterialTheme(
+        colorScheme = colors,
+        content = content
+    )
 }
 
 @Composable
@@ -126,25 +128,27 @@ fun primaryButtonColors() = ButtonDefaults.buttonColors(
 fun warningColors(useDarkTheme: Boolean = isSystemInDarkTheme()): WarningColors {
     return if (!useDarkTheme) {
         LightWarnings()
-    } else{
+    } else {
         DarkWarnings()
     }
 }
 
-val ColorScheme.drawingBackground: Color @Composable
-get() {
-    return if (isSystemInDarkTheme()) {
-        md_theme_dark_drawing_background
-    } else {
-        md_theme_light_drawing_background
+val ColorScheme.drawingBackground: Color
+    @Composable
+    get() {
+        return if (isSystemInDarkTheme()) {
+            md_theme_dark_drawing_background
+        } else {
+            md_theme_light_drawing_background
+        }
     }
-}
 
-val ColorScheme.drawingPen: Color @Composable
-get() {
-    return if (isSystemInDarkTheme()) {
-        md_theme_dark_drawing_pen
-    } else {
-        md_theme_light_drawing_pen
+val ColorScheme.drawingPen: Color
+    @Composable
+    get() {
+        return if (isSystemInDarkTheme()) {
+            md_theme_dark_drawing_pen
+        } else {
+            md_theme_light_drawing_pen
+        }
     }
-}

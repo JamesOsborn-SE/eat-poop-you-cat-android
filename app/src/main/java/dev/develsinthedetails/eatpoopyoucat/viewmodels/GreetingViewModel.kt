@@ -38,9 +38,9 @@ class GreetingViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-        val player = repository.getPlayer(playerId)
-        userName = player.first()?.name ?: application.getString(R.string.default_nickname)
-        updatePlayer(userName)
+            val player = repository.getPlayer(playerId)
+            userName = player.first()?.name ?: application.getString(R.string.default_nickname)
+            updatePlayer(userName)
         }
     }
 
@@ -76,7 +76,14 @@ class GreetingViewModel @Inject constructor(
             )
             // TODO fo testing delete later
             val lineSegments: MutableList<LineSegment> = mutableListOf()
-            lineSegments.add(LineSegment(start= Coordinates(xValue=292.9756f, yValue=189.96094f), end= Coordinates(xValue=292.9756f, yValue=189.96094f)))
+            lineSegments.add(
+                LineSegment(
+                    start = Coordinates(
+                        xValue = 292.9756f,
+                        yValue = 189.96094f
+                    ), end = Coordinates(xValue = 292.9756f, yValue = 189.96094f)
+                )
+            )
             val drawingLines: MutableList<Line> = mutableListOf()
             drawingLines.add(Line(lineSegments))
             repository.createEntry(

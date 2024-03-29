@@ -106,7 +106,8 @@ fun HomeScreen(
                 }
                 TextButton(
                     modifier = defaultModifier,
-                    onClick = onNavigateToPrivacyPolicy) {
+                    onClick = onNavigateToPrivacyPolicy
+                ) {
                     Text(stringResource(id = R.string.privacy_policy))
                 }
             }
@@ -167,6 +168,7 @@ fun PreviewHomeScreen() {
             onStartGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
-            onNavigateToPrivacyPolicy = {},)
+            onNavigateToPrivacyPolicy = {},
+        )
     }
 }

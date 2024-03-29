@@ -25,7 +25,8 @@ class SentenceViewModel @Inject constructor(
     private val playerId = SharedPref.playerId()
     private val minimumWordsForRegex = 3
     val minimumWords = minimumWordsForRegex + 1
-    private val minimumWordsPattern = StringBuilder().append("(\\p{L}+ +){").append(minimumWordsForRegex).append(",}")
+    private val minimumWordsPattern =
+        StringBuilder().append("(\\p{L}+ +){").append(minimumWordsForRegex).append(",}")
     var isError: Boolean by mutableStateOf(false)
         private set
     var isLoading: Boolean by mutableStateOf(false)

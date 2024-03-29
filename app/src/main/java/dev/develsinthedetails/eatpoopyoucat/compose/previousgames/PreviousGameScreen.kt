@@ -123,6 +123,6 @@ fun EntryListItem(entry: Entry) {
 
 @Preview
 @Composable
-fun PreviousGameScreenPreviewWrapper(){
+fun PreviousGameScreenPreviewWrapper() {
     PreviousGameScreenPreview()
 }

@@ -124,7 +124,8 @@ fun CreditsScreen() {
     val uriHandler = LocalUriHandler.current
 
     Surface(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(ScrollState(0)),
         color = (MaterialTheme.colorScheme.background)
     ) {

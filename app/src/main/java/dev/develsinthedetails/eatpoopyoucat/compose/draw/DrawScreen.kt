@@ -165,7 +165,7 @@ private fun DrawScreen(
                 )
             },
                 floatingActionButton = { SubmitButton(onSubmit = onSubmit) }
-        )
+            )
         }
     )
     { innerPadding ->
@@ -377,53 +377,53 @@ private fun DrawingPropertiesMenu(
     onRedo: () -> Unit,
     setPencilMode: (DrawMode) -> Unit,
 ) {
-        IconButton(
-            onClick = {
-                setPencilMode(DrawMode.Draw)
-            },
-            modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Draw))
+    IconButton(
+        onClick = {
+            setPencilMode(DrawMode.Draw)
+        },
+        modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Draw))
 
-        ) {
-            Icon(
-                tint = selectedTint(drawMode, DrawMode.Draw),
-                painter = painterResource(id = R.drawable.ic_draw_black_24),
-                contentDescription = stringResource(id = R.string.erase),
-            )
-        }
-        IconButton(
-            onClick = {
-                setPencilMode(DrawMode.Erase)
-            },
-            modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Erase))
-        ) {
-            Icon(
-                tint = selectedTint(drawMode, DrawMode.Erase),
-                painter = painterResource(id = R.drawable.ic_eraser_black_24),
-                contentDescription = stringResource(id = R.string.erase),
-            )
-        }
-        IconButton(
-            onClick = {
-                onUndo()
-            },
-            enabled = (undoCount > 0)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_undo_black_24),
-                contentDescription = stringResource(id = R.string.undo),
-            )
-        }
-        IconButton(
-            onClick = {
-                onRedo()
-            },
-            enabled = (redoCount > 0)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_redo_black_24),
-                contentDescription = stringResource(id = R.string.redo),
-            )
-        }
+    ) {
+        Icon(
+            tint = selectedTint(drawMode, DrawMode.Draw),
+            painter = painterResource(id = R.drawable.ic_draw_black_24),
+            contentDescription = stringResource(id = R.string.erase),
+        )
+    }
+    IconButton(
+        onClick = {
+            setPencilMode(DrawMode.Erase)
+        },
+        modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Erase))
+    ) {
+        Icon(
+            tint = selectedTint(drawMode, DrawMode.Erase),
+            painter = painterResource(id = R.drawable.ic_eraser_black_24),
+            contentDescription = stringResource(id = R.string.erase),
+        )
+    }
+    IconButton(
+        onClick = {
+            onUndo()
+        },
+        enabled = (undoCount > 0)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_undo_black_24),
+            contentDescription = stringResource(id = R.string.undo),
+        )
+    }
+    IconButton(
+        onClick = {
+            onRedo()
+        },
+        enabled = (redoCount > 0)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_redo_black_24),
+            contentDescription = stringResource(id = R.string.redo),
+        )
+    }
 }
 
 @Composable
@@ -432,7 +432,9 @@ private fun selectedTint(selected: DrawMode, drawMode: DrawMode) =
 
 @Composable
 private fun selectedBackground(selected: DrawMode, drawMode: DrawMode) =
-    if (drawMode == selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+    if (drawMode == selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceColorAtElevation(
+        3.dp
+    )
 
 
 @Composable

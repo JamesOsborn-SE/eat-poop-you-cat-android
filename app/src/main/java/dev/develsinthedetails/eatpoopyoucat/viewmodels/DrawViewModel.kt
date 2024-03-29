@@ -102,7 +102,8 @@ class DrawViewModel @Inject constructor(
     fun isValidDrawing(onNavigateToSentence: () -> Unit): Boolean {
         if (drawingLines.value.count() < 3
             || currentResolution.height == 0
-            || currentResolution.width == 0){
+            || currentResolution.width == 0
+        ) {
             isError = true
             return false
         }
@@ -129,7 +130,10 @@ class DrawViewModel @Inject constructor(
 
         currentX = inputChange.position.x
         currentY = inputChange.position.y
-        lineSegments.value += (LineSegment(Coordinates(currentX, currentY), Coordinates(currentX, currentY)))
+        lineSegments.value += (LineSegment(
+            Coordinates(currentX, currentY),
+            Coordinates(currentX, currentY)
+        ))
         inputChange.consume()
     }
 
@@ -139,39 +143,49 @@ class DrawViewModel @Inject constructor(
         val motionTouchEventX = normalizeLocationX(inputChange.position.x)
         val motionTouchEventY = normalizeLocationY(inputChange.position.y)
         lineSegments.value += (
-            LineSegment(
-                Coordinates(currentX, currentY),
-                Coordinates(motionTouchEventX, motionTouchEventY)
-            )
-        )
+                LineSegment(
+                    Coordinates(currentX, currentY),
+                    Coordinates(motionTouchEventX, motionTouchEventY)
+                )
+                )
         currentX = motionTouchEventX
         currentY = motionTouchEventY
         inputChange.consume()
     }
 
     private fun normalizeLocation(x: Float, canvasSize: Int): Float {
-        return max(0f+lineProperties.value.strokeWidth/2, min(canvasSize.toFloat()-lineProperties.value.strokeWidth/2, x))
+        return max(
+            0f + lineProperties.value.strokeWidth / 2,
+            min(canvasSize.toFloat() - lineProperties.value.strokeWidth / 2, x)
+        )
     }
+
     private fun normalizeLocationX(x: Float): Float {
         return normalizeLocation(x, currentResolution.height)
     }
+
     private fun normalizeLocationY(y: Float): Float {
         return normalizeLocation(y, currentResolution.width)
     }
+
     fun touchUp(inputChange: PointerInputChange) {
         currentX = normalizeLocationX(currentX)
         currentY = normalizeLocationY(currentY)
         val motionTouchEventX = normalizeLocationX(inputChange.position.x)
         val motionTouchEventY = normalizeLocationY(inputChange.position.y)
-        lineSegments.value +=(
-            LineSegment(
-                Coordinates(currentX, currentY),
-                Coordinates(motionTouchEventX, motionTouchEventY)
-            )
-        )
+        lineSegments.value += (
+                LineSegment(
+                    Coordinates(currentX, currentY),
+                    Coordinates(motionTouchEventX, motionTouchEventY)
+                )
+                )
         val daLineSegment = lineSegments.value.toList()
-        val daLineProperties =  lineProperties.value.copy()
-        drawingLines.value += Line(daLineSegment, daLineProperties, Resolution(height = currentResolution.height, width = currentResolution.width))
+        val daLineProperties = lineProperties.value.copy()
+        drawingLines.value += Line(
+            daLineSegment,
+            daLineProperties,
+            Resolution(height = currentResolution.height, width = currentResolution.width)
+        )
         lineSegments.value = listOf()
         undoneLines.value = listOf()
         inputChange.consume()
@@ -199,7 +213,7 @@ class DrawViewModel @Inject constructor(
     fun setPencileMode(mode: DrawMode) {
         lineProperties.value.eraseMode = mode == DrawMode.Erase
         drawMode = mode
-        if(mode == DrawMode.Erase)
+        if (mode == DrawMode.Erase)
             lineProperties.value.strokeWidth = 48f
         else
             lineProperties.value.strokeWidth = 12f

@@ -168,7 +168,7 @@ fun AppButton(
         colors = colors,
         elevation = elevation,
     ) {
-        if(text!=null)
+        if (text != null)
             Text(stringResource(id = text))
 
         if (icon != null && iconDescription != null) {
