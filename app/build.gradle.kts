@@ -67,6 +67,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.caverock:androidsvg-aar:1.4")
     val compseBom = "2024.02.00"
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation(platform("androidx.compose:compose-bom:$compseBom"))

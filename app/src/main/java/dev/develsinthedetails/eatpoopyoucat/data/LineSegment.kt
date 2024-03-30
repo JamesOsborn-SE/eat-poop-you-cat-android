@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Path
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LineSegment(val start: Coordinates, private val end: Coordinates) {
+data class LineSegment(val start: Coordinates, val end: Coordinates) {
 
     fun toPath(path: Path) {
         return if (start.x == end.x && start.y == start.y)

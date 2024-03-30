@@ -68,6 +68,7 @@
     <string name="about">Про цей застосунок</string>
     <string name="translations_welcome">Вітаються внески у переклад</string>
     <string name="issues">Проблеми</string>
+    <string name="share_this_game">share this game</string>
     <plurals name="minimum_words">
         <item quantity="one">мінімум %d слово.</item>
         <item quantity="few">мінімум %d слова.</item>
