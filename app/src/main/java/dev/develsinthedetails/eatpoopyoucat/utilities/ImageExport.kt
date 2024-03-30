@@ -63,12 +63,11 @@ class ImageExport(private val entries: List<Entry>) {
         )
 
         return Pair(svg, documentHeight)
-
     }
 
     private fun sentenceToSVG(sentence: String, documentHeight: Int): StringBuilder {
         val svg: StringBuilder = StringBuilder()
-        svg.appendLine("<rect style=\"fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:0.01125;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1\" x=\"0\" y=\"$documentHeight\" width=\"$WIDTH\" height=\"${Companion.TEXT_HEIGHT}\" />")
+        svg.appendLine("<rect style=\"fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:0.01125;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1\" x=\"0\" y=\"$documentHeight\" width=\"$WIDTH\" height=\"$TEXT_HEIGHT\" />")
         svg.appendLine("<text style=\"inline-size:623.452\" x=\"10\" y=\"${25 + documentHeight}\" class=\"sentence\">$sentence</text>")
         return svg
     }
