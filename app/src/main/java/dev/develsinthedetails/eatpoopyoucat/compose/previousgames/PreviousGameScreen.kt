@@ -1,6 +1,8 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +39,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.utilities.ImageExport
+import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
@@ -59,6 +62,12 @@ fun PreviousGameScreen(
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val appName = stringResource(id = R.string.app_name)
+    val bottomBlurb = stringResource(R.string.is_avalible_on_f_droid_and_google_play, appName)
+    val option = BitmapFactory.Options()
+    option.inPreferredConfig = Bitmap.Config.ARGB_8888
+    val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -83,8 +92,14 @@ fun PreviousGameScreen(
                     modifier = Modifier.padding(3.dp),
                     onClick = {
                     coroutineScope.launch {
-                        val ie = ImageExport(entries)
-                        val game = saveBitmap(context , ie.getImageFile())
+                        val ie = ImageExport(
+                            entries,
+                            appIcon,
+                            appName,
+                            bottomBlurb
+                        )
+                        val game = saveBitmap(context, ie.makeBitmap())
+
                         if(game != null)
                             shareImageUri(context, game)
                         else

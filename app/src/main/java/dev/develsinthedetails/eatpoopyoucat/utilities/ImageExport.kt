@@ -1,108 +1,229 @@
 package dev.develsinthedetails.eatpoopyoucat.utilities
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import com.caverock.androidsvg.SVG
+import android.graphics.Paint
+import android.os.Build
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextPaint
+import androidx.compose.foundation.Image
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidPath
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviewData
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.data.type
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.app_icon_background
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_background
+import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_pen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import kotlinx.serialization.json.Json
+import kotlin.math.max
 
+class ImageExport(
+    private val entries: List<Entry>,
+    private val appIcon: Bitmap,
+    private val appName: String,
+    private val bottomBlurb: String,
+) {
 
-class ImageExport(private val entries: List<Entry>) {
+    private val penColor = md_theme_light_drawing_pen
+    private val eraseColor = md_theme_light_drawing_background
 
-    fun getImageFile(): Bitmap {
-        val (svg, documentHeight) = buildSVG()
-        val bitmap: Bitmap = Bitmap.createBitmap(WIDTH, documentHeight, Bitmap.Config.ARGB_8888)
+    fun makeBitmap(): Bitmap {
+        val bitmaps = mutableListOf<Bitmap>()
+        bitmaps.add(headerBitmap())
+        val background = Paint()
+        background.color = eraseColor.toArgb()
+
+        entries.forEach {
+            if (it.type == EntryType.Sentence) {
+                bitmaps.add(sentenceBitmap(it.sentence!!))
+            }
+            if (it.type == EntryType.Drawing) {
+                bitmaps.add(drawingBitmap(it.drawing!!))
+            }
+        }
+        bitmaps.add(footerBitmap())
+        val height = bitmaps.sumOf { it.height }
+        val bitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
+        canvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), background)
+        var currentY = 0
+        bitmaps.forEach {
+            canvas.drawBitmap(it, 0f, currentY.toFloat(), null)
+            currentY += it.height
+        }
 
-        val s: SVG = SVG.getFromString(svg.toString())
-        s.renderToCanvas(canvas)
-
-//        val byteArrayOutputStream = ByteArrayOutputStream()
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-//        val byteArray = byteArrayOutputStream.toByteArray()
-//
-//        val encoded: String = Base64.encode(byteArray)
         return bitmap
     }
 
-    private fun buildSVG(): Pair<StringBuilder, Int> {
-        val svg: StringBuilder = StringBuilder()
-        var documentHeight = 0
-        svg.appendLine(
-            "  <style\n" +
-                    "     id=\"style1\">\n" +
-                    "    .sentence {\n" +
-                    "      font: bold 18px monospace;\n" +
-                    "    }\n" +
-                    "  </style>"
-        )
-        for (entry in entries) {
-            if (entry.sentence != null) {
-                svg.append(sentenceToSVG(entry.sentence, documentHeight))
-                documentHeight += TEXT_HEIGHT
-            } else if (entry.drawing != null) {
-                svg.append(drawingToSVG(entry.drawing, documentHeight))
-                documentHeight += WIDTH
-            }
-        }
+    private fun headerBitmap(): Bitmap {
+        val textPaint = TextPaint()
+        textPaint.color = Color.Black.toArgb()
+        textPaint.textSize = 45f
+        textPaint.isFakeBoldText = true
+        textPaint.isAntiAlias = true
 
-        svg.appendLine("</svg>")
-        svg.insert(0,
-            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                "<svg\n" +
-                "   viewBox=\"0 0 $WIDTH $documentHeight\"\n" +
-                "   version=\"1.1\"\n" +
-                "   id=\"svg5423\"\n" +
-                "   xmlns=\"http://www.w3.org/2000/svg\"\n" +
-                "   xmlns:svg=\"http://www.w3.org/2000/svg\">\n" +
-                "  <defs\n" +
-                "     id=\"defs5423\" />"
+        val headerPaint = Paint()
+        headerPaint.color = app_icon_background.toArgb()
+        val textLayout = Layout.Alignment.ALIGN_NORMAL
+        val sl = staticLayout(
+            appName,
+            textPaint,
+            textLayout,
         )
-
-        return Pair(svg, documentHeight)
+        val textHeight = sl.height + 20
+        val height = max(appIcon.height, textHeight)
+        val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
+        val tmpCanvas = Canvas(tmpBitmap)
+        tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), headerPaint)
+        tmpCanvas.drawBitmap(appIcon, 10f, 10f, null)
+        tmpCanvas.save()
+        tmpCanvas.translate(20f + appIcon.width, (height / 2f) - 20f)
+        sl.draw(tmpCanvas)
+        tmpCanvas.restore()
+        return tmpBitmap
     }
 
-    private fun sentenceToSVG(sentence: String, documentHeight: Int): StringBuilder {
-        val svg: StringBuilder = StringBuilder()
-        svg.appendLine("<rect style=\"fill:#00ffff;fill-opacity:1;stroke:none;stroke-width:0.01125;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1\" x=\"0\" y=\"$documentHeight\" width=\"$WIDTH\" height=\"$TEXT_HEIGHT\" />")
-        svg.appendLine("<text style=\"inline-size:623.452\" x=\"10\" y=\"${25 + documentHeight}\" class=\"sentence\">$sentence</text>")
-        return svg
-    }
+    private fun drawingBitmap(
+        drawing: ByteArray
+    ): Bitmap {
 
-    private fun drawingToSVG(drawing: ByteArray, documentHeight: Int): StringBuilder {
+        val tmpBitmap = Bitmap.createBitmap(WIDTH, WIDTH, Bitmap.Config.ARGB_8888)
+        val tmpCanvas = Canvas(tmpBitmap)
+
         val lines: MutableList<Line> = Json.decodeFromString(Gzip.decompressToString(drawing))
-        val svg: StringBuilder = StringBuilder()
-        svg.append("<rect style=\"fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.01125;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1\" x=\"0\" y=\"$documentHeight\" width=\"$WIDTH\" height=\"$WIDTH\" />")
-        lines.forEach {
-            val ratio = WIDTH.toFloat() / it.resolution.height.toFloat()
+        lines.forEach { line ->
             val stroke = DrawViewModel.scaleStroke(
                 Resolution(WIDTH, WIDTH),
-                it.resolution,
-                if (it.properties.eraseMode) ERASE_STROKE else PEN_STROKE
+                line.resolution,
+                if (line.properties.eraseMode) ERASE_STROKE else PEN_STROKE
             )
-            val penColor = "#000000"
-            val eraseColor = "#FFFFFF"
-            val lineColor = if (it.properties.eraseMode) eraseColor else penColor
-            val lineStyle =
-                "fill:none;fill-opacity:1;stroke:$lineColor;stroke-width:$stroke;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
-            it.lineSegments.forEach { ls ->
-                val x1 = ls.start.x * ratio
-                val y1 = (ls.start.y * ratio) + documentHeight
-                val x2 = ls.end.x * ratio
-                val y2 = (ls.end.y * ratio) + documentHeight
-                svg.appendLine("<line style=\"${lineStyle}\" x1=\"${x1}\" y1=\"${y1}\" x2=\"${x2}\" y2=\"${y2}\"/>")
-            }
+            val pcolor = if (line.properties.eraseMode) eraseColor.toArgb() else penColor.toArgb()
+            val penPaint = Paint()
+            penPaint.color = pcolor
+            penPaint.style = Paint.Style.STROKE
+            penPaint.strokeCap = Paint.Cap.ROUND
+            penPaint.strokeJoin = Paint.Join.ROUND
+            penPaint.strokeWidth = stroke
+            val newPath =
+                DrawViewModel.scalePath(line.toPath(), Resolution(WIDTH, WIDTH), line.resolution)
+            tmpCanvas.drawPath(newPath.asAndroidPath(), penPaint)
         }
-        return svg
+        return tmpBitmap
+    }
+
+    private fun sentenceBitmap(
+        sentence: String,
+    ): Bitmap {
+        val textPaint = TextPaint()
+        textPaint.color = Color.Black.toArgb()
+        textPaint.textSize = 28f
+        textPaint.isAntiAlias = true
+
+        val textLayout = Layout.Alignment.ALIGN_NORMAL
+        val sl = staticLayout(
+            sentence,
+            textPaint,
+            textLayout
+        )
+
+        val textHeight = sl.height + 20
+        val tmpBitmap = Bitmap.createBitmap(WIDTH, textHeight, Bitmap.Config.ARGB_8888)
+        val tmpCanvas = Canvas(tmpBitmap)
+
+        tmpCanvas.save()
+        tmpCanvas.translate(20f, 10f)
+        sl.draw(tmpCanvas)
+        tmpCanvas.restore()
+        return tmpBitmap
+    }
+
+    private fun footerBitmap(): Bitmap {
+        val footerPaint = Paint()
+        footerPaint.color = app_icon_background.toArgb()
+
+        val textPaint = TextPaint()
+        textPaint.color = Color.Black.toArgb()
+        textPaint.textSize = 22f
+        textPaint.isFakeBoldText = true
+        textPaint.isAntiAlias = true
+
+        val textLayout = Layout.Alignment.ALIGN_CENTER
+        val sl = staticLayout(
+            bottomBlurb,
+            textPaint,
+            textLayout,
+        )
+
+        val textHeight = sl.height + 20
+        val height = textHeight + 20
+        val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
+        val tmpCanvas = Canvas(tmpBitmap)
+        tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), footerPaint)
+        tmpCanvas.save()
+        tmpCanvas.translate(10f, (height / 2f) - 10f)
+        sl.draw(tmpCanvas)
+        tmpCanvas.restore()
+        return tmpBitmap
     }
 
     companion object {
         const val WIDTH = 640
-        const val PEN_STROKE=12f
-        const val ERASE_STROKE=48f
-        const val TEXT_HEIGHT = 80
+        const val PEN_STROKE = 12f
+        const val ERASE_STROKE = 48f
+        private fun staticLayout(
+            text: String,
+            tp: TextPaint,
+            textLayout: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL,
+            textWidth: Int = WIDTH - 40,
+            spacingAddition: Float = 0f,
+            spacingMultiplier: Float = 1f,
+            includePadding: Boolean = false
+        ): StaticLayout {
+            val sl: StaticLayout
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val builder =
+                    StaticLayout.Builder.obtain(text, 0, text.length, tp, textWidth)
+                        .setAlignment(textLayout)
+                        .setLineSpacing(spacingAddition, spacingMultiplier)
+                        .setIncludePad(includePadding)
+                        .setMaxLines(5)
+                sl = builder.build()
+            } else {
+                @Suppress("DEPRECATION")
+                sl = StaticLayout(
+                    text, tp,
+                    textWidth, textLayout, spacingMultiplier, spacingAddition, includePadding
+                )
+            }
+            return sl
+        }
     }
+}
+
+@Preview
+@Composable
+fun SharePreview() {
+    val appName = stringResource(id = R.string.app_name)
+
+    val option = BitmapFactory.Options()
+    option.inPreferredConfig = Bitmap.Config.ARGB_8888
+    val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
+    val isAvalibleOnFDroidAndGooglePlay =
+        stringResource(id = R.string.is_avalible_on_f_droid_and_google_play, appName)
+    val ie = ImageExport(PreviewData.entries, appIcon, appName, isAvalibleOnFDroidAndGooglePlay)
+    Image(bitmap = ie.makeBitmap().asImageBitmap(), null)
 }

@@ -69,6 +69,7 @@
     <string name="translations_welcome">Вітаються внески у переклад</string>
     <string name="issues">Проблеми</string>
     <string name="share_this_game">share this game</string>
+    <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
     <plurals name="minimum_words">
         <item quantity="one">мінімум %d слово.</item>
         <item quantity="few">мінімум %d слова.</item>
