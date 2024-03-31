@@ -70,6 +70,7 @@ val md_theme_dark_scrim = Color(0xFF000000)
 val md_theme_dark_drawing_background = Color(0xFF000000)
 val md_theme_dark_drawing_pen = Color(0xFFFFFFFF)
 
+val app_icon_background = Color(0xFFA00000)
 val seed = Color(0xFF008000) //Primary on https://m3.material.io/theme-builder#/custom
 
 val warning = Color(0xFFFFFF00)
