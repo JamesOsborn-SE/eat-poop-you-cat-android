@@ -67,14 +67,13 @@ android {
 }
 
 dependencies {
-    implementation ("com.caverock:androidsvg-aar:1.4")
-    val compseBom = "2024.02.00"
+    val compseBom = "2024.03.00"
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation(platform("androidx.compose:compose-bom:$compseBom"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.2.2")
+    implementation("androidx.databinding:databinding-adapters:8.3.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -84,7 +83,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
-    val composeVersion = "1.6.1"
+    val composeVersion = "1.6.4"
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui-graphics:$composeVersion")
@@ -92,7 +91,7 @@ dependencies {
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-test:$composeVersion")
 
-    implementation("androidx.compose.material3:material3:1.2.0")
+    implementation("androidx.compose.material3:material3:1.2.1")
     implementation("androidx.activity:activity-compose:1.8.2")
 
     testImplementation("junit:junit:4.13.2")
@@ -126,7 +125,7 @@ dependencies {
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
     val hiltVersion = "2.50"
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
 
