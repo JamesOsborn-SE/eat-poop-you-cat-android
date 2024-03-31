@@ -75,3 +75,19 @@ data class Entry(
         return result
     }
 }
+
+enum class EntryType {
+    Unknown,
+    Sentence,
+    Drawing
+}
+
+
+val Entry.type: Any
+    get() {
+        if (this.sentence != null)
+            return EntryType.Sentence
+        if (this.drawing != null)
+            return EntryType.Drawing
+        return EntryType.Unknown
+    }
