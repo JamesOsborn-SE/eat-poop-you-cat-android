@@ -1,12 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.home
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
@@ -20,6 +22,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
+import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
 import java.util.UUID
 
@@ -70,7 +76,7 @@ fun HomeScreen(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.primaryContainer
     ) {
         if (isLoading)
             Spinner()
@@ -83,10 +89,19 @@ fun HomeScreen(
                     .align(Alignment.CenterHorizontally)
                     .padding(padding)
             ) {
+
+                val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
+                Image(
+                    appIcon.asImageBitmap(),
+                    contentDescription = "Image", modifier = defaultModifier
+                        .size(100.dp) //Optional, but keeps the image reasonably small
+                        .padding(8.dp)
+                        .clip(CircleShape)
+                )
                 Text(
-                    text = stringResource(R.string.welcome_message),
-                    modifier = defaultModifier,
-                    fontSize = 18.sp
+                        text = stringResource(R.string.welcome_message),
+                modifier = defaultModifier,
+                fontSize = 18.sp
                 )
                 StartGame(defaultModifier, onStartGame)
                 ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)

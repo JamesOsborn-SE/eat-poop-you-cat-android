@@ -70,7 +70,6 @@ val md_theme_dark_scrim = Color(0xFF000000)
 val md_theme_dark_drawing_background = Color(0xFF000000)
 val md_theme_dark_drawing_pen = Color(0xFFFFFFFF)
 
-val app_icon_background = Color(0xFFA00000)
 
 val light_warning = Color(0xFF626200)
 val light_onWarning = Color(0xFFFFFFFF)
@@ -80,3 +79,6 @@ val dark_warning = Color(0xFFCDCD00)
 val dark_onWarning = Color(0xFF323200)
 val dark_warningContainer = Color(0xFF494900)
 val dark_onWarningContainer = Color(0xFFEAEA00)
+
+val app_icon_background = Color(0xFFA00000)
+val app_background= Color(0xFFed850e)
