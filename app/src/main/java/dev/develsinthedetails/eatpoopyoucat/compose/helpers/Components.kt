@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.material.icons.automirrored.rounded.Undo
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -28,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,11 +86,11 @@ fun SubmitButton(
     onSubmit: () -> Unit,
 ) {
     AppButton(
+        imageVector = Icons.AutoMirrored.Rounded.Send,
         modifier = modifier,
         text = R.string.submit,
         iconDescription = R.string.submit,
         onClick = onSubmit,
-        icon = R.drawable.ic_send_24
     )
 }
 
@@ -129,8 +135,8 @@ fun ConfirmDialog(
                         .fillMaxWidth()
                 ) {
                     Icon(
+                        Icons.Rounded.Warning,
                         contentDescription = stringResource(id = R.string.end_game_for_all),
-                        painter = painterResource(id = R.drawable.ic_warning_24),
                         tint = MaterialTheme.colorScheme.inverseSurface,
                     )
                     Spacer(modifier = Modifier.size(5.dp))
@@ -146,17 +152,17 @@ fun ConfirmDialog(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     AppButton(
-                        text = R.string.yes,
-                        iconDescription = R.string.end_game_for_all,
                         onClick = onConfirm,
-                        icon = R.drawable.ic_check_24
+                        text = R.string.yes,
+                        imageVector = Icons.Rounded.Check,
+                        iconDescription = R.string.end_game_for_all,
                     )
                     AppButton(
+                        onClick = onDismiss,
                         text = R.string.no,
                         iconDescription = R.string.no,
-                        onClick = onDismiss,
-                        icon = R.drawable.ic_undo_black_24,
-                        colors = secondaryButtonColors()
+                        colors = secondaryButtonColors(),
+                        imageVector = Icons.AutoMirrored.Rounded.Undo
                     )
                 }
             }
@@ -173,7 +179,8 @@ fun AppButton(
     @StringRes iconDescription: Int? = null,
     enabled: Boolean = true,
     colors: ButtonColors = primaryButtonColors(),
-    elevation: ButtonElevation = ButtonDefaults.elevatedButtonElevation()
+    elevation: ButtonElevation = ButtonDefaults.elevatedButtonElevation(),
+    imageVector: ImageVector?
 ) {
     Button(
         modifier = modifier,
@@ -190,6 +197,13 @@ fun AppButton(
                 modifier = Modifier.padding(start = 5.dp),
                 contentDescription = stringResource(id = iconDescription),
                 painter = painterResource(id = icon),
+            )
+        }
+        if (imageVector != null && icon == null && iconDescription != null) {
+            Icon(
+                imageVector = imageVector,
+                modifier = Modifier.padding(start = 5.dp),
+                contentDescription = stringResource(id = iconDescription),
             )
         }
     }

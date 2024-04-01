@@ -20,6 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Redo
+import androidx.compose.material.icons.automirrored.rounded.Undo
+import androidx.compose.material.icons.rounded.Draw
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -385,8 +389,8 @@ private fun DrawingPropertiesMenu(
 
     ) {
         Icon(
+            Icons.Rounded.Draw,
             tint = selectedTint(drawMode, DrawMode.Draw),
-            painter = painterResource(id = R.drawable.ic_draw_black_24),
             contentDescription = stringResource(id = R.string.erase),
         )
     }
@@ -398,6 +402,7 @@ private fun DrawingPropertiesMenu(
     ) {
         Icon(
             tint = selectedTint(drawMode, DrawMode.Erase),
+//          TODO: replace with "Icons.Rounded.InkEraser" when it's added to the stable Icons
             painter = painterResource(id = R.drawable.ic_eraser_black_24),
             contentDescription = stringResource(id = R.string.erase),
         )
@@ -409,7 +414,7 @@ private fun DrawingPropertiesMenu(
         enabled = (undoCount > 0)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_undo_black_24),
+            Icons.AutoMirrored.Rounded.Undo,
             contentDescription = stringResource(id = R.string.undo),
         )
     }
@@ -420,7 +425,7 @@ private fun DrawingPropertiesMenu(
         enabled = (redoCount > 0)
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_redo_black_24),
+            Icons.AutoMirrored.Rounded.Redo,
             contentDescription = stringResource(id = R.string.redo),
         )
     }
