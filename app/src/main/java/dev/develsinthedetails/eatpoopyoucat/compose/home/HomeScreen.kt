@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +38,6 @@ fun HomeScreen(
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
-    onNavigateToContinuePreviousGames: () -> Unit,
 ) {
     HomeScreen(
         isLoading = viewModel.isLoading,
@@ -53,7 +50,6 @@ fun HomeScreen(
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,
         onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
-        onNavigateToContinuePreviousGames = onNavigateToContinuePreviousGames,
     )
 }
 
@@ -63,7 +59,6 @@ fun HomeScreen(
     isLoading: Boolean,
     onStartGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
-    onNavigateToContinuePreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
 ) {
@@ -93,7 +88,6 @@ fun HomeScreen(
                 )
                 StartGame(defaultModifier, onStartGame)
                 ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
-                ContinuePreviousGames(defaultModifier, onNavigateToContinuePreviousGames)
                 Text(
                     text = stringResource(id = R.string.app_description),
                     modifier = defaultModifier
@@ -137,22 +131,7 @@ fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
         )
     }
 }
-@Composable
-fun ContinuePreviousGames(modifier: Modifier, navTo: () -> Unit) {
-    Button(
-        modifier = modifier,
-        colors = secondaryButtonColors(),
-        onClick = {
-            navTo()
-        }) {
-        Text(stringResource(id = R.string.continue_previous_game))
-        Spacer(modifier = Modifier.size(5.dp))
-        Icon(
-            Icons.Rounded.Replay,
-            contentDescription = null,
-        )
-    }
-}
+
 @Composable
 fun StartGame(
     modifier: Modifier,
@@ -189,7 +168,6 @@ fun PreviewHomeScreen() {
             onStartGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
-            onNavigateToContinuePreviousGames = {},
         ) {}
     }
 }
