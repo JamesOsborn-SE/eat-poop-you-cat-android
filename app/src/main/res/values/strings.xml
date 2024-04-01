@@ -3,7 +3,7 @@
     <string name="status_searching">Searching</string>
     <string name="status_connected">Connected</string>
     <string name="new_game">Start New Game</string>
-    <string name="welcome_message">Welcome to Eat Poop You Cat!</string>
+    <string name="welcome_message">Welcome to %1$s!</string>
     <string name="show">Show</string>
     <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">Send</string>
     <string name="send_description">send your work</string>

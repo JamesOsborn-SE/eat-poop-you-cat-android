@@ -53,7 +53,7 @@
     <string name="are_you_sure">Це буде %1$s. Ви все ще хочете продовжувати\?</string>
     <string name="yes">Так</string>
     <string name="status_connected">Підключено</string>
-    <string name="welcome_message">Ласкаво просимо до Eat Poop You Cat!</string>
+    <string name="welcome_message">Ласкаво просимо до %1$s!</string>
     <string name="no_letters_or_numbers">НЕ використовуйте літери або цифри.</string>
     <string name="erase_description">Стерти все</string>
     <string name="background_title">Дозволити застосунку спілкуватися у фоновому режимі</string>

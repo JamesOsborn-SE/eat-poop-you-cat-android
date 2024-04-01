@@ -4,7 +4,7 @@
     <string name="status_searching">Pesquisando</string>
     <string name="status_connected">Conectado</string>
     <string name="new_game">Iniciar novo jogo</string>
-    <string name="welcome_message">Bem-vindo ao Eat Poop You Cat!</string>
+    <string name="welcome_message">Bem-vindo ao %1$s!</string>
     <string name="show">Mostrar</string>
     <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">Enviar</string>
     <string name="send_description">envie seu trabalho</string>

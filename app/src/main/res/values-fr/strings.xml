@@ -31,7 +31,7 @@
     <string name="nickname">Pseudo</string>
     <string name="enter_a_sentence">Saisissez une phrase</string>
     <string name="background_title">Autoriser l\'appli à communiquer en arrière-plan</string>
-    <string name="welcome_message">Bienvenue dans Eat Poop You Cat !</string>
+    <string name="welcome_message">Bienvenue dans %1$s!</string>
     <string name="draw_this_sentence">Dessinez cette phrase !</string>
     <string name="no_letters_or_numbers">NE PAS utiliser de lettres ou de nombres.</string>
     <string name="clear">Effacer</string>

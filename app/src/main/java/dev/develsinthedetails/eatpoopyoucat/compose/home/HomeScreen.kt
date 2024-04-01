@@ -90,7 +90,8 @@ fun HomeScreen(
                     .padding(padding)
             ) {
 
-                val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
+                val appIcon =
+                    getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
                 Image(
                     appIcon.asImageBitmap(),
                     contentDescription = "Image", modifier = defaultModifier
@@ -99,9 +100,12 @@ fun HomeScreen(
                         .clip(CircleShape)
                 )
                 Text(
-                        text = stringResource(R.string.welcome_message),
-                modifier = defaultModifier,
-                fontSize = 18.sp
+                    text = stringResource(
+                        R.string.welcome_message,
+                        stringResource(R.string.app_name)
+                    ),
+                    modifier = defaultModifier,
+                    fontSize = 18.sp
                 )
                 StartGame(defaultModifier, onStartGame)
                 ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
