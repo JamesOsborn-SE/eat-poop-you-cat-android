@@ -81,4 +81,3 @@ val dark_warningContainer = Color(0xFF494900)
 val dark_onWarningContainer = Color(0xFFEAEA00)
 
 val app_icon_background = Color(0xFFA00000)
-val app_background= Color(0xFFed850e)
