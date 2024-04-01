@@ -29,7 +29,6 @@ import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.ContinuePreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
@@ -55,9 +54,6 @@ fun EatPoopYouCatApp(
                 },
                 onNavigateToPreviousGames = {
                     navController.navigate(Screen.Games.route)
-                },
-                onNavigateToContinuePreviousGames = {
-                    navController.navigate(Screen.ContinueGames.route)
                 },
                 onNavigateToCredits = {
                     navController.navigate(Screen.Credits.route)
@@ -101,14 +97,6 @@ fun EatPoopYouCatApp(
                     popUpTo(Screen.Home.route)
                 }
             })
-        }
-        composable(
-            Screen.ContinueGames.route,
-        ) {
-            ContinuePreviousGamesScreen(
-                onGoHome = { navController.navigate(Screen.Home.route) },
-                onGameClick = navigateToNextTurn(navController)
-            )
         }
         composable(
             Screen.Games.route,
