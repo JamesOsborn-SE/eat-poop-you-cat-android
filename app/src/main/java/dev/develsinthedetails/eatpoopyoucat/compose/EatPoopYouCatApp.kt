@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,9 +29,13 @@ import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
+import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.ContinuePreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.EntryType
+import dev.develsinthedetails.eatpoopyoucat.data.type
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
@@ -50,6 +55,9 @@ fun EatPoopYouCatApp(
                 },
                 onNavigateToPreviousGames = {
                     navController.navigate(Screen.Games.route)
+                },
+                onNavigateToContinuePreviousGames = {
+                    navController.navigate(Screen.ContinueGames.route)
                 },
                 onNavigateToCredits = {
                     navController.navigate(Screen.Credits.route)
@@ -95,6 +103,14 @@ fun EatPoopYouCatApp(
             })
         }
         composable(
+            Screen.ContinueGames.route,
+        ) {
+            ContinuePreviousGamesScreen(
+                onGoHome = { navController.navigate(Screen.Home.route) },
+                onGameClick = navigateToNextTurn(navController)
+            )
+        }
+        composable(
             Screen.Games.route,
         ) {
             PreviousGamesScreen(
@@ -108,7 +124,7 @@ fun EatPoopYouCatApp(
                 navArgument(ID) { type = NavType.StringType }
             )
         ) {
-            PreviousGameScreen()
+            PreviousGameScreen(continueGame = navigateToNextTurn(navController))
         }
         composable(Screen.Credits.route) {
             CreditsScreen()
@@ -118,6 +134,15 @@ fun EatPoopYouCatApp(
         }
     }
 }
+
+@Composable
+private fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
+    {
+        if (it.type == EntryType.Drawing)
+            navController.navigate(Screen.Sentence.byId(it.id.toString()))
+        else if (it.type == EntryType.Sentence)
+            navController.navigate(Screen.Draw.byId(it.id.toString()))
+    }
 
 @Composable
 fun CreditsScreen() {

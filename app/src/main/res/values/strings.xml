@@ -69,6 +69,8 @@
     <string name="issues">Issues</string>
     <string name="share_this_game">share this game</string>
     <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
+    <string name="continue_previous_game">Continue an old game</string>
+    <string name="loading">Loading</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Replay
+import androidx.compose.material.icons.rounded.VerticalAlignTop
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,15 +52,17 @@ import kotlinx.coroutines.launch
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     viewModel: PreviousGameViewModel = hiltViewModel(),
+    continueGame: (Entry) -> Unit = {},
 ) {
     val game by viewModel.gameWithEntries.observeAsState()
-    game?.let { PreviousGameScreen(entries = it.entries, modifier = modifier) }
+    game?.let { PreviousGameScreen(entries = it.entries, modifier = modifier, continueGame = continueGame) }
 }
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     entries: List<Entry>,
+    continueGame: (Entry) -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -77,15 +82,26 @@ fun PreviousGameScreen(
                 FloatingActionButton(
                     modifier = Modifier.padding(3.dp),
                     onClick = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                }) {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    }) {
 
                     Icon(
+                        Icons.Rounded.VerticalAlignTop,
                         modifier = Modifier.padding(3.dp),
-                        painter = painterResource(id = R.drawable.ic_arrow_upward_24),
                         contentDescription = stringResource(id = R.string.scroll_to_top)
+                    )
+                }
+                FloatingActionButton(
+                    modifier = Modifier.padding(3.dp),
+                    onClick = {
+                        continueGame(entries.last())
+                    }) {
+                    Icon(
+                        Icons.Rounded.Replay,
+                        modifier = Modifier.padding(3.dp),
+                        contentDescription = stringResource(id = R.string.continue_previous_game)
                     )
                 }
                 FloatingActionButton(

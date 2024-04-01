@@ -84,6 +84,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
     val composeVersion = "1.6.4"
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui-graphics:$composeVersion")

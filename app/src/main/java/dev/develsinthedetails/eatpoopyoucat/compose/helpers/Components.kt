@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,11 +51,25 @@ fun Spinner(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(100.dp)
-                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
         ) {
             CircularProgressIndicator(
                 progress = { 0.89f },
             )
+        }
+    }
+}
+
+@Composable
+fun SpinnerScreen(
+) {
+    AppTheme {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+        ) {
+            Spinner()
         }
     }
 }
@@ -197,6 +211,16 @@ fun PreviewSubmit() {
 fun PreviewSpinner() {
     AppTheme {
         Spinner()
+    }
+}
+
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewSpinnerScreen() {
+    AppTheme {
+        SpinnerScreen()
     }
 }
 

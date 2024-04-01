@@ -8,6 +8,7 @@ const val ID = "Id"
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Games : Screen("games")
+    object ContinueGames : Screen("games/continue")
     object Credits : Screen("credits")
     object PrivacyPolicy : Screen("privacypolicy")
     object Game : Screen("game/{Id}")
