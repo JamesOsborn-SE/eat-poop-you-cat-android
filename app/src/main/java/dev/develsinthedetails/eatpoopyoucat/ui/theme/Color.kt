@@ -2,6 +2,8 @@ package dev.develsinthedetails.eatpoopyoucat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+//#008000 //Primary on https://m3.material.io/theme-builder#/custom
+
 val md_theme_light_primary = Color(0xFF006E00)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
 val md_theme_light_primaryContainer = Color(0xFF8DFB77)
@@ -28,7 +30,6 @@ val md_theme_light_outline = Color(0xFF73796E)
 val md_theme_light_inverseOnSurface = Color(0xFFF1F1EB)
 val md_theme_light_inverseSurface = Color(0xFF2F312D)
 val md_theme_light_inversePrimary = Color(0xFF72DE5E)
-val md_theme_light_shadow = Color(0xFF000000)
 val md_theme_light_surfaceTint = Color(0xFF006E00)
 val md_theme_light_outlineVariant = Color(0xFFC3C8BC)
 val md_theme_light_scrim = Color(0xFF000000)
@@ -62,7 +63,6 @@ val md_theme_dark_outline = Color(0xFF8D9387)
 val md_theme_dark_inverseOnSurface = Color(0xFF1A1C18)
 val md_theme_dark_inverseSurface = Color(0xFFE2E3DC)
 val md_theme_dark_inversePrimary = Color(0xFF006E00)
-val md_theme_dark_shadow = Color(0xFF000000)
 val md_theme_dark_surfaceTint = Color(0xFF72DE5E)
 val md_theme_dark_outlineVariant = Color(0xFF43483F)
 val md_theme_dark_scrim = Color(0xFF000000)
@@ -71,9 +71,7 @@ val md_theme_dark_drawing_background = Color(0xFF000000)
 val md_theme_dark_drawing_pen = Color(0xFFFFFFFF)
 
 val app_icon_background = Color(0xFFA00000)
-val seed = Color(0xFF008000) //Primary on https://m3.material.io/theme-builder#/custom
 
-val warning = Color(0xFFFFFF00)
 val light_warning = Color(0xFF626200)
 val light_onWarning = Color(0xFFFFFFFF)
 val light_warningContainer = Color(0xFFEAEA00)

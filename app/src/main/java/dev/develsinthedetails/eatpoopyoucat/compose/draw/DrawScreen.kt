@@ -402,7 +402,7 @@ private fun DrawingPropertiesMenu(
     ) {
         Icon(
             tint = selectedTint(drawMode, DrawMode.Erase),
-//          TODO: replace with "Icons.Rounded.InkEraser" when it's added to the stable Icons
+//          Future: replace with "Icons.Rounded.InkEraser" when it's added to the stable Icons
             painter = painterResource(id = R.drawable.ic_eraser_black_24),
             contentDescription = stringResource(id = R.string.erase),
         )
