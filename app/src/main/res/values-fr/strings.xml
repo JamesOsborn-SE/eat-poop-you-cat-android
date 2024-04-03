@@ -6,7 +6,7 @@
     <string name="created_by">Créé par : %1$s</string>
     <string name="write_a_funny_sentence">Écrivez une phrase amusante</string>
     <string name="no_really_write_a_funny_sentence">Pour de vrai, écrivez une phrase amusante !</string>
-    <string name="app_name">Eat Poop You Cat</string>
+    <string name="app_name">Eat Poop You Cat : le jeu du téléphone</string>
     <string name="write_a_sentence_to_describe_this_drawing">Décrivez ce dessin</string>
     <string name="dialog_one_entry_allowed">Une seule participation par jeu est autorisée</string>
     <string name="oof">Ouf</string>
@@ -31,7 +31,7 @@
     <string name="nickname">Pseudo</string>
     <string name="enter_a_sentence">Saisissez une phrase</string>
     <string name="background_title">Autoriser l\'appli à communiquer en arrière-plan</string>
-    <string name="welcome_message">Bienvenue dans %1$s!</string>
+    <string name="welcome_message">Bienvenue dans %1$s !</string>
     <string name="draw_this_sentence">Dessinez cette phrase !</string>
     <string name="no_letters_or_numbers">NE PAS utiliser de lettres ou de nombres.</string>
     <string name="clear">Effacer</string>
@@ -53,9 +53,9 @@
     <string name="drawing_error">faire un meilleur dessin.</string>
     <string name="turns">Tours : %1$d</string>
     <string name="end_game_for_all">Fin du jeu pour tous</string>
-    <string name="app_description">Un jeu de téléphone où, à tour de rôle, on écrit des phrases et on fait des dessins. Le jeu est terminé lorsque chaque personne a eu son tour.*</string>
+    <string name="app_description">Un jeu de téléphone cassé où à tour de rôle, on écrit des phrases et on fait des dessins. Le jeu se termine lorsque tout le monde a participé une fois.*</string>
     <string name="app_warning">* Famille et amis ne sont pas inclus !</string>
-    <string name="no_previous_games_found">Aucune partie précédente n\'a été trouvée ! Allez-y, jouez !</string>
+    <string name="no_previous_games_found">Aucune partie précédente n\'a été trouvée ! Allez jouer !</string>
     <string name="pass_to_the_next">Passez l\'appareil au joueur suivant !</string>
     <string name="scroll_to_top">Remonter en haut de la page</string>
     <string name="are_you_sure">Cela va %1$s. Voulez-vous toujours continuer \?</string>
@@ -63,18 +63,18 @@
     <string name="no">Non</string>
     <string name="delete_game">Supprimer la partie</string>
     <string name="test_cat_sentence">Un chat vous fait un clin d\'œil avec la grâce d\'un enfant qui s\'endort</string>
-    <string name="sentence_turn_title">Write Something!</string>
-    <string name="draw_turn_title">Draw something!</string>
-    <string name="about">About this app</string>
-    <string name="translations_welcome">Translation contributions welcome</string>
-    <string name="issues">Issues</string>
-    <string name="share_this_game">share this game</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
-    <string name="continue_previous_game">Continue an old game</string>
-    <string name="loading">Loading</string>
+    <string name="sentence_turn_title">Écris quelque-chose !</string>
+    <string name="draw_turn_title">Dessine cette phrase !</string>
+    <string name="about">À propos de cette appli</string>
+    <string name="translations_welcome">Vos contributions de traduction sont la bienvenue</string>
+    <string name="issues">Problèmes</string>
+    <string name="share_this_game">partager cette partie</string>
+    <string name="is_avalible_on_f_droid_and_google_play">%1$s est disponible sur F-Droid et Google Play</string>
+    <string name="continue_previous_game">Continuer une ancienne partie</string>
+    <string name="loading">Chargement</string>
     <plurals name="minimum_words">
-        <item quantity="one">minimum %d word.</item>
-        <item quantity="many">minimum %d words.</item>
-        <item quantity="other">minimum %d words.</item>
+        <item quantity="one">minimum %d mot.</item>
+        <item quantity="many">minimum %d mots.</item>
+        <item quantity="other">minimum %d mots.</item>
     </plurals>
 </resources>
