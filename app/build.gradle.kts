@@ -34,16 +34,16 @@ android {
     }
 
     buildTypes {
-        release {
-            signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = true
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
+        getByName("release") {
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        debug {
-            isDebuggable = true
         }
     }
     compileOptions {
@@ -63,6 +63,15 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+    applicationVariants.all {
+        resValue("string", "applicationId", applicationId)
+
+        outputs.forEach { output ->
+            output as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+            output.outputFileName = "${applicationId}_${output.versionCode}.apk"
+        }
     }
 }
 
