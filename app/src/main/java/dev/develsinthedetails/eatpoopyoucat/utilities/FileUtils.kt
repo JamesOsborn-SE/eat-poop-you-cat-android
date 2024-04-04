@@ -20,10 +20,7 @@ fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILE
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        }
+        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
     }
 
     val contentResolver = context.contentResolver
@@ -39,6 +36,7 @@ fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILE
         fileOutputStream?.close()
     }
 }
+
 fun shareImageUri(context: Context, uri: Uri) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.putExtra(Intent.EXTRA_STREAM, uri)
@@ -46,29 +44,26 @@ fun shareImageUri(context: Context, uri: Uri) {
     intent.type = "image/png"
     context.startActivity(intent)
 }
-fun saveGames(context: Context, games: List<GameWithEntries>, filename: String = DEFAULT_DATA_FILENAME): Uri? {
+
+fun saveGames(
+    context: Context,
+    games: List<GameWithEntries>,
+    filename: String = DEFAULT_DATA_FILENAME
+): Uri? {
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         put(MediaStore.MediaColumns.MIME_TYPE, "application/gzip")
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-        }
+        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
     }
 
     val contentResolver = context.contentResolver
-
-    val fileUri: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        contentResolver.insert(
-            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-            contentValues
-        )
+    val url: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        MediaStore.Downloads.EXTERNAL_CONTENT_URI
     } else {
-        contentResolver.insert(
-            MediaStore.Files.getContentUri(Environment.DIRECTORY_DOWNLOADS+filename),
-            contentValues
-        )
+        MediaStore.Files.getContentUri(Environment.DIRECTORY_DOWNLOADS + filename)
     }
+
+    val fileUri: Uri? = contentResolver.insert(url, contentValues)
 
     return fileUri.also {
         val fileOutputStream = fileUri?.let { contentResolver.openOutputStream(it) }
@@ -77,12 +72,4 @@ fun saveGames(context: Context, games: List<GameWithEntries>, filename: String =
         }
         fileOutputStream?.close()
     }
-}
-
-fun shareGamesUri(context: Context, uri: Uri) {
-    val intent = Intent(Intent.ACTION_SEND)
-    intent.putExtra(Intent.EXTRA_STREAM, uri)
-    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    intent.type = "application/gzip"
-    context.startActivity(intent)
 }
