@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,5 +63,61 @@ object Scaffolds {
             bottomBar = bottomBar,
             content = content
         )
+    }
+
+    @Composable
+    fun Home(
+        title: String,
+        backupGames: () -> Unit,
+        bottomBar: @Composable () -> Unit = {},
+        content: @Composable (PaddingValues) -> Unit,
+    ) {
+        var showMenu by remember { mutableStateOf(false) }
+
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    actions = {
+                        IconButton(onClick = { showMenu = !showMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "open"
+                            )
+                        }
+                        DropdownMenu(expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    backupGames()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.backup_games)) })
+                        }
+                    },
+                )
+            },
+            bottomBar = bottomBar,
+            content = content
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeBarPreview() {
+    Scaffolds.Home(
+        title = stringResource(
+            id = R.string.welcome_message,
+            stringResource(id = R.string.app_name)
+        ), {}) {
+
     }
 }

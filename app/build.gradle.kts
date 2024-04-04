@@ -76,6 +76,9 @@ android {
             output.outputFileName = "${applicationId}_${output.versionCode}.apk"
         }
     }
+    lint {
+        disable.add("MissingTranslation")
+    }
 }
 
 dependencies {
