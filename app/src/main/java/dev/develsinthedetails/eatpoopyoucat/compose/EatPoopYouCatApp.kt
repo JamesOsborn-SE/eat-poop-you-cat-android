@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
@@ -176,6 +177,10 @@ fun CreditsScreen() {
                     }
                 }
             }
+            Text(text = stringResource(R.string.version_label, BuildConfig.VERSION_NAME))
+            Text(text = stringResource(R.string.git_hash_label, stringResource(R.string.git_hash)))
+            if(BuildConfig.DEBUG)
+                Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
         }
     }
 }
