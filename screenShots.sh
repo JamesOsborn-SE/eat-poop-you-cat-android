@@ -23,6 +23,8 @@ for currentDevice in "${devices[@]}"; do
   while [ $SECONDS -lt $end ]; do
       adbsync --force pull "/data/data/$applicationId/files/" "tmp/dark-$(eval "echo \$$currentDevice")"
       sleep 1
+      left=$(expr $SECONDS - $end)
+      echo "timeLeft = $left"
   done
 
   adb shell "cmd uimode night no"
