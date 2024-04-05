@@ -1,7 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.preview
 
-import android.content.Context
-import android.graphics.Bitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -12,8 +10,7 @@ import dev.develsinthedetails.eatpoopyoucat.compose.home.PreviewHomeScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreenWithDrawing
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import org.junit.Rule
 import org.junit.Test
 
@@ -68,16 +65,8 @@ class GenerateScreenShots {
 
     private fun saveScreenshot(filename: String) {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        composeTestRule.mainClock.advanceTimeBy(100)
+        composeTestRule.mainClock.advanceTimeBy(1500)
         val bitmap =  composeTestRule.onRoot().captureToImage().asAndroidBitmap()
-
-        context.openFileOutput("$filename.png", Context.MODE_PRIVATE)
-            .use {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-        }
-        println("Saved screenshot $filename.png")
-        runBlocking {
-            delay(8_000)
-        }
+        saveBitmap(context, bitmap, filename)
     }
 }
