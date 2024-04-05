@@ -12,7 +12,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@JvmField
+// TODO: more better names like isodate?
 val DEFAULT_FILENAME = "EPYC-${System.currentTimeMillis()}.png"
 val DEFAULT_DATA_FILENAME = "EPYC-${System.currentTimeMillis()}.json"
 
@@ -49,27 +49,29 @@ fun saveGames(
     context: Context,
     games: List<GameWithEntries>,
     filename: String = DEFAULT_DATA_FILENAME
-): Uri? {
+): String {
+    val saveDirectory = Environment.DIRECTORY_DOWNLOADS
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         put(MediaStore.MediaColumns.MIME_TYPE, "application/gzip")
-        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+        put(MediaStore.MediaColumns.RELATIVE_PATH, saveDirectory)
     }
 
     val contentResolver = context.contentResolver
     val url: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         MediaStore.Downloads.EXTERNAL_CONTENT_URI
     } else {
-        MediaStore.Files.getContentUri(Environment.DIRECTORY_DOWNLOADS + filename)
+        MediaStore.Files.getContentUri(saveDirectory + filename)
     }
 
     val fileUri: Uri? = contentResolver.insert(url, contentValues)
 
-    return fileUri.also {
+    fileUri.also {
         val fileOutputStream = fileUri?.let { contentResolver.openOutputStream(it) }
         fileOutputStream?.let { file ->
             Gzip.compress(Json.encodeToString(games), file)
         }
         fileOutputStream?.close()
     }
+    return "$saveDirectory/$filename.gz"
 }

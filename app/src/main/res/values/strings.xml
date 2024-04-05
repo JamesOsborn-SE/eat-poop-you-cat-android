@@ -75,6 +75,7 @@
     <string name="version_label">Version: %1$s</string>
     <string name="git_hash_label">Git Hash: %1$s</string>
     <string name="backup_games">Backup Games</string>
+    <string name="import_games">Import games</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

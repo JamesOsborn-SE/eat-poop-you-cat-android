@@ -44,7 +44,6 @@ import java.util.UUID
 fun HomeScreen(
     viewModel: GreetingViewModel = hiltViewModel(),
     onNavigateToSentence: (String) -> Unit,
-    onBackUpGames: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -57,7 +56,6 @@ fun HomeScreen(
                 entryId
             ) { onNavigateToSentence(entryId.toString()) }
         },
-        onBackUpGames = onBackUpGames,
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,
         onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
@@ -69,7 +67,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     onStartGame: () -> Unit,
-    onBackUpGames: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -79,7 +76,7 @@ fun HomeScreen(
         title = stringResource(
             id = R.string.welcome_message,
             stringResource(id = R.string.app_name)
-        ), onBackUpGames
+        )
     )
     { innerPadding ->
 
@@ -197,7 +194,6 @@ fun PreviewHomeScreen() {
         HomeScreen(
             isLoading = false,
             onStartGame = {},
-            onBackUpGames = { },
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
         ) {}
