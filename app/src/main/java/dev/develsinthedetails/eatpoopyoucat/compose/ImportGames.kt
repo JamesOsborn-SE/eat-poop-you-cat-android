@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,8 +37,6 @@ fun ImportGames(
     finish: () -> Unit
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
     if (fileUri == null) {
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -53,7 +50,7 @@ fun ImportGames(
     val games = Json.decodeFromString<List<GameWithEntries>>(gamesString)
     val addedGames = viewModel.numberOfGamesAddedLiveData.observeAsState(initial = -1)
     var showAlert by remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = fileUri){
+    LaunchedEffect(key1 = fileUri) {
         viewModel.addGames(games) {
             inputStream?.close()
         }
@@ -65,9 +62,11 @@ fun ImportGames(
         intent.putExtra("routeTo", Screen.Games.route)
         context.startActivity(intent)
     }
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.primaryContainer))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+    )
 
     if (showAlert && addedGames.value >= 0)
         AlertDialog(

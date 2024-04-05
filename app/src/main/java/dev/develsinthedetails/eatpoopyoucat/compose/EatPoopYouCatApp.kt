@@ -125,7 +125,7 @@ fun EatPoopYouCatApp(
             PrivacyPolicyScreen()
         }
     }
-    if(goto != null)
+    if (goto != null)
         navController.navigate(goto)
 }
 
@@ -156,7 +156,7 @@ private fun onBackupGames(
                 "saving...",
                 Toast.LENGTH_LONG
             ).show()
-            val filePath = saveGames(context, games!!)
+            val filePath = saveGames(context, games)
             Toast.makeText(
                 context,
                 "saved to: $filePath",
