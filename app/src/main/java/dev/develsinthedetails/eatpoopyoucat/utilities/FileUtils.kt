@@ -11,10 +11,14 @@ import android.provider.MediaStore
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-// TODO: more better names like isodate?
-val DEFAULT_FILENAME = "EPYC-${System.currentTimeMillis()}.png"
-val DEFAULT_DATA_FILENAME = "EPYC-${System.currentTimeMillis()}.json"
+var sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+val stringTime: String = sdf.format(Date())
+val DEFAULT_FILENAME = "EPYC-$stringTime.png"
+val DEFAULT_DATA_FILENAME = "EPYC-$stringTime.json"
 
 fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILENAME): Uri? {
     val contentValues = ContentValues().apply {
