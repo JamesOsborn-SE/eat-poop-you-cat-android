@@ -1,1 +1,18 @@
-On écrit une phrase, on passe au joueur suivant, on dessine la phrase reçue. Chaque joueur qui suit ne peut voir que l'entrée précédente, et doit la décrire (si c'est un dessin) ou la dessiner (si c'est une phrase). On continue jusqu'à ce que tout le monde ait joué ou que l'ennui s'installe.
+Écris une phrase, passe au joueur suivant, qui dessine ce qui est écrit. Chaque joueur qui suit ne peut voir que la dernière contribution, et doit la décrire (si c'est un dessin) ou la dessiner (si c'est une phrase). On continue jusqu'à ce que tout le monde ait joué ou que l'ennui s'installe.
+
+Remerciementt:
+Big up à mes amis et ma famille qui m'ont fait des retours et m'ont supporté tout ce temps.
+
+Un grand merci à tous les traducteurs·ices pour leur temps et leur énergie:
+
+* Сергій
+* cwpute
+* Dan
+* Jérôme Herbinet
+* ssantos
+
+Merci à tous les contributeurs·ices de l'open-source sur lesquels ce projet se repose.
+
+Cette application est disponible sur F-droid et Google Play
+
+<a href="https://hosted.weblate.org/engage/eat-poop-you-cat-android/">Vos traductions sont la bienvenue !</a>
