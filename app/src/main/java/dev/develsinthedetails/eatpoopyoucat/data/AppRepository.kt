@@ -14,7 +14,6 @@ class AppRepository @Inject constructor(
     suspend fun createPlayer(player: Player) = playerDao.insert(player)
     suspend fun updatePlayer(player: Player) = playerDao.update(player)
     fun getPlayer(id: UUID): Flow<Player?> = playerDao.get(id)
-    suspend fun getPlayerAsync(id: UUID): Player? = playerDao.getAsync(id)
     suspend fun createGame(game: Game) = gameDao.insert(game)
     suspend fun deleteGame(id: String) = gameDao.delete(UUID.fromString(id))
     suspend fun deleteGame(id: UUID) = gameDao.delete(id)
