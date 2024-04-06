@@ -3,6 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.utilities
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.OutputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
@@ -22,6 +23,13 @@ class Gzip {
         fun compress(string: String): ByteArray {
             val bytes = string.toByteArray(Charsets.UTF_8)
             return compress(bytes)
+        }
+        @Throws(IOException::class)
+        fun compress(string: String, outputStream: OutputStream) {
+            val bytes = string.toByteArray(Charsets.UTF_8)
+            val gos = GZIPOutputStream(outputStream)
+            gos.write(bytes)
+            gos.close()
         }
         @Throws(IOException::class)
         fun decompress(compressed: ByteArray): ByteArray {

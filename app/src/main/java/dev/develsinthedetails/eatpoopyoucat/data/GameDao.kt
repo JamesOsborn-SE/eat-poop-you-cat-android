@@ -1,8 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface GameDao {
@@ -14,7 +18,9 @@ interface GameDao {
     @Transaction
     @Query("SELECT * FROM game")
     fun getAllWithEntries(): Flow<List<GameWithEntries>>
-
+    @Transaction
+    @Query("SELECT * FROM game")
+    suspend fun getAllWithEntriesNow(): List<GameWithEntries>
     @Transaction
     @Query("SELECT * FROM game where id=:id")
     fun getWithEntries(id: UUID): Flow<GameWithEntries>

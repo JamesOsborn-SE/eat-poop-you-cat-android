@@ -1,3 +1,5 @@
+import java.io.ByteArrayOutputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,29 +9,27 @@ plugins {
 }
 
 android {
+    namespace = "dev.develsinthedetails.eatpoopyoucat"
+    compileSdk = 34
+    defaultConfig {
+        resValue("string", "git_hash", getGitHash())
+        applicationId = "dev.develsinthedetails.eatpoopyoucat"
+        minSdk = 21
+        targetSdk = 34
+        versionCode = 15
+        versionName = "1.3.0"
+        testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
+
     signingConfigs {
         create("release") {
-            // You need to specify either an absolute path or include the
-            // keystore file in the same directory as the build.gradle file.
             storeFile = file("release-key.jks")
             storePassword = System.getenv("SIGNING_STORE_PASSWORD")
             keyAlias = System.getenv("SIGNING_KEY_ALIAS")
             keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-        }
-    }
-
-    namespace = "dev.develsinthedetails.eatpoopyoucat"
-    compileSdk = 34
-    defaultConfig {
-        applicationId = "dev.develsinthedetails.eatpoopyoucat"
-        minSdk = 21
-        targetSdk = 34
-        versionCode = 14
-        versionName = "1.2.2"
-        testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
-//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
         }
     }
 
@@ -72,6 +72,9 @@ android {
             output as com.android.build.gradle.internal.api.ApkVariantOutputImpl
             output.outputFileName = "${applicationId}_${output.versionCode}.apk"
         }
+    }
+    lint {
+        disable.add("MissingTranslation")
     }
 }
 
@@ -167,4 +170,13 @@ kapt {
     arguments {
         arg("room.schemaLocation", "$projectDir/schemas")
     }
+}
+
+fun getGitHash(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }

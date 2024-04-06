@@ -8,18 +8,23 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-@JvmField
-val DEFAULT_FILENAME = "EPYC-${System.currentTimeMillis()}.png"
+var sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+val stringTime: String = sdf.format(Date())
+val DEFAULT_FILENAME = "EPYC-$stringTime.png"
+val DEFAULT_DATA_FILENAME = "EPYC-$stringTime.json"
 
 fun saveBitmap(context: Context, bitmap: Bitmap, filename: String = DEFAULT_FILENAME): Uri? {
     val contentValues = ContentValues().apply {
         put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        }
+        put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
     }
 
     val contentResolver = context.contentResolver
@@ -42,4 +47,35 @@ fun shareImageUri(context: Context, uri: Uri) {
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     intent.type = "image/png"
     context.startActivity(intent)
+}
+
+fun saveGames(
+    context: Context,
+    games: List<GameWithEntries>,
+    filename: String = DEFAULT_DATA_FILENAME
+): String {
+    val saveDirectory = Environment.DIRECTORY_DOWNLOADS
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+        put(MediaStore.MediaColumns.MIME_TYPE, "application/gzip")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, saveDirectory)
+    }
+
+    val contentResolver = context.contentResolver
+    val url: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        MediaStore.Downloads.EXTERNAL_CONTENT_URI
+    } else {
+        MediaStore.Files.getContentUri(saveDirectory + filename)
+    }
+
+    val fileUri: Uri? = contentResolver.insert(url, contentValues)
+
+    fileUri.also {
+        val fileOutputStream = fileUri?.let { contentResolver.openOutputStream(it) }
+        fileOutputStream?.let { file ->
+            Gzip.compress(Json.encodeToString(games), file)
+        }
+        fileOutputStream?.close()
+    }
+    return "$saveDirectory/$filename.gz"
 }

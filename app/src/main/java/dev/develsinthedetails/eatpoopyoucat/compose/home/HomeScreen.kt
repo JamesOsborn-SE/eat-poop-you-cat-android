@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
@@ -70,66 +71,72 @@ fun HomeScreen(
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
 ) {
-    val padding = 20.dp
-    // A surface container using the 'background' color from the theme
-    Surface(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.primaryContainer
-    ) {
-        if (isLoading)
-            Spinner()
-        Column {
-            val defaultModifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(padding)
-            Column(
-                modifier = Modifier
+    val padding = 10.dp
+    Scaffolds.Home(
+        title = stringResource(
+            id = R.string.welcome_message,
+            stringResource(id = R.string.app_name)
+        )
+    )
+    { innerPadding ->
+
+
+        // A surface container using the 'background' color from the theme
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.primaryContainer
+        ) {
+            if (isLoading)
+                Spinner()
+            Column {
+                val defaultModifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(padding)
-            ) {
-
-                val appIcon =
-                    getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
-                Image(
-                    appIcon.asImageBitmap(),
-                    contentDescription = "Image", modifier = defaultModifier
-                        .size(100.dp) //Optional, but keeps the image reasonably small
-                        .padding(8.dp)
-                        .clip(CircleShape)
-                )
-                Text(
-                    text = stringResource(
-                        R.string.welcome_message,
-                        stringResource(R.string.app_name)
-                    ),
-                    modifier = defaultModifier,
-                    fontSize = 18.sp
-                )
-                StartGame(defaultModifier, onStartGame)
-                ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
-                Text(
-                    text = stringResource(id = R.string.app_description),
-                    modifier = defaultModifier
-                )
-                Text(
-                    text = stringResource(id = R.string.app_warning),
-                    modifier = defaultModifier,
-                    fontSize = 12.sp
-                )
-
-                TextButton(
-                    modifier = defaultModifier,
-                    onClick = onNavigateToCredits,
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(padding)
                 ) {
-                    Text(stringResource(id = R.string.about))
-                }
-                TextButton(
-                    modifier = defaultModifier,
-                    onClick = onNavigateToPrivacyPolicy
-                ) {
-                    Text(stringResource(id = R.string.privacy_policy))
+
+                    val appIcon =
+                        getBitmapFromVectorDrawable(
+                            LocalContext.current,
+                            R.mipmap.ic_launcher_round
+                        )
+                    Image(
+                        appIcon.asImageBitmap(),
+                        contentDescription = "Image", modifier = defaultModifier
+                            .size(100.dp) //Optional, but keeps the image reasonably small
+                            .padding(8.dp)
+                            .clip(CircleShape)
+                    )
+                    StartGame(defaultModifier, onStartGame)
+                    ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
+                    Text(
+                        text = stringResource(id = R.string.app_description),
+                        modifier = defaultModifier
+                    )
+                    Text(
+                        text = stringResource(id = R.string.app_warning),
+                        modifier = defaultModifier,
+                        fontSize = 12.sp
+                    )
+
+                    TextButton(
+                        modifier = defaultModifier,
+                        onClick = onNavigateToCredits,
+                    ) {
+                        Text(stringResource(id = R.string.about))
+                    }
+                    TextButton(
+                        modifier = defaultModifier,
+                        onClick = onNavigateToPrivacyPolicy
+                    ) {
+                        Text(stringResource(id = R.string.privacy_policy))
+                    }
                 }
             }
         }

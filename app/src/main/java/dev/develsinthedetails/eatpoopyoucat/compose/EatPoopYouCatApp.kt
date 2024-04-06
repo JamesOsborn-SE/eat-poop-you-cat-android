@@ -1,32 +1,25 @@
 package dev.develsinthedetails.eatpoopyoucat.compose
 
-import android.content.res.Configuration
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.ImportGamesActivity
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
@@ -34,16 +27,25 @@ import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesS
 import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
+import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.type
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
-import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
+import dev.develsinthedetails.eatpoopyoucat.utilities.saveGames
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun EatPoopYouCatApp(
+    goto: String?,
+    viewModel: PreviousGamesViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
+    val coroutineScope = rememberCoroutineScope()
+    val games by viewModel.games.observeAsState(initial = null)
+
+    val context = LocalContext.current
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             HomeScreen(
@@ -103,7 +105,9 @@ fun EatPoopYouCatApp(
         ) {
             PreviousGamesScreen(
                 onGoHome = { navController.navigate(Screen.Home.route) },
-                onGameClick = { navController.navigate(Screen.Game.byId(it)) }
+                onGameClick = { navController.navigate(Screen.Game.byId(it)) },
+                onImportGames = onImportGames(context = context),
+                onBackupGames = onBackupGames(coroutineScope, games, context)
             )
         }
         composable(
@@ -121,6 +125,52 @@ fun EatPoopYouCatApp(
             PrivacyPolicyScreen()
         }
     }
+    if (goto != null)
+        navController.navigate(goto)
+}
+
+@Composable
+private fun onImportGames(context: Context): ManagedActivityResultLauncher<String, Uri?> {
+    val pickPictureLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { importFileUri ->
+        if (importFileUri != null) {
+            val intent = Intent(context, ImportGamesActivity::class.java)
+            intent.data = importFileUri
+            context.startActivity(intent)
+        }
+    }
+    return pickPictureLauncher
+}
+
+@Composable
+private fun onBackupGames(
+    coroutineScope: CoroutineScope,
+    games: List<GameWithEntries>?,
+    context: Context
+): () -> Unit = {
+    coroutineScope.launch {
+        if (games?.isNotEmpty() == true) {
+            Toast.makeText(
+                context,
+                "saving...",
+                Toast.LENGTH_LONG
+            ).show()
+            val filePath = saveGames(context, games)
+            Toast.makeText(
+                context,
+                "saved to: $filePath",
+                Toast.LENGTH_LONG,
+
+                ).show()
+        } else {
+            Toast.makeText(
+                context,
+                "you has no games to save bruh",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 }
 
 @Composable
@@ -132,101 +182,3 @@ private fun navigateToNextTurn(navController: NavHostController): (Entry) -> Uni
             navController.navigate(Screen.Draw.byId(it.id.toString()))
     }
 
-@Composable
-fun CreditsScreen() {
-    val uriHandler = LocalUriHandler.current
-
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = (MaterialTheme.colorScheme.background)
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row {
-                Text(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    text = ReadMetadata(LocalContext.current).getFullDescription()
-                )
-            }
-
-            Row {
-                TextButton(onClick = {
-                    uriHandler.openUri("https://hosted.weblate.org/engage/eat-poop-you-cat-android/")
-                }) {
-                    Text(
-                        text =
-                        stringResource(id = R.string.translations_welcome)
-                    )
-                }
-                Row {
-                    TextButton(onClick = {
-                        uriHandler.openUri("https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues")
-                    }) {
-                        Text(
-                            text =
-                            stringResource(id = R.string.issues)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun PrivacyPolicyScreen() {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(8.dp),
-                text = ReadMetadata(LocalContext.current).getPrivacyPolicy()
-            )
-        }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:parent=Nexus 7 2013,orientation=landscape"
-)
-@Composable
-fun PreviewCreditsScreen() {
-    AppTheme {
-        CreditsScreen()
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    device = "spec:parent=Nexus 7 2013,orientation=landscape"
-)
-@Composable
-fun PreviewPrivacyPolicyScreen() {
-    AppTheme {
-        PrivacyPolicyScreen()
-    }
-}

@@ -1,8 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.helpers
 
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,5 +68,92 @@ object Scaffolds {
             bottomBar = bottomBar,
             content = content
         )
+    }
+
+    @Composable
+    fun Home(
+        title: String,
+        bottomBar: @Composable () -> Unit = {},
+        content: @Composable (PaddingValues) -> Unit,
+    ) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    actions = {},
+                )
+            },
+            bottomBar = bottomBar,
+            content = content
+        )
+    }
+    @Composable
+    fun PreviousGames(
+        title: String,
+        onBackupGames: () -> Unit,
+        onImportGames: ManagedActivityResultLauncher<String, Uri?>?,
+        bottomBar: @Composable () -> Unit = {},
+        content: @Composable (PaddingValues) -> Unit,
+    ) {
+        var showMenu by remember { mutableStateOf(false) }
+
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    actions = {
+                        IconButton(onClick = { showMenu = !showMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "open"
+                            )
+                        }
+                        DropdownMenu(expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    onImportGames!!.launch("application/gzip")
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.import_games)) })
+                            DropdownMenuItem(
+                                onClick = {
+                                    onBackupGames()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.backup_games)) })
+                        }
+                    },
+                )
+            },
+            bottomBar = bottomBar,
+            content = content
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeBarPreview() {
+    Scaffolds.Home(
+        title = stringResource(
+            id = R.string.welcome_message,
+            stringResource(id = R.string.app_name)
+        ), {}) {
+
     }
 }
