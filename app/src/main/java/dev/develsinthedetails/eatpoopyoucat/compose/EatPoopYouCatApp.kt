@@ -20,6 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
@@ -119,7 +120,7 @@ fun EatPoopYouCatApp(
             PreviousGameScreen(continueGame = navigateToNextTurn(navController))
         }
         composable(Screen.Credits.route) {
-            CreditsScreen()
+            CreditsScreen(SharedPref.playerId().toString())
         }
         composable(Screen.PrivacyPolicy.route) {
             PrivacyPolicyScreen()

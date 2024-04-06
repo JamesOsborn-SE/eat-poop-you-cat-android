@@ -22,12 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
 
 @Composable
-fun CreditsScreen() {
+fun CreditsScreen(playerId: String = "") {
     val uriHandler = LocalUriHandler.current
 
     Surface(
@@ -74,7 +73,7 @@ fun CreditsScreen() {
             Text(text = stringResource(R.string.git_hash_label, stringResource(R.string.git_hash)))
             if (BuildConfig.DEBUG) {
                 Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
-                Text(text = "PlayerId: ${SharedPref.playerId()}")
+                Text(text = "PlayerId: $playerId")
             }
         }
     }
