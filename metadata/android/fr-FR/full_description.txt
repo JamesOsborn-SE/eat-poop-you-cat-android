@@ -13,6 +13,6 @@ Un grand merci à tous les traducteurs·ices pour leur temps et leur énergie:
 
 Merci à tous les contributeurs·ices de l'open-source sur lesquels ce projet se repose.
 
-Cette application est disponible sur Fdroid et Google Play
+Cette application est disponible sur F-droid et Google Play
 
 <a href="https://hosted.weblate.org/engage/eat-poop-you-cat-android/">Vos traductions sont la bienvenue !</a>
