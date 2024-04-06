@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface PlayerDao {
@@ -16,6 +16,9 @@ interface PlayerDao {
 
     @Query("SELECT * FROM player WHERE id=:id")
     fun get(id: UUID): Flow<Player?>
+
+    @Query("SELECT * FROM player WHERE id=:id")
+    suspend fun getAsync(id: UUID): Player?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(player: Player)

@@ -1,8 +1,13 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface EntryDao {
@@ -12,8 +17,16 @@ interface EntryDao {
     fun get(id: UUID): Flow<Entry>
 
     @Transaction
-    @Query("SELECT * FROM entry WHERE gameId=:id LIMIT 1")
+    @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
+    suspend fun getAsync(id: UUID): Entry
+
+    @Transaction
+    @Query("SELECT * FROM entry WHERE gameId=:id")
     fun getAllEntriesByGame(id: UUID): Flow<List<Entry>>
+
+    @Transaction
+    @Query("SELECT * FROM entry WHERE gameId=:gameId")
+    suspend fun getAllEntriesByGameAsync(gameId: UUID): List<Entry>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")

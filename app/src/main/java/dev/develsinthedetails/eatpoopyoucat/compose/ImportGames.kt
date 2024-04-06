@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.MainActivity
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
@@ -48,30 +49,38 @@ fun ImportGames(
     val cba = readAllBytesWorkAround(inputStream) ?: return
     val gamesString = Gzip.decompressToString(cba)
     val games = Json.decodeFromString<List<GameWithEntries>>(gamesString)
-    val addedGames = viewModel.numberOfGamesAddedLiveData.observeAsState(initial = -1)
+    val addedGames = viewModel.numberOfGamesAdded.observeAsState(initial = 0)
+    val addedEntries = viewModel.numberOfEntriesAdded.observeAsState(initial = 0)
+    val finished = viewModel.isFinished.observeAsState(initial = false)
     var showAlert by remember { mutableStateOf(false) }
-    LaunchedEffect(key1 = fileUri) {
-        viewModel.addGames(games) {
-            inputStream?.close()
-        }
-        showAlert = true
-    }
+
     val onDismissRequest = {
         finish()
         val intent = Intent(context, MainActivity::class.java)
         intent.putExtra("routeTo", Screen.Games.route)
         context.startActivity(intent)
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-    )
 
-    if (showAlert && addedGames.value >= 0)
+    if(!finished.value)
+        SpinnerScreen()
+    else
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.primaryContainer)
+        )
+
+    LaunchedEffect(key1 = fileUri) {
+        viewModel.addGames(games) {
+            inputStream?.close()
+        }
+        showAlert = true
+    }
+
+    if (showAlert && finished.value)
         AlertDialog(
             title = { Text(text = "Import") },
-            text = { Text(text = "Imported ${addedGames.value} game(s)") },
+            text = { Text(text = "Imported ${addedGames.value} game(s) and ${addedEntries.value} Entrie(s)") },
             onDismissRequest = { onDismissRequest() },
             confirmButton = {},
             dismissButton = {

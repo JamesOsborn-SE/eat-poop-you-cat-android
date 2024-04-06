@@ -18,9 +18,11 @@ interface GameDao {
     @Transaction
     @Query("SELECT * FROM game")
     fun getAllWithEntries(): Flow<List<GameWithEntries>>
+
     @Transaction
     @Query("SELECT * FROM game")
-    suspend fun getAllWithEntriesNow(): List<GameWithEntries>
+    suspend fun getAllAsync(): List<Game>
+
     @Transaction
     @Query("SELECT * FROM game where id=:id")
     fun getWithEntries(id: UUID): Flow<GameWithEntries>
