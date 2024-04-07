@@ -76,6 +76,7 @@
     <string name="git_hash_label">Git Hash: %1$s</string>
     <string name="backup_games">Backup Games</string>
     <string name="import_games">Import games</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">A cat winks at you with the grace of a very sleepy toddler</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

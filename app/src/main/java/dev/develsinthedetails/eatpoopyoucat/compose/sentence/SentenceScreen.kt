@@ -250,7 +250,7 @@ fun PreviewSentenceScreen() {
         SentenceScreen(
             isError = true,
             minimumWords = 4,
-            sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence,
+            sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler),
             sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
             drawing = null,
             onEndGame = {},

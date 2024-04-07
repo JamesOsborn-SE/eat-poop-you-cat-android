@@ -487,7 +487,7 @@ fun PreviewDawingWithSentance() {
 
     val setCanvasResolution: (IntSize) -> Unit = {}
 
-    val sentence = dev.develsinthedetails.eatpoopyoucat.utilities.catSentence
+    val sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler)
     AppTheme {
         DrawScreen(
             linesState = lines,
