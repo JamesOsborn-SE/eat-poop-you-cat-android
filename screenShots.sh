@@ -10,7 +10,9 @@ if [ -z "$arg" ]; then
 fi
 
 lang_country=$arg
+# shellcheck disable=SC2034
 language=$(echo "$lang_country" | cut -d'-' -f1)
+# shellcheck disable=SC2034
 country_code=$(echo "$lang_country" | cut -d'-' -f2)
 # Key is the avd_name from getprop and the value is the output directory for the screen shots
 # shellcheck disable=SC2034
