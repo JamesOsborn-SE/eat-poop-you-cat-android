@@ -2,15 +2,23 @@
 
 rm -rf tmp/
 
+Pictures_Path="/mnt/sdcard/Pictures/"
+
+arg=$1
+if [ -z "$arg" ]; then
+  arg="en-US"
+fi
+
+lang_country=$arg
+language=$(echo "$lang_country" | cut -d'-' -f1)
+country_code=$(echo "$lang_country" | cut -d'-' -f2)
 # Key is the avd_name from getprop and the value is the output directory for the screen shots
 # shellcheck disable=SC2034
-Nexus_7_2012_API_33="metadata/android/en-US/images/sevenInchScreenshots"
+Nexus_7_2012_API_33="metadata/android/$lang_country/images/sevenInchScreenshots"
 # shellcheck disable=SC2034
-Pixel_6_API_33="metadata/android/en-US/images/phoneScreenshots"
+Pixel_6_API_33="metadata/android/$lang_country/images/phoneScreenshots"
 # shellcheck disable=SC2034
-Nexus_10_API_33="metadata/android/en-US/images/tenInchScreenshots"
-
-Pictures_Path="/mnt/sdcard/Pictures/"
+Nexus_10_API_33="metadata/android/$lang_country/images/tenInchScreenshots"
 
 devices=("Nexus_10_API_33" "Nexus_7_2012_API_33" "Pixel_6_API_33")
 for currentDevice in "${devices[@]}"; do
@@ -22,7 +30,7 @@ for currentDevice in "${devices[@]}"; do
   killall qemu-system-x86_64
   sleep 3
   echo "$currentDevice"
-  "${ANDROID_HOME}/emulator/emulator" -avd "$currentDevice" >> tmp/.emu.log 2>&1 &
+  "${ANDROID_HOME}/emulator/emulator" -avd "$currentDevice" >> /dev/null 2>&1 &
   echo "wait for 60"
   sleep 60
   adb root
