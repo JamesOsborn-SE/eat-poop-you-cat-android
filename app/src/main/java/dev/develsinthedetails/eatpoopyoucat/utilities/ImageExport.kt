@@ -83,15 +83,17 @@ class ImageExport(
             appName,
             textPaint,
             textLayout,
+            textWidth = WIDTH - padding * 4 - appIcon.width
         )
-        val textHeight = sl.height + 20
-        val height = max(appIcon.height, textHeight)
+        val textHeight = sl.height + padding
+        val height = max(appIcon.height + padding*2, textHeight)
+        val textOffset = if(appName.count()>30) 0 else (height / 2f) - padding * 3
         val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
         val tmpCanvas = Canvas(tmpBitmap)
         tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), headerPaint)
-        tmpCanvas.drawBitmap(appIcon, 10f, 10f, null)
+        tmpCanvas.drawBitmap(appIcon, padding.toFloat(), padding.toFloat(), null)
         tmpCanvas.save()
-        tmpCanvas.translate(20f + appIcon.width, (height / 2f) - 20f)
+        tmpCanvas.translate(padding.toFloat()*3 + appIcon.width, textOffset.toFloat() )
         sl.draw(tmpCanvas)
         tmpCanvas.restore()
         return tmpBitmap
@@ -140,12 +142,12 @@ class ImageExport(
             textLayout
         )
 
-        val textHeight = sl.height + 20
+        val textHeight = sl.height + padding * 2
         val tmpBitmap = Bitmap.createBitmap(WIDTH, textHeight, Bitmap.Config.ARGB_8888)
         val tmpCanvas = Canvas(tmpBitmap)
 
         tmpCanvas.save()
-        tmpCanvas.translate(20f, 10f)
+        tmpCanvas.translate(padding.toFloat() * 2, padding.toFloat())
         sl.draw(tmpCanvas)
         tmpCanvas.restore()
         return tmpBitmap
@@ -168,13 +170,13 @@ class ImageExport(
             textLayout,
         )
 
-        val textHeight = sl.height + 20
-        val height = textHeight + 20
+        val textHeight = sl.height + padding * 2
+        val height = textHeight + padding * 2
         val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
         val tmpCanvas = Canvas(tmpBitmap)
         tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), footerPaint)
         tmpCanvas.save()
-        tmpCanvas.translate(10f, (height / 2f) - 10f)
+        tmpCanvas.translate(padding.toFloat(), (height / 2f) - padding.toFloat())
         sl.draw(tmpCanvas)
         tmpCanvas.restore()
         return tmpBitmap
@@ -184,11 +186,12 @@ class ImageExport(
         const val WIDTH = 640
         const val PEN_STROKE = 12f
         const val ERASE_STROKE = 48f
+        const val padding = 10
         private fun staticLayout(
             text: String,
             tp: TextPaint,
             textLayout: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL,
-            textWidth: Int = WIDTH - 40,
+            textWidth: Int = WIDTH - padding * 4,
             spacingAddition: Float = 0f,
             spacingMultiplier: Float = 1f,
             includePadding: Boolean = false
