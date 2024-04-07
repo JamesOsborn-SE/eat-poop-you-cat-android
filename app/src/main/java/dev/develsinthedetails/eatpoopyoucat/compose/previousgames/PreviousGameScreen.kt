@@ -1,9 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.compose.previousgames
 
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,29 +43,48 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawBox
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     viewModel: PreviousGameViewModel = hiltViewModel(),
-    continueGame: (Entry) -> Unit = {},
+    onContinueGame: (Entry) -> Unit = {},
+    onBackupGame: (games: List<GameWithEntries>?) -> Unit,
+    onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {
-    val game by viewModel.gameWithEntries.observeAsState()
-    game?.let { PreviousGameScreen(entries = it.entries, modifier = modifier, continueGame = continueGame) }
+    val game by viewModel.gameWithEntries.observeAsState(initial = null)
+
+    if (game != null) {
+        PreviousGameScreen(
+            modifier = modifier,
+            entries = game!!.entries,
+            onContinueGame = { onContinueGame(game!!.entries.last()) },
+            onBackupGame = { onBackupGame(listOf(game!!)) },
+            onImportGame = onImportGames
+        )
+    }
+    else
+        SpinnerScreen()
 }
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     entries: List<Entry>,
-    continueGame: (Entry) -> Unit = {},
+    onContinueGame: () -> Unit,
+    onBackupGame: () -> Unit,
+    onImportGame: ManagedActivityResultLauncher<String, Uri?>?,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -73,79 +95,115 @@ fun PreviousGameScreen(
     option.inPreferredConfig = Bitmap.Config.ARGB_8888
     val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
 
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
-    ) {
-        Scaffold(floatingActionButton = {
-            Row {
-                FloatingActionButton(
-                    modifier = Modifier.padding(3.dp),
-                    onClick = {
-                        coroutineScope.launch {
-                            listState.animateScrollToItem(0)
-                        }
-                    }) {
+    val shareGame = {
+        shareGame(
+            coroutineScope,
+            entries,
+            appIcon,
+            appName,
+            bottomBlurb,
+            context
+        )
+    }
+    Scaffolds.PreviousGame(
+        title = stringResource(
+            id = R.string.previous_games
+        ),
+        onBackupGame = onBackupGame,
+        onImportGame = onImportGame,
+        onShareGame = shareGame(),
+        onContinueGame = onContinueGame
+    )
+    { innerPadding ->
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Scaffold(floatingActionButton = {
+                Row {
+                    FloatingActionButton(
+                        modifier = Modifier.padding(3.dp),
+                        onClick = {
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(0)
+                            }
+                        }) {
 
-                    Icon(
-                        Icons.Rounded.VerticalAlignTop,
-                        modifier = Modifier.padding(3.dp),
-                        contentDescription = stringResource(id = R.string.scroll_to_top)
-                    )
-                }
-                FloatingActionButton(
-                    modifier = Modifier.padding(3.dp),
-                    onClick = {
-                        continueGame(entries.last())
-                    }) {
-                    Icon(
-                        Icons.Rounded.Replay,
-                        modifier = Modifier.padding(3.dp),
-                        contentDescription = stringResource(id = R.string.continue_previous_game)
-                    )
-                }
-                FloatingActionButton(
-                    modifier = Modifier.padding(3.dp),
-                    onClick = {
-                    coroutineScope.launch {
-                        val ie = ImageExport(
-                            entries,
-                            appIcon,
-                            appName,
-                            bottomBlurb
+                        Icon(
+                            Icons.Rounded.VerticalAlignTop,
+                            modifier = Modifier.padding(3.dp),
+                            contentDescription = stringResource(id = R.string.scroll_to_top)
                         )
-                        val game = saveBitmap(context, ie.makeBitmap())
-
-                        if(game != null)
-                            shareImageUri(context, game)
-                        else
-                            Toast.makeText(context, "share done goofed, you're boned", Toast.LENGTH_SHORT).show()
                     }
-                }) {
-                    Icon(
-                        imageVector = Icons.Rounded.Share,
+                    FloatingActionButton(
                         modifier = Modifier.padding(3.dp),
-                        contentDescription = stringResource(R.string.share_this_game)
-                    )
-                }
-            }
-        },
-            content = { contentPadding ->
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.padding(contentPadding),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-                ) {
-                    items(
-                        items = entries,
-                        key = { entry ->
-                            entry.id
-                        }
-                    ) { entry ->
-                        EntryListItem(entry)
+                        onClick = onContinueGame
+                    ) {
+                        Icon(
+                            Icons.Rounded.Replay,
+                            modifier = Modifier.padding(3.dp),
+                            contentDescription = stringResource(id = R.string.continue_previous_game)
+                        )
+                    }
+                    FloatingActionButton(
+                        modifier = Modifier.padding(3.dp),
+                        onClick = shareGame()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Share,
+                            modifier = Modifier.padding(3.dp),
+                            contentDescription = stringResource(R.string.share_this_game)
+                        )
                     }
                 }
-            })
+            },
+                content = { contentPadding ->
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.padding(contentPadding),
+                        contentPadding = PaddingValues(bottom = 80.dp)
+                    ) {
+                        items(
+                            items = entries,
+                            key = { entry ->
+                                entry.id
+                            }
+                        ) { entry ->
+                            EntryListItem(entry)
+                        }
+                    }
+                })
+        }
+    }
+}
+
+private fun shareGame(
+    coroutineScope: CoroutineScope,
+    entries: List<Entry>,
+    appIcon: Bitmap,
+    appName: String,
+    bottomBlurb: String,
+    context: Context
+): () -> Unit = {
+    coroutineScope.launch {
+        val ie = ImageExport(
+            entries,
+            appIcon,
+            appName,
+            bottomBlurb
+        )
+        val game = saveBitmap(context, ie.makeBitmap())
+
+        if (game != null)
+            shareImageUri(context, game)
+        else
+            Toast.makeText(
+                context,
+                "share done goofed, you're boned",
+                Toast.LENGTH_SHORT
+            ).show()
     }
 }
 

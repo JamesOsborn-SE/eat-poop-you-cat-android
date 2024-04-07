@@ -145,6 +145,71 @@ object Scaffolds {
             content = content
         )
     }
+
+    @Composable
+    fun PreviousGame(
+        title: String,
+        onContinueGame: () -> Unit,
+        onShareGame: () -> Unit,
+        onBackupGame: () -> Unit,
+        onImportGame: ManagedActivityResultLauncher<String, Uri?>?,
+        bottomBar: @Composable () -> Unit = {},
+        content: @Composable (PaddingValues) -> Unit,
+    ) {
+        var showMenu by remember { mutableStateOf(false) }
+
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    actions = {
+                        IconButton(onClick = { showMenu = !showMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "open"
+                            )
+                        }
+                        DropdownMenu(expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    onShareGame()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.share_this_game)) })
+                            DropdownMenuItem(
+                                onClick = {
+                                    onContinueGame()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.continue_previous_game)) })
+                            DropdownMenuItem(
+                                onClick = {
+                                    onBackupGame()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.backup_games)) })
+                            DropdownMenuItem(
+                                onClick = {
+                                    onImportGame!!.launch("application/gzip")
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(id = R.string.import_games)) })
+                        }
+                    },
+                )
+            },
+            bottomBar = bottomBar,
+            content = content
+        )
+    }
 }
 
 @Preview

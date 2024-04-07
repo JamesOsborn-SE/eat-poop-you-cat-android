@@ -8,11 +8,8 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -33,18 +30,15 @@ import dev.develsinthedetails.eatpoopyoucat.data.type
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveGames
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun EatPoopYouCatApp(
-    goto: String?,
-    viewModel: PreviousGamesViewModel = hiltViewModel(),
+    goto: String?
 ) {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
-    val games by viewModel.games.observeAsState(initial = null)
 
     val context = LocalContext.current
     NavHost(navController = navController, startDestination = Screen.Home.route) {
@@ -107,8 +101,8 @@ fun EatPoopYouCatApp(
             PreviousGamesScreen(
                 onGoHome = { navController.navigate(Screen.Home.route) },
                 onGameClick = { navController.navigate(Screen.Game.byId(it)) },
-                onImportGames = onImportGames(context = context),
-                onBackupGames = onBackupGames(coroutineScope, games, context)
+                onBackupGames = onBackupGames(coroutineScope, context),
+                onImportGames = onImportGames(context = context)
             )
         }
         composable(
@@ -117,7 +111,11 @@ fun EatPoopYouCatApp(
                 navArgument(ID) { type = NavType.StringType }
             )
         ) {
-            PreviousGameScreen(continueGame = navigateToNextTurn(navController))
+            PreviousGameScreen(
+                onContinueGame = navigateToNextTurn(navController),
+                onBackupGame = onBackupGames(coroutineScope =coroutineScope , context =context ),
+                onImportGames = onImportGames(context = context),
+            )
         }
         composable(Screen.Credits.route) {
             CreditsScreen(SharedPref.playerId().toString())
@@ -131,7 +129,7 @@ fun EatPoopYouCatApp(
 }
 
 @Composable
-private fun onImportGames(context: Context): ManagedActivityResultLauncher<String, Uri?> {
+fun onImportGames(context: Context): ManagedActivityResultLauncher<String, Uri?> {
     val pickPictureLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { importFileUri ->
@@ -147,17 +145,16 @@ private fun onImportGames(context: Context): ManagedActivityResultLauncher<Strin
 @Composable
 private fun onBackupGames(
     coroutineScope: CoroutineScope,
-    games: List<GameWithEntries>?,
     context: Context
-): () -> Unit = {
+): (games: List<GameWithEntries>?) -> Unit = {
     coroutineScope.launch {
-        if (games?.isNotEmpty() == true) {
+        if (it?.isNotEmpty() == true) {
             Toast.makeText(
                 context,
                 "saving...",
                 Toast.LENGTH_LONG
             ).show()
-            val filePath = saveGames(context, games)
+            val filePath = saveGames(context, it)
             Toast.makeText(
                 context,
                 "saved to: $filePath",
