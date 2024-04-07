@@ -68,13 +68,6 @@
     <string name="about">Про цей застосунок</string>
     <string name="translations_welcome">Вітаються внески у переклад</string>
     <string name="issues">Проблеми</string>
-    <string name="share_this_game">share this game</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
-    <string name="continue_previous_game">Continue an old game</string>
-    <string name="loading">Loading</string>
-    <string name="debugging_on_label">Debugging on: %1$s</string>
-    <string name="version_label">Version: %1$s</string>
-    <string name="git_hash_label">Git Hash: %1$s</string>
     <plurals name="minimum_words">
         <item quantity="one">мінімум %d слово.</item>
         <item quantity="few">мінімум %d слова.</item>

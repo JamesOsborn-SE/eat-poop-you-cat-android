@@ -51,7 +51,6 @@
     <string name="write_sentence_error">Escreva uma frase melhor!</string>
     <string name="drawing_error">faça um desenho melhor.</string>
     <string name="turns">Voltas: %1$d</string>
-    <string name="end_game_for_all">End Game For All</string>
     <string name="app_description">Um jogo de telefone onde você alterna entre frases e desenhos. O jogo termina quando cada pessoa tem uma vez. *</string>
     <string name="app_warning">* Família e amigos não estão incluídos!</string>
     <string name="no_previous_games_found">Nenhum jogo anterior encontrado! Vá jogar!</string>
@@ -62,19 +61,6 @@
     <string name="no">Não</string>
     <string name="delete_game">Excluir jogo</string>
     <string name="test_cat_sentence">Um gato pisca para você com a graça de uma criança com muito sono</string>
-    <string name="sentence_turn_title">Write Something!</string>
-    <string name="draw_turn_title">Draw something!</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="about">About this app</string>
-    <string name="translations_welcome">Translation contributions welcome</string>
-    <string name="issues">Issues</string>
-    <string name="share_this_game">share this game</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
-    <string name="continue_previous_game">Continue an old game</string>
-    <string name="loading">Loading</string>
-    <string name="debugging_on_label">Debugging on: %1$s</string>
-    <string name="version_label">Version: %1$s</string>
-    <string name="git_hash_label">Git Hash: %1$s</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="many">minimum %d words.</item>
