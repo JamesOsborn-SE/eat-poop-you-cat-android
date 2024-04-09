@@ -59,9 +59,7 @@ fun Spinner(
                 .size(100.dp)
                 .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
         ) {
-            CircularProgressIndicator(
-                progress = { 0.89f },
-            )
+            CircularProgressIndicator()
         }
     }
 }
