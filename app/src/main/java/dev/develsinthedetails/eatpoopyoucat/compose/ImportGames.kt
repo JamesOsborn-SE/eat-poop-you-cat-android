@@ -26,6 +26,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGamesViewModel
+import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -61,7 +62,7 @@ fun ImportGames(
         context.startActivity(intent)
     }
 
-    if(!finished.value)
+    if (!finished.value)
         SpinnerScreen()
     else
         Box(
@@ -71,9 +72,11 @@ fun ImportGames(
         )
 
     LaunchedEffect(key1 = fileUri) {
-        viewModel.addGames(games) {
-            inputStream?.close()
-        }
+        async {
+            viewModel.addGames(games) {
+                inputStream?.close()
+            }
+        }.await()
         showAlert = true
     }
 
