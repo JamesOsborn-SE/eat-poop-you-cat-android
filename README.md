@@ -26,10 +26,12 @@
 [![Android Package](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml/badge.svg)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/actions/workflows/android-package.yml)
 [![open issues](https://img.shields.io/github/issues/JamesOsborn-SE/eat-poop-you-cat-android)](https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues)
 [![licence](https://img.shields.io/github/license/JamesOsborn-SE/eat-poop-you-cat-android)]()
+[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/svg-badge.svg)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
+[![Will work for food](https://img.shields.io/badge/hire_me!-8A2BE2)](https://www.linkedin.com/in/jamesosborn286/)
 
 ## Translation Status
 
-[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/multi-blue.svg)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
+[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/open-graph.png)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
 
 ## Premise
 
