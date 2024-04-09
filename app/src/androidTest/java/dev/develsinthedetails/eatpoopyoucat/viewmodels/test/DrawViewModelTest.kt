@@ -13,7 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
-import dev.develsinthedetails.eatpoopyoucat.utilities.testEntries
+import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
@@ -52,9 +52,9 @@ class DrawViewModelTest {
         SharedPref.init(context)
         SharedPref.write(SharedPref.PLAYER_ID, testPlayerOne.id.toString())
         val mockEntryDao = mock<EntryDao>()
-        `when`(mockEntryDao.get(UUID.fromString(testEntries[0].id.toString())))
+        `when`(mockEntryDao.get(UUID.fromString(testEntriesGame1[0].id.toString())))
             .thenReturn(flow {
-            emit(testEntries[0])
+            emit(testEntriesGame1[0])
         })
         val mockGameDao = mock<GameDao>()
         val mockPlayerDao = mock<PlayerDao>()
@@ -65,7 +65,7 @@ class DrawViewModelTest {
         )
 
         val savedStateHandle: SavedStateHandle = SavedStateHandle().apply {
-            set(ID, testEntries[0].id.toString())
+            set(ID, testEntriesGame1[0].id.toString())
         }
         viewModel = DrawViewModel(savedStateHandle, appRepository)
     }
@@ -74,7 +74,7 @@ class DrawViewModelTest {
     @Test
     fun drawViewModel_has_entry_id() {
         runBlocking {
-            assert(testEntries[0].id == getValue(viewModel.previousEntry).id)
+            assert(testEntriesGame1[0].id == getValue(viewModel.previousEntry).id)
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)

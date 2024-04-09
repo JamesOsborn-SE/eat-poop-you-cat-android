@@ -6,7 +6,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
 import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
-import dev.develsinthedetails.eatpoopyoucat.utilities.testEntries
+import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGame
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
@@ -45,7 +45,7 @@ class GameDaoTests {
         playerDao.insert(testPlayerTwo)
         gameDao.insertAll(listOf(gameA, gameB, gameC))
         // Entries is last because of foreign key constraints
-        entryDao.insertAll(testEntries)
+        entryDao.insertAll(testEntriesGame1)
     }
 
     @After
@@ -86,7 +86,7 @@ class GameDaoTests {
         val gameList = gameDao.getWithEntries(gameA.id).first()
         assertThat(gameList.game, equalTo(gameA))
         assertThat(gameList.entries.count(), equalTo(3))
-        assertThat(gameList.entries, equalTo(testEntries))
+        assertThat(gameList.entries, equalTo(testEntriesGame1))
     }
 
 

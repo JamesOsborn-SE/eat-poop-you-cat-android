@@ -3,7 +3,6 @@ package dev.develsinthedetails.eatpoopyoucat.utilities
 import androidx.lifecycle.LiveData
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Game
-import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.Player
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
@@ -25,7 +24,7 @@ val testPlayerTwo = Player(UUID.fromString("00000000-0000-0000-0000-100000000002
 
 val testDrawing = Gzip.compress(catTestDrawingLinesInJson)
 val testGame = testGames[0]
-val testEntries = arrayListOf(
+val testEntriesGame1 = arrayListOf(
     Entry(
         id = UUID.fromString("e0000000-0000-0000-0000-000000000001"),
         playerId = testPlayerOne.id,
@@ -54,8 +53,35 @@ val testEntries = arrayListOf(
         timePassed = 600
     )
 )
-
-val gameWithEntries = GameWithEntries(testGame, testEntries)
+val testEntriesGame2 = arrayListOf(
+    Entry(
+        id = UUID.fromString("e0000000-0000-0000-0000-000000000001"),
+        playerId = testPlayerOne.id,
+        sequence = 0,
+        sentence = "My cat likes to eat wet food on their birthday_2",
+        drawing =  null,
+        gameId = testGames[1].id,
+        timePassed = 600
+    ),
+    Entry(
+        id = UUID.fromString("e0000000-0000-0000-0000-000000000002"),
+        playerId = testPlayerTwo.id,
+        sequence = 1,
+        sentence = null,
+        drawing = testDrawing,
+        gameId = testGames[1].id,
+        timePassed = 600
+    ),
+    Entry(
+        id = UUID.fromString("e0000000-0000-0000-0000-000000000003"),
+        playerId = testPlayerOne.id,
+        sequence = 2,
+        sentence = "some cats eat hockey pucks_2",
+        drawing =  null,
+        gameId = testGames[1].id,
+        timePassed = 600
+    )
+)
 
 @Throws(InterruptedException::class)
 fun <T> getValue(liveData: LiveData<T>): T {

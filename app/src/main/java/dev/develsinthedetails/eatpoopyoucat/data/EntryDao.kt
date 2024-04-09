@@ -17,6 +17,10 @@ interface EntryDao {
     fun get(id: UUID): Flow<Entry>
 
     @Transaction
+    @Query("SELECT * FROM entry")
+    suspend fun getAllAsync(): List<Entry>
+
+    @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
     suspend fun getAsync(id: UUID): Entry
 
@@ -30,15 +34,11 @@ interface EntryDao {
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
-    suspend fun getEntryAndPlayers(id: UUID): Entry
+    suspend fun getEntryAndPlayersAsync(id: UUID): Entry
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entry: Entry)
-
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertWait(entry: Entry)
 
     @Transaction
     @Query("DELETE FROM entry")

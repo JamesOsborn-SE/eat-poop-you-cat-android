@@ -20,6 +20,9 @@ interface PlayerDao {
     @Query("SELECT * FROM player WHERE id=:id")
     suspend fun getAsync(id: UUID): Player?
 
+    @Query("DELETE FROM player WHERE id=:id")
+    suspend fun delete(id: UUID)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(player: Player)
 

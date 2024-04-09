@@ -21,6 +21,10 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game")
+    suspend fun getAllWithEntriesAsync(): List<GameWithEntries>
+
+    @Transaction
+    @Query("SELECT * FROM game")
     suspend fun getAllAsync(): List<Game>
 
     @Transaction
@@ -36,8 +40,10 @@ interface GameDao {
     suspend fun delete(id: UUID)
 
     @Transaction
+    @Query("DELETE FROM Game")
+    suspend fun deleteAll()
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Game>)
-
-
 }
