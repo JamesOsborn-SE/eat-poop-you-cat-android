@@ -108,8 +108,8 @@ fun HomeScreen(
                         )
                     Image(
                         appIcon.asImageBitmap(),
-                        contentDescription = "Image", modifier = defaultModifier
-                            .size(100.dp) //Optional, but keeps the image reasonably small
+                        contentDescription = stringResource(R.string.application_icon), modifier = defaultModifier
+                            .size(100.dp)
                             .padding(8.dp)
                             .clip(CircleShape)
                     )

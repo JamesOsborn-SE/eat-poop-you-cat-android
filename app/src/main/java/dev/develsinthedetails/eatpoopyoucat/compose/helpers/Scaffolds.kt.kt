@@ -53,7 +53,7 @@ object Scaffolds {
                         IconButton(onClick = { showMenu = !showMenu }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
-                                contentDescription = "open"
+                                contentDescription = stringResource(R.string.open)
                             )
                         }
                         DropdownMenu(expanded = showMenu,
@@ -119,7 +119,7 @@ object Scaffolds {
                         IconButton(onClick = { showMenu = !showMenu }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,
-                                contentDescription = "open"
+                                contentDescription = stringResource(id = R.string.open)
                             )
                         }
                         DropdownMenu(expanded = showMenu,

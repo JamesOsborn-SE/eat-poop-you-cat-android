@@ -201,7 +201,7 @@ private fun shareGame(
         else
             Toast.makeText(
                 context,
-                "share done goofed, you're boned",
+                context.getString(R.string.share_failed),
                 Toast.LENGTH_SHORT
             ).show()
     }

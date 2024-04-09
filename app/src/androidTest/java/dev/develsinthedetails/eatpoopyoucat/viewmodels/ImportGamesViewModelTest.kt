@@ -1,6 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.viewmodels
 
-import android.util.Log
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
@@ -27,7 +26,6 @@ import java.util.UUID
 
 class ImportGamesViewModelTest {
     private val gameA = testGames[0]
-    private val gameB = testGames[1]
     private val gameC = testGames[2]
 
     private lateinit var database: AppDatabase
@@ -126,8 +124,6 @@ class ImportGamesViewModelTest {
 
         assert(numberOfGame == numberOfGameAfterDeleteAndImport)
         assert(numberOfEntries == numberOfEntriesAfterDeleteAndImport)
-        Log.i("oof", exportedGamesPlusOne.toString())
-        assert(true)
     }
 
     @Test
@@ -155,8 +151,6 @@ class ImportGamesViewModelTest {
 
         assert(numberOfGame == numberOfGameAfterDeleteAndImport)
         assert(numberOfEntries == numberOfEntriesAfterDeleteAndImport)
-
-
 
     }
 }

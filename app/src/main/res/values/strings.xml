@@ -77,6 +77,12 @@
     <string name="backup_games">Backup Games</string>
     <string name="import_games">Import games</string>
     <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">A cat winks at you with the grace of a very sleepy toddler</string>
+    <string name="no_games_to_save">You has no games to save bruh</string>
+    <string name="saving">saving…</string>
+    <string name="saved_to">saved to: %1$s</string>
+    <string name="share_failed">share done goofed, oof</string>
+    <string name="open">open</string>
+    <string name="application_icon">Application Icon</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

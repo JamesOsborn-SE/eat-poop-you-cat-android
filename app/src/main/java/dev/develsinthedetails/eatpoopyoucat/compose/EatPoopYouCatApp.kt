@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
@@ -151,20 +152,20 @@ private fun onBackupGames(
         if (it?.isNotEmpty() == true) {
             Toast.makeText(
                 context,
-                "saving...",
+                context.getString(R.string.saving),
                 Toast.LENGTH_LONG
             ).show()
             val filePath = saveGames(context, it)
             Toast.makeText(
                 context,
-                "saved to: $filePath",
+                context.getString(R.string.saved_to, filePath),
                 Toast.LENGTH_LONG,
 
                 ).show()
         } else {
             Toast.makeText(
                 context,
-                "you has no games to save bruh",
+                context.getString(R.string.no_games_to_save),
                 Toast.LENGTH_LONG
             ).show()
         }
