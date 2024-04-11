@@ -22,7 +22,7 @@ jobs:
       - name: Decode Keystore
         env:
           ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-          SIGNING_KEY_STORE_PATH: ./app/${{ env.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ./app/${{ vars.SIGNING_KEY_STORE_PATH }}
         run: |
           echo $ENCODED_STRING | base64 -d - > $SIGNING_KEY_STORE_PATH
 
@@ -30,7 +30,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         env:
-          SIGNING_KEY_STORE_PATH: ${{ env.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ${{ vars.SIGNING_KEY_STORE_PATH }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -38,7 +38,7 @@ jobs:
 
       - name: Build Release apk
         env:
-          SIGNING_KEY_STORE_PATH: ${{ env.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ${{ vars.SIGNING_KEY_STORE_PATH }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
@@ -46,7 +46,7 @@ jobs:
 
       - name: Build Release bundle
         env:
-          SIGNING_KEY_STORE_PATH: ${{ env.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ${{ vars.SIGNING_KEY_STORE_PATH }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
