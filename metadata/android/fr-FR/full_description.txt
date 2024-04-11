@@ -10,6 +10,7 @@ Un grand merci à tous les traducteurs·ices pour leur temps et leur énergie:
 * Dan
 * Jérôme Herbinet
 * ssantos
+* UngoIiant
 
 Merci à tous les contributeurs·ices de l'open-source sur lesquels ce projet se repose.
 

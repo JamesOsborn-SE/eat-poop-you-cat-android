@@ -10,6 +10,7 @@ Ein großes Dankeschön an die Übersetzer für ihre Zeit und Energie.
 * Dan
 * Jérôme Herbinet
 * ssantos
+* UngoIiant
 
 Danke an alle Open-Source-Beitragenden und Projekte, auf die diese App angewiesen ist.
 

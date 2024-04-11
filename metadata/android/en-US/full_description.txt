@@ -10,6 +10,7 @@ Huge thanks to the translation folks for their time and energy
 * Dan
 * Jérôme Herbinet
 * ssantos
+* UngoIiant
 
 Thanks to all the open source contributors and projects that this project relies on.
 
