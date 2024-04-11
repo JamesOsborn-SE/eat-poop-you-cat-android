@@ -25,11 +25,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file("release-key.jks")
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        register("release") {
+            if (System.getenv("SIGNING_KEY_STORE_PATH") != null) {
+                storeFile = file(System.getenv("SIGNING_KEY_STORE_PATH"))
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
         }
     }
 
@@ -39,7 +41,8 @@ android {
             versionNameSuffix = "-debug"
         }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -70,7 +73,10 @@ android {
 
         outputs.forEach { output ->
             output as com.android.build.gradle.internal.api.ApkVariantOutputImpl
-            output.outputFileName = "${applicationId}_${output.versionCode}.apk"
+            if(this.name == "release")
+                output.outputFileName = "app-release.apk"
+            else
+                output.outputFileName = "${applicationId}_${output.versionCode}.apk"
         }
     }
     lint {
