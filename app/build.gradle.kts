@@ -91,7 +91,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.3.1")
+    implementation("androidx.databinding:databinding-adapters:8.3.2")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
-    val composeVersion = "1.6.4"
+    val composeVersion = "1.6.5"
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
