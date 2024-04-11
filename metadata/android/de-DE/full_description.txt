@@ -1,0 +1,18 @@
+Schicke einen Satz an die nächste Person, und sie zeichnet ein Bild davon. Die nächste Person sieht nur den letzten Eintrag (in diesem Fall das Bild) und schreibt einen Satz dazu. Das geht weiter, bis jeder an der Reihe war oder die Langeweile Einzug hält.
+
+Credits:
+Ein Dankeschön an meine Freunde und Familie, die Feedback gegeben haben und bisher mit mir ausgehalten haben.
+
+Ein großes Dankeschön an die Übersetzer für ihre Zeit und Energie.
+
+* Сергій
+* cwpute
+* Dan
+* Jérôme Herbinet
+* ssantos
+
+Danke an alle Open-Source-Beitragenden und Projekte, auf die diese App angewiesen ist.
+
+Diese App ist auf F-Droid und Google Play verfügbar.
+
+<a href="https://hosted.weblate.org/engage/eat-poop-you-cat-android/">Übersetzungsbeiträge sind willkommen!</a>
