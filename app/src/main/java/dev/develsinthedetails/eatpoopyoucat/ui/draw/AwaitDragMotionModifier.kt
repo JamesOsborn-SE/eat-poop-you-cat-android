@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose.draw
+package dev.develsinthedetails.eatpoopyoucat.ui.draw
 
 
 import androidx.compose.foundation.gestures.awaitEachGesture

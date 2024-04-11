@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
-import dev.develsinthedetails.eatpoopyoucat.compose.EatPoopYouCatApp
+import dev.develsinthedetails.eatpoopyoucat.ui.EatPoopYouCatApp
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 
 @AndroidEntryPoint

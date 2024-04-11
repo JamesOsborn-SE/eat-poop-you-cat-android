@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose
+package dev.develsinthedetails.eatpoopyoucat.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState

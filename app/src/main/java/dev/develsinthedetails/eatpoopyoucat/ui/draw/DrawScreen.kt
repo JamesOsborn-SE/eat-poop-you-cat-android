@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose.draw
+package dev.develsinthedetails.eatpoopyoucat.ui.draw
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -58,11 +58,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ConfirmDialog
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SubmitButton
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ConfirmDialog
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment

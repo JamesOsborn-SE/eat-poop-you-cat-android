@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose.helpers
+package dev.develsinthedetails.eatpoopyoucat.ui.helpers
 
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes

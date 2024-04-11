@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviewData
+import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviewData
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.Line

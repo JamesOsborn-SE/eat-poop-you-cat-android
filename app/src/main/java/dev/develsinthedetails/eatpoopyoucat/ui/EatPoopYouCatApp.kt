@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose
+package dev.develsinthedetails.eatpoopyoucat.ui
 
 import android.content.Context
 import android.content.Intent
@@ -19,11 +19,11 @@ import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.ImportGamesActivity
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
-import dev.develsinthedetails.eatpoopyoucat.compose.draw.DrawScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.home.HomeScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGameScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.previousgames.PreviousGamesScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.sentence.SentenceScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.home.HomeScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviousGameScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviousGamesScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries

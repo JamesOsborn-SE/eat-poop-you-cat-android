@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose
+package dev.develsinthedetails.eatpoopyoucat.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.MainActivity
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.SpinnerScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen

@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.compose.home
+package dev.develsinthedetails.eatpoopyoucat.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Scaffolds
-import dev.develsinthedetails.eatpoopyoucat.compose.helpers.Spinner
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
