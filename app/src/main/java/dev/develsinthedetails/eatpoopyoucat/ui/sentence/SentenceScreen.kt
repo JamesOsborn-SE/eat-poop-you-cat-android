@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.sentence
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
@@ -241,50 +242,10 @@ private fun SentenceInput(
 
 
 /**
- * Preview Screenshot #2
- */
-@Preview
-@Composable
-fun PreviewSentenceScreen() {
-    AppTheme {
-        SentenceScreen(
-            isError = true,
-            minimumWords = 4,
-            sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler),
-            sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
-            drawing = null,
-            onEndGame = {},
-            onSentenceChange = {},
-            onDeleteGame = {},
-            onSubmit = {},
-            onNavigateToHome = { },
-        )
-    }
-}
-
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
-@Composable
-fun PreviewSentenceScreenLandscape() {
-    PreviewSentenceScreen()
-}
-
-@Preview(device = "spec:parent=4.65in 720p (Galaxy Nexus)")
-@Composable
-fun PreviewSentenceScreenSmall() {
-    PreviewSentenceScreen()
-}
-
-@Preview(device = "spec:parent=4.65in 720p (Galaxy Nexus),orientation=landscape")
-@Composable
-fun PreviewSentenceScreenSmallLandscape() {
-    PreviewSentenceScreen()
-}
-
-/**
  * Preview Screenshot #4
  */
 @Preview
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewSentenceScreenWithDrawing() {
     AppTheme {
@@ -300,6 +261,29 @@ fun PreviewSentenceScreenWithDrawing() {
             onDeleteGame = {},
             onSubmit = {},
             onNavigateToHome = {}
+        )
+    }
+}
+
+/**
+ * Preview Screenshot #2
+ */
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewSentenceScreen() {
+    AppTheme {
+        SentenceScreen(
+            isError = true,
+            minimumWords = 4,
+            sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler),
+            sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
+            drawing = null,
+            onEndGame = {},
+            onSentenceChange = {},
+            onDeleteGame = {},
+            onSubmit = {},
+            onNavigateToHome = { },
         )
     }
 }
