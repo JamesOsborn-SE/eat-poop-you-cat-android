@@ -22,7 +22,7 @@ jobs:
       - name: Decode Keystore
         env:
           ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-          SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+          SIGNING_KEY_STORE_PATH: ./app/${{ secrets.SIGNING_KEY_STORE_PATH }}
         run: |
           echo $ENCODED_STRING | base64 -d - > $SIGNING_KEY_STORE_PATH
 
