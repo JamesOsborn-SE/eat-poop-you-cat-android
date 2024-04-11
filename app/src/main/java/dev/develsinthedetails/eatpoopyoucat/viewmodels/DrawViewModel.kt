@@ -35,10 +35,6 @@ import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
 
-enum class DrawMode {
-    Draw, Erase
-}
-
 @HiltViewModel
 class DrawViewModel @Inject constructor(
     state: SavedStateHandle,
