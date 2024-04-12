@@ -34,9 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -150,7 +148,6 @@ private fun DrawScreen(
     ) {
     val height = remember { mutableIntStateOf(0) }
     val width = remember { mutableIntStateOf(0) }
-    var showEndGameConfirm by remember { mutableStateOf(false) }
     Scaffolds.InGame(
         title = stringResource(R.string.draw_turn_title),
         onEnd = onEndedGame,
