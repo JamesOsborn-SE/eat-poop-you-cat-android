@@ -14,30 +14,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
 
 @Composable
-fun PrivacyPolicyScreen() {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
+fun PrivacyPolicyScreen(
+    onBack: () -> Unit
+) {
+    Scaffolds.Backable(title = stringResource(
+            id = R.string.privacy_policy
+        ), onBack = onBack) {
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(it)
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = MaterialTheme.colorScheme.background
         ) {
-            Text(
+            Column(
                 modifier = Modifier
-                    .padding(8.dp),
-                text = ReadMetadata(LocalContext.current).getPrivacyPolicy()
-            )
+                    .padding(8.dp)
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp),
+                    text = ReadMetadata(LocalContext.current).getPrivacyPolicy()
+                )
+            }
         }
     }
 }
@@ -52,6 +62,6 @@ fun PrivacyPolicyScreen() {
 @Composable
 fun PreviewPrivacyPolicyScreen() {
     AppTheme {
-        PrivacyPolicyScreen()
+        PrivacyPolicyScreen{}
     }
 }

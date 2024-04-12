@@ -61,6 +61,7 @@ import java.text.SimpleDateFormat
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     viewModel: PreviousGameViewModel = hiltViewModel(),
+    onBack: () -> Unit,
     onContinueGame: (Entry) -> Unit = {},
     onBackupGame: (games: List<GameWithEntries>?) -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
@@ -73,7 +74,8 @@ fun PreviousGameScreen(
             entries = game!!.entries,
             onContinueGame = { onContinueGame(game!!.entries.last()) },
             onBackupGame = { onBackupGame(listOf(game!!)) },
-            onImportGame = onImportGames
+            onImportGame = onImportGames,
+            onBack = onBack ,
         )
     } else
         SpinnerScreen()
@@ -83,6 +85,7 @@ fun PreviousGameScreen(
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     entries: List<Entry>,
+    onBack: () -> Unit,
     onContinueGame: () -> Unit,
     onBackupGame: () -> Unit,
     onImportGame: ManagedActivityResultLauncher<String, Uri?>?,
@@ -113,7 +116,8 @@ fun PreviousGameScreen(
         onBackupGame = onBackupGame,
         onImportGame = onImportGame,
         onShareGame = shareGame(),
-        onContinueGame = onContinueGame
+        onContinueGame = onContinueGame,
+        onBack = onBack,
     )
     { innerPadding ->
         Surface(

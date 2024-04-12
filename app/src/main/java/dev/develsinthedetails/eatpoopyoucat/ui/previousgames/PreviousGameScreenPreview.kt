@@ -23,6 +23,7 @@ fun PreviousGameScreenPreview() {
         PreviousGameScreen(
             modifier = Modifier,
             PreviewData.entries,
+            onBack = {},
             onContinueGame = {},
             onBackupGame = {},
             onImportGame = null,

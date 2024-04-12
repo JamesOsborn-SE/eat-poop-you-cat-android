@@ -51,7 +51,9 @@ fun EatPoopYouCatApp(
                     }
                 },
                 onNavigateToPreviousGames = {
-                    navController.navigate(Screen.Games.route)
+                    navController.navigate(Screen.Games.route) {
+                        popUpTo(Screen.Home.route)
+                    }
                 },
                 onNavigateToCredits = {
                     navController.navigate(Screen.Credits.route)
@@ -106,7 +108,7 @@ fun EatPoopYouCatApp(
             Screen.Games.route,
         ) {
             PreviousGamesScreen(
-                onGoHome = { navController.navigate(Screen.Home.route) },
+                onGoHome = { navController.navigate(Screen.Home.route) { popUpTo(Screen.Home.route) } },
                 onGameClick = { navController.navigate(Screen.Game.byId(it)) },
                 onBackupGames = onBackupGames(coroutineScope, context),
                 onImportGames = onImportGames(context = context)
@@ -122,13 +124,27 @@ fun EatPoopYouCatApp(
                 onContinueGame = navigateToNextTurn(navController),
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(context = context),
+                onBack = {
+                    navController.navigate(Screen.Games.route) {
+                        popUpTo(Screen.Games.route)
+                        popUpTo(Screen.Home.route)
+                    }
+                }
             )
         }
         composable(Screen.Credits.route) {
-            CreditsScreen(SharedPref.playerId().toString())
+            CreditsScreen(SharedPref.playerId().toString()) {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Home.route)
+                }
+            }
         }
         composable(Screen.PrivacyPolicy.route) {
-            PrivacyPolicyScreen()
+            PrivacyPolicyScreen {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(Screen.Home.route)
+                }
+            }
         }
     }
     if (goto != null)

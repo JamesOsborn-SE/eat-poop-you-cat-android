@@ -22,58 +22,69 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.ReadMetadata
 
 @Composable
-fun CreditsScreen(playerId: String = "") {
+fun CreditsScreen(playerId: String = "", onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(ScrollState(0)),
-        color = (MaterialTheme.colorScheme.background)
-    ) {
-        Column(
+    Scaffolds.Backable(title = stringResource(
+        id = R.string.about
+    ), onBack = onBack) {
+        Surface(
             modifier = Modifier
-                .padding(8.dp)
-                .background(MaterialTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(it)
+                .fillMaxSize()
+                .verticalScroll(ScrollState(0)),
+            color = (MaterialTheme.colorScheme.background)
         ) {
-            Row {
-                Text(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    text = ReadMetadata(LocalContext.current).getFullDescription()
-                )
-            }
-
-            Row {
-                TextButton(onClick = {
-                    uriHandler.openUri("https://hosted.weblate.org/engage/eat-poop-you-cat-android/")
-                }) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .background(MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row {
                     Text(
-                        text =
-                        stringResource(id = R.string.translations_welcome)
+                        modifier = Modifier
+                            .padding(8.dp),
+                        text = ReadMetadata(LocalContext.current).getFullDescription()
                     )
                 }
+
                 Row {
                     TextButton(onClick = {
-                        uriHandler.openUri("https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues")
+                        uriHandler.openUri("https://hosted.weblate.org/engage/eat-poop-you-cat-android/")
                     }) {
                         Text(
                             text =
-                            stringResource(id = R.string.issues)
+                            stringResource(id = R.string.translations_welcome)
                         )
                     }
+                    Row {
+                        TextButton(onClick = {
+                            uriHandler.openUri("https://github.com/JamesOsborn-SE/eat-poop-you-cat-android/issues")
+                        }) {
+                            Text(
+                                text =
+                                stringResource(id = R.string.issues)
+                            )
+                        }
+                    }
                 }
-            }
-            Text(text = stringResource(R.string.version_label, BuildConfig.VERSION_NAME))
-            Text(text = stringResource(R.string.git_hash_label, stringResource(R.string.git_hash)))
-            if (BuildConfig.DEBUG) {
-                Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
-                Text(text = "PlayerId: $playerId")
+                Text(text = stringResource(R.string.version_label, BuildConfig.VERSION_NAME))
+                Text(
+                    text = stringResource(
+                        R.string.git_hash_label,
+                        stringResource(R.string.git_hash)
+                    )
+                )
+                if (BuildConfig.DEBUG) {
+                    Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
+                    Text(text = "PlayerId: $playerId")
+                }
             }
         }
     }
@@ -88,6 +99,6 @@ fun CreditsScreen(playerId: String = "") {
 @Composable
 fun PreviewCreditsScreen() {
     AppTheme {
-        CreditsScreen()
+        CreditsScreen{}
     }
 }

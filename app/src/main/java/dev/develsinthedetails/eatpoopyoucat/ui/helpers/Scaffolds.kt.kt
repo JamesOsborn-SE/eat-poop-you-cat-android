@@ -6,6 +6,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -16,7 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,7 +58,7 @@ object Scaffolds {
         }
         Scaffold(
             topBar = {
-                TopAppBar(
+                CenterAlignedTopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.primary,
@@ -116,6 +116,7 @@ object Scaffolds {
     fun PreviousGames(
         title: String,
         onBackupGames: () -> Unit,
+        onBack: () -> Unit,
         onImportGames: ManagedActivityResultLauncher<String, Uri?>?,
         bottomBar: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
@@ -131,6 +132,14 @@ object Scaffolds {
                     ),
                     title = {
                         Text(title)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
                     },
                     actions = {
                         IconButton(onClick = { showMenu = !showMenu }) {
@@ -169,6 +178,7 @@ object Scaffolds {
         onContinueGame: () -> Unit,
         onShareGame: () -> Unit,
         onBackupGame: () -> Unit,
+        onBack: () -> Unit,
         onImportGame: ManagedActivityResultLauncher<String, Uri?>?,
         bottomBar: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
@@ -184,6 +194,14 @@ object Scaffolds {
                     ),
                     title = {
                         Text(title)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
                     },
                     actions = {
                         IconButton(onClick = { showMenu = !showMenu }) {
@@ -227,6 +245,54 @@ object Scaffolds {
             content = content
         )
     }
+    @Composable
+    fun Backable(
+        title: String,
+        onBack: () -> Unit,
+        content: @Composable (PaddingValues) -> Unit,
+    ) {
+        var showMenu by remember { mutableStateOf(false) }
+        var showEndGameConfirm by remember { mutableStateOf(false) }
+
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { showMenu = !showMenu }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(R.string.open)
+                            )
+                        }
+                        DropdownMenu(expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = { showEndGameConfirm = true },
+                                text = { Text(stringResource(id = R.string.end_game_for_all)) })
+                        }
+                    },
+                )
+            },
+            content = content
+        )
+    }
+
 }
 
 @Preview
