@@ -11,11 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.Coordinates
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Game
-import dev.develsinthedetails.eatpoopyoucat.data.Line
-import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Player
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -74,18 +71,6 @@ class GreetingViewModel @Inject constructor(
                     turns = null
                 )
             )
-            // TODO fo testing delete later
-            val lineSegments: MutableList<LineSegment> = mutableListOf()
-            lineSegments.add(
-                LineSegment(
-                    start = Coordinates(
-                        xValue = 292.9756f,
-                        yValue = 189.96094f
-                    ), end = Coordinates(xValue = 292.9756f, yValue = 189.96094f)
-                )
-            )
-            val drawingLines: MutableList<Line> = mutableListOf()
-            drawingLines.add(Line(lineSegments))
             repository.createEntry(
                 Entry(
                     id = entryId,
@@ -94,7 +79,7 @@ class GreetingViewModel @Inject constructor(
                     gameId = gameId,
                     timePassed = 0,
                     sentence = null,
-                    drawing = null //(Drawing(drawingLines).toByteArray()),
+                    drawing = null
                 )
             )
             onNavigateToSentence.invoke()
