@@ -43,7 +43,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.NicknameViewModel
 
 @Composable
-fun Nickname(
+fun NicknameScreen(
     viewModel: NicknameViewModel = hiltViewModel(),
     nav: NavHostController,
 ) {
@@ -58,17 +58,17 @@ fun Nickname(
                 popUpTo(Screen.Home.route)
             }
         }
-    ) {
+    ) { paddingValues ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
                 .verticalScroll(ScrollState(0)),
         ) {
             if (viewModel.isLoading) {
                 Spinner()
             } else {
-                Nickname(
+                NicknameScreen(
                     nickname = viewModel.nickname,
                     previousNicknames = viewModel.previousNicknames,
                     onChange = { viewModel.updateNickname(it) },
@@ -87,7 +87,7 @@ fun Nickname(
 }
 
 @Composable
-fun Nickname(
+fun NicknameScreen(
     nickname: String,
     previousNicknames: List<String>,
     onChange: (String) -> Unit,
@@ -174,7 +174,7 @@ fun NicnamePreview() {
     )
     AppTheme {
         Surface {
-            Nickname(
+            NicknameScreen(
                 "oofster",
                 listOfNicknames,
                 {},
@@ -203,7 +203,7 @@ fun NicnamePreviewEmpty() {
     )
     AppTheme {
         Surface {
-            Nickname(
+            NicknameScreen(
                 "",
                 listOfNicknames,
                 {},
@@ -223,7 +223,7 @@ fun NicnamePreviewEmptyNobody() {
     val listOfNicknames = listOf<String>()
     AppTheme {
         Surface {
-            Nickname(
+            NicknameScreen(
                 "",
                 listOfNicknames,
                 {},

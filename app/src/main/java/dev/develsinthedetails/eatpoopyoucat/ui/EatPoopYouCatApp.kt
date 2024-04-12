@@ -65,7 +65,7 @@ fun EatPoopYouCatApp(
                 navArgument(ID) { type = NavType.StringType }
             )
         ) {
-            Nickname(nav = navController)
+            NicknameScreen(nav = navController)
         }
         composable(
             Screen.Sentence.route,
