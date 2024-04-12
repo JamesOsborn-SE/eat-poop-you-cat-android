@@ -25,6 +25,7 @@ class GreetingViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
+    var useNicknames: Boolean by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
 
     var userName by mutableStateOf("")
@@ -38,6 +39,7 @@ class GreetingViewModel @Inject constructor(
             val player = repository.getPlayer(playerId)
             userName = player.first()?.name ?: application.getString(R.string.default_nickname)
             updatePlayer(userName)
+            useNicknames = SharedPref.useNicknames()
         }
     }
 
@@ -80,6 +82,11 @@ class GreetingViewModel @Inject constructor(
             onNavigateToSentence.invoke()
             isLoading = false
         }
+    }
+
+    fun updateUseNicknames() {
+        useNicknames = !useNicknames
+        SharedPref.write(SharedPref.USE_NICKNAMES, useNicknames.toString())
     }
 
 }

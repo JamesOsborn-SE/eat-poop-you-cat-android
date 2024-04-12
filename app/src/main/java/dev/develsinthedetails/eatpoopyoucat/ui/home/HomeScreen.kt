@@ -3,7 +3,9 @@ package dev.develsinthedetails.eatpoopyoucat.ui.home
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Start
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -24,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +54,8 @@ fun HomeScreen(
 ) {
     HomeScreen(
         isLoading = viewModel.isLoading,
+        useNickNames = viewModel.useNicknames,
+        toggleUseNicknames = { viewModel.updateUseNicknames() },
         onStartGame = {
             val entryId = UUID.randomUUID()
             viewModel.saveNewGame(
@@ -66,6 +72,8 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
+    useNickNames: Boolean,
+    toggleUseNicknames: () -> Unit,
     onStartGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
@@ -113,6 +121,14 @@ fun HomeScreen(
                             .padding(8.dp)
                             .clip(CircleShape)
                     )
+                    Row(modifier = defaultModifier.pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { toggleUseNicknames() }
+                        )
+                    }){
+                        Checkbox(checked = useNickNames, onCheckedChange = { } )
+                        Text(modifier = Modifier.align(Alignment.CenterVertically),text = "Use Nicknames?")
+                    }
                     StartGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
                     Text(
@@ -193,6 +209,8 @@ fun PreviewHomeScreen() {
     AppTheme {
         HomeScreen(
             isLoading = false,
+            useNickNames = true,
+            toggleUseNicknames = {},
             onStartGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
