@@ -5,10 +5,10 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
-import dev.develsinthedetails.eatpoopyoucat.compose.draw.PreviewDawingWithSentance
-import dev.develsinthedetails.eatpoopyoucat.compose.home.PreviewHomeScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreen
-import dev.develsinthedetails.eatpoopyoucat.compose.sentence.PreviewSentenceScreenWithDrawing
+import dev.develsinthedetails.eatpoopyoucat.ui.draw.PreviewDawingWithSentance
+import dev.develsinthedetails.eatpoopyoucat.ui.home.PreviewHomeScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.sentence.PreviewSentenceScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.sentence.PreviewSentenceScreenWithDrawing
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import org.junit.Rule
