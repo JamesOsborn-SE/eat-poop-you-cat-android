@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat.ui.sentence
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -26,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawBox
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
@@ -75,7 +72,10 @@ fun SentenceScreen(
         }
     }
 
-    val onEndGame = { onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString()) }
+    val onEndGame = {
+        viewModel.hideNicknamePicker()
+        onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString())
+    }
 
     SentenceScreen(
         isLoading = viewModel.isLoading,
@@ -110,7 +110,6 @@ fun SentenceScreen(
     onNavigateToHome: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-    var showEndGameConfirm by remember { mutableStateOf(false) }
     val onEnd = {
         if (isFirstTurn) {
             onDeleteGame()
@@ -122,7 +121,7 @@ fun SentenceScreen(
 
     Scaffolds.InGame(
         title = stringResource(R.string.sentence_turn_title),
-        showEndGameConfirm = { showEndGameConfirm = true },
+        onEnd = onEnd
     )
     { innerPadding ->
         Surface(
@@ -132,18 +131,6 @@ fun SentenceScreen(
                 .verticalScroll(ScrollState(0)),
             color = MaterialTheme.colorScheme.background
         ) {
-            BackHandler(
-                enabled = true
-            ) {
-                showEndGameConfirm = true
-            }
-            if (showEndGameConfirm) {
-                ConfirmDialog(
-                    onDismiss = { showEndGameConfirm = false },
-                    onConfirm = onEnd,
-                    action = stringResource(R.string.end_game_for_all)
-                )
-            }
             // set up all transformation states
             var scale by remember { mutableFloatStateOf(1f) }
             val state = rememberTransformableState { zoomChange, _, _ ->

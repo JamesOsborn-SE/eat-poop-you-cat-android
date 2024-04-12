@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.helpers
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,12 +34,28 @@ object Scaffolds {
     @Composable
     fun InGame(
         title: String,
-        showEndGameConfirm: () -> Unit = {},
         bottomBar: @Composable () -> Unit = {},
+        onEnd: () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
         var showMenu by remember { mutableStateOf(false) }
+        var showEndGameConfirm by remember { mutableStateOf(false) }
 
+        BackHandler(
+            enabled = true
+        ) {
+            showEndGameConfirm = true
+        }
+        val extraContent = @Composable { padding:PaddingValues ->
+            content(padding)
+            if (showEndGameConfirm) {
+                ConfirmDialog(
+                    onDismiss = { showEndGameConfirm = false },
+                    onConfirm = onEnd,
+                    action = stringResource(R.string.end_game_for_all)
+                )
+            }
+        }
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -60,14 +77,14 @@ object Scaffolds {
                             onDismissRequest = { showMenu = false }
                         ) {
                             DropdownMenuItem(
-                                onClick = showEndGameConfirm,
+                                onClick = { showEndGameConfirm = true },
                                 text = { Text(stringResource(id = R.string.end_game_for_all)) })
                         }
                     },
                 )
             },
             bottomBar = bottomBar,
-            content = content
+            content = extraContent
         )
     }
 

@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat.ui.draw
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -58,15 +57,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ConfirmDialog
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingPen
@@ -155,7 +153,7 @@ private fun DrawScreen(
     var showEndGameConfirm by remember { mutableStateOf(false) }
     Scaffolds.InGame(
         title = stringResource(R.string.draw_turn_title),
-        showEndGameConfirm = { showEndGameConfirm = true },
+        onEnd = onEndedGame,
         bottomBar = {
             BottomAppBar(actions =
             {
@@ -173,19 +171,6 @@ private fun DrawScreen(
         }
     )
     { innerPadding ->
-        BackHandler(
-            enabled = true
-        ) {
-            showEndGameConfirm = true
-        }
-        if (showEndGameConfirm) {
-            ConfirmDialog(
-                onDismiss = { showEndGameConfirm = false },
-                onConfirm = onEndedGame,
-                action = stringResource(R.string.end_game_for_all)
-            )
-        }
-
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -487,7 +472,8 @@ fun PreviewDawingWithSentance() {
 
     val setCanvasResolution: (IntSize) -> Unit = {}
 
-    val sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler)
+    val sentence =
+        stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler)
     AppTheme {
         DrawScreen(
             linesState = lines,
