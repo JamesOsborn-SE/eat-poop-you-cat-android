@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,10 +12,14 @@ class AppRepository @Inject constructor(
     private val playerDao: PlayerDao,
     private val entryDao: EntryDao
 ) {
-    suspend fun createPlayer(player: Player) = playerDao.insert(player)
+    suspend fun createPlayer(player: Player) {
+        playerDao.insert(player.copy(createdAt = Date(System.currentTimeMillis())))
+    }
     suspend fun updatePlayer(player: Player) = playerDao.update(player)
     fun getPlayer(id: UUID): Flow<Player?> = playerDao.get(id)
-    suspend fun createGame(game: Game) = gameDao.insert(game)
+    suspend fun createGame(game: Game) {
+        gameDao.insert(game.copy(createdAt = Date(System.currentTimeMillis())))
+    }
     suspend fun deleteGame(id: String) = gameDao.delete(UUID.fromString(id))
     suspend fun deleteGame(id: UUID) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
@@ -23,7 +28,10 @@ class AppRepository @Inject constructor(
 
     suspend fun getGameWithEntriesAsync(id: UUID) = gameDao.getWithEntriesAsync(id)
 
-    suspend fun createEntry(entry: Entry) = entryDao.insert(entry)
+    suspend fun createEntry(entry: Entry) {
+        entryDao.insert(entry.copy(createdAt = Date(System.currentTimeMillis())))
+    }
+
     fun getEntry(id: String) = entryDao.get(UUID.fromString(id))
     suspend fun getEntryAsync(id: String) = entryDao.getAsync(UUID.fromString(id))
     suspend fun updateEntry(entry: Entry) = entryDao.update(entry)

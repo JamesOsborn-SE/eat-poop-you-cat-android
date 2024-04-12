@@ -10,13 +10,14 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.DATABASE_NAME
 
 @Database(
     entities = [Game::class, Player::class, Entry::class],
-    version = 2,
+    version = 3,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2)
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3)
     ]
 )
-@TypeConverters
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun gameDao(): GameDao
