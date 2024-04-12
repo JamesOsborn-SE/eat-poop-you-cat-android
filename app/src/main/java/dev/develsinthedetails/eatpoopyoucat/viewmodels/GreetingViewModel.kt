@@ -41,11 +41,6 @@ class GreetingViewModel @Inject constructor(
         }
     }
 
-    fun updateNickName(nickname: String) {
-        userName = nickname
-        updatePlayer(nickname)
-    }
-
     private fun updatePlayer(nickname: String) {
         val newPlayer = Player(playerId, nickname)
         viewModelScope.launch {
