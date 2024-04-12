@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,11 +43,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
-import dev.develsinthedetails.eatpoopyoucat.data.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
@@ -54,6 +55,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 @Composable
 fun PreviousGameScreen(
@@ -73,8 +75,7 @@ fun PreviousGameScreen(
             onBackupGame = { onBackupGame(listOf(game!!)) },
             onImportGame = onImportGames
         )
-    }
-    else
+    } else
         SpinnerScreen()
 }
 
@@ -211,6 +212,9 @@ private fun shareGame(
 fun EntryListItem(entry: Entry) {
     val sentence = entry.sentence
     val drawing = entry.drawing
+    val playerName = entry.localPlayerName
+    val createdAt =
+        if (entry.createdAt != null) SimpleDateFormat().format(entry.createdAt) else null
 
     if (sentence != null) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
@@ -239,6 +243,14 @@ fun EntryListItem(entry: Entry) {
         DrawBox(
             drawingZippedJson = drawing
         )
+    }
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (playerName != null)
+                Text(text = "^^ $playerName", modifier = Modifier.padding(end = 16.dp))
+            if (createdAt != null)
+                Text(createdAt)
+        }
     }
 }
 
