@@ -32,6 +32,10 @@ interface GameDao {
     fun getWithEntries(id: UUID): Flow<GameWithEntries>
 
     @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    suspend fun getWithEntriesAsync(id: UUID): GameWithEntries
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(game: Game)
 

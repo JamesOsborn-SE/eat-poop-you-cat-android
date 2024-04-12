@@ -19,15 +19,15 @@ import androidx.navigation.navArgument
 import dev.develsinthedetails.eatpoopyoucat.ImportGamesActivity
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
+import dev.develsinthedetails.eatpoopyoucat.data.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.EntryType
+import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.type
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.home.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreen
-import dev.develsinthedetails.eatpoopyoucat.data.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.EntryType
-import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.type
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveGames
@@ -45,8 +45,8 @@ fun EatPoopYouCatApp(
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToSentence = {
-                    navController.navigate(Screen.Sentence.byId(it)) {
+                onNavigateToNickname = {
+                    navController.navigate(Screen.Nickname.byId(it)) {
                         popUpTo(Screen.Home.route)
                     }
                 },
@@ -60,7 +60,13 @@ fun EatPoopYouCatApp(
                     navController.navigate(Screen.PrivacyPolicy.route)
                 })
         }
-
+        composable(Screen.Nickname.route,
+            arguments = listOf(
+                navArgument(ID) { type = NavType.StringType }
+            )
+        ) {
+            Nickname(nav = navController)
+        }
         composable(
             Screen.Sentence.route,
             arguments = listOf(
@@ -69,7 +75,7 @@ fun EatPoopYouCatApp(
         ) {
             SentenceScreen(
                 onNavigateToDraw = {
-                    navController.navigate(Screen.Draw.byId(it)) {
+                    navController.navigate(Screen.Nickname.byId(it)) {
                         popUpTo(Screen.Home.route)
                     }
                 },
@@ -87,7 +93,7 @@ fun EatPoopYouCatApp(
             )
         ) {
             DrawScreen(onNavigateToSentence = {
-                navController.navigate(Screen.Sentence.byId(it)) {
+                navController.navigate(Screen.Nickname.byId(it)) {
                     popUpTo(Screen.Home.route)
                 }
             }, onNavigateToEndedGame = {
@@ -114,7 +120,7 @@ fun EatPoopYouCatApp(
         ) {
             PreviousGameScreen(
                 onContinueGame = navigateToNextTurn(navController),
-                onBackupGame = onBackupGames(coroutineScope =coroutineScope , context =context ),
+                onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(context = context),
             )
         }
@@ -173,9 +179,9 @@ private fun onBackupGames(
 }
 
 @Composable
-private fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
+fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
     {
-        if (it.type == EntryType.Drawing)
+        if (it.type == EntryType.Drawing || it.type == EntryType.First)
             navController.navigate(Screen.Sentence.byId(it.id.toString()))
         else if (it.type == EntryType.Sentence)
             navController.navigate(Screen.Draw.byId(it.id.toString()))

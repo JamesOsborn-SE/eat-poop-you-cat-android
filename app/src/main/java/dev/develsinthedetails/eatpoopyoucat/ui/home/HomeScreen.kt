@@ -43,7 +43,7 @@ import java.util.UUID
 @Composable
 fun HomeScreen(
     viewModel: GreetingViewModel = hiltViewModel(),
-    onNavigateToSentence: (String) -> Unit,
+    onNavigateToNickname: (String) -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -54,7 +54,7 @@ fun HomeScreen(
             val entryId = UUID.randomUUID()
             viewModel.saveNewGame(
                 entryId
-            ) { onNavigateToSentence(entryId.toString()) }
+            ) { onNavigateToNickname(entryId.toString()) }
         },
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,

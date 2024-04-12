@@ -107,6 +107,7 @@ class DrawViewModel @Inject constructor(
         viewModelScope.launch {
             val newEntry: Entry = previousEntry.value!!.copy(
                 id = UUID.fromString(entryId),
+                localPlayerName = SharedPref.read("nickname", null),
                 sentence = null,
                 drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
                 sequence = previousEntry.value!!.sequence.inc(),

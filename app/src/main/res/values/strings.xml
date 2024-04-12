@@ -83,6 +83,9 @@
     <string name="share_failed">share done goofed, oof</string>
     <string name="open">open</string>
     <string name="application_icon">Application Icon</string>
+    <string name="not_nickname">Not %1$s</string>
+    <string name="james">James</string>
+    <string name="that_s_me">That\'s me</string>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

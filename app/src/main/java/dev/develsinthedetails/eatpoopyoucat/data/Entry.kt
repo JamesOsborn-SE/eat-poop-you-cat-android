@@ -78,6 +78,7 @@ data class Entry(
 
 enum class EntryType {
     Unknown,
+    First,
     Sentence,
     Drawing
 }
@@ -85,6 +86,8 @@ enum class EntryType {
 
 val Entry.type: Any
     get() {
+        if (this.sequence == 0 && this.sentence == null)
+            return EntryType.First
         if (this.sentence != null)
             return EntryType.Sentence
         if (this.drawing != null)

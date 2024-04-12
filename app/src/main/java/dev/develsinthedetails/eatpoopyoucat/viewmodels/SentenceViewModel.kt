@@ -56,6 +56,7 @@ class SentenceViewModel @Inject constructor(
         val isNewGame = entry.sequence == 0
         if (isNewGame) {
             val newEntry = entry.copy(
+                localPlayerName = SharedPref.read("nickname", null),
                 sentence = sentence,
                 drawing = null
             )
@@ -67,6 +68,7 @@ class SentenceViewModel @Inject constructor(
         } else {
             val newEntry = entry.copy(
                 id = UUID.fromString(entryId),
+                localPlayerName = SharedPref.read("nickname", null),
                 sentence = sentence,
                 drawing = null,
                 sequence = entry.sequence.inc(),

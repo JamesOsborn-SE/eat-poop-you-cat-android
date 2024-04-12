@@ -23,7 +23,7 @@ object SharedPref {
         return UUID.fromString(result)
     }
 
-    private fun read(key: String, defValue: String?): String? {
+    fun read(key: String, defValue: String?): String? {
         return mSharedPref!!.getString(key, defValue)
     }
 

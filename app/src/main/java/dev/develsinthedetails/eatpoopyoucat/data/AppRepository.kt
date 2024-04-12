@@ -20,10 +20,17 @@ class AppRepository @Inject constructor(
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
     suspend fun getAllGames() = gameDao.getAllAsync()
     fun getGameWithEntries(id: String) = gameDao.getWithEntries(UUID.fromString(id))
+    fun getGameWithEntries(id: UUID) = gameDao.getWithEntries(id)
+    suspend fun getGameWithEntriesAsync(id: UUID) = gameDao.getWithEntriesAsync(id)
 
 
     suspend fun createEntry(entry: Entry) = entryDao.insert(entry)
     fun getEntry(id: String) = entryDao.get(UUID.fromString(id))
+    suspend fun getEntryAsync(id: String) = entryDao.getAsync(UUID.fromString(id))
     suspend fun updateEntry(entry: Entry) = entryDao.update(entry)
     suspend fun getEntriesAsync(gameId: String) = entryDao.getAllEntriesByGameAsync(UUID.fromString(gameId))
+    suspend fun getGameWithEntriesByEntry(entryId: String): GameWithEntries {
+        val gameId = entryDao.getAsync(UUID.fromString(entryId)).gameId
+        return gameDao.getWithEntriesAsync(gameId)
+    }
 }
