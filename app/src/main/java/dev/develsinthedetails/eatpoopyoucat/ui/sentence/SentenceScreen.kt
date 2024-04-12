@@ -73,7 +73,6 @@ fun SentenceScreen(
     }
 
     val onEndGame = {
-        viewModel.hideNicknamePicker()
         onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString())
     }
 
