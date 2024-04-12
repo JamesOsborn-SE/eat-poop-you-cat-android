@@ -42,8 +42,8 @@ class NicknameViewModel @Inject constructor(
                 .entries
                 .filter { !it.localPlayerName.isNullOrBlank() }
                 .map { it.localPlayerName!! }
+            isLoading = false
         }
-        isLoading = false
     }
 
     fun updateNickname(it: String) {

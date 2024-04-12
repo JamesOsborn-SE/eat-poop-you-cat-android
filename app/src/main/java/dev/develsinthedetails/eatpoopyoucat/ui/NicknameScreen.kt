@@ -50,11 +50,15 @@ fun NicknameScreen(
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val onContinueGame = navigateToNextTurn(navController = nav)
+    val previousEntry = viewModel.previousEntry
+
+    if (!SharedPref.useNicknames() && previousEntry != null)
+        onContinueGame(previousEntry)
 
     Scaffolds.InGame(
         title = "New player; Who dis?",
         onEnd = {
-            nav.navigate(Screen.Game.byId(viewModel.previousEntry!!.gameId.toString())){
+            nav.navigate(Screen.Game.byId(viewModel.previousEntry!!.gameId.toString())) {
                 popUpTo(Screen.Home.route)
             }
         }
@@ -100,12 +104,16 @@ fun NicknameScreen(
         modifier = Modifier
             .padding(10.dp)
     ) {
-        Column(modifier=Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(Icons.Rounded.PersonPin,null,
-            Modifier.size(100.dp),
-            tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
-        )
-    }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Rounded.PersonPin, null,
+                Modifier.size(100.dp),
+                tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+            )
+        }
         if (previousNicknames.isNotEmpty()) {
             Text("Previous nicknames:")
             Column(modifier = Modifier.padding(10.dp)) {
