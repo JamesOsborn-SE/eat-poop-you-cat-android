@@ -12,10 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -149,6 +153,14 @@ fun SentenceScreen(
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                if(drawing == null)
+                    Column(modifier=Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            Icons.Rounded.Edit, null,
+                            Modifier.size(100.dp),
+                            tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -261,6 +273,26 @@ fun PreviewSentenceScreen() {
     AppTheme {
         SentenceScreen(
             isError = true,
+            minimumWords = 4,
+            sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler),
+            sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
+            drawing = null,
+            onEndGame = {},
+            onSentenceChange = {},
+            onDeleteGame = {},
+            onSubmit = {},
+            onNavigateToHome = { },
+        )
+    }
+}
+
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewSentenceScreenNoError() {
+    AppTheme {
+        SentenceScreen(
+            isError = false,
             minimumWords = 4,
             sentence = stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler),
             sentencePromt = stringResource(id = R.string.write_a_funny_sentence),
