@@ -18,17 +18,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviewData
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
 import dev.develsinthedetails.eatpoopyoucat.data.type
+import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviewData
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.app_icon_background
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_background
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_pen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import kotlinx.serialization.json.Json
+import java.text.DateFormat.getDateInstance
+import java.text.DateFormat.getTimeInstance
+import java.util.Date
 import kotlin.math.max
 
 class ImageExport(
@@ -47,6 +50,11 @@ class ImageExport(
         val background = Paint()
         background.color = eraseColor.toArgb()
 
+        if (entries.first().createdAt != null) {
+            val dateText = getDateInstance().format(entries.first().createdAt!!)
+            bitmaps.add(sentenceBitmap(dateText, center = true))
+        }
+
         entries.forEach {
             if (it.type == EntryType.Sentence) {
                 bitmaps.add(sentenceBitmap(it.sentence!!))
@@ -54,6 +62,8 @@ class ImageExport(
             if (it.type == EntryType.Drawing) {
                 bitmaps.add(drawingBitmap(it.drawing!!))
             }
+            if (it.createdAt != null || it.localPlayerName != null)
+                bitmaps.add(metadataBitmap(it.createdAt, it.localPlayerName))
         }
         bitmaps.add(footerBitmap())
         val height = bitmaps.sumOf { it.height }
@@ -67,6 +77,31 @@ class ImageExport(
         }
 
         return bitmap
+    }
+
+    private fun metadataBitmap(createdAt: Date?, playerName: String?): Bitmap {
+        val textPaint = TextPaint()
+        textPaint.color = Color.Black.toArgb()
+        textPaint.textSize = 20f
+        textPaint.isAntiAlias = true
+        val dateText = if (createdAt != null) getTimeInstance().format(createdAt) else ""
+
+        val textLayout = Layout.Alignment.ALIGN_OPPOSITE
+        val sl = staticLayout(
+            "^^ $playerName $dateText",
+            textPaint,
+            textLayout
+        )
+
+        val textHeight = sl.height + padding * 2
+        val tmpBitmap = Bitmap.createBitmap(WIDTH, textHeight, Bitmap.Config.ARGB_8888)
+        val tmpCanvas = Canvas(tmpBitmap)
+
+        tmpCanvas.save()
+        tmpCanvas.translate(padding.toFloat() * 2, padding.toFloat())
+        sl.draw(tmpCanvas)
+        tmpCanvas.restore()
+        return tmpBitmap
     }
 
     private fun headerBitmap(): Bitmap {
@@ -86,14 +121,14 @@ class ImageExport(
             textWidth = WIDTH - padding * 4 - appIcon.width
         )
         val textHeight = sl.height + padding
-        val height = max(appIcon.height + padding*2, textHeight)
-        val textOffset = if(appName.count()>30) 0 else (height / 2f) - padding * 3
+        val height = max(appIcon.height + padding * 2, textHeight)
+        val textOffset = if (appName.count() > 30) 0 else (height / 2f) - padding * 3
         val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
         val tmpCanvas = Canvas(tmpBitmap)
         tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), headerPaint)
         tmpCanvas.drawBitmap(appIcon, padding.toFloat(), padding.toFloat(), null)
         tmpCanvas.save()
-        tmpCanvas.translate(padding.toFloat()*3 + appIcon.width, textOffset.toFloat() )
+        tmpCanvas.translate(padding.toFloat() * 3 + appIcon.width, textOffset.toFloat())
         sl.draw(tmpCanvas)
         tmpCanvas.restore()
         return tmpBitmap
@@ -129,13 +164,15 @@ class ImageExport(
 
     private fun sentenceBitmap(
         sentence: String,
+        center: Boolean = false,
     ): Bitmap {
         val textPaint = TextPaint()
         textPaint.color = Color.Black.toArgb()
         textPaint.textSize = 28f
         textPaint.isAntiAlias = true
 
-        val textLayout = Layout.Alignment.ALIGN_NORMAL
+        val textLayout =
+            if (center) Layout.Alignment.ALIGN_CENTER else Layout.Alignment.ALIGN_NORMAL
         val sl = staticLayout(
             sentence,
             textPaint,

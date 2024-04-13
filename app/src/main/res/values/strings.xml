@@ -38,7 +38,6 @@
     <string name="oof">Oof</string>
     <string name="save">Save</string>
     <string name="find_game">find a game</string>
-    <string name="previous_games">Previous Games</string>
     <string name="starting_sentence">Starting Sentence: %1$s</string>
     <string name="turn_completed_time">Turn complete time %1$d:%2$d</string>
     <string name="time_left_to_complete">Time left to complete %1$d:%2$d</string>
@@ -86,6 +85,10 @@
     <string name="not_nickname">Not %1$s</string>
     <string name="james">James</string>
     <string name="that_s_me">That\'s me</string>
+    <plurals name="previous_games">
+        <item quantity="one">Previous Game</item>
+        <item quantity="other">Previous Games</item>
+    </plurals>
     <plurals name="minimum_words">
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>

@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,7 +56,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import java.text.DateFormat
 
 @Composable
 fun PreviousGameScreen(
@@ -109,10 +110,11 @@ fun PreviousGameScreen(
             context
         )
     }
+    var title = pluralStringResource(id = R.plurals.previous_games, 1)
+    if(entries.first().createdAt!=null)
+        title += "\n${DateFormat.getDateInstance().format(entries.first().createdAt!!)}"
     Scaffolds.PreviousGame(
-        title = stringResource(
-            id = R.string.previous_games
-        ),
+        title = title,
         onBackupGame = onBackupGame,
         onImportGame = onImportGame,
         onShareGame = shareGame(),
@@ -170,6 +172,7 @@ fun PreviousGameScreen(
                         modifier = Modifier.padding(contentPadding),
                         contentPadding = PaddingValues(bottom = 80.dp)
                     ) {
+
                         items(
                             items = entries,
                             key = { entry ->
@@ -218,7 +221,7 @@ fun EntryListItem(entry: Entry) {
     val drawing = entry.drawing
     val playerName = entry.localPlayerName
     val createdAt =
-        if (entry.createdAt != null) SimpleDateFormat().format(entry.createdAt) else null
+        if (entry.createdAt != null) DateFormat.getTimeInstance().format(entry.createdAt) else null
 
     if (sentence != null) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {

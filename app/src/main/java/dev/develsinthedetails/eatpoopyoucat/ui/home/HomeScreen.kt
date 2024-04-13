@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -167,7 +168,7 @@ fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
         onClick = {
             navTo()
         }) {
-        Text(stringResource(id = R.string.previous_games))
+        Text(pluralStringResource(id = R.plurals.previous_games, 2))
         Spacer(modifier = Modifier.size(5.dp))
         Icon(
             Icons.Rounded.History,
