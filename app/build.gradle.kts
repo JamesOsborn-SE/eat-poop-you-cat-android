@@ -26,6 +26,8 @@ android {
 
     signingConfigs {
         register("release") {
+            enableV3Signing = true
+            enableV4Signing = true
             if (System.getenv("SIGNING_KEY_STORE_PATH") != null) {
                 storeFile = file(System.getenv("SIGNING_KEY_STORE_PATH"))
                 storePassword = System.getenv("SIGNING_STORE_PASSWORD")
