@@ -127,7 +127,7 @@ fun HomeScreen(
                             onTap = { toggleUseNicknames() }
                         )
                     }){
-                        Checkbox(checked = useNickNames, onCheckedChange = { } )
+                        Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() } )
                         Text(modifier = Modifier.align(Alignment.CenterVertically),text = "Use Nicknames?")
                     }
                     StartGame(defaultModifier, onStartGame)
