@@ -12,7 +12,6 @@
     <string name="oof">Ouf</string>
     <string name="save">Enregistrer</string>
     <string name="find_game">Chercher une partie</string>
-    <string name="previous_games">Parties précédentes</string>
     <string name="starting_sentence">Phrase initiale : %1$s</string>
     <string name="turn_completed_time">Durée totale du tour %1$d:%2$d</string>
     <string name="time_left_to_complete">Temps restant pour finir %1$d:%2$d</string>

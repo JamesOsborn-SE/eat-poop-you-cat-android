@@ -39,7 +39,6 @@
     <string name="oof">ウーフ</string>
     <string name="save">保存</string>
     <string name="find_game">ゲームを見つける</string>
-    <string name="previous_games">前のゲーム</string>
     <string name="starting_sentence">開始文：%1$s</string>
     <string name="turn_completed_time">ターン完了時間%1$d：%2$d</string>
     <string name="time_left_to_complete">%1$dを完了するまでの残り時間：%2$d</string>

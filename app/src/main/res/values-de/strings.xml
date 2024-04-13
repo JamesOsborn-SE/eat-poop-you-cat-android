@@ -86,6 +86,5 @@
     <string name="oof">Uff</string>
     <string name="save">Speichern</string>
     <string name="find_game">Ein Spiel finden</string>
-    <string name="previous_games">Vorherige Spiele</string>
     <string name="starting_sentence">Anfangssatz: %1$s</string>
 </resources>

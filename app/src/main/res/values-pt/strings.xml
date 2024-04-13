@@ -39,7 +39,6 @@
     <string name="oof">Oof</string>
     <string name="save">Salvar</string>
     <string name="find_game">encontre um jogo</string>
-    <string name="previous_games">Jogos anteriores</string>
     <string name="starting_sentence">Frase inicial: %1$s</string>
     <string name="turn_completed_time">Vire o tempo completo %1$d:%2$d</string>
     <string name="time_left_to_complete">Tempo restante para concluir %1$d:%2$d</string>
