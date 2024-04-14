@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.ui
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.PersonAddAlt
 import androidx.compose.material.icons.rounded.PersonPin
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,10 +109,11 @@ fun NicknameScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                Icons.Rounded.PersonPin, null,
+            Image(
+                imageVector = Icons.Rounded.PersonPin,
+                null,
                 Modifier.size(100.dp),
-                tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                colorFilter = ColorFilter.tint(if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
             )
         }
         if (previousNicknames.isNotEmpty()) {
@@ -122,7 +124,6 @@ fun NicknameScreen(
                 }
             }
         }
-
 
         ErrorText(isError, "Fine, I'll pick one for you")
         Column {

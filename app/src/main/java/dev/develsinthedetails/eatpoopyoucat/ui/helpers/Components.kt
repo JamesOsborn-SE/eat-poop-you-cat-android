@@ -3,6 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.ui.helpers
 import android.content.res.Configuration
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -132,10 +134,10 @@ fun ConfirmDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Icon(
-                        Icons.Rounded.Warning,
+                    Image(
+                        imageVector = Icons.Rounded.Warning,
                         contentDescription = stringResource(id = R.string.end_game_for_all),
-                        tint = MaterialTheme.colorScheme.inverseSurface,
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.inverseSurface),
                     )
                     Spacer(modifier = Modifier.size(5.dp))
                     Text(

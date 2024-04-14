@@ -117,7 +117,8 @@ fun HomeScreen(
                         )
                     Image(
                         appIcon.asImageBitmap(),
-                        contentDescription = stringResource(R.string.application_icon), modifier = defaultModifier
+                        contentDescription = stringResource(R.string.application_icon),
+                        modifier = defaultModifier
                             .size(100.dp)
                             .padding(8.dp)
                             .clip(CircleShape)
@@ -126,9 +127,12 @@ fun HomeScreen(
                         detectTapGestures(
                             onTap = { toggleUseNicknames() }
                         )
-                    }){
-                        Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() } )
-                        Text(modifier = Modifier.align(Alignment.CenterVertically),text = "Use Nicknames?")
+                    }) {
+                        Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() })
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = "Use Nicknames?"
+                        )
                     }
                     StartGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)

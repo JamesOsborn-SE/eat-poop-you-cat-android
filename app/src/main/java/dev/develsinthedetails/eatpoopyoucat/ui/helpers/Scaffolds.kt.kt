@@ -46,7 +46,7 @@ object Scaffolds {
         ) {
             showEndGameConfirm = true
         }
-        val extraContent = @Composable { padding:PaddingValues ->
+        val extraContent = @Composable { padding: PaddingValues ->
             content(padding)
             if (showEndGameConfirm) {
                 ConfirmDialog(
@@ -112,6 +112,7 @@ object Scaffolds {
             content = content
         )
     }
+
     @Composable
     fun PreviousGames(
         title: String,
@@ -193,7 +194,7 @@ object Scaffolds {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(text=title, textAlign = TextAlign.Center)
+                        Text(text = title, textAlign = TextAlign.Center)
                     },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
@@ -245,15 +246,13 @@ object Scaffolds {
             content = content
         )
     }
+
     @Composable
     fun Backable(
         title: String,
         onBack: () -> Unit,
         content: @Composable (PaddingValues) -> Unit,
     ) {
-        var showMenu by remember { mutableStateOf(false) }
-        var showEndGameConfirm by remember { mutableStateOf(false) }
-
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -270,21 +269,6 @@ object Scaffolds {
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                                 contentDescription = "Back"
                             )
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { showMenu = !showMenu }) {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = stringResource(R.string.open)
-                            )
-                        }
-                        DropdownMenu(expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = { showEndGameConfirm = true },
-                                text = { Text(stringResource(id = R.string.end_game_for_all)) })
                         }
                     },
                 )

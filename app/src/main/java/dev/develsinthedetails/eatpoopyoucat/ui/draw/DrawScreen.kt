@@ -383,9 +383,10 @@ private fun DrawingPropertiesMenu(
         modifier = Modifier.background(color = selectedBackground(drawMode, DrawMode.Erase))
     ) {
         Icon(
-            tint = selectedTint(drawMode, DrawMode.Erase),
+//            Icons.Rounded.InkEraser,
 //          Future: replace with "Icons.Rounded.InkEraser" when it's added to the stable Icons
             painter = painterResource(id = R.drawable.ic_eraser_black_24),
+            tint = selectedTint(drawMode, DrawMode.Erase),
             contentDescription = stringResource(id = R.string.erase),
         )
     }

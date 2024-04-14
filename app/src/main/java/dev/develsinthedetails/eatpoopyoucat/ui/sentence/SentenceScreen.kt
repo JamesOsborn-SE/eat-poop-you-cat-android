@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.ui.sentence
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -19,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -153,12 +154,16 @@ fun SentenceScreen(
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if(drawing == null)
-                    Column(modifier=Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            Icons.Rounded.Edit, null,
+                if (drawing == null)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            imageVector = Icons.Rounded.Edit,
+                            null,
                             Modifier.size(100.dp),
-                            tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                            colorFilter = ColorFilter.tint(if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
                         )
                     }
                 Row(
