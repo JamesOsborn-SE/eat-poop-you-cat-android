@@ -113,7 +113,7 @@ class ImageExport(
 
         val headerPaint = Paint()
         headerPaint.color = app_icon_background.toArgb()
-        val textLayout = Layout.Alignment.ALIGN_NORMAL
+        val textLayout = Layout.Alignment.ALIGN_CENTER
         val sl = staticLayout(
             appName,
             textPaint,
