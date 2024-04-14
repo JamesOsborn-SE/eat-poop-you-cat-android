@@ -64,7 +64,7 @@ object Scaffolds {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(title)
+                        Text(title, textAlign = TextAlign.Center)
                     },
                     actions = {
                         IconButton(onClick = { showMenu = !showMenu }) {
@@ -131,7 +131,7 @@ object Scaffolds {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(title)
+                        Text(title, textAlign = TextAlign.Center)
                     },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
@@ -193,7 +193,7 @@ object Scaffolds {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(title)
+                        Text(text=title, textAlign = TextAlign.Center)
                     },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
@@ -262,7 +262,7 @@ object Scaffolds {
                         titleContentColor = MaterialTheme.colorScheme.primary,
                     ),
                     title = {
-                        Text(title)
+                        Text(title, textAlign = TextAlign.Center)
                     },
                     navigationIcon = {
                         IconButton(onClick = onBack) {
