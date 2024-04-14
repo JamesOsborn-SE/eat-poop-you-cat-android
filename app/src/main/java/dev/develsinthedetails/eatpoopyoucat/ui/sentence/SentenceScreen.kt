@@ -2,7 +2,6 @@ package dev.develsinthedetails.eatpoopyoucat.ui.sentence
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -13,29 +12,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -137,6 +135,7 @@ fun SentenceScreen(
         ) {
             // set up all transformation states
             var scale by remember { mutableFloatStateOf(1f) }
+            var showTips by rememberSaveable { mutableStateOf(false) }
             val state = rememberTransformableState { zoomChange, _, _ ->
                 scale *= zoomChange
             }
@@ -154,17 +153,20 @@ fun SentenceScreen(
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (drawing == null)
+                if (isFirstTurn)
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        horizontalAlignment = Alignment.Start
                     ) {
-                        Image(
-                            imageVector = Icons.Rounded.Edit,
-                            null,
-                            Modifier.size(100.dp),
-                            colorFilter = ColorFilter.tint(if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
-                        )
+                        Text("Start off with a bang! Write a funny or ambiguous sentence.")
+                        TextButton(onClick = { showTips = !showTips }) {
+                            Text("halp!")
+                        }
+                        if (showTips) {
+                            Text("Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"")
+                        }
                     }
                 Row(
                     modifier = Modifier
@@ -307,6 +309,7 @@ fun PreviewSentenceScreenNoError() {
             onDeleteGame = {},
             onSubmit = {},
             onNavigateToHome = { },
+            isFirstTurn = true,
         )
     }
 }

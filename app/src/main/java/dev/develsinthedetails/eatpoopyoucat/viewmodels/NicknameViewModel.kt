@@ -52,13 +52,16 @@ class NicknameViewModel @Inject constructor(
     }
 
     fun isValidNickname(context: Context): Boolean {
+        val poolOfNickName = context.resources.getStringArray(R.array.nicknames)
+            .filterNot {
+                previousNicknames.contains(it)
+            }.toMutableList()
+        val madeUpNickName = if(poolOfNickName.isNotEmpty()) poolOfNickName.random() else context.getString(R.string.oof)
+
         isError = (nickname.isBlank() || previousNicknames.contains(nickname))
             .also {
                 if (it)
-                    nickname = if (previousNicknames.isNotEmpty())
-                        context.getString(R.string.not_nickname, previousNicknames.random())
-                    else
-                        context.getString(R.string.not_nickname, context.getString(R.string.james))
+                    nickname = madeUpNickName
             }
         return !isError
     }

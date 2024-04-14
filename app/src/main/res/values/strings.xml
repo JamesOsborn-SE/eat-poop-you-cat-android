@@ -93,4 +93,15 @@
         <item quantity="one">minimum %d word.</item>
         <item quantity="other">minimum %d words.</item>
     </plurals>
+    <string-array name="nicknames">
+        <item>Not James</item>
+        <item>Knucklebutt</item>
+        <item>Hot Sauce</item>
+        <item>Pebbles</item>
+        <item>Sassy</item>
+        <item>Shrinkwrap</item>
+        <item>That guy</item>
+        <item>The Dude</item>
+        <item>Pickles</item>
+    </string-array>
 </resources>

@@ -57,13 +57,14 @@ import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.util.UUID
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
     viewModel: PreviousGameViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    onContinueGame: (Entry) -> Unit = {},
+    onContinueGame: (UUID) -> Unit = {},
     onBackupGame: (games: List<GameWithEntries>?) -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {
@@ -73,7 +74,7 @@ fun PreviousGameScreen(
         PreviousGameScreen(
             modifier = modifier,
             entries = game!!.entries,
-            onContinueGame = { onContinueGame(game!!.entries.last()) },
+            onContinueGame = { onContinueGame(game!!.entries.last().id) },
             onBackupGame = { onBackupGame(listOf(game!!)) },
             onImportGame = onImportGames,
             onBack = onBack ,

@@ -33,6 +33,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveGames
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 fun EatPoopYouCatApp(
@@ -121,7 +122,7 @@ fun EatPoopYouCatApp(
             )
         ) {
             PreviousGameScreen(
-                onContinueGame = navigateToNextTurn(navController),
+                onContinueGame = navigateToNextNickName(navController),
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(context = context),
                 onBack = {
@@ -201,5 +202,12 @@ fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
             navController.navigate(Screen.Sentence.byId(it.id.toString()))
         else if (it.type == EntryType.Sentence)
             navController.navigate(Screen.Draw.byId(it.id.toString()))
+    }
+@Composable
+fun navigateToNextNickName(navController: NavHostController): (UUID) -> Unit =
+    {
+        navController.navigate(Screen.Nickname.byId(it.toString())) {
+            popUpTo(Screen.Home.route)
+        }
     }
 
