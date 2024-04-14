@@ -23,6 +23,7 @@ class AppRepository @Inject constructor(
     suspend fun deleteGame(id: String) = gameDao.delete(UUID.fromString(id))
     suspend fun deleteGame(id: UUID) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
+    suspend fun getAllGamesWithEntriesAsync() = gameDao.getAllWithEntriesAsync()
     suspend fun getAllGames() = gameDao.getAllAsync()
     fun getGameWithEntries(id: String) = gameDao.getWithEntries(UUID.fromString(id))
 

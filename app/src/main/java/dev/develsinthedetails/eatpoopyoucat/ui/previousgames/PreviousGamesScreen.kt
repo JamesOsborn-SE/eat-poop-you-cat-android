@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.entriesAreValid
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
@@ -69,9 +71,17 @@ fun PreviousGamesScreen(
     if (games == null) {
         SpinnerScreen()
     } else {
+        LaunchedEffect(key1 = games) {
+            // clean up games that were created and never played.
+            // These are created by the side effect of creating the game before the first sentence
+            val invalidGames = games!!.filter { !it.entriesAreValid() }
+            if(invalidGames.isNotEmpty())
+                viewModel.cleanup(invalidGames)
+        }
+
         PreviousGamesScreen(
             modifier,
-            games = games!!.filter { it.entries.isNotEmpty() },
+            games = games!!.filter { it.entriesAreValid() },
             onBackupGames = { onBackupGames(games) },
             onImportGames = onImportGames,
             onGotoGame = onGameClick,

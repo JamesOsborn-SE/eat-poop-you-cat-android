@@ -11,3 +11,7 @@ data class GameWithEntries(
     @Relation(parentColumn = "id", entityColumn = "gameId")
     var entries: List<Entry> = emptyList()
 )
+
+fun GameWithEntries.entriesAreValid(): Boolean {
+    return this.entries.all{ it.sentence.isNullOrBlank().xor(it.drawing == null) }
+}
