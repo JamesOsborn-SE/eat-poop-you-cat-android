@@ -87,13 +87,15 @@ android {
 }
 
 dependencies {
-    val compseBom = "2024.03.00"
+    val compseBom = "2024.04.00"
     implementation("androidx.test.ext:junit-ktx:1.1.5")
     implementation(platform("androidx.compose:compose-bom:$compseBom"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("androidx.databinding:databinding-adapters:8.3.2")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")

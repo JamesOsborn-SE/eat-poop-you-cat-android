@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.preview
 
+import android.os.Build
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -64,6 +65,8 @@ class GenerateScreenShots {
     }
 
     private fun saveScreenshot(filename: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            return
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         composeTestRule.mainClock.advanceTimeBy(1500)
         val bitmap =  composeTestRule.onRoot().captureToImage().asAndroidBitmap()

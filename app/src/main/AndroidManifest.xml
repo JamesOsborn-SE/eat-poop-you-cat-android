@@ -12,7 +12,7 @@
         android:description="@string/app_description"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EatPoopYouCat"
+
         tools:targetApi="33">
         <activity
             android:name=".MainActivity"
