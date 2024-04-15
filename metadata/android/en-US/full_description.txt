@@ -9,6 +9,7 @@ Huge thanks to the translation folks for their time and energy
 * cwpute
 * Dan
 * Jérôme Herbinet
+* Kefir2105
 * ssantos
 * UngoIiant
 
