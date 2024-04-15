@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.ui.sentence
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
@@ -32,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.graphicsLayer
@@ -161,10 +163,12 @@ fun SentenceScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text("Start off with a bang! Write a funny or ambiguous sentence.")
-                        TextButton(onClick = { showTips = !showTips }) {
+                        TextButton(
+                            modifier = Modifier.rotate(-13f),
+                            onClick = { showTips = !showTips }) {
                             Text("halp!")
                         }
-                        if (showTips) {
+                        AnimatedVisibility(showTips) {
                             Text("Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"")
                         }
                     }

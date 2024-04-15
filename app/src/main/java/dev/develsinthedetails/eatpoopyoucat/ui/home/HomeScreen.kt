@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.home
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -150,8 +151,8 @@ fun HomeScreen(
                             Text(stringResource(R.string.what_s_this))
                         }
                     }
-                    Row(modifier=defaultModifier) {
-                        if (showNicknameMoreInfo) {
+                    AnimatedVisibility(showNicknameMoreInfo) {
+                        Row(modifier = defaultModifier) {
                             Text(stringResource(R.string.use_nicknames_more_info))
                         }
                     }
