@@ -24,6 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,6 +90,7 @@ fun HomeScreen(
     onNavigateToPrivacyPolicy: () -> Unit,
 ) {
     val padding = 10.dp
+    var showNicknameMoreInfo by rememberSaveable { mutableStateOf(false) }
     Scaffolds.Home(
         title = stringResource(
             id = R.string.welcome_message,
@@ -136,8 +141,16 @@ fun HomeScreen(
                         Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() })
                         Text(
                             modifier = Modifier.align(Alignment.CenterVertically),
-                            text = "Use Nicknames?"
+                            text = stringResource(R.string.use_nicknames)
                         )
+                        TextButton(onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
+                            Text(stringResource(R.string.what_s_this))
+                        }
+                    }
+                    Row {
+                        if (showNicknameMoreInfo) {
+                            Text(stringResource(R.string.use_nicknames_more_info))
+                        }
                     }
                     StartGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)

@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import dev.develsinthedetails.eatpoopyoucat.ui.EatPoopYouCatApp
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.utilities.ROUTE_TO
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -16,7 +17,7 @@ class MainActivity : ComponentActivity() {
         SharedPref.init(applicationContext)
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        val goto = intent.extras?.getString("routeTo")
+        val goto = intent.extras?.getString(ROUTE_TO)
         setContent {
             AppTheme {
                 EatPoopYouCatApp(goto = goto)

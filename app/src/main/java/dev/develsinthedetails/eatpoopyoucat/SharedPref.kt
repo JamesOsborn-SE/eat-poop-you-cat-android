@@ -17,7 +17,7 @@ object SharedPref {
     }
 
     fun useNicknames(): Boolean {
-        val result = read(USE_NICKNAMES, "false")
+        val result = read(USE_NICKNAMES, false.toString())
         return result.toBoolean()
     }
 
