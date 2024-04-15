@@ -10,6 +10,7 @@ object SharedPref {
     private var mSharedPref: SharedPreferences? = null
     const val PLAYER_ID = "PLAYER_ID"
     const val USE_NICKNAMES = "USE_NICKNAMES"
+    const val NICKNAME = "NICKNAME"
     fun init(context: Context) {
         if (mSharedPref == null) mSharedPref =
             context.getSharedPreferences(context.packageName, Activity.MODE_PRIVATE)

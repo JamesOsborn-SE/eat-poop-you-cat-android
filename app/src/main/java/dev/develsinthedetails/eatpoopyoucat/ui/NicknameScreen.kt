@@ -63,7 +63,7 @@ fun NicknameScreen(
                         onChange = { viewModel.updateNickname(it) },
                         onSubmit = {
                             if (viewModel.isValidNickname(context)) {
-                                SharedPref.write("nickname", viewModel.nickname.trim())
+                                SharedPref.write(SharedPref.NICKNAME, viewModel.nickname.trim())
                                 onContinueGame(viewModel.previousEntry!!)
                             }
                         },
@@ -76,7 +76,6 @@ fun NicknameScreen(
                         focusRequester = focusRequester
                     )
                 }
-
  }
 
 @Composable

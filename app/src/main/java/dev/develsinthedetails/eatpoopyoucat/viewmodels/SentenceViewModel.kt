@@ -56,7 +56,7 @@ class SentenceViewModel @Inject constructor(
         val isNewGame = entry.sequence == 0
         if (isNewGame) {
             val newEntry = entry.copy(
-                localPlayerName = SharedPref.read("nickname", null),
+                localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
                 sentence = sentence,
                 drawing = null
             )
@@ -68,7 +68,7 @@ class SentenceViewModel @Inject constructor(
         } else {
             val newEntry = entry.copy(
                 id = UUID.fromString(entryId),
-                localPlayerName = SharedPref.read("nickname", null),
+                localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
                 sentence = sentence,
                 drawing = null,
                 sequence = entry.sequence.inc(),
@@ -79,8 +79,8 @@ class SentenceViewModel @Inject constructor(
                 nextTo.invoke(entryId)
                 isLoading = false
             }
-
         }
+        SharedPref.write(SharedPref.NICKNAME, null)
     }
 
     fun deleteGame() {

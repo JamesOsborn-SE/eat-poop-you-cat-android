@@ -107,13 +107,14 @@ class DrawViewModel @Inject constructor(
         viewModelScope.launch {
             val newEntry: Entry = previousEntry.value!!.copy(
                 id = UUID.fromString(entryId),
-                localPlayerName = SharedPref.read("nickname", null),
+                localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
                 sentence = null,
                 drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
                 sequence = previousEntry.value!!.sequence.inc(),
                 playerId = playerId
             )
             repository.createEntry(newEntry)
+            SharedPref.write(SharedPref.NICKNAME, null)
             onNavigateToSentence.invoke()
             isLoading = false
         }
