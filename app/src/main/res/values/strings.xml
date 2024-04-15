@@ -85,7 +85,7 @@
     <string name="not_nickname">Not %1$s</string>
     <string name="james">James</string>
     <string name="that_s_me">That\'s me</string>
-    <string name="use_nicknames">Use Nicknames?</string>
+    <string name="use_nicknames">Use Nicknames</string>
     <string name="what_s_this">What\'s this?</string>
     <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figureout who drew that clearly a cat not a dog image.</string>
     <string name="imported">Import</string>

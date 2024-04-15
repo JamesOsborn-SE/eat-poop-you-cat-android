@@ -143,11 +143,12 @@ fun HomeScreen(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             text = stringResource(R.string.use_nicknames)
                         )
-                        TextButton(onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
+                        TextButton(
+                            onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
                             Text(stringResource(R.string.what_s_this))
                         }
                     }
-                    Row {
+                    Row(modifier=defaultModifier) {
                         if (showNicknameMoreInfo) {
                             Text(stringResource(R.string.use_nicknames_more_info))
                         }
@@ -229,11 +230,16 @@ fun StartGame(
 )
 @Composable
 fun PreviewHomeScreen() {
+    var useNicknames by rememberSaveable { mutableStateOf(true) }
+    val toggleNicknames = {
+        useNicknames = !useNicknames
+    }
+
     AppTheme {
         HomeScreen(
             isLoading = false,
-            useNickNames = true,
-            toggleUseNicknames = {},
+            useNickNames = useNicknames,
+            toggleUseNicknames = toggleNicknames,
             onStartGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
