@@ -1,20 +1,5 @@
 # Eat Poop You Cat for Android
 
-## Get it on!
-
-<a href="https://f-droid.org/packages/dev.develsinthedetails.eatpoopyoucat">
-    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid"
-    height="80">
-</a>
-
-<a href='https://play.google.com/store/apps/details?id=dev.develsinthedetails.eatpoopyoucat&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-    <img src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
-        alt='Get it on Google Play' 
-        height="80"
-        />
-</a>
-
 ## Status
 
 [![current release](https://img.shields.io/github/v/release/JamesOsborn-SE/eat-poop-you-cat-android?include_prereleases)]()
@@ -27,9 +12,7 @@
 [![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/svg-badge.svg)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
 [![Will work for food](https://img.shields.io/badge/hire_me!-8A2BE2)](https://www.linkedin.com/in/jamesosborn286/)
 
-## Translation Status
-
-[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/open-graph.png)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
+![eat poop you cat banner](metadata/android/en-US/images/featureGraphic.png)
 
 ## Premise
 
@@ -55,7 +38,11 @@ You start with a sentence pass it to the next person and it they draw a picture.
 
 ### Permissions
 
-* **No** permissions needed at the moment
+* **No** permissions needed
+
+## Translation Status
+
+[![Translation status](https://hosted.weblate.org/widget/eat-poop-you-cat-android/open-graph.png)](https://hosted.weblate.org/engage/eat-poop-you-cat-android/)
 
 ## Contributors
 
@@ -101,3 +88,19 @@ classDiagram
 ```
 
 [![Star History Chart](https://api.star-history.com/svg?repos=JamesOsborn-SE/eat-poop-you-cat-android&type=Date)](https://star-history.com/#JamesOsborn-SE/eat-poop-you-cat-android&Date)
+
+
+## Get it on!
+
+<a href="https://f-droid.org/packages/dev.develsinthedetails.eatpoopyoucat">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">
+</a>
+
+<a href='https://play.google.com/store/apps/details?id=dev.develsinthedetails.eatpoopyoucat&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+    <img src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
+        alt='Get it on Google Play' 
+        height="80"
+        />
+</a>
