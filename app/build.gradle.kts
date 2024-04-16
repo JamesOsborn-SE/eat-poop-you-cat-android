@@ -16,8 +16,8 @@ android {
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
         minSdk = 21
         targetSdk = 34
-        versionCode = 20
-        versionName = "1.4.3"
+        versionCode = 21
+        versionName = "1.4.4"
         testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
         vectorDrawables {
             useSupportLibrary = true
