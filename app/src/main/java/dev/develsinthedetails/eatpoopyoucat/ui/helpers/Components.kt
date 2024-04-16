@@ -36,9 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -252,3 +254,7 @@ fun PreviewConfirmDialog() {
         }
     }
 }
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+@Composable
+fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,6 +62,7 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
+import dev.develsinthedetails.eatpoopyoucat.ui.helpers.pxToDp
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingPen
@@ -147,6 +147,7 @@ private fun DrawScreen(
 
     ) {
     val height = remember { mutableIntStateOf(0) }
+    val sentenceHeight = remember { mutableIntStateOf(0) }
     val width = remember { mutableIntStateOf(0) }
     Scaffolds.InGame(
         title = stringResource(R.string.draw_turn_title),
@@ -188,25 +189,26 @@ private fun DrawScreen(
                         height.intValue = it.height
                         width.intValue = it.width
                     }) {
-                Column(modifier = Modifier) {
+                Column(modifier = Modifier
+                    .onPlaced {
+                        sentenceHeight.intValue = it.size.height
+                    }
+                    .onSizeChanged {
+                        sentenceHeight.intValue = it.height
+
+                    }) {
                     Sentence(sentence)
                     ErrorText(
                         isError,
                         stringResource(id = R.string.drawing_error)
                     )
                 }
-                var modifier = Modifier.padding(0.dp)
-                modifier =
-                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        val size =
-                            (height.intValue.coerceAtMost(width.intValue) / 2).dp - innerPadding.calculateTopPadding() - innerPadding.calculateBottomPadding()
-                        modifier.then(Modifier.size(size))
-                    } else {
-                        modifier.then(Modifier.fillMaxSize())
-                    }
 
-                Row(modifier = modifier)
-                {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .size(((height.intValue - sentenceHeight.intValue).coerceAtMost(width.intValue)).pxToDp())
+                ) {
                     Draw(
                         Modifier,
                         linesState,
@@ -455,6 +457,7 @@ fun Sentence(sentence: String?) {
 /**
  * Preview Screenshot #3
  */
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
 @Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -471,6 +474,7 @@ fun PreviewDawingWithSentance() {
     val setCanvasResolution: (IntSize) -> Unit = {}
 
     val sentence =
+//        "Id vero libris usu, vim sale mucius inciderint ut, idque debitis mei ea. Nostrud sapientem patrioque ei mei, et vim nostrum antiopam persequeris, nec everti diceret legendos ea. Te mei adhuc denique, illum evertitur no vim. Vel omnis aliquip ponderum te, per cu modo suas ipsum. Legere vocibus ex vix."
         stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler)
     AppTheme {
         DrawScreen(
