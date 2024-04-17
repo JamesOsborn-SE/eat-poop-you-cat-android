@@ -35,6 +35,7 @@ object Scaffolds {
     fun InGame(
         title: String,
         bottomBar: @Composable () -> Unit = {},
+        floatingActionButton: @Composable () -> Unit = {},
         onEnd: () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
@@ -84,7 +85,8 @@ object Scaffolds {
                 )
             },
             bottomBar = bottomBar,
-            content = extraContent
+            content = extraContent,
+            floatingActionButton = floatingActionButton,
         )
     }
 

@@ -4,8 +4,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -114,6 +112,7 @@ fun SentenceScreen(
     onNavigateToHome: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+
     val onEnd = {
         if (isFirstTurn) {
             onDeleteGame()
@@ -125,7 +124,8 @@ fun SentenceScreen(
 
     Scaffolds.InGame(
         title = stringResource(R.string.sentence_turn_title),
-        onEnd = onEnd
+        onEnd = onEnd,
+        floatingActionButton = { SubmitButton (onSubmit=onSubmit) }
     )
     { innerPadding ->
         Surface(
@@ -133,14 +133,12 @@ fun SentenceScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             // set up all transformation states
-            var scale by remember { mutableFloatStateOf(1f) }
+
             var showTips by rememberSaveable { mutableStateOf(false) }
-            val state = rememberTransformableState { zoomChange, _, _ ->
-                scale *= zoomChange
-            }
+
             if (isLoading)
                 Spinner()
             val errorText = stringResource(id = R.string.write_sentence_error)
@@ -149,60 +147,50 @@ fun SentenceScreen(
                 count = minimumWords,
                 minimumWords
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (isFirstTurn)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text("Start off with a bang! Write a funny or ambiguous sentence.")
-                        TextButton(
-                            modifier = Modifier.rotate(-13f),
-                            onClick = { showTips = !showTips }) {
-                            Text("halp!")
-                        }
-                        AnimatedVisibility(showTips) {
-                            Text("Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"")
-                        }
-                    }
-                Row(
+            BoxWithConstraints(contentAlignment = Alignment.Center) {
+                Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer(
-                            scaleX = scale.coerceAtMost(1f),
-                            scaleY = scale.coerceAtMost(1f),
-                        )
-                        .transformable(state = state)
+                        .widthIn(maxHeight, 488.dp)
+                        .padding(horizontal = 15.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    drawing?.let { bytes ->
-                        DrawBox(drawingZippedJson = bytes)
-                    }
-                }
-                ErrorText(isError, errorText, errorDetails)
-                SentenceInput(
-                    sentence,
-                    onSentenceChange,
-                    onSubmit,
-                    focusRequester,
-                    sentencePromt,
-                    modifier
-                )
-                Row(modifier = Modifier) {
-                    SubmitButton(
+                    if (isFirstTurn)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text("Start off with a bang! Write a funny or ambiguous sentence.")
+                            TextButton(
+                                modifier = Modifier.rotate(-13f),
+                                onClick = { showTips = !showTips }) {
+                                Text("halp!")
+                            }
+                            AnimatedVisibility(showTips) {
+                                Text("Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"")
+                            }
+                        }
+                    Row(
                         modifier = Modifier
-                            .weight(.4f)
-                            .padding(top = 15.dp),
-                        onSubmit = onSubmit
+                            .fillMaxSize()
+
+                    ) {
+                        drawing?.let { bytes ->
+                            DrawBox(drawingZippedJson = bytes)
+                        }
+                    }
+                    ErrorText(isError, errorText, errorDetails)
+                    SentenceInput(
+                        sentence,
+                        onSentenceChange,
+                        onSubmit,
+                        focusRequester,
+                        sentencePromt,
+                        modifier
                     )
+                    Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
                 }
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
             }
         }
     }
@@ -222,7 +210,7 @@ private fun SentenceInput(
     sentencePromt: String,
     modifier: Modifier
 ) {
-    Row(modifier = Modifier) {
+    Row(modifier = modifier.widthIn(0.dp, 488.dp)) {
         OutlinedTextField(
             value = sentence,
             onValueChange = onSentenceChange,
@@ -231,20 +219,13 @@ private fun SentenceInput(
             ),
             keyboardActions = KeyboardActions(
                 onDone = { onSubmit() }),
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = modifier
                 .weight(.6f)
                 .focusRequester(focusRequester),
             enabled = true,
             readOnly = false,
             shape = RoundedCornerShape(8.dp),
-
-            label = {
-                Text(
-                    sentencePromt,
-                    modifier = modifier
-                )
-            },
+            label = { Text(sentencePromt) },
         )
     }
 }
@@ -253,8 +234,15 @@ private fun SentenceInput(
 /**
  * Preview Screenshot #4
  */
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
+@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Preview(
+    device = "spec:parent=Nexus 7 2013,orientation=landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PreviewSentenceScreenWithDrawing() {
     AppTheme {
@@ -277,8 +265,15 @@ fun PreviewSentenceScreenWithDrawing() {
 /**
  * Preview Screenshot #2
  */
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
+@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Preview(
+    device = "spec:parent=Nexus 7 2013,orientation=landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PreviewSentenceScreen() {
     AppTheme {
@@ -297,8 +292,15 @@ fun PreviewSentenceScreen() {
     }
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
+@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
+@Preview(
+    device = "spec:parent=Nexus 7 2013,orientation=landscape",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 fun PreviewSentenceScreenNoError() {
     AppTheme {
