@@ -90,6 +90,7 @@
     <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figureout who drew that clearly a cat not a dog image.</string>
     <string name="imported">Import</string>
     <string name="ack">Werd</string>
+    <string name="user_made_drawing">User made drawing</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>
         <item quantity="one">Imported %d Game</item>

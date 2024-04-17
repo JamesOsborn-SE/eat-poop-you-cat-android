@@ -5,24 +5,28 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.rounded.Redo
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Draw
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,8 +36,6 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -62,7 +64,6 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
-import dev.develsinthedetails.eatpoopyoucat.ui.helpers.pxToDp
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingPen
@@ -120,7 +121,7 @@ fun DrawScreen(
         setPencilMode = setPencilMode,
         onUndo = undo,
         onRedo = redo,
-        onSubmit = onSubmit
+        onSubmit = onSubmit,
     )
 }
 
@@ -144,11 +145,7 @@ private fun DrawScreen(
     onUndo: () -> Unit,
     onRedo: () -> Unit,
     onSubmit: () -> Unit,
-
-    ) {
-    val height = remember { mutableIntStateOf(0) }
-    val sentenceHeight = remember { mutableIntStateOf(0) }
-    val width = remember { mutableIntStateOf(0) }
+) {
     Scaffolds.InGame(
         title = stringResource(R.string.draw_turn_title),
         onEnd = onEndedGame,
@@ -164,7 +161,20 @@ private fun DrawScreen(
                     onRedo = onRedo
                 )
             },
-                floatingActionButton = { SubmitButton(onSubmit = onSubmit) }
+                floatingActionButton = {
+                    BoxWithConstraints {
+                        if (maxWidth < 400.dp)
+                            FloatingActionButton(
+                                onClick = onSubmit,
+                                containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
+                                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
+                            ) {
+                                Icon(Icons.AutoMirrored.Filled.Send, "Localized description")
+                            }
+                        else
+                            SubmitButton(onSubmit = onSubmit)
+                    }
+                }
             )
         }
     )
@@ -173,55 +183,35 @@ private fun DrawScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 15.dp)
-                .verticalScroll(ScrollState(0)),
-            color = MaterialTheme.colorScheme.background
+                .padding(horizontal = 15.dp),
+            color = MaterialTheme.colorScheme.background,
         ) {
             if (isLoading)
                 Spinner()
-            Column(
-                modifier = Modifier
-                    .onPlaced {
-                        height.intValue = it.size.height
-                        width.intValue = it.size.width
+            else
+                BoxWithConstraints {
+                    Column(modifier = Modifier.align(Alignment.Center)) {
+                        Sentence(sentence)
+                        ErrorText(
+                            isError,
+                            stringResource(id = R.string.drawing_error)
+                        )
+                        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                            Draw(
+                                Modifier,
+                                linesState,
+                                currentLineState,
+                                currentPropertiesState,
+                                setCanvasResolution,
+                                touchStart,
+                                touchMove,
+                                touchEnd,
+                            )
+                        }
                     }
-                    .onSizeChanged {
-                        height.intValue = it.height
-                        width.intValue = it.width
-                    }) {
-                Column(modifier = Modifier
-                    .onPlaced {
-                        sentenceHeight.intValue = it.size.height
-                    }
-                    .onSizeChanged {
-                        sentenceHeight.intValue = it.height
-
-                    }) {
-                    Sentence(sentence)
-                    ErrorText(
-                        isError,
-                        stringResource(id = R.string.drawing_error)
-                    )
                 }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(((height.intValue - sentenceHeight.intValue).coerceAtMost(width.intValue)).pxToDp())
-                ) {
-                    Draw(
-                        Modifier,
-                        linesState,
-                        currentLineState,
-                        currentPropertiesState,
-                        setCanvasResolution,
-                        touchStart,
-                        touchMove,
-                        touchEnd,
-                    )
-                }
-            }
         }
+
     }
 }
 
@@ -316,7 +306,9 @@ fun DrawBox(
             .onSizeChanged {
                 height = it.height
                 width = it.width
-            })
+            },
+        contentDescription = stringResource(R.string.user_made_drawing)
+    )
     {
         val currentResolution = Resolution(height = height, width = width)
         lines.forEach {
@@ -375,7 +367,8 @@ private fun DrawingPropertiesMenu(
         Icon(
             Icons.Rounded.Draw,
             tint = selectedTint(drawMode, DrawMode.Draw),
-            contentDescription = stringResource(id = R.string.erase),
+            contentDescription = stringResource(id = R.string.draw),
+            modifier = Modifier.size(48.dp),
         )
     }
     IconButton(
@@ -390,17 +383,19 @@ private fun DrawingPropertiesMenu(
             painter = painterResource(id = R.drawable.ic_eraser_black_24),
             tint = selectedTint(drawMode, DrawMode.Erase),
             contentDescription = stringResource(id = R.string.erase),
+            modifier = Modifier.size(48.dp),
         )
     }
     IconButton(
         onClick = {
             onUndo()
         },
-        enabled = (undoCount > 0)
+        enabled = (undoCount > 0),
     ) {
         Icon(
             Icons.AutoMirrored.Rounded.Undo,
             contentDescription = stringResource(id = R.string.undo),
+            modifier = Modifier.size(48.dp),
         )
     }
     IconButton(
@@ -412,6 +407,7 @@ private fun DrawingPropertiesMenu(
         Icon(
             Icons.AutoMirrored.Rounded.Redo,
             contentDescription = stringResource(id = R.string.redo),
+            modifier = Modifier.size(48.dp),
         )
     }
 }
@@ -495,7 +491,7 @@ fun PreviewDawingWithSentance() {
             undoCount = 1,
             redoCount = 0,
             drawMode = DrawMode.Draw,
-            setPencilMode = {}
+            setPencilMode = {},
         )
     }
 }
