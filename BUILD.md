@@ -28,6 +28,8 @@ Requires the following environment variables set:
 
 remove --dryrun to update `app/build.gradle.kts` commit and push the version change to origin
 
+bump version by choosing major, minor, or patch (defaults to patch)
+
 ```shell
-python tag.py 1.5.0 --push origin --dryrun
+python tag.py --push origin --version minor --dryrun 
 ```
