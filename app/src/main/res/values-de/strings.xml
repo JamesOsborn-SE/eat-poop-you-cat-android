@@ -27,7 +27,7 @@
     <string name="turn_completed_time">Zug abgeschlossen um %1$d:%2$d</string>
     <string name="turn_passed">Runden gespielt: %1$s</string>
     <string name="title_activity_sentence_screen">Satzanzeige</string>
-    <string name="drawing_error">Zeichne eine bessere Zeichnung</string>
+    <string name="drawing_error">Zeichne eine bessere Zeichnung.</string>
     <string name="end_game_for_all">Spiel für alle beenden</string>
     <string name="turns">Runden: %1$d</string>
     <string name="yes">Ja</string>
@@ -63,7 +63,7 @@
     <string name="translations_welcome">Übersetzungsbeiträge sind willkommen</string>
     <string name="is_avalible_on_f_droid_and_google_play">%1$s ist auf F-Droid und Google Play verfügbar</string>
     <string name="debugging_on_label">Fehlerbehebung an: %1$s</string>
-    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu.</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu</string>
     <string name="no_games_to_save">Du hast keine Spiele zu speichern</string>
     <plurals name="minimum_words">
         <item quantity="one">Mindestens %d Wort.</item>
@@ -71,7 +71,7 @@
     </plurals>
     <string name="app_description">Ein Spiel wie Stille Post, bei dem ihr euch abwechselnd Sätze schreibt und Zeichnungen macht. Das Spiel endet, wenn jede Person einmal dran war.*</string>
     <string name="application_icon">App Icon</string>
-    <string name="test_cat_sentence">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu.</string>
+    <string name="test_cat_sentence">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu</string>
     <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
     <string name="enter_a_sentence">Gib einen Satz ein</string>
     <string name="draw_this_sentence">Zeichne diesen Satz!</string>
@@ -87,4 +87,24 @@
     <string name="save">Speichern</string>
     <string name="find_game">Ein Spiel finden</string>
     <string name="starting_sentence">Anfangssatz: %1$s</string>
+    <plurals name="imported_entries">
+        <item quantity="one">%d Eintrag importiert</item>
+        <item quantity="other">%d Einträge importiert</item>
+    </plurals>
+    <plurals name="previous_games">
+        <item quantity="one">Vorheriges Spiel</item>
+        <item quantity="other">Vorherige Spiele</item>
+    </plurals>
+    <string name="not_nickname">Nicht %1$s</string>
+    <string name="that_s_me">Das bin ich</string>
+    <string name="james">James</string>
+    <string name="use_nicknames">Spitznamen verwenden</string>
+    <string name="what_s_this">Was ist das?</string>
+    <string name="use_nicknames_more_info">Die Verwendung von Spitznamen fordert jeden Spieler auf, einen Spitznamen zu hinterlassen, sodass Spieler verfolgen können, wer bereits an der Reihe war, und Spieler den Zeichnungen und Sätzen am Ende des Spiels zuordnen können. Auf diese Weise könntest du herausfinden, wer dieses eindeutige Katzen und nicht Hunde Bild gezeichnet hat.</string>
+    <string name="imported">Importieren</string>
+    <plurals name="imported_games">
+        <item quantity="one">%d Spiel importiert</item>
+        <item quantity="other">%d Spiele importiert</item>
+    </plurals>
+    <string name="user_made_drawing">Nutzer hat eine Zeichnung gezeichnet</string>
 </resources>
