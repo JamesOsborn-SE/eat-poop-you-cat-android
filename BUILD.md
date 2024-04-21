@@ -26,10 +26,10 @@ Requires the following environment variables set:
 
 ## Bump version
 
-remove --dryrun to update `app/build.gradle.kts` commit and push the version change to origin
+remove `--dryrun` to update `app/build.gradle.kts` by a patch version, commit, and push the version change to origin
 
 bump version by choosing major, minor, or patch (defaults to patch)
 
 ```shell
-python tag.py --push origin --version minor --dryrun 
+python tag.py --dryrun 
 ```
