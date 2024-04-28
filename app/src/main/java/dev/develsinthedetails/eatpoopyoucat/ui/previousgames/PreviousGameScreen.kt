@@ -256,10 +256,9 @@ fun EntryListItem(entry: Entry) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "^^ ${playerName.valueOrEmpty()}",
+                    text = "^^ ${playerName.valueOrEmpty()} $createdAt",
                     modifier = Modifier.padding(end = 16.dp)
                 )
-                Text(createdAt)
         }
     }
 }
