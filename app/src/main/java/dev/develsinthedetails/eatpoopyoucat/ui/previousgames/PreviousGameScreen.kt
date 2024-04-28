@@ -51,8 +51,10 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
+import dev.develsinthedetails.eatpoopyoucat.utilities.localTimestamp
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
+import dev.develsinthedetails.eatpoopyoucat.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -77,7 +79,7 @@ fun PreviousGameScreen(
             onContinueGame = { onContinueGame(game!!.entries.last().id) },
             onBackupGame = { onBackupGame(listOf(game!!)) },
             onImportGame = onImportGames,
-            onBack = onBack ,
+            onBack = onBack,
         )
     } else
         SpinnerScreen()
@@ -112,7 +114,7 @@ fun PreviousGameScreen(
         )
     }
     var title = pluralStringResource(id = R.plurals.previous_games, 1)
-    if(entries.first().createdAt!=null)
+    if (entries.first().createdAt != null)
         title += "\n${DateFormat.getDateInstance().format(entries.first().createdAt!!)}"
     Scaffolds.PreviousGame(
         title = title,
@@ -221,8 +223,7 @@ fun EntryListItem(entry: Entry) {
     val sentence = entry.sentence
     val drawing = entry.drawing
     val playerName = entry.localPlayerName
-    val createdAt =
-        if (entry.createdAt != null) DateFormat.getTimeInstance().format(entry.createdAt) else null
+    val createdAt = entry.createdAt.localTimestamp()
 
     if (sentence != null) {
         Box(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
@@ -254,9 +255,10 @@ fun EntryListItem(entry: Entry) {
     }
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (playerName != null)
-                Text(text = "^^ $playerName", modifier = Modifier.padding(end = 16.dp))
-            if (createdAt != null)
+                Text(
+                    text = "^^ ${playerName.valueOrEmpty()}",
+                    modifier = Modifier.padding(end = 16.dp)
+                )
                 Text(createdAt)
         }
     }

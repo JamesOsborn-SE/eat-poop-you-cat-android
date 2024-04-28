@@ -30,7 +30,6 @@ import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_pen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import kotlinx.serialization.json.Json
 import java.text.DateFormat.getDateInstance
-import java.text.DateFormat.getTimeInstance
 import java.util.Date
 import kotlin.math.max
 
@@ -84,11 +83,11 @@ class ImageExport(
         textPaint.color = Color.Black.toArgb()
         textPaint.textSize = 20f
         textPaint.isAntiAlias = true
-        val dateText = if (createdAt != null) getTimeInstance().format(createdAt) else ""
+        val dateText = createdAt.localTimestamp()
 
         val textLayout = Layout.Alignment.ALIGN_OPPOSITE
         val sl = staticLayout(
-            "^^ $playerName $dateText",
+            "^^ ${playerName.valueOrEmpty()} $dateText",
             textPaint,
             textLayout
         )
