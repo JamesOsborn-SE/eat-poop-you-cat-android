@@ -17,7 +17,6 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -70,14 +69,13 @@ class DrawViewModelTest {
         viewModel = DrawViewModel(savedStateHandle, appRepository)
     }
 
-
     @Test
     fun drawViewModel_has_entry_id() {
         runBlocking {
             assert(testEntriesGame1[0].id == getValue(viewModel.previousEntry).id)
         }
     }
-    @OptIn(ExperimentalCoroutinesApi::class)
+
     @Test
     fun drawing_is_too_simple() = runTest{
         val intSharedFlow = MutableStateFlow(listOf<Line>())
