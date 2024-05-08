@@ -189,7 +189,7 @@ private fun DrawScreen(
             if (isLoading)
                 Spinner()
             else
-                BoxWithConstraints {
+                Box {
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         Sentence(sentence)
                         ErrorText(
