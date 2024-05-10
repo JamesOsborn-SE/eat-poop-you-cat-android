@@ -30,4 +30,9 @@
     <string name="background_summary_on">你可以发送或接收游戏，即使应用程序是关闭的</string>
     <string name="write_a_sentence_to_describe_this_drawing">描述这幅画作</string>
     <string name="dialog_start_game">开始游戏</string>
+    <string name="turn_completed_time">本轮完成时长
+\n%1$d:%2$d</string>
+    <string name="time_left_to_complete">剩余时间
+\n%1$d:%2$d</string>
+    <string name="starting_sentence">开始句子：%1$s</string>
 </resources>
