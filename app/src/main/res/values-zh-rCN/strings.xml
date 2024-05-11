@@ -1,2 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">Eat Poop You Cat</string>
+    <string name="status_searching">搜索</string>
+    <string name="status_connected">已连接</string>
+    <string name="new_game">开始新游戏</string>
+    <string name="welcome_message">欢迎来到 %1$s！</string>
+    <string name="show">展示</string>
+    <string name="erase">擦除</string>
+    <string name="draw_description">绘制</string>
+    <string name="draw">绘制</string>
+    <string name="redo">重做</string>
+    <string name="background_header">背景活动</string>
+    <string name="start">开始</string>
+    <string name="cancel">取消</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">发送</string>
+    <string name="send_description">发送你的作品</string>
+    <string name="nickname">昵称</string>
+    <string name="undo">撤销</string>
+    <string name="enter_a_sentence">输入一个句子</string>
+    <string name="draw_this_sentence">画出这个句子！</string>
+    <string name="no_letters_or_numbers">请不要使用文本或数字。</string>
+    <string name="clear">清除</string>
+    <string name="erase_description">擦除一些东西</string>
+    <string name="undo_description">撤销你刚刚所做</string>
+    <string name="redo_description">撤销上一次的撤销</string>
+    <string name="preferences_header">偏好设定</string>
+    <string name="background_title">允许应用程序在后台通信</string>
+    <string name="background_summary_off">你将无法发送或接收游戏，除非应用程序是打开的</string>
+    <string name="background_summary_on">你可以发送或接收游戏，即使应用程序是关闭的</string>
+    <string name="write_a_sentence_to_describe_this_drawing">描述这幅画作</string>
+    <string name="dialog_start_game">开始游戏</string>
+    <string name="turn_completed_time">本轮完成时长
+\n%1$d:%2$d</string>
+    <string name="time_left_to_complete">剩余时间
+\n%1$d:%2$d</string>
+    <string name="starting_sentence">开始句子：%1$s</string>
+</resources>
