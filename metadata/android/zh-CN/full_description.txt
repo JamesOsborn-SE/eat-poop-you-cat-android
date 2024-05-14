@@ -1,0 +1,20 @@
+提交一个句子，传给下一个人，他们画一幅画。下一个人只能看到前一个条目（在这种情况下是图片），然后他们写一个句子。这种情况会一直持续到每个人都有机会或者感到厌倦为止。
+
+信用：
+向我的朋友和家人大声呼喊，他们给了我反馈，并一直对我提出
+
+非常感谢翻译人员付出的时间和精力
+
+* Сергій
+* cwpute
+* Dan
+* Jérôme Herbinet
+* Kefir2105
+* ssantos
+* UngoIiant
+
+感谢这个项目所依赖的所有开源贡献者和项目。
+
+这款应用在 F-Droid 和 Google Play 上可用
+
+<a href="https://hosted.weblate.org/engage/eat-poop-you-cat-android/">欢迎贡献翻译！</a>
