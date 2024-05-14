@@ -35,4 +35,75 @@
     <string name="time_left_to_complete">剩余时间
 \n%1$d:%2$d</string>
     <string name="starting_sentence">开始句子：%1$s</string>
+    <string name="no_games_to_save">您没有要保存的游戏</string>
+    <string name="not_nickname">不是 %1$s</string>
+    <string name="user_made_drawing">用户作画</string>
+    <plurals name="imported_games">
+        <item quantity="other">已导入 %d 个游戏</item>
+    </plurals>
+    <plurals name="imported_entries">
+        <item quantity="other">已导入 %d 个条目</item>
+    </plurals>
+    <string name="turn_passed">已经过的轮数：%1$s</string>
+    <string name="dashboard">操作面板</string>
+    <string name="default_nickname">无名</string>
+    <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
+    <string name="drawing_error">画一幅更好的画。</string>
+    <string name="are_you_sure">这会 %1$s。你仍然想继续吗？</string>
+    <string name="delete_game">删除游戏</string>
+    <string name="test_cat_sentence">一只猫像一个昏昏欲睡的蹒跚学步的孩子一样优雅地向你眨眼</string>
+    <string name="sentence_turn_title">写些东西！</string>
+    <string name="draw_turn_title">画出这个句子！</string>
+    <string name="issues">工单</string>
+    <string name="share_this_game">分享此游戏</string>
+    <string name="continue_previous_game">继续一个旧游戏</string>
+    <string name="backup_games">备份游戏</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">一只猫像一个昏昏欲睡的蹒跚学步的孩子一样优雅地向你眨眼</string>
+    <string name="end_game_for_all">为所有人结束游戏</string>
+    <string name="app_description">一个你能轮流写句子和画画的手机游戏。在每个人都玩了一轮后游戏结束。*</string>
+    <string name="no_previous_games_found">没有历史游戏！去玩吧！</string>
+    <string name="share_failed">哦哟，分享失败</string>
+    <string name="application_icon">应用程序图标</string>
+    <string name="debugging_on_label">调试于：%1$s</string>
+    <string name="use_nicknames_more_info">使用昵称将提示每个玩家留下一个昵称，允许玩家记录谁已经轮到谁了，并在游戏结束时将玩家与图画和句子进行匹配。通过这种方式，你可能会弄清楚是谁画了那幅明显是猫而不是狗的图像。</string>
+    <plurals name="minimum_words">
+        <item quantity="other">最少 %d 个单词。</item>
+    </plurals>
+    <string name="dialog_accept_turn">接受从 %1$s 来的一轮！</string>
+    <string name="write_a_funny_sentence">写一个有趣的句子</string>
+    <string name="no_really_write_a_funny_sentence">真的写一个有趣的句子！！</string>
+    <string name="dialog_one_entry_allowed">每场比赛只允许输入一次</string>
+    <string name="oof">哦哟</string>
+    <string name="save">保存</string>
+    <string name="find_game">查找游戏</string>
+    <string name="submit">结束我这一轮！</string>
+    <string name="created_by">创建者：%1$s</string>
+    <string name="title_activity_sentence_screen">句子屏幕</string>
+    <string name="write_sentence_error">写一个更好的句子！</string>
+    <string name="turns">轮数：%1$d</string>
+    <string name="app_warning">* 不包括亲友！</string>
+    <string name="pass_to_the_next">将设备传给下一个玩家！</string>
+    <string name="scroll_to_top">回到顶端</string>
+    <string name="no">不</string>
+    <string name="yes">好</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="about">关于此应用程序</string>
+    <string name="translations_welcome">欢迎贡献翻译</string>
+    <string name="is_avalible_on_f_droid_and_google_play">%1$s 在 F-Droid 和 Google Play 上可用</string>
+    <string name="loading">加载中</string>
+    <string name="version_label">版本：%1$s</string>
+    <string name="git_hash_label">Git 哈希值：%1$s</string>
+    <string name="import_games">导入游戏</string>
+    <string name="saving">保存中…</string>
+    <string name="saved_to">保存至：%1$s</string>
+    <string name="open">打开</string>
+    <string name="james">James</string>
+    <string name="that_s_me">那是我</string>
+    <string name="use_nicknames">使用昵称</string>
+    <string name="what_s_this">这是什么？</string>
+    <string name="imported">导入</string>
+    <string name="ack">Werd</string>
+    <plurals name="previous_games">
+        <item quantity="other">历史游戏</item>
+    </plurals>
 </resources>
