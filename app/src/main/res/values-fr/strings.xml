@@ -79,4 +79,37 @@
         <item quantity="many">minimum %d mots.</item>
         <item quantity="other">minimum %d mots.</item>
     </plurals>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Un chat vous regarde et cligne des yeux avec la grâce d\'un nourisson assoupi</string>
+    <string name="saved_to">enregistré sous : %1$s</string>
+    <string name="share_failed">le partage a foiré, oups</string>
+    <string name="open">ouvrir</string>
+    <string name="application_icon">Icône de l\'Application</string>
+    <string name="import_games">Importer d\'anciennes parties</string>
+    <string name="no_games_to_save">Ya pas de parties à sauvegarder poto</string>
+    <string name="saving">sauvegarde…</string>
+    <string name="not_nickname">Pas %1$s</string>
+    <string name="james">James</string>
+    <string name="that_s_me">C\'est moi</string>
+    <plurals name="previous_games">
+        <item quantity="one">Jeu précédent</item>
+        <item quantity="many">Jeux précédents</item>
+        <item quantity="other">Jeux précédents</item>
+    </plurals>
+    <string name="use_nicknames">Utiliser des surnoms</string>
+    <string name="what_s_this">C\'est quoi ça ?</string>
+    <string name="use_nicknames_more_info">Utiliser des surnoms proposera à chaque joueur d\'utiliser un surnom, pour se souvenir de qui a joué et qui a dessiné quoi ou écrit quoi à la fin du jeu. Comme ça vous pourez savoir qui a fait ce fameux dessin du chat qui n\'est clairement pas un chien.</string>
+    <string name="imported">Importer</string>
+    <string name="ack">Werd</string>
+    <string name="user_made_drawing">Dessiné par l\'utilisateur</string>
+    <plurals name="imported_games">
+        <item quantity="one">%d jeu importé</item>
+        <item quantity="many">%d jeux importés</item>
+        <item quantity="other">%d jeux importés</item>
+    </plurals>
+    <plurals name="imported_entries">
+        <item quantity="one">%d entrée importée</item>
+        <item quantity="many">%d entrées importées</item>
+        <item quantity="other">%d entrées importées</item>
+    </plurals>
+    <string name="backup_games">Sauvegarder les anciennes parties</string>
 </resources>
