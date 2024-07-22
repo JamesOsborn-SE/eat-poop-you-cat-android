@@ -107,4 +107,5 @@
         <item quantity="other">%d Spiele importiert</item>
     </plurals>
     <string name="user_made_drawing">Nutzer hat eine Zeichnung gezeichnet</string>
+    <string name="ack">Werd</string>
 </resources>
