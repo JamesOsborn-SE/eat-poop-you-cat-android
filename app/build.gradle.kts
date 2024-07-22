@@ -87,25 +87,25 @@ android {
 }
 
 dependencies {
-    val compseBom = "2024.04.00"
-    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    val compseBom = "2024.06.00"
+    implementation("androidx.test.ext:junit-ktx:1.2.1")
     implementation(platform("androidx.compose:compose-bom:$compseBom"))
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.test:runner:1.5.2")
+    implementation("androidx.test:runner:1.6.1")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.3.2")
+    implementation("androidx.databinding:databinding-adapters:8.5.1")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    val lifecycleVersion ="2.7.0"
+    val lifecycleVersion ="2.8.3"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
-    val composeVersion = "1.6.5"
+    val composeVersion = "1.6.8"
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
@@ -115,10 +115,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-test:$composeVersion")
 
     implementation("androidx.compose.material3:material3:1.2.1")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
     androidTestImplementation("org.mockito:mockito-android:5.5.0")
@@ -167,7 +167,6 @@ dependencies {
     // ...with Java.
     androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
-
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     //noinspection KaptUsageInsteadOfKsp not supported by Hilt yet https://dagger.dev/dev-guide/ksp.html
@@ -182,6 +181,9 @@ kapt {
     }
 }
 
+/**
+ * get the git hash
+ */
 fun getGitHash(): String {
     val stdout = ByteArrayOutputStream()
     exec {
