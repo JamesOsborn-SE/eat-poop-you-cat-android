@@ -23,10 +23,6 @@ class SentenceViewModel @Inject constructor(
     private val repository: AppRepository,
 ) : ViewModel() {
     private val playerId = SharedPref.playerId()
-    private val minimumWordsForRegex = 3
-    val minimumWords = minimumWordsForRegex + 1
-    private val minimumWordsPattern =
-        StringBuilder().append("(\\p{L}+ +){").append(minimumWordsForRegex).append(",}")
     var isError: Boolean by mutableStateOf(false)
         private set
     var isLoading: Boolean by mutableStateOf(false)
@@ -44,10 +40,9 @@ class SentenceViewModel @Inject constructor(
         sentence = it
     }
 
-    fun checkSentence(): Boolean {
-        val hasFourOrMoreWords = sentence.contains(minimumWordsPattern.toString().toRegex())
-        isError = !hasFourOrMoreWords
-        return isError
+    fun sentenceIsNotBlank(): Boolean {
+        isError = sentence.isBlank()
+        return !isError
     }
 
     fun saveEntry(nextTo: (String) -> Unit) {

@@ -91,6 +91,7 @@
     <string name="imported">Import</string>
     <string name="ack">Werd</string>
     <string name="user_made_drawing">User made drawing</string>
+    <string name="sentence_is_blank">this is blank... Maybe try pressing more buttons?</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>
         <item quantity="one">Imported %d Game</item>
