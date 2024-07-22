@@ -28,9 +28,7 @@ class GreetingViewModel @Inject constructor(
     var useNicknames: Boolean by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
 
-    var userName by mutableStateOf("")
-        private set
-
+    private var userName by mutableStateOf("")
     private val playerId: UUID = SharedPref.playerId()
 
 
