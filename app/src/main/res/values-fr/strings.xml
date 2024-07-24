@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="background_summary_off">Vous ne pourrez pas envoyer ou recevoir de parties si l\'application n\'est pas ouverte</string>
     <string name="submit">J\'ai fini mon tour !</string>
     <string name="dialog_accept_turn">Acceptez votre tour de %1$s !</string>
@@ -91,7 +91,7 @@
     <string name="james">James</string>
     <string name="that_s_me">C\'est moi</string>
     <plurals name="previous_games">
-        <item quantity="one">Jeu précédent</item>
+        <item quantity="one" tools:ignore="ImpliedQuantity">Jeu précédent</item>
         <item quantity="many">Jeux précédents</item>
         <item quantity="other">Jeux précédents</item>
     </plurals>
