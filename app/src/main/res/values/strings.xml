@@ -92,6 +92,12 @@
     <string name="ack">Werd</string>
     <string name="user_made_drawing">User made drawing</string>
     <string name="sentence_is_blank">this is blank… Maybe try pressing more buttons?</string>
+    <string name="new_player_prompt">New player; Who dis?</string>
+    <string name="nickname_prompt">What do they call you around here?</string>
+    <string name="previous_nicknames">Previous nicknames:</string>
+    <string name="no_nickname_chosen_warning">Fine, I\'ll pick one for you</string>
+    <string name="enter_nickname_prompt">Enter your name or nickname</string>
+    <string name="playerid">PlayerId: %1$s</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>
         <item quantity="one">Imported %d Game</item>

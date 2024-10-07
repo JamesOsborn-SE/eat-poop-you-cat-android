@@ -90,7 +90,7 @@ fun NicknameScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffolds.InGame(
-        title = "New player; Who dis?",
+        title = stringResource(R.string.new_player_prompt),
         onEnd = onEnd
     ) { paddingValues ->
         Surface(
@@ -107,10 +107,10 @@ fun NicknameScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "What do they call you around here?", Modifier.padding(bottom = 24.dp), fontSize = 20.sp)
+                    Text(text = stringResource(R.string.nickname_prompt), Modifier.padding(bottom = 24.dp), fontSize = 20.sp)
                 }
                 if (previousNicknames.isNotEmpty()) {
-                    Text("Previous nicknames:")
+                    Text(stringResource(R.string.previous_nicknames))
                     Column(modifier = Modifier.padding(start = 10.dp, bottom = 10.dp)) {
                         previousNicknames.forEach { message ->
                             Text(message)
@@ -118,7 +118,7 @@ fun NicknameScreen(
                     }
                 }
 
-                ErrorText(isError, "Fine, I'll pick one for you")
+                ErrorText(isError, stringResource(R.string.no_nickname_chosen_warning))
                 Column {
                     Row {
                         OutlinedTextField(
@@ -139,7 +139,7 @@ fun NicknameScreen(
 
                             label = {
                                 Text(
-                                    "Enter your name or nickname",
+                                    stringResource(R.string.enter_nickname_prompt),
                                     modifier = modifier
                                 )
                             },
