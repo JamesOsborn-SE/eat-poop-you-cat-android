@@ -10,7 +10,7 @@ data class LineSegment(val start: Coordinates, val end: Coordinates) {
         return if (start.x == end.x && start.y == start.y)
             path.lineTo(start.x, start.y)
         else
-            path.quadraticBezierTo(
+            path.quadraticTo(
                 start.x,
                 start.y,
                 (end.x + start.x) / 2,
