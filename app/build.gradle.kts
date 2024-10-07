@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization")
     id("kotlin-kapt") apply true
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
 }
 
 android {
