@@ -112,4 +112,5 @@
         <item quantity="other">%d entrées importées</item>
     </plurals>
     <string name="backup_games">Sauvegarder les anciennes parties</string>
+    <string name="sentence_is_blank">c\'est tout vide… Essaies peut-être d\'appuyer sur plus de boutons ?</string>
 </resources>
