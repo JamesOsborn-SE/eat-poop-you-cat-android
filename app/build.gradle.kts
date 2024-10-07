@@ -167,7 +167,7 @@ dependencies {
     // ...with Java.
     androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     //noinspection KaptUsageInsteadOfKsp not supported by Hilt yet https://dagger.dev/dev-guide/ksp.html
     kapt("androidx.room:room-compiler:$roomVersion")
