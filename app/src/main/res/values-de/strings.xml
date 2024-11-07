@@ -108,4 +108,5 @@
     </plurals>
     <string name="user_made_drawing">Nutzer hat eine Zeichnung gezeichnet</string>
     <string name="ack">Werd</string>
+    <string name="sentence_is_blank">dies ist leer... Versuchen Sie, mehr Tasten zu drücken?</string>
 </resources>
