@@ -73,4 +73,48 @@
         <item quantity="many">мінімум %d слів.</item>
         <item quantity="other">мінімум %d слів.</item>
     </plurals>
+    <string name="loading">Завантаження</string>
+    <string name="share_this_game">Поділіться цією грою</string>
+    <string name="continue_previous_game">Продовжити стару гру</string>
+    <string name="version_label">Версія: %1$s</string>
+    <string name="git_hash_label">Хеш Git: %1$s</string>
+    <string name="sentence_is_blank">це пусто... Можливо, спробуйте натиснути більше кнопок?</string>
+    <string name="share_failed">поділитися зроблено обдурений, уф</string>
+    <string name="saved_to">збережено в: %1$s</string>
+    <string name="open">Відчинено</string>
+    <string name="application_icon">Значок програми</string>
+    <string name="import_games">Імпорт ігор</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Кіт підморгує вам з витонченістю дуже сонного малюка</string>
+    <string name="no_games_to_save">У вас немає ігор для збереження bruh</string>
+    <string name="saving">збереження…</string>
+    <string name="not_nickname">Не %1$s</string>
+    <string name="james">Джеймс</string>
+    <string name="that_s_me">Це я</string>
+    <plurals name="previous_games">
+        <item quantity="one">Попередня гра</item>
+        <item quantity="few">Попередній ігри</item>
+        <item quantity="many">Попередні ігри</item>
+        <item quantity="other">Попередні ігри</item>
+    </plurals>
+    <string name="use_nicknames">Використовуйте псевдоніми</string>
+    <string name="what_s_this">Що це?</string>
+    <string name="imported">Імпорт</string>
+    <string name="ack">Став</string>
+    <plurals name="imported_games">
+        <item quantity="one">Імпортовано %d гру</item>
+        <item quantity="few">Імпортовано %d ігор</item>
+        <item quantity="many">Імпортовано %d ігор</item>
+        <item quantity="other">Імпортовано %d ігор</item>
+    </plurals>
+    <plurals name="imported_entries">
+        <item quantity="one">Імпортовано %d запис</item>
+        <item quantity="few">Імпортовано %d записів</item>
+        <item quantity="many">Імпортовано %d записів</item>
+        <item quantity="other">Імпортовано %d записів</item>
+    </plurals>
+    <string name="use_nicknames_more_info">Використання псевдонімів запропонує кожному гравцеві залишити псевдонім, дозволяючи гравцям відстежувати, хто мав хід, і зіставляти гравців з малюнками та реченнями в кінці гри. Таким чином ви зможете з’ясувати, хто намалював зображення кота, а не собаки.</string>
+    <string name="debugging_on_label">Налагодження: %1$s</string>
+    <string name="user_made_drawing">Малюнок, створений користувачем</string>
+    <string name="backup_games">Резервні ігри</string>
+    <string name="is_avalible_on_f_droid_and_google_play">%1$s доступний у F-Droid і Google Play</string>
 </resources>
