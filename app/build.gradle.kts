@@ -58,6 +58,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
+        freeCompilerArgs = listOf("-Xsuppress-version-warnings")
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.6"
