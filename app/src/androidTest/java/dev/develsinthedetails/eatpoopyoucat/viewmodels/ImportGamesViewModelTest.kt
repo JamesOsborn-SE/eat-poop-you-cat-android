@@ -91,7 +91,7 @@ class ImportGamesViewModelTest {
     fun addGamesWithNewEntries() = runBlocking {
         val exportedGamesPlusOne = exportedGames.toMutableList()
         val last = exportedGamesPlusOne.last()
-        exportedGamesPlusOne.removeLast()
+        exportedGamesPlusOne.removeAt(exportedGamesPlusOne.size - 1)
         var seq = if (last.entries.none()) 0 else last.entries.last().sequence+1
         exportedGamesPlusOne.add(last.copy(
             entries = testEntriesGame2.map {
