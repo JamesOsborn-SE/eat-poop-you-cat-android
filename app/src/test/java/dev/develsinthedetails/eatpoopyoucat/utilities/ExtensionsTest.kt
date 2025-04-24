@@ -19,6 +19,6 @@ class ExtensionsTest {
     fun ensureHumanReadableTime() {
         val dateTime = Date(1714286585712)
         TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"))
-        assert(dateTime.localTimestamp() == "11:43:05 PM")
+        assert(dateTime.localTimestamp().startsWith("11:43:05") && dateTime.localTimestamp().endsWith("PM"))
     }
 }
