@@ -1,5 +1,3 @@
-import java.io.ByteArrayOutputStream
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -11,12 +9,12 @@ plugins {
 
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         resValue("string", "git_hash", getGitHash())
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 24
         versionName = "1.4.7"
         testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
@@ -58,7 +56,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xsuppress-version-warnings")
+        freeCompilerArgs = listOf("-Xsuppress-version-warnings", "-Xjvm-default=all")
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.6"
@@ -89,26 +87,26 @@ android {
 }
 
 dependencies {
-    val compseBom = "2024.09.03"
+    val compseBom = "2025.04.01"
     implementation("androidx.test.ext:junit-ktx:1.2.1")
     implementation(platform("androidx.compose:compose-bom:$compseBom"))
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
     implementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.7.0")
+    implementation("androidx.databinding:databinding-adapters:8.9.2")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.navigation:navigation-compose:2.8.2")
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
 
-    val lifecycleVersion ="2.8.6"
+    val lifecycleVersion ="2.8.7"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
 
-    val composeVersion = "1.7.3"
-    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    val composeVersion = "1.8.0"
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui-graphics:$composeVersion")
@@ -116,8 +114,8 @@ dependencies {
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-test:$composeVersion")
 
-    implementation("androidx.compose.material3:material3:1.3.0")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.compose.material3:material3:1.3.2")
+    implementation("androidx.activity:activity-compose:1.10.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -131,7 +129,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
 
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.7.1"
     implementation("androidx.room:room-ktx:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
@@ -149,7 +147,7 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$roomVersion")
-    val hiltVersion = "2.50"
+    val hiltVersion = "2.56.2"
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
@@ -187,10 +185,8 @@ kapt {
  * get the git hash
  */
 fun getGitHash(): String {
-    val stdout = ByteArrayOutputStream()
-    exec {
+    val gitVersion = providers.exec {
         commandLine("git", "rev-parse", "--short", "HEAD")
-        standardOutput = stdout
     }
-    return stdout.toString().trim()
+    return gitVersion.standardOutput.asText.get().trim()
 }
