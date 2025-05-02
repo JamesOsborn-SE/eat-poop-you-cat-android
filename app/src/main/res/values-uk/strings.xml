@@ -117,4 +117,10 @@
     <string name="user_made_drawing">Малюнок, створений користувачем</string>
     <string name="backup_games">Резервні ігри</string>
     <string name="is_avalible_on_f_droid_and_google_play">%1$s доступний у F-Droid і Google Play</string>
+    <string name="new_player_prompt">Новий гравець; Хто є?</string>
+    <string name="nickname_prompt">Як тебе тут називають?</string>
+    <string name="previous_nicknames">Попередні псевдоніми:</string>
+    <string name="no_nickname_chosen_warning">Добре, я виберу для вас один</string>
+    <string name="enter_nickname_prompt">Введіть своє ім\'я або псевдонім</string>
+    <string name="playerid">PlayerId: %1$s</string>
 </resources>
