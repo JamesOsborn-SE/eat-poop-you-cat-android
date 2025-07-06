@@ -109,4 +109,10 @@
         <item quantity="one">குறைந்தபட்ச %d சொல்.</item>
         <item quantity="other">குறைந்தபட்ச %d சொற்கள்.</item>
     </plurals>
+    <string name="new_player_prompt">புதிய வீரர்; யார் டிச்?</string>
+    <string name="nickname_prompt">அவர்கள் உங்களை இங்கே என்ன அழைக்கிறார்கள்?</string>
+    <string name="previous_nicknames">முந்தைய புனைப்பெயர்கள்:</string>
+    <string name="no_nickname_chosen_warning">நல்லது, நான் உங்களுக்காக ஒன்றைத் தேர்ந்தெடுப்பேன்</string>
+    <string name="enter_nickname_prompt">உங்கள் பெயர் அல்லது புனைப்பெயரை உள்ளிடவும்</string>
+    <string name="playerid">பிளேயர்ஐடி: %1$s</string>
 </resources>
