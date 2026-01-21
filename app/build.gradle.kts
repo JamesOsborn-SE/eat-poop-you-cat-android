@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    // REMOVED: alias(libs.plugins.kotlin.android) - No longer needed in AGP 9.0
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.kotlin.compose)
@@ -28,7 +27,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // New AGP 9.0 built-in Kotlin configuration
+    //noinspection WrongGradleMethod
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
@@ -44,7 +43,6 @@ android {
 
 androidComponents {
     onVariants { variant ->
-        // Use the new ResValue API
         variant.resValues.put(
             variant.makeResValueKey("string", "applicationId"),
             com.android.build.api.variant.ResValue(variant.applicationId.get())
@@ -78,6 +76,25 @@ dependencies {
     implementation(libs.material.icons.extended)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.constraintlayout.compose)
+
+    testImplementation(platform(libs.koin.bom))
+    testImplementation(libs.koin.test)
+    testImplementation(libs.junit.ktx)
+    testImplementation(libs.core.testing)
+    testImplementation(libs.koin.test.junit4)
+
+    androidTestImplementation(platform(libs.koin.bom))
+    androidTestImplementation(libs.koin.test)
+    androidTestImplementation(libs.koin.android.test)
+    androidTestImplementation(libs.koin.test.junit4)
+    androidTestImplementation(libs.core.testing)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.runner)
+    androidTestImplementation(libs.ui.test)
+    androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.mockito.kotlin)
+
+    testImplementation(libs.ext.junit)
 }
 
 fun getGitHash(): String {

@@ -3,15 +3,12 @@ package dev.develsinthedetails.eatpoopyoucat.viewmodels.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.platform.app.InstrumentationRegistry
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
-import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
@@ -26,47 +23,57 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
+import org.koin.core.module.dsl.viewModel
+import org.koin.dsl.module
+import org.koin.test.KoinTest
+import org.koin.test.KoinTestRule
+import org.koin.test.inject
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
 import java.util.UUID
 
 
-@HiltAndroidTest
-class DrawViewModelTest {
-    private lateinit var viewModel: DrawViewModel
-    private val hiltRule = HiltAndroidRule(this)
+class DrawViewModelTest : KoinTest {
+
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    // Mocks
+    private val mockEntryDao = mock<EntryDao>()
+    private val mockGameDao = mock<GameDao>()
+    private val mockPlayerDao = mock<PlayerDao>()
+
+    // 1. Define a test module to replace production dependencies
+    private val testModule = module {
+        single { mockEntryDao }
+        single { mockGameDao }
+        single { mockPlayerDao }
+        single { AppRepository(get(), get(), get()) }
+        viewModel { (handle: SavedStateHandle) ->
+            DrawViewModel(handle, repository = get())
+        }
+    }
 
     @get:Rule
     val rule: RuleChain = RuleChain
-        .outerRule(hiltRule)
+        .outerRule(KoinTestRule.create {
+            // 2. Start Koin with your test module
+            modules(testModule)
+        })
         .around(instantTaskExecutorRule)
 
-    private lateinit var appRepository: AppRepository
+    private val viewModel: DrawViewModel by inject()
 
     @Before
     fun setUp() {
-        hiltRule.inject()
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         SharedPref.init(context)
         SharedPref.write(SharedPref.PLAYER_ID, testPlayerOne.id.toString())
-        val mockEntryDao = mock<EntryDao>()
+
+        // Setup mock behavior
         `when`(mockEntryDao.get(UUID.fromString(testEntriesGame1[0].id.toString())))
             .thenReturn(flow {
-            emit(testEntriesGame1[0])
-        })
-        val mockGameDao = mock<GameDao>()
-        val mockPlayerDao = mock<PlayerDao>()
-        appRepository = AppRepository(
-            gameDao = mockGameDao,
-            entryDao = mockEntryDao,
-            playerDao = mockPlayerDao
-        )
-
-        val savedStateHandle: SavedStateHandle = SavedStateHandle().apply {
-            set(ID, testEntriesGame1[0].id.toString())
-        }
-        viewModel = DrawViewModel(savedStateHandle, appRepository)
+                emit(testEntriesGame1[0])
+            })
     }
 
     @Test

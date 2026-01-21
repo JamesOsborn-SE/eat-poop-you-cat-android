@@ -45,6 +45,8 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-core-coroutines = {  module = "io.insert-koin:koin-core-coroutines" }
 koin-ktor = { module = "io.insert-koin:koin-ktor" }
 koin-test = { module = "io.insert-koin:koin-test" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
+koin-android-test = { module = "io.insert-koin:koin-android-test" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleVersion" }
@@ -57,7 +59,6 @@ mockito-android = { module = "org.mockito:mockito-android", version.ref = "mocki
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
-room-guava = { module = "androidx.room:room-guava", version.ref = "roomVersion" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 room-paging = { module = "androidx.room:room-paging", version.ref = "roomVersion" }
 room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "roomVersion" }
