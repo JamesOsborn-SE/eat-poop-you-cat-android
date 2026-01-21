@@ -1,20 +1,19 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.dagger.hilt.android")
-    kotlin("plugin.serialization")
-    id("kotlin-kapt") apply true
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.20"
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         resValue("string", "git_hash", getGitHash())
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
-        minSdk = 21
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         versionCode = 24
         versionName = "1.4.7"
         testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.utilities.MainTestRunner"
@@ -54,12 +53,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-        freeCompilerArgs = listOf("-Xsuppress-version-warnings", "-Xjvm-default=all")
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            freeCompilerArgs.addAll("-Xsuppress-version-warnings", "-Xjvm-default=all")
+        }
     }
     packaging {
         resources {
@@ -87,98 +85,70 @@ android {
 }
 
 dependencies {
-    val compseBom = "2025.04.01"
-    implementation("androidx.test.ext:junit-ktx:1.2.1")
-    implementation(platform("androidx.compose:compose-bom:$compseBom"))
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.1")
-    implementation("androidx.test:runner:1.6.2")
-    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
-    implementation("androidx.databinding:databinding-adapters:8.9.2")
+    implementation(libs.junit.ktx)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.constraintlayout.compose)
+    implementation(libs.runner)
+    androidTestImplementation(libs.core.testing)
+    implementation(libs.databinding.adapters)
+    implementation(libs.core.splashscreen)
+    implementation(libs.core.ktx)
+    implementation(libs.navigation.compose)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
 
-    implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.navigation:navigation-compose:2.8.9")
+    implementation(libs.material.icons.extended)
+    implementation(libs.ui)
+    implementation(libs.runtime.livedata)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material)
+    implementation(libs.ui.test)
 
-    val lifecycleVersion ="2.8.7"
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
+    implementation(libs.material3)
+    implementation(libs.activity.compose)
 
-    val composeVersion = "1.8.0"
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
-    implementation("androidx.compose.ui:ui-graphics:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.compose.material:material:$composeVersion")
-    implementation("androidx.compose.ui:ui-test:$composeVersion")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.ext.junit)
+    testImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
 
-    implementation("androidx.compose.material3:material3:1.3.2")
-    implementation("androidx.activity:activity-compose:1.10.1")
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
-    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
-    androidTestImplementation("org.mockito:mockito-android:5.5.0")
+    androidTestImplementation(platform(libs.compose.bom))
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:$compseBom"))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
 
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-
-    val roomVersion = "2.7.1"
-    implementation("androidx.room:room-ktx:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.room.ktx)
 
     // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:$roomVersion")
+    implementation(libs.room.rxjava2)
 
     // optional - RxJava3 support for Room
-    implementation("androidx.room:room-rxjava3:$roomVersion")
+    implementation(libs.room.rxjava3)
 
     // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:$roomVersion")
+    implementation(libs.room.guava)
 
     // optional - Test helpers
-    testImplementation("androidx.room:room-testing:$roomVersion")
+    testImplementation(libs.room.testing)
 
     // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$roomVersion")
-    val hiltVersion = "2.56.2"
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("com.google.dagger:hilt-android:$hiltVersion")
-    kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    implementation(libs.room.paging)
+    ksp(libs.room.compiler)
 
-    // For Robolectric tests.
-    testImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
-    // ...with Kotlin.
-    kaptTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    // ...with Java.
-    testAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
 
-
-    // For instrumented tests.
-    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
-    // ...with Kotlin.
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
-    // ...with Java.
-    androidTestAnnotationProcessor("com.google.dagger:hilt-android-compiler:$hiltVersion")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-
-    //noinspection KaptUsageInsteadOfKsp not supported by Hilt yet https://dagger.dev/dev-guide/ksp.html
-    kapt("androidx.room:room-compiler:$roomVersion")
-}
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-    useBuildCache = false
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
+    implementation(libs.kotlinx.serialization.json)
 }
 
 /**

@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
@@ -17,10 +16,8 @@ import dev.develsinthedetails.eatpoopyoucat.data.Player
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltViewModel
-class GreetingViewModel @Inject constructor(
+class GreetingViewModel(
     private val repository: AppRepository,
     private val application: Application
 ) : ViewModel() {

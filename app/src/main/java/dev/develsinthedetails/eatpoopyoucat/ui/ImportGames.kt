@@ -41,7 +41,7 @@ import java.io.InputStream
 
 @Composable
 fun ImportGames(
-    viewModel: ImportGamesViewModel = hiltViewModel(),
+    viewModel: ImportGamesViewModel = koinViewModel(),
     fileUri: Uri?,
     finish: () -> Unit
 ) {
