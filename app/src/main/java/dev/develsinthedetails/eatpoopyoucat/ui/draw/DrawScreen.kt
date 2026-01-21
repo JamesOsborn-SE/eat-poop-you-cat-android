@@ -53,7 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.Line
@@ -71,10 +70,11 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
 import kotlinx.serialization.json.Json
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DrawScreen(
-    drawViewModel: DrawViewModel = hiltViewModel(),
+    drawViewModel: DrawViewModel = koinViewModel(),
     onNavigateToSentence: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit
 ) {

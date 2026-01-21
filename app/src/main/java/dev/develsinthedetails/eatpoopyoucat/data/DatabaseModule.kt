@@ -1,35 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
-import android.content.Context
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-class DatabaseModule {
+val databaseModule = module {
+    single { AppDatabase.getInstance(androidContext()) }
 
-    @Singleton
-    @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
-    }
-
-    @Provides
-    fun provideGameDao(appDatabase: AppDatabase): GameDao {
-        return appDatabase.gameDao()
-    }
-
-    @Provides
-    fun provideEntryDao(appDatabase: AppDatabase): EntryDao {
-        return appDatabase.entryDao()
-    }
-
-    @Provides
-    fun providePlayerDao(appDatabase: AppDatabase): PlayerDao {
-        return appDatabase.playerDao()
-    }
+    single { get<AppDatabase>().gameDao() }
+    single { get<AppDatabase>().entryDao() }
+    single { get<AppDatabase>().playerDao() }
 }

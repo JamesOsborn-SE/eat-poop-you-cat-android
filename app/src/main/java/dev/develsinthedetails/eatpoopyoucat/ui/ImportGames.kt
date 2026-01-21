@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.MainActivity
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
@@ -35,6 +34,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGamesViewModel
 import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
+import org.koin.androidx.compose.koinViewModel
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream

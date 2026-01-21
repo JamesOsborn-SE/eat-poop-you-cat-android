@@ -41,7 +41,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
@@ -50,12 +49,13 @@ import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import java.util.UUID
 
 
 @Composable
 fun HomeScreen(
-    viewModel: GreetingViewModel = hiltViewModel(),
+    viewModel: GreetingViewModel = koinViewModel(),
     onNavigateToNickname: (String) -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,

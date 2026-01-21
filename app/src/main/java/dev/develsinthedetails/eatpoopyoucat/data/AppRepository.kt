@@ -3,11 +3,8 @@ package dev.develsinthedetails.eatpoopyoucat.data
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 import java.util.UUID
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AppRepository @Inject constructor(
+class AppRepository(
     private val gameDao: GameDao,
     private val playerDao: PlayerDao,
     private val entryDao: EntryDao

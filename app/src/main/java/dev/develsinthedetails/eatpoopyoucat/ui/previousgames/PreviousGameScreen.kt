@@ -42,7 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
@@ -58,13 +57,14 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import java.text.DateFormat
 import java.util.UUID
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
-    viewModel: PreviousGameViewModel = hiltViewModel(),
+    viewModel: PreviousGameViewModel = koinViewModel(),
     onBack: () -> Unit,
     onContinueGame: (UUID) -> Unit = {},
     onBackupGame: (games: List<GameWithEntries>?) -> Unit,

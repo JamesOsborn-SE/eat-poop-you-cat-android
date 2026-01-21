@@ -2,16 +2,13 @@ package dev.develsinthedetails.eatpoopyoucat.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.coroutines.flow.MutableStateFlow
-import javax.inject.Inject
 
-@HiltViewModel
-class ImportGamesViewModel @Inject constructor(
+class ImportGamesViewModel(
     val repository: AppRepository,
 ) : ViewModel() {
 

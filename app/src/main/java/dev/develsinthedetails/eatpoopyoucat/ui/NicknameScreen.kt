@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.SharedPref
@@ -40,10 +39,11 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.NicknameViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NicknameScreen(
-    viewModel: NicknameViewModel = hiltViewModel(),
+    viewModel: NicknameViewModel = koinViewModel(),
     nav: NavHostController,
 ) {
     val context = LocalContext.current

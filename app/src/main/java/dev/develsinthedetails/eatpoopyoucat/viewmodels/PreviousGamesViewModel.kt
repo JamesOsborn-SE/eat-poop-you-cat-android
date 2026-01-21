@@ -3,14 +3,11 @@ package dev.develsinthedetails.eatpoopyoucat.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PreviousGamesViewModel @Inject constructor(
+class PreviousGamesViewModel(
     val repository: AppRepository,
 ) : ViewModel() {
 

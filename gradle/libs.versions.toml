@@ -11,15 +11,15 @@ databinding-adapters = "9.0.0"
 junit = "4.13.2"
 junit-ktx = "1.3.0"
 koin-bom = "4.1.1"
-kotlinx-serialization-json = "1.9.0"
+kotlinx-serialization-json = "1.10.0"
 agp = "9.0.0"
-kotlin = "2.2.10"
+kotlin = "2.3.0"
 ksp = "2.3.3"
 lifecycleVersion = "2.10.0"
 material3 = "1.4.0"
 materialIconsExtended = "1.7.8"
 mockitoAndroid = "5.21.0"
-mockitoKotlin = "6.2.1"
+mockitoKotlin = "6.2.2"
 navigation-compose = "2.9.6"
 roomVersion = "2.8.4"
 runner = "1.7.0"
@@ -38,10 +38,11 @@ junit = { module = "junit:junit", version.ref = "junit" }
 junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junit-ktx" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
-koin-android = { module = "io.insert-koin:koin-android" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
+koin-android = { module = "io.insert-koin:koin-android", version = "4.1.1" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.1.1" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-core-coroutines = {  module = "io.insert-koin:koin-core-coroutines" }
 koin-ktor = { module = "io.insert-koin:koin-ktor" }
 koin-test = { module = "io.insert-koin:koin-test" }
 
@@ -77,5 +78,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "compose-plugin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
+androidx-room = { id = "androidx.room", version.ref = "roomVersion" }

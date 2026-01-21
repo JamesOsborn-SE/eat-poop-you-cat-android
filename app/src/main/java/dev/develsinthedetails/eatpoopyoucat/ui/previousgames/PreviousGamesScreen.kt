@@ -46,7 +46,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.entriesAreValid
@@ -57,11 +56,12 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
 import kotlinx.serialization.json.Json
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PreviousGamesScreen(
     modifier: Modifier = Modifier,
-    viewModel: PreviousGamesViewModel = hiltViewModel(),
+    viewModel: PreviousGamesViewModel = koinViewModel(),
     onGoHome: () -> Unit = {},
     onGameClick: (String) -> Unit,
     onBackupGames: (games: List<GameWithEntries>?) -> Unit,

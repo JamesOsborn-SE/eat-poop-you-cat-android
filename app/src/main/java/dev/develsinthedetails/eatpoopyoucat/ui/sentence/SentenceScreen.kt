@@ -40,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
@@ -50,10 +49,11 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SentenceScreen(
-    viewModel: SentenceViewModel = hiltViewModel(),
+    viewModel: SentenceViewModel = koinViewModel(),
     onNavigateToDraw: (String) -> Unit,
     onNavigateToEndedGame: (String) -> Unit,
     onNavigateToHome: () -> Unit

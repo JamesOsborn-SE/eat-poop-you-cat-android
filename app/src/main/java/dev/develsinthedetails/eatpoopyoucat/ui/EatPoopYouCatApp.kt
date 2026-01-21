@@ -112,7 +112,7 @@ fun EatPoopYouCatApp(
                 onGoHome = { navController.navigate(Screen.Home.route) { popUpTo(Screen.Home.route) } },
                 onGameClick = { navController.navigate(Screen.Game.byId(it)) },
                 onBackupGames = onBackupGames(coroutineScope, context),
-                onImportGames = onImportGames(context = context)
+                onImportGames = onImportGames()
             )
         }
         composable(
@@ -124,7 +124,7 @@ fun EatPoopYouCatApp(
             PreviousGameScreen(
                 onContinueGame = navigateToNextNickName(navController),
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
-                onImportGames = onImportGames(context = context),
+                onImportGames = onImportGames(),
                 onBack = {
                     navController.navigate(Screen.Games.route) {
                         popUpTo(Screen.Games.route)
@@ -153,17 +153,19 @@ fun EatPoopYouCatApp(
 }
 
 @Composable
-fun onImportGames(context: Context): ManagedActivityResultLauncher<String, Uri?> {
-    val pickPictureLauncher = rememberLauncherForActivityResult(
+fun onImportGames(): ManagedActivityResultLauncher<String, Uri?> {
+    val context = LocalContext.current
+
+    return rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { importFileUri ->
-        if (importFileUri != null) {
-            val intent = Intent(context, ImportGamesActivity::class.java)
-            intent.data = importFileUri
+        importFileUri?.let { uri ->
+            val intent = Intent(context, ImportGamesActivity::class.java).apply {
+                data = uri
+            }
             context.startActivity(intent)
         }
     }
-    return pickPictureLauncher
 }
 
 @Composable
@@ -210,4 +212,3 @@ fun navigateToNextNickName(navController: NavHostController): (UUID) -> Unit =
             popUpTo(Screen.Home.route)
         }
     }
-
