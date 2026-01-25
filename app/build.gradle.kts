@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
     implementation(libs.material.icons.extended)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.constraintlayout.compose)
@@ -93,6 +94,8 @@ dependencies {
     androidTestImplementation(libs.ui.test)
     androidTestImplementation(libs.ui.test.junit4)
     androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.androidx.startup)
 
     testImplementation(libs.ext.junit)
 }

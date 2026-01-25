@@ -9,6 +9,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
@@ -24,6 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
@@ -61,7 +63,9 @@ class DrawViewModelTest : KoinTest {
         })
         .around(instantTaskExecutorRule)
 
-    private val viewModel: DrawViewModel by inject()
+    private val viewModel: DrawViewModel by inject {
+        parametersOf(SavedStateHandle(mapOf(ID to testEntriesGame1[0].id.toString())))
+    }
 
     @Before
     fun setUp() {
