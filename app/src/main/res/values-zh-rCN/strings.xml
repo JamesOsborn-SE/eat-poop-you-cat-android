@@ -89,7 +89,7 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="about">关于此应用程序</string>
     <string name="translations_welcome">欢迎贡献翻译</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s 在 F-Droid 和 Google Play 上可用</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s 在 F-Droid 和 Google Play 上可用</string>
     <string name="loading">加载中</string>
     <string name="version_label">版本：%1$s</string>
     <string name="git_hash_label">Git 哈希值：%1$s</string>

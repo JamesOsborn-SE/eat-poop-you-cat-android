@@ -27,7 +27,6 @@ mockitoKotlin = "6.3.0"
 navigation-compose = "2.9.8"
 roomVersion = "2.8.4"
 runner = "1.7.0"
-startup = "1.2.0"
 graphicsShapes = "1.1.0"
 uiUnit = "1.11.4"
 
@@ -68,9 +67,6 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorV
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktorVersion" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleVersion" }
-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleVersion" }
 material = { module = "androidx.compose.material:material", version.ref = "composeVersion" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
@@ -91,7 +87,6 @@ ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose
 ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "composeVersion" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeVersion" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "composeVersion" }
 ui-test = { module = "androidx.compose.ui:ui-test", version.ref = "composeVersion" }
 androidx-graphics-shapes = { group = "androidx.graphics", name = "graphics-shapes", version.ref = "graphicsShapes" }
 androidx-compose-ui-unit = { group = "androidx.compose.ui", name = "ui-unit", version.ref = "uiUnit" }

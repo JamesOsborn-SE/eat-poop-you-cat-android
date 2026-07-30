@@ -72,7 +72,7 @@
     <string name="debugging_on_label">பிழைத்திருத்தம்: %1$s</string>
     <string name="version_label">பதிப்பு: %1$s</string>
     <string name="share_this_game">இந்த விளையாட்டைப் பகிரவும்</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s F-Droid மற்றும் கூகிள் இயக்கியில் கிடைக்கிறது</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s F-Droid மற்றும் கூகிள் இயக்கியில் கிடைக்கிறது</string>
     <string name="git_hash_label">அறிவிலி ஆச்: %1$s</string>
     <string name="backup_games">காப்பு விளையாட்டுகள்</string>
     <string name="import_games">விளையாட்டுகளை இறக்குமதி செய்யுங்கள்</string>
@@ -114,5 +114,5 @@
     <string name="previous_nicknames">முந்தைய புனைப்பெயர்கள்:</string>
     <string name="no_nickname_chosen_warning">நல்லது, நான் உங்களுக்காக ஒன்றைத் தேர்ந்தெடுப்பேன்</string>
     <string name="enter_nickname_prompt">உங்கள் பெயர் அல்லது புனைப்பெயரை உள்ளிடவும்</string>
-    <string name="playerid">பிளேயர்ஐடி: %1$s</string>
+    <string name="player_id">பிளேயர்ஐடி: %1$s</string>
 </resources>

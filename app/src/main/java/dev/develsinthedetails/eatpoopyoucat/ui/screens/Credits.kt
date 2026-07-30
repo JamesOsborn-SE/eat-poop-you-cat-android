@@ -83,7 +83,7 @@ fun CreditsScreen(playerId: String = "", onBack: () -> Unit) {
                 )
                 if (BuildConfig.DEBUG) {
                     Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
-                    Text(text = stringResource(R.string.playerid, playerId))
+                    Text(text = stringResource(R.string.player_id, playerId))
                 }
             }
         }

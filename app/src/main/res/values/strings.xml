@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Eat Poop You Cat</string>
     <string name="status_searching">Searching</string>
     <string name="status_connected">Connected</string>
@@ -67,7 +67,7 @@
     <string name="translations_welcome">Translation contributions welcome</string>
     <string name="issues">Issues</string>
     <string name="share_this_game">Share this game</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s is avalible on F-Droid and Google Play</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s is available on F-Droid and Google Play</string>
     <string name="continue_previous_game">Continue an old game</string>
     <string name="loading">Loading</string>
     <string name="debugging_on_label">Debugging on: %1$s</string>
@@ -87,7 +87,7 @@
     <string name="that_s_me">That\'s me</string>
     <string name="use_nicknames">Use Nicknames</string>
     <string name="what_s_this">What\'s this?</string>
-    <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figureout who drew that clearly a cat not a dog image.</string>
+    <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figure out who drew that clearly a cat not a dog image.</string>
     <string name="imported">Import</string>
     <string name="ack">Werd</string>
     <string name="user_made_drawing">User made drawing</string>
@@ -97,8 +97,8 @@
     <string name="previous_nicknames">Previous nicknames:</string>
     <string name="no_nickname_chosen_warning">Fine, I\'ll pick one for you</string>
     <string name="enter_nickname_prompt">Enter your name or nickname</string>
-    <string name="playerid">PlayerId: %1$s</string>
-    <string name="halp">halp!</string>
+    <string name="player_id">PlayerId: %1$s</string>
+    <string name="halp" tools:ignore="Typos">halp!</string>
     <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can\'t think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>

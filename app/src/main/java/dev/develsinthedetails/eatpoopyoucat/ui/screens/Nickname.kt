@@ -185,7 +185,7 @@ fun NicknamePreview() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NicnamePreviewEmpty() {
+fun NicknamePreviewEmpty() {
     val focusRequester = remember { FocusRequester() }
     val listOfNicknames = stringArrayResource(id = R.array.nicknames).toList()
     AppTheme {
@@ -205,7 +205,7 @@ fun NicnamePreviewEmpty() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NicnamePreviewEmptyNobody() {
+fun NicknamePreviewEmptyNobody() {
     val focusRequester = remember { FocusRequester() }
     val listOfNicknames = listOf<String>()
     AppTheme {

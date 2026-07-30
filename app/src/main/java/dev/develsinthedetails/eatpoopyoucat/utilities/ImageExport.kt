@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
@@ -17,6 +16,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withTranslation
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
@@ -208,13 +209,12 @@ class ImageExport(
 
         val textHeight = sl.height + PADDING * 2
         val height = textHeight + PADDING * 2
-        val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
+        val tmpBitmap = createBitmap(WIDTH, height)
         val tmpCanvas = Canvas(tmpBitmap)
         tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), footerPaint)
-        tmpCanvas.save()
-        tmpCanvas.translate(PADDING.toFloat(), (height / 2f) - PADDING.toFloat())
-        sl.draw(tmpCanvas)
-        tmpCanvas.restore()
+        tmpCanvas.withTranslation(PADDING.toFloat(), (height / 2f) - PADDING.toFloat()) {
+            sl.draw(this)
+        }
         return tmpBitmap
     }
 
@@ -233,21 +233,13 @@ class ImageExport(
             includePadding: Boolean = false
         ): StaticLayout {
             val sl: StaticLayout
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val builder =
-                    StaticLayout.Builder.obtain(text, 0, text.length, tp, textWidth)
-                        .setAlignment(textLayout)
-                        .setLineSpacing(spacingAddition, spacingMultiplier)
-                        .setIncludePad(includePadding)
-                        .setMaxLines(5)
-                sl = builder.build()
-            } else {
-                @Suppress("DEPRECATION")
-                sl = StaticLayout(
-                    text, tp,
-                    textWidth, textLayout, spacingMultiplier, spacingAddition, includePadding
-                )
-            }
+            val builder =
+                StaticLayout.Builder.obtain(text, 0, text.length, tp, textWidth)
+                    .setAlignment(textLayout)
+                    .setLineSpacing(spacingAddition, spacingMultiplier)
+                    .setIncludePad(includePadding)
+                    .setMaxLines(5)
+            sl = builder.build()
             return sl
         }
     }
@@ -261,8 +253,8 @@ fun SharePreview() {
     val option = BitmapFactory.Options()
     option.inPreferredConfig = Bitmap.Config.ARGB_8888
     val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)
-    val isAvalibleOnFDroidAndGooglePlay =
-        stringResource(id = R.string.is_avalible_on_f_droid_and_google_play, appName)
-    val ie = ImageExport(PreviewData.entries, appIcon, appName, isAvalibleOnFDroidAndGooglePlay)
+    val isAvailableOnFDroidAndGooglePlay =
+        stringResource(id = R.string.is_available_on_f_droid_and_google_play, appName)
+    val ie = ImageExport(PreviewData.entries, appIcon, appName, isAvailableOnFDroidAndGooglePlay)
     Image(bitmap = ie.makeBitmap().asImageBitmap(), null)
 }

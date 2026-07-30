@@ -61,7 +61,7 @@
     <string name="saving">speichern…</string>
     <string name="about">Über diese App</string>
     <string name="translations_welcome">Übersetzungsbeiträge sind willkommen</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s ist auf F-Droid und Google Play verfügbar</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s ist auf F-Droid und Google Play verfügbar</string>
     <string name="debugging_on_label">Fehlerbehebung an: %1$s</string>
     <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu</string>
     <string name="no_games_to_save">Du hast keine Spiele zu speichern</string>

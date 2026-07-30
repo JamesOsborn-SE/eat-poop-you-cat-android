@@ -98,7 +98,7 @@ fun PreviousGameScreen(
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val appName = stringResource(id = R.string.app_name)
-    val bottomBlurb = stringResource(R.string.is_avalible_on_f_droid_and_google_play, appName)
+    val bottomBlurb = stringResource(R.string.is_available_on_f_droid_and_google_play, appName)
     val option = BitmapFactory.Options()
     option.inPreferredConfig = Bitmap.Config.ARGB_8888
     val appIcon = getBitmapFromVectorDrawable(LocalContext.current, R.mipmap.ic_launcher_round)

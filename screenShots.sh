@@ -14,7 +14,7 @@ lang_country=$arg
 language=$(echo "$lang_country" | cut -d'-' -f1)
 # shellcheck disable=SC2034
 country_code=$(echo "$lang_country" | cut -d'-' -f2)
-# Key is the avd_name from getprop and the value is the output directory for the screen shots
+# Key is the avd_name from `getprop` and the value is the output directory for the screen shots
 # shellcheck disable=SC2034
 Nexus_7_2012_API_33="metadata/android/$lang_country/images/sevenInchScreenshots"
 # shellcheck disable=SC2034

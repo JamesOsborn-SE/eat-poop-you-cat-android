@@ -68,7 +68,7 @@
     <string name="translations_welcome">Vos contributions de traduction sont la bienvenue</string>
     <string name="issues">Problèmes</string>
     <string name="share_this_game">Partager cette partie</string>
-    <string name="is_avalible_on_f_droid_and_google_play">%1$s est disponible sur F-Droid et Google Play</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s est disponible sur F-Droid et Google Play</string>
     <string name="continue_previous_game">Continuer une ancienne partie</string>
     <string name="loading">Chargement</string>
     <string name="debugging_on_label">Debugging on: %1$s</string>
@@ -118,5 +118,5 @@
     <string name="previous_nicknames">Pseudonymes précédents :</string>
     <string name="no_nickname_chosen_warning">Bien, je vais en choisir un pour vous</string>
     <string name="enter_nickname_prompt">Entrez votre nom, surnom ou pseudo</string>
-    <string name="playerid">Numéro de joueur : %1$s</string>
+    <string name="player_id">Numéro de joueur : %1$s</string>
 </resources>
