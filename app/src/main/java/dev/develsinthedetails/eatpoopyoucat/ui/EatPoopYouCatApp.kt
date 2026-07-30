@@ -46,10 +46,13 @@ fun EatPoopYouCatApp(
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToNickname = {
-                    navController.navigate(Screen.Nickname.byId(it)) {
+                onNavigateToNickname = { id ->
+                    navController.navigate(Screen.Nickname.byId(id)) {
                         popUpTo(Screen.Home.route)
                     }
+                },
+                onNavigateToLanGame = { id ->
+                    navController.navigate(Screen.LanGame.byId(id))
                 },
                 onNavigateToPreviousGames = {
                     navController.navigate(Screen.Games.route) {
@@ -62,6 +65,7 @@ fun EatPoopYouCatApp(
                 onNavigateToPrivacyPolicy = {
                     navController.navigate(Screen.PrivacyPolicy.route)
                 })
+
         }
         composable(Screen.Nickname.route,
             arguments = listOf(
@@ -70,6 +74,14 @@ fun EatPoopYouCatApp(
         ) {
             NicknameScreen(nav = navController)
         }
+        composable(Screen.LanGame.route,
+            arguments = listOf(
+                navArgument(ID) { type = NavType.StringType }
+            )
+        ) {
+//            Screen.LanGameScreen(nav = navController)
+        }
+
         composable(
             Screen.Sentence.route,
             arguments = listOf(

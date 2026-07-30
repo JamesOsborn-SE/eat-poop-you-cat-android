@@ -164,7 +164,7 @@ fun NicknameScreen(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NicnamePreview() {
+fun NicknamePreview() {
     val focusRequester = remember { FocusRequester() }
     val listOfNicknames = stringArrayResource(id = R.array.nicknames).toList()
     AppTheme {

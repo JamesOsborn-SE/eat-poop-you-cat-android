@@ -9,4 +9,5 @@ val databaseModule = module {
     single { get<AppDatabase>().gameDao() }
     single { get<AppDatabase>().entryDao() }
     single { get<AppDatabase>().playerDao() }
+    single { get<AppDatabase>().rosterDao() }
 }

@@ -13,6 +13,7 @@ data class Game(
     @Serializable(with = UUIDSerializer::class)
     @PrimaryKey val id: UUID,
     val timeout: Int?,
+    // used to mark game complete so others know if they are missing turns
     val turns: Int?,
     @Serializable(with = DateSerializer::class)
     val createdAt: Date? = null,

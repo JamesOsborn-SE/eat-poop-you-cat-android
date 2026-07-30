@@ -1,34 +1,39 @@
 [versions]
-activityCompose = "1.12.2"
-compose-bom = "2026.01.00"
-composeVersion = "1.10.1"
-compose-plugin = "2.3.0"
+
+activityCompose = "1.13.0"
+compose-bom = "2026.06.01"
+composeVersion = "1.11.4"
+compose-plugin = "2.4.10"
 constraintlayout-compose = "1.1.1"
-core-ktx = "1.17.0"
+core-ktx = "1.19.0"
 core-splashscreen = "1.2.0"
 core-testing = "2.2.0"
-databinding-adapters = "9.0.0"
+databinding-adapters = "9.3.1"
 junit = "4.13.2"
 junit-ktx = "1.3.0"
-koin-bom = "4.1.1"
-kotlinx-serialization-json = "1.10.0"
-agp = "9.0.0"
-kotlin = "2.3.0"
+koin-bom = "4.2.2"
+kotlinx-serialization-json = "1.11.0"
+kotlinx-serialization-cbor = "1.11.0"
+agp = "9.2.1"
+kotlin = "2.4.10"
 ksp = "2.3.3"
-lifecycleVersion = "2.10.0"
+ktorVersion = "3.5.1"
+logback = "1.6.1"
+lifecycleVersion = "2.11.0"
 material3 = "1.4.0"
 materialIconsExtended = "1.7.8"
-mockitoAndroid = "5.21.0"
-mockitoKotlin = "6.2.2"
-navigation-compose = "2.9.6"
+mockitoAndroid = "5.23.0"
+mockitoKotlin = "6.3.0"
+navigation-compose = "2.9.8"
 roomVersion = "2.8.4"
 runner = "1.7.0"
-startup = "1.1.1"
+startup = "1.2.0"
+graphicsShapes = "1.1.0"
+uiUnit = "1.11.4"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
 constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
@@ -44,19 +49,33 @@ koin-android = { module = "io.insert-koin:koin-android", version = "4.1.1" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.1.1" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
-koin-core-coroutines = {  module = "io.insert-koin:koin-core-coroutines" }
+koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }
 koin-ktor = { module = "io.insert-koin:koin-ktor" }
 koin-test = { module = "io.insert-koin:koin-test" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
 koin-android-test = { module = "io.insert-koin:koin-android-test" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization-cbor" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorVersion" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorVersion" }
+ktor-client-serialization-jvm = { module = "io.ktor:ktor-client-serialization-jvm", version.ref = "ktorVersion" }
+ktor-client-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktorVersion" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktorVersion" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
+ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktorVersion" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleVersion" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleVersion" }
 material = { module = "androidx.compose.material:material", version.ref = "composeVersion" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
@@ -75,6 +94,8 @@ ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.re
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
 ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "composeVersion" }
 ui-test = { module = "androidx.compose.ui:ui-test", version.ref = "composeVersion" }
+androidx-graphics-shapes = { group = "androidx.graphics", name = "graphics-shapes", version.ref = "graphicsShapes" }
+androidx-compose-ui-unit = { group = "androidx.compose.ui", name = "ui-unit", version.ref = "uiUnit" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

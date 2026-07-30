@@ -9,19 +9,22 @@ import androidx.room.TypeConverters
 import dev.develsinthedetails.eatpoopyoucat.utilities.DATABASE_NAME
 
 @Database(
-    entities = [Game::class, Player::class, Entry::class],
-    version = 3,
+    entities = [Game::class, Player::class, Entry::class, Roster::class],
+    version = 4,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(1,2),
+        AutoMigration(2,3),
+        AutoMigration(3,4),
     ]
 )
+
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun gameDao(): GameDao
     abstract fun entryDao(): EntryDao
+    abstract fun rosterDao(): RosterDao
 
     companion object {
         private var instance: AppDatabase? = null

@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
-        minSdk = 24
-        targetSdk = 36
+        minSdk = 26
+        targetSdk = 37
         versionCode = 24
         versionName = "1.4.7"
 
@@ -39,6 +39,13 @@ android {
         buildConfig = true
         resValues = true
     }
+
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+        }
+    }
 }
 
 androidComponents {
@@ -55,6 +62,8 @@ room {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.ui.unit)
+    implementation(libs.androidx.graphics.shapes)
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)
     implementation(platform(libs.compose.bom))
@@ -72,32 +81,41 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.runtime.livedata)
     implementation(libs.ui.tooling.preview)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
     implementation(libs.material.icons.extended)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.cbor)
     implementation(libs.constraintlayout.compose)
+
+    implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.compression)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.logback.classic)
+
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
 
     testImplementation(platform(libs.koin.bom))
     testImplementation(libs.koin.test)
+//    testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit.ktx)
-    testImplementation(libs.core.testing)
-    testImplementation(libs.koin.test.junit4)
+
+    androidTestImplementation(libs.core.testing)
 
     androidTestImplementation(platform(libs.koin.bom))
-    androidTestImplementation(libs.koin.test)
-    androidTestImplementation(libs.koin.android.test)
     androidTestImplementation(libs.koin.test.junit4)
-    androidTestImplementation(libs.core.testing)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.koin.android.test)
+
     androidTestImplementation(libs.runner)
+    androidTestImplementation(libs.ext.junit)
+
     androidTestImplementation(libs.ui.test)
     androidTestImplementation(libs.ui.test.junit4)
+
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.mockito.android)
-    androidTestImplementation(libs.androidx.startup)
-
-    testImplementation(libs.ext.junit)
 }
 
 fun getGitHash(): String {

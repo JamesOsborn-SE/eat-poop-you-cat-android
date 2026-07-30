@@ -10,6 +10,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.data.RosterDao
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame2
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames
@@ -33,6 +34,7 @@ class ImportGamesViewModelTest {
     private lateinit var gameDao: GameDao
     private lateinit var entryDao: EntryDao
     private lateinit var playerDao: PlayerDao
+    private lateinit var rosterDao: RosterDao
 
     private lateinit var exportedGames: List<GameWithEntries>
 
@@ -45,8 +47,8 @@ class ImportGamesViewModelTest {
         gameDao = database.gameDao()
         entryDao = database.entryDao()
         playerDao = database.playerDao()
-
-        repository = AppRepository(gameDao, playerDao, entryDao)
+        rosterDao = database.rosterDao()
+        repository = AppRepository(gameDao, playerDao, entryDao, rosterDao)
 
         playerDao.insert(testPlayerOne)
         playerDao.insert(testPlayerTwo)

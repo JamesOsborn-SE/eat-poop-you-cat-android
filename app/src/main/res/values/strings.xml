@@ -98,6 +98,8 @@
     <string name="no_nickname_chosen_warning">Fine, I\'ll pick one for you</string>
     <string name="enter_nickname_prompt">Enter your name or nickname</string>
     <string name="playerid">PlayerId: %1$s</string>
+    <string name="halp">halp!</string>
+    <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can\'t think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>
         <item quantity="one">Imported %d Game</item>

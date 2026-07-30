@@ -12,6 +12,8 @@ import java.util.UUID
 data class Player(
     @PrimaryKey val id: UUID,
     @ColumnInfo(name = "name") val name: String,
+    val lanAddress: String? = null,
+    val torAddress: String? = null,
     @Serializable(with = DateSerializer::class)
     val createdAt: Date? = null,
 )

@@ -9,6 +9,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.data.RosterDao
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
@@ -43,13 +44,15 @@ class DrawViewModelTest : KoinTest {
     private val mockEntryDao = mock<EntryDao>()
     private val mockGameDao = mock<GameDao>()
     private val mockPlayerDao = mock<PlayerDao>()
+    private val mockRosterDao = mock<RosterDao>()
 
     // 1. Define a test module to replace production dependencies
     private val testModule = module {
         single { mockEntryDao }
         single { mockGameDao }
         single { mockPlayerDao }
-        single { AppRepository(get(), get(), get()) }
+        single { mockRosterDao }
+        single { AppRepository(get(), get(), get(), get()) }
         viewModel { (handle: SavedStateHandle) ->
             DrawViewModel(handle, repository = get())
         }

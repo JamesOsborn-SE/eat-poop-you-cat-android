@@ -15,7 +15,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Start
+import androidx.compose.material.icons.rounded.Lan
+import androidx.compose.material.icons.rounded.NetworkWifi
+import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
@@ -57,6 +59,7 @@ import java.util.UUID
 fun HomeScreen(
     viewModel: GreetingViewModel = koinViewModel(),
     onNavigateToNickname: (String) -> Unit,
+    onNavigateToLanGame: (String) -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -68,11 +71,17 @@ fun HomeScreen(
         isLoading = viewModel.isLoading,
         useNickNames = viewModel.useNicknames,
         toggleUseNicknames = { viewModel.updateUseNicknames() },
-        onStartGame = {
+        onStartLocalGame = {
             val entryId = UUID.randomUUID()
             viewModel.saveNewGame(
                 entryId
             ) { onNavigateToNickname(entryId.toString()) }
+        },
+        onStartLanGame = {
+            val entryId = UUID.randomUUID()
+            viewModel.saveNewGame(
+                entryId
+            ) { onNavigateToLanGame(entryId.toString()) }
         },
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,
@@ -86,7 +95,8 @@ fun HomeScreen(
     isLoading: Boolean,
     useNickNames: Boolean,
     toggleUseNicknames: () -> Unit,
-    onStartGame: () -> Unit,
+    onStartLocalGame: () -> Unit,
+    onStartLanGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -156,7 +166,9 @@ fun HomeScreen(
                             Text(stringResource(R.string.use_nicknames_more_info))
                         }
                     }
-                    StartGame(defaultModifier, onStartGame)
+                    StartLocalGame(defaultModifier, onStartLocalGame)
+                    StartLanGame(defaultModifier, onStartLocalGame)
+                    // StartInternetGame(defaultModifier, onStartGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
                     Text(
                         text = stringResource(id = R.string.app_description),
@@ -204,7 +216,7 @@ fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
 }
 
 @Composable
-fun StartGame(
+fun StartLocalGame(
     modifier: Modifier,
     onStartGame: () -> Unit,
 ) {
@@ -215,11 +227,49 @@ fun StartGame(
         Text(stringResource(id = R.string.dialog_start_game))
         Spacer(modifier = Modifier.size(5.dp))
         Icon(
-            Icons.Rounded.Start,
+            Icons.Rounded.PhoneAndroid,
             contentDescription = stringResource(id = R.string.dialog_start_game),
         )
     }
 }
+
+@Composable
+fun StartLanGame(
+    modifier: Modifier,
+    onStartGame: () -> Unit,
+) {
+    Button(
+        onClick = onStartGame,
+        modifier = modifier
+    ) {
+        Text("Start Local Game")
+        Spacer(modifier = Modifier.size(5.dp))
+        Icon(
+            Icons.Rounded.Lan,
+            contentDescription = stringResource(id = R.string.dialog_start_game),
+        )
+    }
+}
+
+
+@Composable
+fun StartInternetGame(
+    modifier: Modifier,
+    onStartGame: () -> Unit,
+) {
+    Button(
+        onClick = onStartGame,
+        modifier = modifier
+    ) {
+        Text("Start Internet Game")
+        Spacer(modifier = Modifier.size(5.dp))
+        Icon(
+            Icons.Rounded.NetworkWifi,
+            contentDescription = stringResource(id = R.string.dialog_start_game),
+        )
+    }
+}
+
 
 /**
  * Preview Screenshot #1
@@ -243,7 +293,8 @@ fun PreviewHomeScreen() {
             isLoading = false,
             useNickNames = useNicknames,
             toggleUseNicknames = toggleNicknames,
-            onStartGame = {},
+            onStartLanGame = {},
+            onStartLocalGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
         ) {}

@@ -8,8 +8,8 @@ import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.PreviewDawingWithSentance
 import dev.develsinthedetails.eatpoopyoucat.ui.home.PreviewHomeScreen
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.PreviewSentenceScreen
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.PreviewSentenceScreenWithDrawing
+import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenPreview
+import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenWithDrawingPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import org.junit.Rule
@@ -37,13 +37,13 @@ class GenerateScreenShots {
         val filename = "2"
         composeTestRule.setContent {
             AppTheme {
-                PreviewSentenceScreen()
+                SentenceScreenPreview()
             }
         }
         saveScreenshot(filename)
     }
     @Test
-    fun takePreviewDawingWithSentanceScreenShots(){
+    fun takePreviewDrawingWithSentenceScreenShots(){
         val filename = "3"
         composeTestRule.setContent {
             AppTheme {
@@ -58,7 +58,7 @@ class GenerateScreenShots {
         val filename = "4"
         composeTestRule.setContent {
             AppTheme {
-                PreviewSentenceScreenWithDrawing()
+                SentenceScreenWithDrawingPreview()
             }
         }
         saveScreenshot(filename)
