@@ -3,11 +3,11 @@ package dev.develsinthedetails.eatpoopyoucat.ui.preview
 import android.os.Build
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
-import dev.develsinthedetails.eatpoopyoucat.ui.draw.PreviewDawingWithSentance
-import dev.develsinthedetails.eatpoopyoucat.ui.home.PreviewHomeScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawingWithSentencePreview
+import dev.develsinthedetails.eatpoopyoucat.ui.home.HomeScreenPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenWithDrawingPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
@@ -26,7 +26,7 @@ class GenerateScreenShots {
         val filename = "1"
         composeTestRule.setContent {
             AppTheme {
-                PreviewHomeScreen()
+                HomeScreenPreview()
             }
         }
         saveScreenshot(filename)
@@ -47,7 +47,7 @@ class GenerateScreenShots {
         val filename = "3"
         composeTestRule.setContent {
             AppTheme {
-                PreviewDawingWithSentance()
+                DrawingWithSentencePreview()
             }
         }
         saveScreenshot(filename)

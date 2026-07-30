@@ -282,7 +282,7 @@ fun StartInternetGame(
     device = "spec:parent=Nexus 7 2013,orientation=landscape"
 )
 @Composable
-fun PreviewHomeScreen() {
+fun HomeScreenPreview() {
     var useNicknames by rememberSaveable { mutableStateOf(true) }
     val toggleNicknames = {
         useNicknames = !useNicknames

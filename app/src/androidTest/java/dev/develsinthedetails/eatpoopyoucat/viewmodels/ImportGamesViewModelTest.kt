@@ -24,6 +24,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.util.UUID
+import kotlin.time.Duration.Companion.milliseconds
 
 class ImportGamesViewModelTest {
     private val gameA = testGames[0]
@@ -64,6 +65,7 @@ class ImportGamesViewModelTest {
         database.entryDao().deleteAll()
         database.gameDao().deleteAll()
         database.playerDao().deleteAll()
+        database.rosterDao().deleteAll()
     }
 
     @Test
@@ -142,7 +144,7 @@ class ImportGamesViewModelTest {
         val uut = ImportGamesViewModel(repository)
         val job = launch {
             uut.addGames(exportedGames) {}
-            delay(1000)
+            delay(1000.milliseconds)
         }
         job.join()
 

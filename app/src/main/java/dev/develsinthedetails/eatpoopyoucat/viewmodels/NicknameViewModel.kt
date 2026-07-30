@@ -49,11 +49,11 @@ class NicknameViewModel(
     }
 
     fun isValidNickname(context: Context): Boolean {
-        val poolOfNickName = context.resources.getStringArray(R.array.nicknames)
+        val poolOfNickNames = context.resources.getStringArray(R.array.nicknames)
             .filterNot {
                 previousNicknames.contains(it)
             }.toMutableList()
-        val madeUpNickName = if(poolOfNickName.isNotEmpty()) poolOfNickName.random() else context.getString(R.string.oof)
+        val madeUpNickName = if(poolOfNickNames.isNotEmpty()) poolOfNickNames.random() else context.getString(R.string.oof)
 
         isError = (nickname.isBlank() || previousNicknames.contains(nickname))
             .also {

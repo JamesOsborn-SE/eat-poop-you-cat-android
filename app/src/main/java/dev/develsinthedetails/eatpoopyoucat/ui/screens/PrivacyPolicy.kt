@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.ui
+package dev.develsinthedetails.eatpoopyoucat.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
@@ -60,7 +60,7 @@ fun PrivacyPolicyScreen(
     device = "spec:parent=Nexus 7 2013,orientation=landscape"
 )
 @Composable
-fun PreviewPrivacyPolicyScreen() {
+fun PrivacyPolicyScreenPreview() {
     AppTheme {
         PrivacyPolicyScreen{}
     }

@@ -7,7 +7,9 @@ import android.graphics.drawable.BitmapDrawable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toBitmap
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,16 +20,19 @@ import kotlin.math.sin
 import kotlin.uuid.Uuid
 
 fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
-    val drawable = context.resources.getDrawable(drawableId, null)
+    val drawable = ResourcesCompat.getDrawable(context.resources, drawableId, context.theme)
 
     if (drawable is BitmapDrawable) {
         return drawable.bitmap
     }
+    val bitmap: Bitmap = drawable?.toBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight) ?: createBitmap(1, 1)
 
-    val bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
+    if (bitmap.height==1){
+        return bitmap
+    }
 
     val canvas = Canvas(bitmap)
-    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable!!.setBounds(0, 0, canvas.width, canvas.height)
     drawable.draw(canvas)
 
     return bitmap

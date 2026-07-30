@@ -463,14 +463,13 @@ fun Sentence(sentence: String?) {
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-fun PreviewDawingWithSentance() {
+fun DrawingWithSentencePreview() {
     val lines =
         Json.decodeFromString<List<Line>>(dev.develsinthedetails.eatpoopyoucat.utilities.catTestDrawingLinesInJson)
 
     val setCanvasResolution: (IntSize) -> Unit = {}
 
     val sentence =
-//        "Id vero libris usu, vim sale mucius inciderint ut, idque debitis mei ea. Nostrud sapientem patrioque ei mei, et vim nostrum antiopam persequeris, nec everti diceret legendos ea. Te mei adhuc denique, illum evertitur no vim. Vel omnis aliquip ponderum te, per cu modo suas ipsum. Legere vocibus ex vix."
         stringResource(id = R.string.a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler)
     AppTheme {
         DrawScreen(

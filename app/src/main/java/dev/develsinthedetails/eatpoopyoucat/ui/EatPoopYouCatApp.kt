@@ -23,6 +23,10 @@ import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.type
+import dev.develsinthedetails.eatpoopyoucat.ui.screens.CreditsScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.screens.LanGameScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.screens.NicknameScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.screens.PrivacyPolicyScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.home.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviousGameScreen
@@ -79,7 +83,7 @@ fun EatPoopYouCatApp(
                 navArgument(ID) { type = NavType.StringType }
             )
         ) {
-//            Screen.LanGameScreen(nav = navController)
+            LanGameScreen(nav = navController)
         }
 
         composable(

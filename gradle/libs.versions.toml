@@ -4,7 +4,7 @@ activityCompose = "1.13.0"
 compose-bom = "2026.06.01"
 composeVersion = "1.11.4"
 compose-plugin = "2.4.10"
-constraintlayout-compose = "1.1.1"
+constraintlayout-compose = "1.1.2"
 core-ktx = "1.19.0"
 core-splashscreen = "1.2.0"
 core-testing = "2.2.0"
@@ -34,7 +34,6 @@ uiUnit = "1.11.4"
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-androidx-startup = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
 constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
 core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen" }
@@ -45,8 +44,8 @@ junit = { module = "junit:junit", version.ref = "junit" }
 junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junit-ktx" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
-koin-android = { module = "io.insert-koin:koin-android", version = "4.1.1" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.1.1" }
+koin-android = { module = "io.insert-koin:koin-android", version = "4.2.2" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version = "4.2.2" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }

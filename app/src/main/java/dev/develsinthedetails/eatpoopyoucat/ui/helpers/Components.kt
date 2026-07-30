@@ -215,7 +215,7 @@ fun AppButton(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewSubmit() {
+fun SubmitPreview() {
     AppTheme {
         SubmitButton { }
     }
@@ -224,7 +224,7 @@ fun PreviewSubmit() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewSpinner() {
+fun SpinnerPreview() {
     AppTheme {
         Spinner()
     }
@@ -234,7 +234,7 @@ fun PreviewSpinner() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewSpinnerScreen() {
+fun SpinnerScreenPreview() {
     AppTheme {
         SpinnerScreen()
     }
@@ -243,7 +243,7 @@ fun PreviewSpinnerScreen() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewConfirmDialog() {
+fun ConfirmDialogPreview() {
     AppTheme {
         Surface {
             ConfirmDialog(

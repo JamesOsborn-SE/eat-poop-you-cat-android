@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.ui
+package dev.develsinthedetails.eatpoopyoucat.ui.screens
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ScrollState
@@ -36,6 +36,7 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.AppButton
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
+import dev.develsinthedetails.eatpoopyoucat.ui.navigateToNextTurn
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
 import dev.develsinthedetails.eatpoopyoucat.viewmodels.NicknameViewModel
