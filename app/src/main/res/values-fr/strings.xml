@@ -113,4 +113,10 @@
     </plurals>
     <string name="backup_games">Sauvegarder les anciennes parties</string>
     <string name="sentence_is_blank">c\'est tout vide… Essaies peut-être d\'appuyer sur plus de boutons ?</string>
+    <string name="new_player_prompt">Nouveau joueur; Qui est-ce ?</string>
+    <string name="nickname_prompt">Comment est-ce que l\'on t\'appelle ?</string>
+    <string name="previous_nicknames">Pseudonymes précédents :</string>
+    <string name="no_nickname_chosen_warning">Bien, je vais en choisir un pour vous</string>
+    <string name="enter_nickname_prompt">Entrez votre nom, surnom ou pseudo</string>
+    <string name="playerid">Numéro de joueur : %1$s</string>
 </resources>
