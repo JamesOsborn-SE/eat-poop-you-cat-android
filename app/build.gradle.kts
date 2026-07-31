@@ -64,6 +64,7 @@ room {
 dependencies {
     implementation(libs.androidx.compose.ui.unit)
     implementation(libs.androidx.graphics.shapes)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)
     implementation(platform(libs.compose.bom))
@@ -82,6 +83,7 @@ dependencies {
     implementation(libs.runtime.livedata)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material.icons.extended)
+
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.cbor)
     implementation(libs.constraintlayout.compose)
@@ -99,7 +101,6 @@ dependencies {
 
     testImplementation(platform(libs.koin.bom))
     testImplementation(libs.koin.test)
-//    testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit.ktx)
 
     androidTestImplementation(libs.core.testing)

@@ -1,12 +1,9 @@
-package dev.develsinthedetails.eatpoopyoucat.ui.home
+package dev.develsinthedetails.eatpoopyoucat.ui.screens
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,11 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.Lan
-import androidx.compose.material.icons.rounded.NetworkWifi
 import androidx.compose.material.icons.rounded.PhoneAndroid
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -27,16 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -50,16 +38,14 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.utilities.getBitmapFromVectorDrawable
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Greeting
 import org.koin.compose.viewmodel.koinViewModel
-import java.util.UUID
 
 
 @Composable
 fun HomeScreen(
-    viewModel: GreetingViewModel = koinViewModel(),
-    onNavigateToNickname: (String) -> Unit,
-    onNavigateToLanGame: (String) -> Unit,
+    viewModel: Greeting = koinViewModel(),
+    onNavigateToNewGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -69,20 +55,7 @@ fun HomeScreen(
     }
     HomeScreen(
         isLoading = viewModel.isLoading,
-        useNickNames = viewModel.useNicknames,
-        toggleUseNicknames = { viewModel.updateUseNicknames() },
-        onStartLocalGame = {
-            val entryId = UUID.randomUUID()
-            viewModel.saveNewGame(
-                entryId
-            ) { onNavigateToNickname(entryId.toString()) }
-        },
-        onStartLanGame = {
-            val entryId = UUID.randomUUID()
-            viewModel.saveNewGame(
-                entryId
-            ) { onNavigateToLanGame(entryId.toString()) }
-        },
+        onNavigateToNewGame = onNavigateToNewGame,
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,
         onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
@@ -93,16 +66,12 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    useNickNames: Boolean,
-    toggleUseNicknames: () -> Unit,
-    onStartLocalGame: () -> Unit,
-    onStartLanGame: () -> Unit,
+    onNavigateToNewGame: () -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
 ) {
     val padding = 10.dp
-    var showNicknameMoreInfo by rememberSaveable { mutableStateOf(false) }
     Scaffolds.Home(
         title = stringResource(
             id = R.string.welcome_message,
@@ -145,30 +114,8 @@ fun HomeScreen(
                             .padding(8.dp)
                             .clip(CircleShape)
                     )
-                    Row(modifier = defaultModifier.pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = { toggleUseNicknames() }
-                        )
-                    }) {
-                        Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() })
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = stringResource(R.string.use_nicknames)
-                        )
-                        TextButton(
-                            modifier = Modifier.rotate(13f),
-                            onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
-                            Text(stringResource(R.string.what_s_this))
-                        }
-                    }
-                    AnimatedVisibility(showNicknameMoreInfo) {
-                        Row(modifier = defaultModifier) {
-                            Text(stringResource(R.string.use_nicknames_more_info))
-                        }
-                    }
-                    StartLocalGame(defaultModifier, onStartLocalGame)
-                    StartLanGame(defaultModifier, onStartLocalGame)
-                    // StartInternetGame(defaultModifier, onStartGame)
+
+                    StartNewGame(defaultModifier, onNavigateToNewGame)
                     ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
                     Text(
                         text = stringResource(id = R.string.app_description),
@@ -214,9 +161,8 @@ fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
         )
     }
 }
-
 @Composable
-fun StartLocalGame(
+fun StartNewGame(
     modifier: Modifier,
     onStartGame: () -> Unit,
 ) {
@@ -233,44 +179,6 @@ fun StartLocalGame(
     }
 }
 
-@Composable
-fun StartLanGame(
-    modifier: Modifier,
-    onStartGame: () -> Unit,
-) {
-    Button(
-        onClick = onStartGame,
-        modifier = modifier
-    ) {
-        Text("Start Local Game")
-        Spacer(modifier = Modifier.size(5.dp))
-        Icon(
-            Icons.Rounded.Lan,
-            contentDescription = stringResource(id = R.string.dialog_start_game),
-        )
-    }
-}
-
-
-@Composable
-fun StartInternetGame(
-    modifier: Modifier,
-    onStartGame: () -> Unit,
-) {
-    Button(
-        onClick = onStartGame,
-        modifier = modifier
-    ) {
-        Text("Start Internet Game")
-        Spacer(modifier = Modifier.size(5.dp))
-        Icon(
-            Icons.Rounded.NetworkWifi,
-            contentDescription = stringResource(id = R.string.dialog_start_game),
-        )
-    }
-}
-
-
 /**
  * Preview Screenshot #1
  */
@@ -283,18 +191,10 @@ fun StartInternetGame(
 )
 @Composable
 fun HomeScreenPreview() {
-    var useNicknames by rememberSaveable { mutableStateOf(true) }
-    val toggleNicknames = {
-        useNicknames = !useNicknames
-    }
-
     AppTheme {
         HomeScreen(
             isLoading = false,
-            useNickNames = useNicknames,
-            toggleUseNicknames = toggleNicknames,
-            onStartLanGame = {},
-            onStartLocalGame = {},
+            onNavigateToNewGame = {},
             onNavigateToPreviousGames = {},
             onNavigateToCredits = {},
         ) {}

@@ -54,16 +54,17 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGames
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun PreviousGamesScreen(
     modifier: Modifier = Modifier,
-    viewModel: PreviousGamesViewModel = koinViewModel(),
+    viewModel: PreviousGames = koinViewModel(),
     onGoHome: () -> Unit = {},
-    onGameClick: (String) -> Unit,
+    onGameClick: (Uuid) -> Unit,
     onBackupGames: (games: List<GameWithEntries>?) -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {
@@ -97,8 +98,8 @@ fun PreviousGamesScreen(
     onGoHome: () -> Unit,
     onBackupGames: () -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>?,
-    onGotoGame: (String) -> Unit,
-    onDelete: (String) -> Unit,
+    onGotoGame: (Uuid) -> Unit,
+    onDelete: (Uuid) -> Unit,
 ) {
     Scaffolds.PreviousGames(
         title = pluralStringResource(
@@ -150,8 +151,8 @@ fun PreviousGamesScreen(
                         key = { it.game.id }
                     ) { game ->
                         GameListItem(game = game,
-                            onGotoGame = { onGotoGame(game.game.id.toString()) },
-                            onDelete = { onDelete(game.game.id.toString()) })
+                            onGotoGame = { onGotoGame(game.game.id) },
+                            onDelete = { onDelete(game.game.id) })
                     }
                 }
             }

@@ -23,10 +23,10 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.util.UUID
+import kotlin.uuid.Uuid
 import kotlin.time.Duration.Companion.milliseconds
 
-class ImportGamesViewModelTest {
+class ImportGamesTest {
     private val gameA = testGames[0]
     private val gameC = testGames[2]
 
@@ -78,7 +78,7 @@ class ImportGamesViewModelTest {
         database.playerDao().deleteAll()
         playerDao.insert(testPlayerOne)
         gameDao.delete(games.first().id)
-        val uut = ImportGamesViewModel(repository)
+        val uut = ImportGames(repository)
         uut.addGames(exportedGames) {}
 
         val gamesAfterDeleteAndImport = gameDao.getAllAsync()
@@ -100,7 +100,7 @@ class ImportGamesViewModelTest {
         exportedGamesPlusOne.add(last.copy(
             entries = testEntriesGame2.map {
                 Entry(
-                    id= UUID.randomUUID(),
+                    id= Uuid.random(),
                     it.playerId,
                     it.localPlayerName,
                     seq++,
@@ -113,7 +113,7 @@ class ImportGamesViewModelTest {
         val entries = entryDao.getAllAsync()
         val numberOfGame = games.count()
         val numberOfEntries = entries.count() + testEntriesGame2.count()
-        val uut = ImportGamesViewModel(repository)
+        val uut = ImportGames(repository)
         val j = async {
             uut.addGames(exportedGamesPlusOne) {}
         }
@@ -141,7 +141,7 @@ class ImportGamesViewModelTest {
         tearDown()
 
         playerDao.insert(player!!)
-        val uut = ImportGamesViewModel(repository)
+        val uut = ImportGames(repository)
         val job = launch {
             uut.addGames(exportedGames) {}
             delay(1000.milliseconds)

@@ -5,7 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import kotlinx.serialization.Serializable
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Entity(
     primaryKeys = ["gameId", "playerId"],
@@ -27,10 +27,10 @@ import java.util.UUID
 
 @Serializable
 data class Roster(
-    @Serializable(with = UUIDSerializer::class)
-    val gameId: UUID,
-    @Serializable(with = UUIDSerializer::class)
-    val playerId: UUID,
+    @Serializable(with = UuidSerializer::class)
+    val gameId: Uuid,
+    @Serializable(with = UuidSerializer::class)
+    val playerId: Uuid,
     val isLeader: Boolean,
 )
 

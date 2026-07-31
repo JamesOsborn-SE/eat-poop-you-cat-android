@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface RosterDao {
@@ -14,25 +14,25 @@ interface RosterDao {
     fun getAll(): Flow<List<Roster>>
 
     @Query("SELECT * FROM roster WHERE gameId=:id")
-    fun getAllByGame(id: UUID): Flow<List<Roster>>
+    fun getAllByGame(id: Uuid): Flow<List<Roster>>
 
     @Query("SELECT playerId FROM roster WHERE gameId=:gameId ORDER BY playerId ASC")
-    fun getOrderedPlayerIds(gameId: UUID): Flow<List<UUID>>
+    fun getOrderedPlayerIds(gameId: Uuid): Flow<List<Uuid>>
 
     @Query("SELECT * FROM roster WHERE playerId=:id")
-    fun getAllByPlayer(id: UUID): Flow<List<Roster>>
+    fun getAllByPlayer(id: Uuid): Flow<List<Roster>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(roster: Roster)
 
     @Query("DELETE FROM roster WHERE gameId=:gameId")
-    suspend fun deleteByGame(gameId: UUID)
+    suspend fun deleteByGame(gameId: Uuid)
 
     @Query("DELETE FROM roster WHERE playerId=:playerId")
-    suspend fun deletePlayer(playerId: UUID)
+    suspend fun deletePlayer(playerId: Uuid)
 
     @Query("DELETE FROM roster WHERE gameId=:gameId AND playerId=:playerId")
-    suspend fun delete(gameId: UUID, playerId: UUID)
+    suspend fun delete(gameId: Uuid, playerId: Uuid)
 
     @Update
     suspend fun update(roster: Roster)

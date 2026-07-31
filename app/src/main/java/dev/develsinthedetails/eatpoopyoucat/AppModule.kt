@@ -1,13 +1,14 @@
 package dev.develsinthedetails.eatpoopyoucat
 
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.GreetingViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGamesViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.NicknameViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGamesViewModel
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Draw
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Greeting
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGames
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.NetGameViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Nickname
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGame
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGames
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Sentence
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -15,11 +16,12 @@ import org.koin.dsl.module
 
 val appModule = module {
     singleOf(::AppRepository)
-    viewModelOf(::SentenceViewModel)
-    viewModelOf(::PreviousGamesViewModel)
-    viewModel { PreviousGameViewModel(get(), get()) }
-    viewModelOf(::GreetingViewModel)
-    viewModelOf(::DrawViewModel)
-    viewModelOf(::NicknameViewModel)
-    viewModelOf(::ImportGamesViewModel)
+    viewModelOf(::Sentence)
+    viewModelOf(::PreviousGames)
+    viewModel { PreviousGame(get(), get()) }
+    viewModelOf(::Greeting)
+    viewModelOf(::Draw)
+    viewModelOf(::Nickname)
+    viewModelOf(::ImportGames)
+    viewModelOf(::NetGameViewModel)
 }

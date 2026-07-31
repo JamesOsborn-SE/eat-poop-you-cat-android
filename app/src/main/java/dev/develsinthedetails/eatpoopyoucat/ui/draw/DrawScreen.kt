@@ -66,17 +66,18 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.drawingPen
+import dev.develsinthedetails.eatpoopyoucat.utilities.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawMode
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Draw
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun DrawScreen(
-    drawViewModel: DrawViewModel = koinViewModel(),
-    onNavigateToSentence: (String) -> Unit,
-    onNavigateToEndedGame: (String) -> Unit
+    drawViewModel: Draw = koinViewModel(),
+    onNavigateToSentence: (Uuid) -> Unit,
+    onNavigateToEndedGame: (Uuid) -> Unit
 ) {
     val previousEntry by drawViewModel.previousEntry.observeAsState()
     val undoCount = drawViewModel.undoCount.observeAsState(initial = 0)
@@ -96,7 +97,7 @@ fun DrawScreen(
     val toastText = stringResource(id = R.string.pass_to_the_next)
 
     val onEndedGame =
-        { onNavigateToEndedGame(previousEntry?.gameId.toString()) }
+        { onNavigateToEndedGame(previousEntry?.gameId!!) }
 
     val onSubmit = {
         if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
@@ -314,8 +315,8 @@ fun DrawBox(
         lines.forEach {
             val drawColor = if (it.properties.eraseMode) drawingBackground else drawingPen
             val path = it.toPath()
-            val scaledPath = DrawViewModel.scalePath(path, currentResolution, it.resolution)
-            val scaledStroke = DrawViewModel.scaleStroke(
+            val scaledPath = Draw.scalePath(path, currentResolution, it.resolution)
+            val scaledStroke = Draw.scaleStroke(
                 currentResolution,
                 it.resolution,
                 it.properties.strokeWidth

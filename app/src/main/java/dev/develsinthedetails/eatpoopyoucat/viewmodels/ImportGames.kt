@@ -8,7 +8,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class ImportGamesViewModel(
+class ImportGames(
     val repository: AppRepository,
 ) : ViewModel() {
 

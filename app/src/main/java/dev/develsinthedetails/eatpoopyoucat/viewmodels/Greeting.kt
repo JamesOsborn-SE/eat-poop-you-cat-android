@@ -15,9 +15,10 @@ import dev.develsinthedetails.eatpoopyoucat.data.Game
 import dev.develsinthedetails.eatpoopyoucat.data.Player
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
+import kotlin.uuid.toJavaUuid
 
-class GreetingViewModel(
+class Greeting(
     private val repository: AppRepository,
     private val application: Application
 ) : ViewModel() {
@@ -26,7 +27,7 @@ class GreetingViewModel(
     var isLoading by mutableStateOf(false)
 
     private var userName by mutableStateOf("")
-    private val playerId: UUID = SharedPref.playerId()
+    private val playerId: Uuid = SharedPref.playerId()
 
 
     init {
@@ -51,10 +52,10 @@ class GreetingViewModel(
         }
     }
 
-    fun saveNewGame(entryId: UUID, onNavigateToSentence: () -> Unit) {
+    fun saveNewGame(entryId: Uuid, onNavigateToSentence: () -> Unit) {
         isLoading = true
-        val gameId = UUID.randomUUID()
-        Log.i("test", "${entryId.version()}")
+        val gameId = Uuid.random()
+        Log.i("test", "${entryId.toJavaUuid().version()}")
         viewModelScope.launch {
             repository.createGame(
                 Game(

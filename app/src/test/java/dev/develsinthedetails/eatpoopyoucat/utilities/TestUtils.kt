@@ -5,24 +5,24 @@ import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.Game
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.Player
-import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.uuid.Uuid
 
 val testGames = arrayListOf(
-    Game(UUID.fromString("00000000-0000-0000-0000-000000000001"), 0, 0),
-    Game(UUID.fromString("00000000-0000-0000-0000-000000000002"), 0, 0),
-    Game(UUID.fromString("00000000-0000-0000-0000-000000000003"), 0, 0)
+    Game(Uuid.parse("00000000-0000-0000-0000-000000000001"), 0, 0),
+    Game(Uuid.parse("00000000-0000-0000-0000-000000000002"), 0, 0),
+    Game(Uuid.parse("00000000-0000-0000-0000-000000000003"), 0, 0)
 )
-val testPlayerOne = Player(UUID.fromString("00000000-0000-0000-0000-100000000001"), "bob")
-val testPlayerTwo = Player(UUID.fromString("00000000-0000-0000-0000-100000000002"), "bobbie")
+val testPlayerOne = Player(Uuid.parse("00000000-0000-0000-0000-100000000001"), "bob")
+val testPlayerTwo = Player(Uuid.parse("00000000-0000-0000-0000-100000000002"), "bobbie")
 
 
 val testDrawing = Gzip.compress(catTestDrawingLinesInJson)
 val testGame = testGames[0]
 val testEntries = arrayListOf(
     Entry(
-        id = UUID.fromString("e0000000-0000-0000-0000-000000000001"),
+        id = Uuid.parse("e0000000-0000-0000-0000-000000000001"),
         playerId = testPlayerOne.id,
         sequence = 0,
         sentence = "My cat likes to eat wet food on their birthday",
@@ -31,7 +31,7 @@ val testEntries = arrayListOf(
         timePassed = 600
     ),
     Entry(
-        id = UUID.fromString("e0000000-0000-0000-0000-000000000002"),
+        id = Uuid.parse("e0000000-0000-0000-0000-000000000002"),
         playerId = testPlayerTwo.id,
         sequence = 1,
         sentence = null,
@@ -40,7 +40,7 @@ val testEntries = arrayListOf(
         timePassed = 600
     ),
     Entry(
-        id = UUID.fromString("e0000000-0000-0000-0000-000000000003"),
+        id = Uuid.parse("e0000000-0000-0000-0000-000000000003"),
         playerId = testPlayerOne.id,
         sequence = 2,
         sentence = "some cats eat hockey pucks",

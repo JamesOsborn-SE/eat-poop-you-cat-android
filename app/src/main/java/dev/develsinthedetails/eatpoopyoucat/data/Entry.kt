@@ -6,8 +6,8 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
-import java.util.Date
-import java.util.UUID
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 /**
  * Entry is the main unit of game data it holds the drawing/sentence
@@ -29,22 +29,20 @@ import java.util.UUID
     )],
     indices = [Index("gameId"), Index("playerId")],
 )
+
+//@OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class Entry(
-    @Serializable(with = UUIDSerializer::class)
-    @PrimaryKey val id: UUID,
-    @Serializable(with = UUIDSerializer::class)
-    val playerId: UUID,
+    @PrimaryKey val id: Uuid,
+    val playerId: Uuid,
     val localPlayerName: String? = null,
     val sequence: Int,
-    @Serializable(with = UUIDSerializer::class)
-    val gameId: UUID,
+    val gameId: Uuid,
     val timePassed: Int,
     val sentence: String? = null,
     val drawing: ByteArray? = null,
-    @Serializable(with = DateSerializer::class)
-    val createdAt: Date? = null,
-){
+    val createdAt: Instant? = null
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

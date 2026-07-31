@@ -54,19 +54,19 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.localTimestamp
 import dev.develsinthedetails.eatpoopyoucat.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.utilities.valueOrEmpty
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGameViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.PreviousGame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import java.text.DateFormat
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
-    viewModel: PreviousGameViewModel = koinViewModel(),
+    viewModel: PreviousGame = koinViewModel(),
     onBack: () -> Unit,
-    onContinueGame: (UUID) -> Unit = {},
+    onContinueGame: (Uuid) -> Unit = {},
     onBackupGame: (games: List<GameWithEntries>?) -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {

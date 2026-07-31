@@ -1,6 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.ui.screens
 
-import android.content.res.Configuration
+
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,10 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -38,15 +36,13 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.AppButton
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.Nickname
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.NetGameViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun NicknameScreen(
-    viewModel: Nickname = koinViewModel(),
-    nav: NavHostController,
-) {
+fun LanGameScreen(
+    viewModel: NetGameViewModel = koinViewModel(),
+    nav: NavHostController) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val onContinueGame = navigateToNextTurn(navController = nav)
@@ -58,29 +54,29 @@ fun NicknameScreen(
         if (!SharedPref.useNicknames() && previousEntry != null)
             onContinueGame(previousEntry)
         else
-            NicknameScreen(
-                        nickname = viewModel.nickname,
-                        previousNicknames = viewModel.previousNicknames,
-                        onChange = { viewModel.updateNickname(it) },
-                        onSubmit = {
-                            if (viewModel.isValidNickname(context)) {
-                                SharedPref.write(SharedPref.NICKNAME, viewModel.nickname.trim())
-                                onContinueGame(viewModel.previousEntry!!)
-                            }
-                        },
-                        onEnd = {
-                            nav.navigate(Screen.Game(viewModel.previousEntry!!.gameId)) {
-                                popUpTo(Screen.Home)
-                            }
-                        },
-                        isError = viewModel.isError,
-                        focusRequester = focusRequester
-                    )
-                }
- }
+            LanGameScreen(
+                nickname = viewModel.nickname,
+                previousNicknames = viewModel.previousNicknames,
+                onChange = { viewModel.updateNickname(it) },
+                onSubmit = {
+                    if (viewModel.isValidNickname(context)) {
+                        SharedPref.write(SharedPref.NICKNAME, viewModel.nickname.trim())
+                        onContinueGame(viewModel.previousEntry!!)
+                    }
+                },
+                onEnd = {
+                    nav.navigate(Screen.Game(viewModel.previousEntry!!.gameId)) {
+                        popUpTo(Screen.Home)
+                    }
+                },
+                isError = viewModel.isError,
+                focusRequester = focusRequester
+            )
+    }
+}
 
 @Composable
-fun NicknameScreen(
+fun LanGameScreen(
     nickname: String,
     previousNicknames: List<String>,
     onChange: (String) -> Unit,
@@ -157,67 +153,6 @@ fun NicknameScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NicknamePreview() {
-    val focusRequester = remember { FocusRequester() }
-    val listOfNicknames = stringArrayResource(id = R.array.nicknames).toList()
-    AppTheme {
-        Surface {
-            NicknameScreen(
-                stringResource(id = R.string.oof),
-                listOfNicknames,
-                {},
-                {},{},
-                false,
-                focusRequester
-            )
-        }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NicknamePreviewEmpty() {
-    val focusRequester = remember { FocusRequester() }
-    val listOfNicknames = stringArrayResource(id = R.array.nicknames).toList()
-    AppTheme {
-        Surface {
-            NicknameScreen(
-                stringResource(id = R.string.oof),
-                listOfNicknames,
-                {},
-                {},{},
-                true,
-                focusRequester
-            )
-        }
-    }
-}
-
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun NicknamePreviewEmptyNobody() {
-    val focusRequester = remember { FocusRequester() }
-    val listOfNicknames = listOf<String>()
-    AppTheme {
-        Surface {
-            NicknameScreen(
-                "",
-                listOfNicknames,
-                {},
-                {},{},
-                false,
-                focusRequester
-            )
         }
     }
 }

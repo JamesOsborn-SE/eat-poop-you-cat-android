@@ -7,14 +7,14 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Dao
 interface EntryDao {
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
-    fun get(id: UUID): Flow<Entry>
+    fun get(id: Uuid): Flow<Entry>
 
     @Transaction
     @Query("SELECT * FROM entry")
@@ -22,19 +22,19 @@ interface EntryDao {
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
-    suspend fun getAsync(id: UUID): Entry
+    suspend fun getAsync(id: Uuid): Entry
 
     @Transaction
     @Query("SELECT * FROM entry WHERE gameId=:id")
-    fun getAllEntriesByGame(id: UUID): Flow<List<Entry>>
+    fun getAllEntriesByGame(id: Uuid): Flow<List<Entry>>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE gameId=:gameId")
-    suspend fun getAllEntriesByGameAsync(gameId: UUID): List<Entry>
+    suspend fun getAllEntriesByGameAsync(gameId: Uuid): List<Entry>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
-    suspend fun getEntryAndPlayersAsync(id: UUID): Entry
+    suspend fun getEntryAndPlayersAsync(id: Uuid): Entry
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)

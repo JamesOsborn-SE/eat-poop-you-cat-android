@@ -15,7 +15,7 @@ import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Draw
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -33,10 +33,10 @@ import org.koin.test.KoinTestRule
 import org.koin.test.inject
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 
-class DrawViewModelTest : KoinTest {
+class DrawTest : KoinTest {
 
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -54,7 +54,7 @@ class DrawViewModelTest : KoinTest {
         single { mockRosterDao }
         single { AppRepository(get(), get(), get(), get()) }
         viewModel { (handle: SavedStateHandle) ->
-            DrawViewModel(handle, repository = get())
+            Draw(handle, repository = get())
         }
     }
 
@@ -66,7 +66,7 @@ class DrawViewModelTest : KoinTest {
         })
         .around(instantTaskExecutorRule)
 
-    private val viewModel: DrawViewModel by inject {
+    private val viewModel: Draw by inject {
         parametersOf(SavedStateHandle(mapOf(ID to testEntriesGame1[0].id.toString())))
     }
 
@@ -77,7 +77,7 @@ class DrawViewModelTest : KoinTest {
         SharedPref.write(SharedPref.PLAYER_ID, testPlayerOne.id.toString())
 
         // Setup mock behavior
-        `when`(mockEntryDao.get(UUID.fromString(testEntriesGame1[0].id.toString())))
+        `when`(mockEntryDao.get(Uuid.parse(testEntriesGame1[0].id.toString())))
             .thenReturn(flow {
                 emit(testEntriesGame1[0])
             })
@@ -97,7 +97,7 @@ class DrawViewModelTest : KoinTest {
         val simpleDrawingLines = Json.decodeFromString<List<Line>>(testSimpleDrawingJson)
         viewModel.setCanvasResolution(1920, 1080)
         intSharedFlow.value = simpleDrawingLines
-        val field = DrawViewModel::class.java.getDeclaredField("drawingLines")
+        val field = Draw::class.java.getDeclaredField("drawingLines")
         field.isAccessible = true
         field.set(viewModel, intSharedFlow)
 

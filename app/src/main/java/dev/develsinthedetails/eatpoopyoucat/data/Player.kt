@@ -4,16 +4,14 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import kotlinx.serialization.Serializable
-import java.util.Date
-import java.util.UUID
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
 @Entity(indices =  [Index("id")])
 data class Player(
-    @PrimaryKey val id: UUID,
+    @PrimaryKey val id: Uuid,
     @ColumnInfo(name = "name") val name: String,
     val lanAddress: String? = null,
     val torAddress: String? = null,
-    @Serializable(with = DateSerializer::class)
-    val createdAt: Date? = null,
+    val createdAt: Instant? = null,
 )

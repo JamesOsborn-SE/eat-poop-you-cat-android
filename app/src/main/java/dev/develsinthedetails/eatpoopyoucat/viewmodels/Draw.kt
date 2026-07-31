@@ -20,6 +20,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.Line
 import dev.develsinthedetails.eatpoopyoucat.data.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.Resolution
+import dev.develsinthedetails.eatpoopyoucat.utilities.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,11 +29,15 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import java.util.UUID
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.uuid.Uuid
 
-class DrawViewModel(
+enum class DrawMode {
+    Draw, Erase
+}
+
+class Draw(
     state: SavedStateHandle,
     private val repository: AppRepository,
 ) : ViewModel() {
@@ -56,7 +61,7 @@ class DrawViewModel(
     private val prevEnt = repository.getEntry(previousEntryId)
     val previousEntry: LiveData<Entry> = prevEnt.asLiveData()
 
-    val entryId = UUID.randomUUID().toString()
+    val entryId = Uuid.random()
 
     var drawingLines = MutableStateFlow(listOf<Line>())
         private set
@@ -102,7 +107,7 @@ class DrawViewModel(
         isLoading = true
         viewModelScope.launch {
             val newEntry: Entry = previousEntry.value!!.copy(
-                id = UUID.fromString(entryId),
+                id = entryId,
                 localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
                 sentence = null,
                 drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),

@@ -7,7 +7,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 
 
-class PreviousGameViewModel(
+class PreviousGame(
     state: SavedStateHandle,
     repository: AppRepository,
 ) : ViewModel() {

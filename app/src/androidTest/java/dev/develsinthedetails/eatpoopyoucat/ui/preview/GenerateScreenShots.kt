@@ -7,7 +7,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawingWithSentencePreview
-import dev.develsinthedetails.eatpoopyoucat.ui.home.HomeScreenPreview
+import dev.develsinthedetails.eatpoopyoucat.ui.screens.HomeScreenPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenWithDrawingPreview
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme

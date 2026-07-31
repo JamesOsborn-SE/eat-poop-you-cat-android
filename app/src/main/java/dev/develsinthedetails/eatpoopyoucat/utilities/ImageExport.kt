@@ -28,11 +28,11 @@ import dev.develsinthedetails.eatpoopyoucat.ui.previousgames.PreviewData
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.app_icon_background
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_background
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.md_theme_light_drawing_pen
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.DrawViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Draw
 import kotlinx.serialization.json.Json
 import java.text.DateFormat.getDateInstance
-import java.util.Date
 import kotlin.math.max
+import kotlin.time.Instant
 
 class ImageExport(
     private val entries: List<Entry>,
@@ -79,7 +79,7 @@ class ImageExport(
         return bitmap
     }
 
-    private fun metadataBitmap(createdAt: Date?, playerName: String?): Bitmap {
+    private fun metadataBitmap(createdAt: Instant?, playerName: String?): Bitmap {
         val textPaint = TextPaint()
         textPaint.color = Color.Black.toArgb()
         textPaint.textSize = 20f
@@ -94,13 +94,12 @@ class ImageExport(
         )
 
         val textHeight = sl.height + PADDING * 2
-        val tmpBitmap = Bitmap.createBitmap(WIDTH, textHeight, Bitmap.Config.ARGB_8888)
+        val tmpBitmap = createBitmap(WIDTH, textHeight)
         val tmpCanvas = Canvas(tmpBitmap)
 
-        tmpCanvas.save()
-        tmpCanvas.translate(PADDING.toFloat() * 2, PADDING.toFloat())
-        sl.draw(tmpCanvas)
-        tmpCanvas.restore()
+        tmpCanvas.withTranslation(PADDING.toFloat() * 2, PADDING.toFloat()) {
+            sl.draw(this)
+        }
         return tmpBitmap
     }
 
@@ -123,14 +122,13 @@ class ImageExport(
         val textHeight = sl.height + PADDING
         val height = max(appIcon.height + PADDING * 2, textHeight)
         val textOffset = if (appName.count() > 30) 0 else (height / 2f) - PADDING * 3
-        val tmpBitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
+        val tmpBitmap = createBitmap(WIDTH, height)
         val tmpCanvas = Canvas(tmpBitmap)
         tmpCanvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), headerPaint)
         tmpCanvas.drawBitmap(appIcon, PADDING.toFloat(), PADDING.toFloat(), null)
-        tmpCanvas.save()
-        tmpCanvas.translate(PADDING.toFloat() * 3 + appIcon.width, textOffset.toFloat())
-        sl.draw(tmpCanvas)
-        tmpCanvas.restore()
+        tmpCanvas.withTranslation(PADDING.toFloat() * 3 + appIcon.width, textOffset.toFloat()) {
+            sl.draw(this)
+        }
         return tmpBitmap
     }
 
@@ -138,12 +136,12 @@ class ImageExport(
         drawing: ByteArray
     ): Bitmap {
 
-        val tmpBitmap = Bitmap.createBitmap(WIDTH, WIDTH, Bitmap.Config.ARGB_8888)
+        val tmpBitmap = createBitmap(WIDTH, WIDTH)
         val tmpCanvas = Canvas(tmpBitmap)
 
         val lines: MutableList<Line> = Json.decodeFromString(Gzip.decompressToString(drawing))
         lines.forEach { line ->
-            val stroke = DrawViewModel.scaleStroke(
+            val stroke = Draw.scaleStroke(
                 Resolution(WIDTH, WIDTH),
                 line.resolution,
                 if (line.properties.eraseMode) ERASE_STROKE else PEN_STROKE
@@ -156,7 +154,7 @@ class ImageExport(
             penPaint.strokeJoin = Paint.Join.ROUND
             penPaint.strokeWidth = stroke
             val newPath =
-                DrawViewModel.scalePath(line.toPath(), Resolution(WIDTH, WIDTH), line.resolution)
+                Draw.scalePath(line.toPath(), Resolution(WIDTH, WIDTH), line.resolution)
             tmpCanvas.drawPath(newPath.asAndroidPath(), penPaint)
         }
         return tmpBitmap
@@ -180,13 +178,12 @@ class ImageExport(
         )
 
         val textHeight = sl.height + PADDING * 2
-        val tmpBitmap = Bitmap.createBitmap(WIDTH, textHeight, Bitmap.Config.ARGB_8888)
+        val tmpBitmap = createBitmap(WIDTH, textHeight)
         val tmpCanvas = Canvas(tmpBitmap)
 
-        tmpCanvas.save()
-        tmpCanvas.translate(PADDING.toFloat() * 2, PADDING.toFloat())
-        sl.draw(tmpCanvas)
-        tmpCanvas.restore()
+        tmpCanvas.withTranslation(PADDING.toFloat() * 2, PADDING.toFloat()) {
+            sl.draw(this)
+        }
         return tmpBitmap
     }
 

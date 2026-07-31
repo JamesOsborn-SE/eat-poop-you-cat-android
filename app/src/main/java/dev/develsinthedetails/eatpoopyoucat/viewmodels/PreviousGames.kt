@@ -6,14 +6,15 @@ import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.coroutines.launch
+import kotlin.uuid.Uuid
 
-class PreviousGamesViewModel(
+class PreviousGames(
     val repository: AppRepository,
 ) : ViewModel() {
 
     val games = repository.getAllGamesWithEntries().asLiveData()
 
-    fun deleteGame(gameId: String) {
+    fun deleteGame(gameId: Uuid) {
         viewModelScope.launch {
             repository.deleteGame(gameId)
         }

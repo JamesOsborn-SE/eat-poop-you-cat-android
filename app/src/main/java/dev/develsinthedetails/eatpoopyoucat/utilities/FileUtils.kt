@@ -10,12 +10,9 @@ import android.os.Environment
 import android.provider.MediaStore
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import kotlinx.serialization.json.Json
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
-var sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-val stringTime: String = sdf.format(Date())
+val stringTime: String = Date().saveDateFormat()
 val DEFAULT_FILENAME = "EPYC-$stringTime.png"
 val DEFAULT_DATA_FILENAME = "EPYC-$stringTime.json"
 

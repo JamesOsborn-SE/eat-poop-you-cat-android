@@ -25,13 +25,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.MainActivity
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.Screen
 import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.utilities.ROUTE_TO
-import dev.develsinthedetails.eatpoopyoucat.utilities.Screen
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.ImportGames
 import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
@@ -41,7 +41,7 @@ import java.io.InputStream
 
 @Composable
 fun ImportGames(
-    viewModel: ImportGamesViewModel = koinViewModel(),
+    viewModel: ImportGames = koinViewModel(),
     fileUri: Uri?,
     finish: () -> Unit
 ) {
@@ -64,8 +64,10 @@ fun ImportGames(
 
     val onDismissRequest = {
         finish()
-        val intent = Intent(context, MainActivity::class.java)
-        intent.putExtra(ROUTE_TO, Screen.Games.route)
+        val intent = Intent(context, MainActivity::class.java).apply {
+            val routeJson = Json.encodeToString<Screen>(Screen.Games)
+            putExtra(ROUTE_TO, routeJson)
+        }
         context.startActivity(intent)
     }
 

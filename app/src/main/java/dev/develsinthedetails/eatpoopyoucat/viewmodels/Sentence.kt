@@ -13,9 +13,9 @@ import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlin.uuid.Uuid
 
-class SentenceViewModel(
+class Sentence(
     state: SavedStateHandle,
     private val repository: AppRepository,
 ) : ViewModel() {
@@ -28,7 +28,7 @@ class SentenceViewModel(
     private val previousEntryId: String = checkNotNull(state.get<String>(ID))
     val previousEntry: LiveData<Entry> = repository.getEntry(previousEntryId).asLiveData()
 
-    val entryId = UUID.randomUUID().toString()
+    val entryId = Uuid.random()
 
     var sentence: String by mutableStateOf("")
         private set
@@ -42,7 +42,7 @@ class SentenceViewModel(
         return !isError
     }
 
-    fun saveEntry(nextTo: (String) -> Unit) {
+    fun saveEntry(nextTo: (Uuid) -> Unit) {
         isLoading = true
         val entry = previousEntry.value!!
         val isNewGame = entry.sequence == 0
@@ -54,12 +54,12 @@ class SentenceViewModel(
             )
             viewModelScope.launch {
                 repository.updateEntry(newEntry)
-                nextTo.invoke(entry.id.toString())
+                nextTo.invoke(entry.id)
                 isLoading = false
             }
         } else {
             val newEntry = entry.copy(
-                id = UUID.fromString(entryId),
+                id = entryId,
                 localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
                 sentence = sentence,
                 drawing = null,

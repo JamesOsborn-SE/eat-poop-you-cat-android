@@ -13,7 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.Entry
 import dev.develsinthedetails.eatpoopyoucat.utilities.ID
 import kotlinx.coroutines.launch
 
-class NicknameViewModel(
+class NetGameViewModel (
     state: SavedStateHandle,
     private val repository: AppRepository,
 ) : ViewModel() {
@@ -21,16 +21,13 @@ class NicknameViewModel(
     var previousNicknames: List<String> by mutableStateOf(listOf())
     var previousEntry: Entry? by mutableStateOf(null)
         private set
-
     var nickname: String by mutableStateOf("")
         private set
-
     var isLoading: Boolean by mutableStateOf(false)
         private set
 
     var isError: Boolean by mutableStateOf(false)
         private set
-
     init {
         isLoading = true
         viewModelScope.launch {

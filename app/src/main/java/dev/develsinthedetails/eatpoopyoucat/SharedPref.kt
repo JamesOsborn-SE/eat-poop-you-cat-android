@@ -3,7 +3,8 @@ package dev.develsinthedetails.eatpoopyoucat
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import java.util.UUID
+import androidx.core.content.edit
+import kotlin.uuid.Uuid
 
 
 object SharedPref {
@@ -21,13 +22,13 @@ object SharedPref {
         return result.toBoolean()
     }
 
-    fun playerId(): UUID {
+    fun playerId(): Uuid {
         var result: String? = read(PLAYER_ID, null)
         if (result == null) {
-            result = UUID.randomUUID().toString()
+            result = Uuid.random().toString()
             write(PLAYER_ID, result)
         }
-        return UUID.fromString(result)
+        return Uuid.parse(result)
     }
 
     fun read(key: String, defValue: String?): String? {
@@ -35,8 +36,8 @@ object SharedPref {
     }
 
     fun write(key: String, value: String?) {
-        val prefsEditor = mSharedPref!!.edit()
-        prefsEditor.putString(key, value)
-        prefsEditor.apply()
+        mSharedPref!!.edit {
+            putString(key, value)
+        }
     }
 }

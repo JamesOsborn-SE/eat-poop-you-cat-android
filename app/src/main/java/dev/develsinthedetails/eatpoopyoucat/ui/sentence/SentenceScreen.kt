@@ -48,20 +48,21 @@ import dev.develsinthedetails.eatpoopyoucat.ui.helpers.Spinner
 import dev.develsinthedetails.eatpoopyoucat.ui.helpers.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.viewmodels.SentenceViewModel
+import dev.develsinthedetails.eatpoopyoucat.viewmodels.Sentence
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun SentenceScreen(
-    viewModel: SentenceViewModel = koinViewModel(),
-    onNavigateToDraw: (String) -> Unit,
-    onNavigateToEndedGame: (String) -> Unit,
+    viewModel: Sentence = koinViewModel(),
+    onNavigateToDraw: (Uuid) -> Unit,
+    onNavigateToEndedGame: (Uuid) -> Unit,
     onNavigateToHome: () -> Unit
 ) {
     val previousEntry by viewModel.previousEntry.observeAsState()
     val isFirstTurn = previousEntry?.sequence == 0
     val idToSend =
-        if (isFirstTurn) previousEntry!!.id.toString() else viewModel.entryId
+        if (isFirstTurn) previousEntry!!.id else viewModel.entryId
     val sentencePrompt =
         if (isFirstTurn) stringResource(R.string.write_a_funny_sentence) else stringResource(R.string.write_a_sentence_to_describe_this_drawing)
 
@@ -75,7 +76,7 @@ fun SentenceScreen(
     }
 
     val onEndGame = {
-        onNavigateToEndedGame(viewModel.previousEntry.value?.gameId.toString())
+        onNavigateToEndedGame(viewModel.previousEntry.value?.gameId!!)
     }
 
     SentenceScreen(
