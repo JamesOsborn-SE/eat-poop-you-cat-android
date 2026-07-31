@@ -67,7 +67,7 @@ class ImageExport(
         }
         bitmaps.add(footerBitmap())
         val height = bitmaps.sumOf { it.height }
-        val bitmap = Bitmap.createBitmap(WIDTH, height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(WIDTH, height)
         val canvas = Canvas(bitmap)
         canvas.drawRect(0f, 0f, WIDTH.toFloat(), height.toFloat(), background)
         var currentY = 0
@@ -146,9 +146,9 @@ class ImageExport(
                 line.resolution,
                 if (line.properties.eraseMode) ERASE_STROKE else PEN_STROKE
             )
-            val pcolor = if (line.properties.eraseMode) eraseColor.toArgb() else penColor.toArgb()
+            val penColor = if (line.properties.eraseMode) eraseColor.toArgb() else this@ImageExport.penColor.toArgb()
             val penPaint = Paint()
-            penPaint.color = pcolor
+            penPaint.color = penColor
             penPaint.style = Paint.Style.STROKE
             penPaint.strokeCap = Paint.Cap.ROUND
             penPaint.strokeJoin = Paint.Join.ROUND

@@ -11,7 +11,7 @@ import kotlin.uuid.Uuid
 
 /**
  * Entry is the main unit of game data it holds the drawing/sentence
- * and meta data like playerId, gameId, timePassed
+ * and metadata like playerId, gameId, timePassed
  */
 @Entity(
     foreignKeys = [ForeignKey

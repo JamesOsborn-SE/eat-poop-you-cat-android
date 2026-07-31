@@ -1,3 +1,5 @@
+@file:Suppress("RunBlocking")
+
 package dev.develsinthedetails.eatpoopyoucat.viewmodels
 
 import androidx.room.Room

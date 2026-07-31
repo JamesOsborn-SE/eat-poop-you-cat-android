@@ -1,3 +1,5 @@
+@file:Suppress("KotlinConstantConditions")
+
 package dev.develsinthedetails.eatpoopyoucat.ui.screens
 
 import android.content.res.Configuration
