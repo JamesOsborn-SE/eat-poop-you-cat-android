@@ -2,11 +2,11 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
-import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawingWithSentencePreview
-import dev.develsinthedetails.eatpoopyoucat.ui.screens.HomeScreenPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenWithDrawingPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawingWithSentencePreview
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreenPreview
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreenPreview
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreenWithDrawingPreview
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 
 @PreviewTest
 @Preview(name = "1_en-US_Light_phoneScreenshots")

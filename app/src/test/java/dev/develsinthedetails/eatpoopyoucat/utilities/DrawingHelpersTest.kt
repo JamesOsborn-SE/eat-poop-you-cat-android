@@ -1,5 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.utilities
 
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.Profile
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.generateProfile
 import kotlinx.serialization.json.Json
 import org.junit.Test
 import kotlin.test.DefaultAsserter.assertEquals

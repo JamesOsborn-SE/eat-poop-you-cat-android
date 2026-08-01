@@ -2,10 +2,10 @@ package dev.develsinthedetails.eatpoopyoucat.data.tests
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
-import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
-import dev.develsinthedetails.eatpoopyoucat.data.GameDao
-import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGame
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames

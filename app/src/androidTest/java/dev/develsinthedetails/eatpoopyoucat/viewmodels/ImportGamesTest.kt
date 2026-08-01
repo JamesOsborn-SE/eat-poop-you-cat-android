@@ -4,15 +4,16 @@ package dev.develsinthedetails.eatpoopyoucat.viewmodels
 
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import dev.develsinthedetails.eatpoopyoucat.SharedPref
-import dev.develsinthedetails.eatpoopyoucat.data.AppDatabase
+import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
+import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.EntryDao
-import dev.develsinthedetails.eatpoopyoucat.data.GameDao
-import dev.develsinthedetails.eatpoopyoucat.data.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.PlayerDao
-import dev.develsinthedetails.eatpoopyoucat.data.RosterDao
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
+import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGames
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame2
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames
