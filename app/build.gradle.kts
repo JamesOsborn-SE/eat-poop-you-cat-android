@@ -4,11 +4,13 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.screenshot)
 }
 
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
     compileSdk = 37
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 
     defaultConfig {
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
@@ -68,6 +70,8 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.core.splashscreen)
     implementation(platform(libs.compose.bom))
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.ui.tooling)
     implementation(libs.ui)
     implementation(libs.material3)
 

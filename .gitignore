@@ -46,3 +46,6 @@ google-services.json
 app/debug/
 
 tmp/
+
+# screenShots
+app/src/screenshotTestDebug

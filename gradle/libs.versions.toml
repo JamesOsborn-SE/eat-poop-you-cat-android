@@ -26,8 +26,12 @@ runner = "1.7.0"
 graphicsShapes = "1.1.0"
 uiUnit = "1.11.4"
 lifecycleViewmodelKtx = "2.11.0"
+screenshot = "0.0.1-alpha16"
 
 [libraries]
+screenshot-validation-api = { group = "com.android.tools.screenshot", name = "screenshot-validation-api", version.ref = "screenshot"}
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling"}
+
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
@@ -85,3 +89,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
 androidx-room = { id = "androidx.room", version.ref = "roomVersion" }
+screenshot = { id = "com.android.compose.screenshot", version.ref = "screenshot"}
