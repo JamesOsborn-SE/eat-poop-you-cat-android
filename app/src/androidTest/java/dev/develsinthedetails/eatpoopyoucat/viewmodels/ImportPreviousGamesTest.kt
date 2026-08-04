@@ -13,7 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
-import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGames
+import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame2
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames
@@ -29,7 +29,7 @@ import org.junit.Test
 import kotlin.uuid.Uuid
 import kotlin.time.Duration.Companion.milliseconds
 
-class ImportGamesTest {
+class ImportPreviousGamesTest {
     private val gameA = testGames[0]
     private val gameC = testGames[2]
 
@@ -81,7 +81,7 @@ class ImportGamesTest {
         database.playerDao().deleteAll()
         playerDao.insert(testPlayerOne)
         gameDao.delete(games.first().id)
-        val uut = ImportGames(repository)
+        val uut = ImportGamesViewModel(repository)
         uut.addGames(exportedGames) {}
 
         val gamesAfterDeleteAndImport = gameDao.getAllAsync()
@@ -116,7 +116,7 @@ class ImportGamesTest {
         val entries = entryDao.getAllAsync()
         val numberOfGame = games.count()
         val numberOfEntries = entries.count() + testEntriesGame2.count()
-        val uut = ImportGames(repository)
+        val uut = ImportGamesViewModel(repository)
         val j = async {
             uut.addGames(exportedGamesPlusOne) {}
         }
@@ -144,7 +144,7 @@ class ImportGamesTest {
         tearDown()
 
         playerDao.insert(player!!)
-        val uut = ImportGames(repository)
+        val uut = ImportGamesViewModel(repository)
         val job = launch {
             uut.addGames(exportedGames) {}
             delay(1000.milliseconds)

@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun StartLocalGame(
@@ -81,6 +82,7 @@ fun StartInternetGame(
 @Composable
 fun NewGameScreen(
     viewModel: NewGameViewModel = koinViewModel(),
+    gameId: Uuid,
     nav: NavHostController,
 ) {
 

@@ -8,7 +8,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class ImportGames(
+class ImportGamesViewModel(
     val repository: AppRepository,
 ) : ViewModel() {
 
@@ -40,7 +40,7 @@ class ImportGames(
             if (!existingGameIds.any { g -> g == it.game.id })
                 addGame(it)
             else {
-                val existingEntries = repository.getEntriesAsync(it.game.id.toString())
+                val existingEntries = repository.getEntriesAsync(it.game.id)
                 val missingEntries =
                     it.entries.filter { e -> !existingEntries.any { ee -> ee.id == e.id } }
                 if (missingEntries.any())

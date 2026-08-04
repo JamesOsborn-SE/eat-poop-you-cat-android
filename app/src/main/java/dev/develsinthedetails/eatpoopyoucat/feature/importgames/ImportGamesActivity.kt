@@ -16,7 +16,7 @@ class ImportGamesActivity : ComponentActivity() {
         setContent {
             AppTheme {
                 val uri = intent.data
-                val vm: ImportGames = koinViewModel { parametersOf(uri) }
+                val vm: ImportGamesViewModel = koinViewModel { parametersOf(uri) }
 
                 ImportGames(viewModel = vm, fileUri = uri, finish = finish)
             }

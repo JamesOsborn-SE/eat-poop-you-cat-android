@@ -7,16 +7,14 @@ import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
-import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.ID
+import dev.develsinthedetails.eatpoopyoucat.data.models.Line
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.utilities.getValue
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.utilities.testSimpleDrawingJson
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.Draw
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -33,10 +31,9 @@ import org.koin.test.KoinTestRule
 import org.koin.test.inject
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
-import kotlin.uuid.Uuid
 
 
-class DrawTest : KoinTest {
+class DrawViewModelTest : KoinTest {
 
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -46,7 +43,6 @@ class DrawTest : KoinTest {
     private val mockPlayerDao = mock<PlayerDao>()
     private val mockRosterDao = mock<RosterDao>()
 
-    // 1. Define a test module to replace production dependencies
     private val testModule = module {
         single { mockEntryDao }
         single { mockGameDao }
@@ -54,7 +50,7 @@ class DrawTest : KoinTest {
         single { mockRosterDao }
         single { AppRepository(get(), get(), get(), get()) }
         viewModel { (handle: SavedStateHandle) ->
-            Draw(handle, repository = get())
+            DrawViewModel(handle, repository = get())
         }
     }
 
@@ -66,8 +62,8 @@ class DrawTest : KoinTest {
         })
         .around(instantTaskExecutorRule)
 
-    private val viewModel: Draw by inject {
-        parametersOf(SavedStateHandle(mapOf(ID to testEntriesGame1[0].id.toString())))
+    private val viewModel: DrawViewModel by inject {
+        parametersOf(SavedStateHandle(mapOf("id" to testEntriesGame1[0].id.toString())))
     }
 
     @Before
@@ -76,8 +72,7 @@ class DrawTest : KoinTest {
         SharedPref.init(context)
         SharedPref.write(SharedPref.PLAYER_ID, testPlayerOne.id.toString())
 
-        // Setup mock behavior
-        `when`(mockEntryDao.get(Uuid.parse(testEntriesGame1[0].id.toString())))
+        `when`(mockEntryDao.get(testEntriesGame1[0].id))
             .thenReturn(flow {
                 emit(testEntriesGame1[0])
             })
@@ -91,15 +86,11 @@ class DrawTest : KoinTest {
     }
 
     @Test
-    fun drawing_is_too_simple() = runTest{
-        val intSharedFlow = MutableStateFlow(listOf<Line>())
-
+    fun drawing_is_too_simple() = runTest {
         val simpleDrawingLines = Json.decodeFromString<List<Line>>(testSimpleDrawingJson)
         viewModel.setCanvasResolution(1920, 1080)
-        intSharedFlow.value = simpleDrawingLines
-        val field = Draw::class.java.getDeclaredField("drawingLines")
-        field.isAccessible = true
-        field.set(viewModel, intSharedFlow)
+
+        viewModel.drawingLines.value = simpleDrawingLines
 
         viewModel.isValidDrawing {}
 

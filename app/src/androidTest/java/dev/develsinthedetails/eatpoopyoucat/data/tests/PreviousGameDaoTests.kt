@@ -20,7 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class GameDaoTests {
+class PreviousGameDaoTests {
     private lateinit var database: AppDatabase
     private lateinit var gameDao: GameDao
     private lateinit var entryDao: EntryDao

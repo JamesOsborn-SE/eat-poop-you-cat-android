@@ -16,6 +16,18 @@ fun Instant?.localTimestamp(): String {
     val date = Date.from(this.toJavaInstant())
     return DateFormat.getTimeInstance().format(date)
 }
+
+fun Instant?.toDate(): Date? {
+    if (this == null) return null
+    return Date.from(this.toJavaInstant())
+}
+
+fun Instant?.localDateTimestamp(): String {
+    if (this == null)
+        return ""
+    val date = Date.from(this.toJavaInstant())
+    return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(date)
+}
 fun Date.saveDateFormat(): String {
     val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
     return sdf.format(this)

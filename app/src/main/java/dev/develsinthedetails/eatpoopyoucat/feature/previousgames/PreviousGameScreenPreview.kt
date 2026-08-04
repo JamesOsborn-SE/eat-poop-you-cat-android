@@ -3,8 +3,8 @@ package dev.develsinthedetails.eatpoopyoucat.feature.previousgames
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import kotlinx.serialization.json.Json
 
 class PreviewData {
@@ -14,8 +14,6 @@ class PreviewData {
         )
     }
 }
-
-
 @Preview
 @Composable
 fun PreviousGameScreenPreview() {

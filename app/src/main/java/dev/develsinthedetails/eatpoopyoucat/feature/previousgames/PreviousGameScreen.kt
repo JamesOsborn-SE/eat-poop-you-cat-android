@@ -43,21 +43,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.getBitmapFromVectorDrawable
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
-import java.text.DateFormat
 import kotlin.uuid.Uuid
 
 @Composable
@@ -114,7 +114,7 @@ fun PreviousGameScreen(
     }
     var title = pluralStringResource(id = R.plurals.previous_games, 1)
     if (entries.first().createdAt != null)
-        title += "\n${DateFormat.getDateInstance().format(entries.first().createdAt!!)}"
+        title += "\n${entries.first().createdAt.localDateTimestamp()}"
     Scaffolds.PreviousGame(
         title = title,
         onBackupGame = onBackupGame,

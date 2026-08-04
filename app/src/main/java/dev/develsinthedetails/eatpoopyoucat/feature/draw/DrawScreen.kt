@@ -75,7 +75,7 @@ import kotlin.uuid.Uuid
 
 @Composable
 fun DrawScreen(
-    drawViewModel: Draw = koinViewModel(),
+    drawViewModel: DrawViewModel = koinViewModel(),
     onNavigateToSentence: (Uuid) -> Unit,
     onNavigateToEndedGame: (Uuid) -> Unit
 ) {
@@ -315,8 +315,8 @@ fun DrawBox(
         lines.forEach {
             val drawColor = if (it.properties.eraseMode) drawingBackground else drawingPen
             val path = it.toPath()
-            val scaledPath = Draw.scalePath(path, currentResolution, it.resolution)
-            val scaledStroke = Draw.scaleStroke(
+            val scaledPath = DrawViewModel.scalePath(path, currentResolution, it.resolution)
+            val scaledStroke = DrawViewModel.scaleStroke(
                 currentResolution,
                 it.resolution,
                 it.properties.strokeWidth

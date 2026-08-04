@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ROUTE_TO
-import kotlinx.serialization.json.Json
 
 
 class MainActivity : ComponentActivity() {
@@ -14,15 +13,10 @@ class MainActivity : ComponentActivity() {
         SharedPref.init(applicationContext)
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        val routeJson = intent.getStringExtra(ROUTE_TO)
-        val gotoScreen: Screen? = try {
-            routeJson?.let { Json.decodeFromString<Screen>(it) }
-        } catch (e: Exception) {
-            null
-        }
+        val route = intent.getStringExtra(ROUTE_TO)
         setContent {
             AppTheme {
-                EatPoopYouCatApp(goto = gotoScreen)
+                EatPoopYouCatApp(goto = route)
             }
         }
     }

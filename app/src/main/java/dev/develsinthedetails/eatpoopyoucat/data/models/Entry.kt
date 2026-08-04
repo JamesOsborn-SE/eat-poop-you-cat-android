@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import dev.develsinthedetails.eatpoopyoucat.data.local.InstantSerializer
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -41,6 +42,7 @@ data class Entry(
     val timePassed: Int,
     val sentence: String? = null,
     val drawing: ByteArray? = null,
+    @Serializable(InstantSerializer::class)
     val createdAt: Instant? = null
 ) {
     override fun equals(other: Any?): Boolean {

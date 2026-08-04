@@ -7,17 +7,23 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.ID
+import dev.develsinthedetails.eatpoopyoucat.app.NewGame
+import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import kotlinx.coroutines.launch
+import kotlin.reflect.typeOf
+import kotlin.uuid.Uuid
 
 class NicknameViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
 ) : ViewModel() {
-    private val previousEntryId: String = checkNotNull(state.get<String>(ID))
+    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val route = state.toRoute<NewGame>(typeMap)
+    private val previousEntryId: Uuid = checkNotNull(route.id)
     var previousNicknames: List<String> by mutableStateOf(listOf())
     var previousEntry: Entry? by mutableStateOf(null)
         private set

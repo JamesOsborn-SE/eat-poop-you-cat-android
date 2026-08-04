@@ -8,11 +8,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import dev.develsinthedetails.eatpoopyoucat.app.Sentence
 import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.ID
+import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import kotlinx.coroutines.launch
+import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 class SentenceViewModel(
@@ -25,7 +28,9 @@ class SentenceViewModel(
     var isLoading: Boolean by mutableStateOf(false)
         private set
 
-    private val previousEntryId: String = checkNotNull(state.get<String>(ID))
+    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val route = state.toRoute<Sentence>(typeMap)
+    private val previousEntryId: Uuid = checkNotNull(route.id)
     val previousEntry: LiveData<Entry> = repository.getEntry(previousEntryId).asLiveData()
 
     val entryId = Uuid.random()

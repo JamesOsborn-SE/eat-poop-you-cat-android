@@ -3,6 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.app
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -11,48 +12,65 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesActivity
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.feature.netplay.LanGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviousGamesScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.netplay.LanGameScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.NicknameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.PrivacyPolicyScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-sealed interface Screen {
-    @Serializable data object Home : Screen
-    @Serializable data object Games : Screen
-    @Serializable data object Credits : Screen
-    @Serializable data object PrivacyPolicy : Screen
+@OptIn(ExperimentalUuidApi::class)
+val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
+    override fun get(bundle: Bundle, key: String): Uuid? {
+        return bundle.getString(key)?.let { Uuid.parse(it) }
+    }
 
-    @Serializable data class NewGame(val id: Uuid) : Screen
-    @Serializable data class LanGame(val id: Uuid) : Screen
-    @Serializable data class Game(val id: Uuid) : Screen
-    @Serializable data class Sentence(val id: Uuid) : Screen
-    @Serializable data class Draw(val id: Uuid) : Screen
+    override fun parseValue(value: String): Uuid {
+        return Uuid.parse(value)
+    }
+
+    override fun put(bundle: Bundle, key: String, value: Uuid) {
+        bundle.putString(key, value.toString())
+    }
 }
+
+//sealed interface Screen {
+    @Serializable data object Home
+    @Serializable data object PreviousGames
+    @Serializable data object Credits
+    @Serializable data object PrivacyPolicy
+
+    @Serializable data class NewGame(val id: Uuid)
+    @Serializable data class LanGame(val id: Uuid)
+    @Serializable data class PreviousGame(val gameId: Uuid)
+    @Serializable data class Sentence(val id: Uuid)
+    @Serializable data class Draw(val id: Uuid)
+//}
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun EatPoopYouCatApp(
-    goto: Screen?
+    goto: String?
 ) {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
@@ -60,111 +78,123 @@ fun EatPoopYouCatApp(
 
     NavHost(
         navController = navController,
-        startDestination = goto ?: Screen.Home
+        startDestination = goto ?: Home
     ) {
-        composable<Screen.Home> {
+        composable<Home> {
             HomeScreen(
                 onNavigateToNewGame = {
-                    navController.navigate(Screen.NewGame(id = Uuid.random())) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(NewGame(it)) {
+                        popUpTo<Home>()
                     }
                 },
                 onNavigateToPreviousGames = {
-                    navController.navigate(Screen.Games) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(PreviousGames) {
+                        popUpTo<Home>()
                     }
                 },
                 onNavigateToCredits = {
-                    navController.navigate(Screen.Credits)
+                    navController.navigate(Credits)
                 },
                 onNavigateToPrivacyPolicy = {
-                    navController.navigate(Screen.PrivacyPolicy)
+                    navController.navigate(PrivacyPolicy)
                 }
             )
         }
 
-        composable<Screen.NewGame> { backStackEntry ->
-            NewGameScreen(nav = navController)
+        composable<NewGame>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+        ) {
+            NicknameScreen(nav = navController)
         }
 
-        composable<Screen.LanGame> {
+        composable<LanGame>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+        ) {
             LanGameScreen(nav = navController)
         }
 
-        composable<Screen.Sentence> {
+        composable<Sentence>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+        ) {
             SentenceScreen(
                 onNavigateToDraw = { id ->
-                    navController.navigate(Screen.NewGame(id)) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(NewGame(id)) {
+                        popUpTo<Home>()
                     }
                 },
                 onNavigateToHome = {
-                    navController.navigate(Screen.Home)
+                    navController.navigate(Home)
                 },
                 onNavigateToEndedGame = { id ->
-                    navController.navigate(Screen.Game(id)) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(PreviousGame(id)) {
+                        popUpTo<Home>()
                     }
                 }
             )
         }
 
-        composable<Screen.Draw> {
+        composable<Draw>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+        ) {
             DrawScreen(
                 onNavigateToSentence = { id ->
-                    navController.navigate(Screen.NewGame(id)) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(NewGame(id)) {
+                        popUpTo<Home>()
                     }
                 },
                 onNavigateToEndedGame = { id ->
-                    navController.navigate(Screen.Game(id)) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(PreviousGame(id)) {
+                        popUpTo<Home>()
                     }
                 }
             )
         }
 
-        composable<Screen.Games> {
+        composable<PreviousGames>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+        ) {
             PreviousGamesScreen(
                 onGoHome = {
-                    navController.navigate(Screen.Home) {
-                        popUpTo<Screen.Home>()
+                    navController.navigate(Home) {
+                        popUpTo<Home>()
                     }
                 },
                 onGameClick = { id ->
-                    navController.navigate(Screen.Game(id))
+                    navController.navigate(PreviousGame(id))
                 },
                 onBackupGames = onBackupGames(coroutineScope, context),
                 onImportGames = onImportGames()
             )
         }
 
-        composable<Screen.Game> {
+        composable<PreviousGame>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+        ) {
             PreviousGameScreen(
                 onContinueGame = navigateToNextNickName(navController),
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(),
                 onBack = {
-                    navController.navigate(Screen.Games) {
-                        popUpTo<Screen.Games>()
-                        popUpTo<Screen.Home>()
+                    navController.navigate(PreviousGames) {
+                        popUpTo<PreviousGames>()
+                        popUpTo<Home>()
                     }
                 }
             )
         }
 
-        composable<Screen.Credits> {
+        composable<Credits> {
             CreditsScreen(SharedPref.playerId().toString()) {
-                navController.navigate(Screen.Home) {
-                    popUpTo<Screen.Home>()
+                navController.navigate(Home) {
+                    popUpTo<Home>()
                 }
             }
         }
 
-        composable<Screen.PrivacyPolicy> {
+        composable<PrivacyPolicy> {
             PrivacyPolicyScreen {
-                navController.navigate(Screen.Home) {
-                    popUpTo<Screen.Home>()
+                navController.navigate(Home) {
+                    popUpTo<Home>()
                 }
             }
         }
@@ -220,16 +250,16 @@ private fun onBackupGames(
 fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
     {
         if (it.type == EntryType.Drawing || it.type == EntryType.First)
-            navController.navigate(Screen.Sentence(it.id)) // 'it.id' automatically maps to the Uuid parameter
+            navController.navigate(Sentence(it.id)) // 'it.id' automatically maps to the Uuid parameter
         else if (it.type == EntryType.Sentence)
-            navController.navigate(Screen.Draw(it.id))
+            navController.navigate(Draw(it.id))
     }
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun navigateToNextNickName(navController: NavHostController): (Uuid) -> Unit =
     {
-        navController.navigate(Screen.NewGame(it)) {
-            popUpTo<Screen.Home>()
+        navController.navigate(NewGame(it)) {
+            popUpTo<Home>()
         }
     }

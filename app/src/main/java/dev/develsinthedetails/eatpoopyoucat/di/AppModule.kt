@@ -1,9 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.di
 
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.Draw
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGames
+import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netplay.NetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.NicknameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviousGameViewModel
@@ -20,8 +20,8 @@ val appModule = module {
     viewModelOf(::PreviousGamesViewModel)
     viewModel { PreviousGameViewModel(get(), get()) }
     viewModelOf(::HomeViewModel)
-    viewModelOf(::Draw)
+    viewModelOf(::DrawViewModel)
     viewModelOf(::NicknameViewModel)
-    viewModelOf(::ImportGames)
+    viewModelOf(::ImportGamesViewModel)
     viewModelOf(::NetGameViewModel)
 }

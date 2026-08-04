@@ -29,7 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.Screen
+import dev.develsinthedetails.eatpoopyoucat.app.Home
+import dev.develsinthedetails.eatpoopyoucat.app.PreviousGame
 import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.app.navigateToNextTurn
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.AppButton
@@ -64,8 +65,8 @@ fun LanGameScreen(
                     }
                 },
                 onEnd = {
-                    nav.navigate(Screen.Game(viewModel.previousEntry!!.gameId)) {
-                        popUpTo(Screen.Home)
+                    nav.navigate(PreviousGame(viewModel.previousEntry!!.gameId)) {
+                        popUpTo(Home)
                     }
                 },
                 isError = viewModel.isError,

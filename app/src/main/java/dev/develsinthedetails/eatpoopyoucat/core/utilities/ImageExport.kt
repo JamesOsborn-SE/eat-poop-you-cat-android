@@ -19,18 +19,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.md_theme_light_drawing_background
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.md_theme_light_drawing_pen
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviewData
-import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
-import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.md_theme_light_drawing_background
-import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.md_theme_light_drawing_pen
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.Draw
 import kotlinx.serialization.json.Json
-import java.text.DateFormat.getDateInstance
 import kotlin.math.max
 import kotlin.time.Instant
 
@@ -51,7 +50,7 @@ class ImageExport(
         background.color = eraseColor.toArgb()
 
         if (entries.first().createdAt != null) {
-            val dateText = getDateInstance().format(entries.first().createdAt!!)
+            val dateText = entries.first().createdAt.localDateTimestamp()
             bitmaps.add(sentenceBitmap(dateText, center = true))
         }
 
@@ -141,7 +140,7 @@ class ImageExport(
 
         val lines: MutableList<Line> = Json.decodeFromString(Gzip.decompressToString(drawing))
         lines.forEach { line ->
-            val stroke = Draw.scaleStroke(
+            val stroke = DrawViewModel.scaleStroke(
                 Resolution(WIDTH, WIDTH),
                 line.resolution,
                 if (line.properties.eraseMode) ERASE_STROKE else PEN_STROKE
@@ -154,7 +153,7 @@ class ImageExport(
             penPaint.strokeJoin = Paint.Join.ROUND
             penPaint.strokeWidth = stroke
             val newPath =
-                Draw.scalePath(line.toPath(), Resolution(WIDTH, WIDTH), line.resolution)
+                DrawViewModel.scalePath(line.toPath(), Resolution(WIDTH, WIDTH), line.resolution)
             tmpCanvas.drawPath(newPath.asAndroidPath(), penPaint)
         }
         return tmpBitmap
@@ -242,7 +241,7 @@ class ImageExport(
     }
 }
 
-@Preview
+@Preview(apiLevel = 36)
 @Composable
 fun SharePreview() {
     val appName = stringResource(id = R.string.app_name)

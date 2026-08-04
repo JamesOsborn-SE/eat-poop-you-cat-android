@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,7 +15,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
-import kotlin.uuid.toJavaUuid
 
 class HomeViewModel(
     private val repository: AppRepository,
@@ -55,7 +53,7 @@ class HomeViewModel(
     fun saveNewGame(entryId: Uuid, onNavigateToSentence: () -> Unit) {
         isLoading = true
         val gameId = Uuid.random()
-        Log.i("test", "${entryId.toJavaUuid().version()}")
+
         viewModelScope.launch {
             repository.createGame(
                 Game(

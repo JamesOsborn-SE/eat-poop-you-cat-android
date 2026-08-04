@@ -12,7 +12,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import dev.develsinthedetails.eatpoopyoucat.app.Draw
 import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
+import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Coordinates
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
@@ -20,9 +25,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.ID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -31,13 +33,14 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 enum class DrawMode {
     Draw, Erase
 }
 
-class Draw(
+class DrawViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
 ) : ViewModel() {
@@ -57,7 +60,9 @@ class Draw(
     var isLoading: Boolean by mutableStateOf(false)
         private set
 
-    private val previousEntryId: String = checkNotNull(state.get<String>(ID))
+    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val route = state.toRoute<Draw>(typeMap)
+    private val previousEntryId: Uuid = checkNotNull(route.id)
     private val prevEnt = repository.getEntry(previousEntryId)
     val previousEntry: LiveData<Entry> = prevEnt.asLiveData()
 

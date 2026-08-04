@@ -39,12 +39,13 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.getBitmapFromVectorDrawable
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onNavigateToNewGame: () -> Unit,
+    onNavigateToNewGame: (Uuid) -> Unit,
     onNavigateToPreviousGames: () -> Unit,
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
@@ -54,7 +55,12 @@ fun HomeScreen(
     }
     HomeScreen(
         isLoading = viewModel.isLoading,
-        onNavigateToNewGame = onNavigateToNewGame,
+        onNavigateToNewGame =  {
+            val entryId = Uuid.random()
+            viewModel.saveNewGame(
+                entryId
+            ) { onNavigateToNewGame(entryId) }
+        },
         onNavigateToPreviousGames = onNavigateToPreviousGames,
         onNavigateToCredits = onNavigateToCredits,
         onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,

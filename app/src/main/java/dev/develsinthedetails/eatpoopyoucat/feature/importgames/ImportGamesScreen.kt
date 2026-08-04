@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.MainActivity
-import dev.develsinthedetails.eatpoopyoucat.app.Screen
+import dev.develsinthedetails.eatpoopyoucat.app.PreviousGames
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
@@ -40,7 +40,7 @@ import java.io.InputStream
 
 @Composable
 fun ImportGames(
-    viewModel: ImportGames = koinViewModel(),
+    viewModel: ImportGamesViewModel = koinViewModel(),
     fileUri: Uri?,
     finish: () -> Unit
 ) {
@@ -64,7 +64,7 @@ fun ImportGames(
     val onDismissRequest = {
         finish()
         val intent = Intent(context, MainActivity::class.java).apply {
-            val routeJson = Json.encodeToString<Screen>(Screen.Games)
+            val routeJson = Json.encodeToString(PreviousGames)
             putExtra(ROUTE_TO, routeJson)
         }
         context.startActivity(intent)

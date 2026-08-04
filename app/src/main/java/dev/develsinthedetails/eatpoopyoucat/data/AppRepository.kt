@@ -39,12 +39,11 @@ class AppRepository(
         gameDao.insert(game.copy(createdAt = Clock.System.now()))
     }
 
-    suspend fun deleteGame(id: String) = gameDao.delete(Uuid.parse(id))
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
     suspend fun getAllGamesWithEntriesAsync() = gameDao.getAllWithEntriesAsync()
     suspend fun getAllGames() = gameDao.getAllAsync()
-    fun getGameWithEntries(id: String) = gameDao.getWithEntries(Uuid.parse(id))
+    fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getGameWithEntriesAsync(id: Uuid) = gameDao.getWithEntriesAsync(id)
 
     // ==========================================
@@ -53,11 +52,11 @@ class AppRepository(
     suspend fun createEntry(entry: Entry) =
         entryDao.insert(entry.copy(createdAt = Clock.System.now()))
 
-    fun getEntry(id: String) = entryDao.get(Uuid.parse(id))
-    suspend fun getEntryAsync(id: String) = entryDao.getAsync(Uuid.parse(id))
+    fun getEntry(id: Uuid) = entryDao.get(id)
+    suspend fun getEntryAsync(id: Uuid) = entryDao.getAsync(id)
     suspend fun updateEntry(entry: Entry) = entryDao.update(entry)
-    suspend fun getEntriesAsync(gameId: String) =
-        entryDao.getAllEntriesByGameAsync(Uuid.parse(gameId))
+    suspend fun getEntriesAsync(gameId: Uuid) =
+        entryDao.getAllEntriesByGameAsync(gameId)
 
     // ==========================================
     // Roster functions
