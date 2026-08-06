@@ -55,10 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.data.models.Line
-import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
-import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
-import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
@@ -69,6 +65,10 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.drawingPen
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
+import dev.develsinthedetails.eatpoopyoucat.data.models.Line
+import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
+import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
+import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
@@ -90,7 +90,7 @@ fun DrawScreen(
     val touchStart: (PointerInputChange) -> Unit = { drawViewModel.touchStart(it) }
     val touchMove: (PointerInputChange) -> Unit = { drawViewModel.touchMove(it) }
     val touchEnd: (PointerInputChange) -> Unit = { drawViewModel.touchUp(it) }
-    val setPencilMode: (DrawMode) -> Unit = { drawViewModel.setPencileMode(it) }
+    val setPencilMode: (DrawMode) -> Unit = { drawViewModel.setPencilMode(it) }
     val undo = { drawViewModel.undo() }
     val redo = { drawViewModel.redo() }
     val context = LocalContext.current

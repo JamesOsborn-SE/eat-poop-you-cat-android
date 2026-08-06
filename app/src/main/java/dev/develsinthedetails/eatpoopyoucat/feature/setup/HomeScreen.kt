@@ -20,7 +20,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -50,9 +48,6 @@ fun HomeScreen(
     onNavigateToCredits: () -> Unit,
     onNavigateToPrivacyPolicy: () -> Unit,
 ) {
-    LaunchedEffect(key1 = "oof") {
-        SharedPref.write(SharedPref.NICKNAME, null)
-    }
     HomeScreen(
         isLoading = viewModel.isLoading,
         onNavigateToNewGame =  {

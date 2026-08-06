@@ -2,7 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.feature.importGames
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class ImportGamesViewModel(
     val repository: AppRepository,
+    private val appSettings: AppSettings,
 ) : ViewModel() {
 
     private val _isFinished: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isFinished = _isFinished.asLiveData()
     private var _numberOfGamesAdded: MutableStateFlow<Int> = MutableStateFlow(0)
     val numberOfGamesAdded = _numberOfGamesAdded.asLiveData()
-
     private var _numberOfEntriesAdded: MutableStateFlow<Int> = MutableStateFlow(0)
     val numberOfEntriesAdded = _numberOfEntriesAdded.asLiveData()
 
@@ -28,7 +28,7 @@ class ImportGamesViewModel(
 
     private suspend fun addEntries(entries: List<Entry>) {
         entries.forEach {
-            val newEntry = it.copy(playerId = SharedPref.playerId())
+            val newEntry = it.copy(playerId = appSettings.getPlayerId())
             repository.createEntry(newEntry)
             _numberOfEntriesAdded.emit(++_numberOfEntriesAdded.value)
         }

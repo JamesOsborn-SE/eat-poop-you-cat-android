@@ -1,13 +1,11 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
@@ -18,22 +16,18 @@ import kotlin.uuid.Uuid
 
 class HomeViewModel(
     private val repository: AppRepository,
-    private val application: Application
+    private val appSettings: AppSettings,
 ) : ViewModel() {
-
-    var useNicknames: Boolean by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
 
     private var userName by mutableStateOf("")
-    private val playerId: Uuid = SharedPref.playerId()
+    private lateinit var playerId: Uuid
 
 
     init {
         viewModelScope.launch {
-            val player = repository.getPlayer(playerId)
-            userName = player.first()?.name ?: application.getString(R.string.default_nickname)
+            playerId=appSettings.getPlayerId()
             updatePlayer(userName)
-            useNicknames = SharedPref.useNicknames()
         }
     }
 
@@ -77,10 +71,4 @@ class HomeViewModel(
             isLoading = false
         }
     }
-
-    fun updateUseNicknames() {
-        useNicknames = !useNicknames
-        SharedPref.write(SharedPref.USE_NICKNAMES, useNicknames.toString())
-    }
-
 }

@@ -41,13 +41,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
@@ -122,7 +122,7 @@ fun SentenceScreen(
     Scaffolds.InGame(
         title = stringResource(R.string.sentence_turn_title),
         onEnd = onEnd,
-        floatingActionButton = { SubmitButton (onSubmit=onSubmit) }
+        floatingActionButton = { SubmitButton(onSubmit = onSubmit) }
     )
     { innerPadding ->
         Surface(
@@ -227,15 +227,8 @@ private fun SentenceInput(
 /**
  * Preview Screenshot #4
  */
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
-@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    device = "spec:parent=Nexus 7 2013,orientation=landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
 fun SentenceScreenWithDrawingPreview() {
     @Suppress("SpellCheckingInspection")
@@ -258,15 +251,8 @@ fun SentenceScreenWithDrawingPreview() {
 /**
  * Preview Screenshot #2
  */
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
-@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    device = "spec:parent=Nexus 7 2013,orientation=landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
 fun SentenceScreenPreview() {
     AppTheme {
@@ -284,15 +270,8 @@ fun SentenceScreenPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
-@Preview(device = "spec:parent=Nexus 7 2013")
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    device = "spec:parent=Nexus 7 2013,orientation=landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
 fun SentenceScreenNoErrorPreview() {
     AppTheme {

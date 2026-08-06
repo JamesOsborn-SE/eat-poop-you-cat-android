@@ -64,6 +64,7 @@ room {
 }
 
 dependencies {
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.compose.ui.unit)
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

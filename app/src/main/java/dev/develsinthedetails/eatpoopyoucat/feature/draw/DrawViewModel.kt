@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.Draw
-import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
@@ -43,8 +43,15 @@ enum class DrawMode {
 class DrawViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
+    private val appSettings: AppSettings,
 ) : ViewModel() {
 
+    init {
+        clearCanvas()
+        viewModelScope.launch {
+            playerId = appSettings.getPlayerId()
+        }
+    }
     var drawMode: DrawMode by mutableStateOf(DrawMode.Draw)
     private var currentX = 0f
     private var currentY = 0f
@@ -54,7 +61,7 @@ class DrawViewModel(
     private var lineProperties = MutableStateFlow(LineProperties())
     val lineProps = lineProperties.asLiveData()
 
-    private val playerId = SharedPref.playerId()
+    lateinit var playerId: Uuid
     var isError: Boolean by mutableStateOf(false)
         private set
     var isLoading: Boolean by mutableStateOf(false)
@@ -63,8 +70,9 @@ class DrawViewModel(
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Draw>(typeMap)
     private val previousEntryId: Uuid = checkNotNull(route.id)
-    private val prevEnt = repository.getEntry(previousEntryId)
-    val previousEntry: LiveData<Entry> = prevEnt.asLiveData()
+    private val prevEntry = repository.getEntry(previousEntryId)
+    private val nickname = route.nickname
+    val previousEntry: LiveData<Entry?> = prevEntry.asLiveData()
 
     val entryId = Uuid.random()
 
@@ -90,10 +98,6 @@ class DrawViewModel(
         }
     }.asLiveData()
 
-    init {
-        clearCanvas()
-    }
-
     private fun clearCanvas() {
         undoneLines.value = listOf()
         undoneLines.value += drawingLines.value
@@ -113,14 +117,13 @@ class DrawViewModel(
         viewModelScope.launch {
             val newEntry: Entry = previousEntry.value!!.copy(
                 id = entryId,
-                localPlayerName = SharedPref.read(SharedPref.NICKNAME, null),
+                localPlayerName = nickname,
                 sentence = null,
                 drawing = Gzip.compress(Json.encodeToString(drawingLines.value)),
                 sequence = previousEntry.value!!.sequence.inc(),
                 playerId = playerId
             )
             repository.createEntry(newEntry)
-            SharedPref.write(SharedPref.NICKNAME, null)
             onNavigateToSentence.invoke()
             isLoading = false
         }
@@ -214,7 +217,7 @@ class DrawViewModel(
         currentResolution = Resolution(height, width)
     }
 
-    fun setPencileMode(mode: DrawMode) {
+    fun setPencilMode(mode: DrawMode) {
         lineProperties.value.eraseMode = mode == DrawMode.Erase
         drawMode = mode
         if (mode == DrawMode.Erase)

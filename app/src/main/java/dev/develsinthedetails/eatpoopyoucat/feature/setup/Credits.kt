@@ -15,6 +15,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,14 +26,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ReadMetadata
+import org.koin.compose.koinInject
+import kotlin.uuid.Uuid
 
 @Composable
-fun CreditsScreen(playerId: String = "", onBack: () -> Unit) {
+fun CreditsScreen(appSettings: AppSettings = koinInject(), onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
-
+    val playerId by produceState<Uuid?>(initialValue = null) {
+        value = appSettings.getPlayerId()
+    }
     Scaffolds.Backable(title = stringResource(
         id = R.string.about
     ), onBack = onBack) {
@@ -85,7 +92,7 @@ fun CreditsScreen(playerId: String = "", onBack: () -> Unit) {
                 )
                 if (BuildConfig.DEBUG) {
                     Text(text = stringResource(R.string.debugging_on_label, BuildConfig.DEBUG))
-                    Text(text = stringResource(R.string.player_id, playerId))
+                    Text(text = stringResource(R.string.player_id, playerId.toString()))
                 }
             }
         }

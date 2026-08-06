@@ -35,7 +35,6 @@ import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.Home
 import dev.develsinthedetails.eatpoopyoucat.app.PreviousGame
-import dev.develsinthedetails.eatpoopyoucat.app.SharedPref
 import dev.develsinthedetails.eatpoopyoucat.app.navigateToNextTurn
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.AppButton
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
@@ -55,15 +54,15 @@ fun NicknameScreen(
     val focusRequester = remember { FocusRequester() }
     val onContinueGame = navigateToNextTurn(navController = nav)
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    val useNicknames by viewModel.useNicknames.collectAsStateWithLifecycle(initialValue = false)
     if (state is EntryUiState.Loading)
         SpinnerScreen()
     else if (state is EntryUiState.Content) {
         val previousEntry = (state as EntryUiState.Content).previousEntry
-        if (!SharedPref.useNicknames())
-            onContinueGame(previousEntry)
+        val nickname = (state as EntryUiState.Content).nickname
+        if (!useNicknames)
+            onContinueGame(previousEntry, nickname)
         else {
-            val nickname = (state as EntryUiState.Content).nickname
             viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)
             NicknameScreen(
                 nickname = nickname,
@@ -71,8 +70,7 @@ fun NicknameScreen(
                 onChange = { viewModel.updateNickname(it) },
                 onSubmit = {
                     if (viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)) {
-                        SharedPref.write(SharedPref.NICKNAME, nickname.trim())
-                        onContinueGame(previousEntry)
+                        onContinueGame(previousEntry, nickname)
                     }
                 },
                 onEnd = {

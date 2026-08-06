@@ -25,7 +25,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesActivity
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.LanGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
@@ -55,7 +54,6 @@ val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
     }
 }
 
-//sealed interface Screen {
 @Serializable
 data object Home
 
@@ -81,11 +79,10 @@ data class LanGame(val id: Uuid)
 data class PreviousGame(val gameId: Uuid)
 
 @Serializable
-data class Sentence(val id: Uuid)
+data class Sentence(val id: Uuid, val nickname: String?=null)
 
 @Serializable
-data class Draw(val id: Uuid)
-//}
+data class Draw(val id: Uuid, val nickname: String?)
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
@@ -124,15 +121,9 @@ fun EatPoopYouCatApp() {
         ) {
             NicknameScreen(nav = navController)
         }
-
-        composable<LanGame>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
-        ) {
-            LanGameScreen(nav = navController)
-        }
-
         composable<Sentence>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+
         ) {
             SentenceScreen(
                 onNavigateToDraw = { id ->
@@ -204,7 +195,7 @@ fun EatPoopYouCatApp() {
         }
 
         composable<Credits> {
-            CreditsScreen(SharedPref.playerId().toString()) {
+            CreditsScreen {
                 navController.navigate(Home) {
                     popUpTo<Home>()
                 }
@@ -268,12 +259,14 @@ private fun onBackupGames(
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun navigateToNextTurn(navController: NavHostController): (Entry) -> Unit =
-    {
-        if (it.type == EntryType.Drawing || it.type == EntryType.First)
-            navController.navigate(Sentence(it.id)) // 'it.id' automatically maps to the Uuid parameter
-        else if (it.type == EntryType.Sentence)
-            navController.navigate(Draw(it.id))
+fun navigateToNextTurn(navController: NavHostController): (Entry,String?) -> Unit =
+    { entry: Entry, nickname: String? ->
+        run {
+            if (entry.type == EntryType.Drawing || entry.type == EntryType.First)
+                navController.navigate(Sentence(entry.id, nickname))
+            else if (entry.type == EntryType.Sentence)
+                navController.navigate(Draw(entry.id, nickname))
+        }
     }
 
 @OptIn(ExperimentalUuidApi::class)

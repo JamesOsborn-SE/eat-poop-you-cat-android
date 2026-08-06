@@ -15,15 +15,15 @@ interface EntryDao {
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
-    fun get(id: Uuid): Flow<Entry>
+    fun get(id: Uuid): Flow<Entry?>
 
     @Transaction
     @Query("SELECT * FROM entry")
-    suspend fun getAllAsync(): List<Entry>
+    suspend fun getAllAsync(): List<Entry?>
 
     @Transaction
     @Query("SELECT * FROM entry WHERE id=:id LIMIT 1")
-    suspend fun getAsync(id: Uuid): Entry
+    suspend fun getAsync(id: Uuid): Entry?
 
     @Transaction
     @Query("SELECT * FROM entry WHERE gameId=:id")
