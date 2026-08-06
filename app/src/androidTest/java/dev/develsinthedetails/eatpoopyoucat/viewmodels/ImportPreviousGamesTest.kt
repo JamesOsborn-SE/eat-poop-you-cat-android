@@ -13,7 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
-import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.utilities.testEntriesGame2
 import dev.develsinthedetails.eatpoopyoucat.utilities.testGames

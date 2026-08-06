@@ -17,18 +17,20 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.Home
@@ -47,37 +49,43 @@ fun NicknameScreen(
     viewModel: NicknameViewModel = koinViewModel(),
     nav: NavHostController,
 ) {
-    val context = LocalContext.current
+    val hardcodedNames = LocalResources.current.getStringArray(R.array.nicknames).toList()
+    val fallbackName = stringResource(R.string.oof)
+
     val focusRequester = remember { FocusRequester() }
     val onContinueGame = navigateToNextTurn(navController = nav)
-    val previousEntry = viewModel.previousEntry
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (viewModel.isLoading)
+    if (state is EntryUiState.Loading)
         SpinnerScreen()
-    else {
-        if (!SharedPref.useNicknames() && previousEntry != null)
+    else if (state is EntryUiState.Content) {
+        val previousEntry = (state as EntryUiState.Content).previousEntry
+        if (!SharedPref.useNicknames())
             onContinueGame(previousEntry)
-        else
+        else {
+            val nickname = (state as EntryUiState.Content).nickname
+            viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)
             NicknameScreen(
-                        nickname = viewModel.nickname,
-                        previousNicknames = viewModel.previousNicknames,
-                        onChange = { viewModel.updateNickname(it) },
-                        onSubmit = {
-                            if (viewModel.isValidNickname(context)) {
-                                SharedPref.write(SharedPref.NICKNAME, viewModel.nickname.trim())
-                                onContinueGame(viewModel.previousEntry!!)
-                            }
-                        },
-                        onEnd = {
-                            nav.navigate(PreviousGame(viewModel.previousEntry!!.gameId)) {
-                                popUpTo(Home)
-                            }
-                        },
-                        isError = viewModel.isError,
-                        focusRequester = focusRequester
-                    )
-                }
- }
+                nickname = nickname,
+                previousNicknames = (state as EntryUiState.Content).previousNicknames,
+                onChange = { viewModel.updateNickname(it) },
+                onSubmit = {
+                    if (viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)) {
+                        SharedPref.write(SharedPref.NICKNAME, nickname.trim())
+                        onContinueGame(previousEntry)
+                    }
+                },
+                onEnd = {
+                    nav.navigate(PreviousGame(previousEntry.gameId)) {
+                        popUpTo(Home)
+                    }
+                },
+                nicknameError = (state as EntryUiState.Content).nicknameError,
+                focusRequester = focusRequester
+            )
+        }
+    }
+}
 
 @Composable
 fun NicknameScreen(
@@ -86,7 +94,7 @@ fun NicknameScreen(
     onChange: (String) -> Unit,
     onSubmit: () -> Unit,
     onEnd: () -> Unit,
-    isError: Boolean,
+    nicknameError: Int?,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier
 ) {
@@ -108,7 +116,11 @@ fun NicknameScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.nickname_prompt), Modifier.padding(bottom = 24.dp), fontSize = 20.sp)
+                    Text(
+                        text = stringResource(R.string.nickname_prompt),
+                        Modifier.padding(bottom = 24.dp),
+                        fontSize = 20.sp
+                    )
                 }
                 if (previousNicknames.isNotEmpty()) {
                     Text(stringResource(R.string.previous_nicknames))
@@ -118,8 +130,9 @@ fun NicknameScreen(
                         }
                     }
                 }
-
-                ErrorText(isError, stringResource(R.string.no_nickname_chosen_warning))
+                if (nicknameError != null) {
+                    ErrorText(true, stringResource(nicknameError))
+                }
                 Column {
                     Row {
                         OutlinedTextField(
@@ -174,8 +187,8 @@ fun NicknamePreview() {
                 stringResource(id = R.string.oof),
                 listOfNicknames,
                 {},
-                {},{},
-                false,
+                {}, {},
+                null,
                 focusRequester
             )
         }
@@ -194,8 +207,8 @@ fun NicknamePreviewEmpty() {
                 stringResource(id = R.string.oof),
                 listOfNicknames,
                 {},
-                {},{},
-                true,
+                {}, {},
+                R.string.no_nickname_chosen_warning,
                 focusRequester
             )
         }
@@ -214,8 +227,8 @@ fun NicknamePreviewEmptyNobody() {
                 "",
                 listOfNicknames,
                 {},
-                {},{},
-                false,
+                {}, {},
+                null,
                 focusRequester
             )
         }

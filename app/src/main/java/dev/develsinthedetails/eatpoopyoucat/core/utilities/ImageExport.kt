@@ -28,7 +28,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviewData
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviewData
 import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.time.Instant

@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.previousgames
+package dev.develsinthedetails.eatpoopyoucat.feature.previousGames
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -23,15 +23,21 @@
         tools:targetApi="33">
         <activity
             android:name=".app.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="epyc" android:host="previous_games" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.importgames.ImportGamesActivity"
+            android:name=".feature.importGames.ImportGamesActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter android:label="@string/app_name"
@@ -45,7 +51,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".feature.netplay.NetGameActivity"
+            android:name=".feature.netPlay.NetGameActivity"
             android:exported="true"
             android:launchMode="singleTask"
             >
@@ -53,11 +59,11 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="epyc" android:host="*" />
+                <data android:scheme="epyc" android:host="net" />
             </intent-filter>
         </activity>
         <service
-        android:name=".feature.netplay.WebServerService"
+        android:name=".feature.netPlay.WebServerService"
         android:exported="false"
         android:foregroundServiceType="connectedDevice" />
     </application>

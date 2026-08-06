@@ -16,6 +16,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
@@ -23,10 +24,10 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.importgames.ImportGamesActivity
-import dev.develsinthedetails.eatpoopyoucat.feature.netplay.LanGameScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviousGameScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.previousgames.PreviousGamesScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.LanGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
@@ -55,30 +56,47 @@ val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
 }
 
 //sealed interface Screen {
-    @Serializable data object Home
-    @Serializable data object PreviousGames
-    @Serializable data object Credits
-    @Serializable data object PrivacyPolicy
+@Serializable
+data object Home
 
-    @Serializable data class NewGame(val id: Uuid)
-    @Serializable data class LanGame(val id: Uuid)
-    @Serializable data class PreviousGame(val gameId: Uuid)
-    @Serializable data class Sentence(val id: Uuid)
-    @Serializable data class Draw(val id: Uuid)
+@Serializable
+data object ImportPreviousGames
+
+@Serializable
+data object PreviousGames
+
+@Serializable
+data object Credits
+
+@Serializable
+data object PrivacyPolicy
+
+@Serializable
+data class NewGame(val id: Uuid)
+
+@Serializable
+data class LanGame(val id: Uuid)
+
+@Serializable
+data class PreviousGame(val gameId: Uuid)
+
+@Serializable
+data class Sentence(val id: Uuid)
+
+@Serializable
+data class Draw(val id: Uuid)
 //}
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun EatPoopYouCatApp(
-    goto: String?
-) {
+fun EatPoopYouCatApp() {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
     NavHost(
         navController = navController,
-        startDestination = goto ?: Home
+        startDestination = Home
     ) {
         composable<Home> {
             HomeScreen(
@@ -151,7 +169,9 @@ fun EatPoopYouCatApp(
         }
 
         composable<PreviousGames>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+            deepLinks = listOf(
+                navDeepLink<PreviousGames>(basePath = "epyc://previous_games")
+            )
         ) {
             PreviousGamesScreen(
                 onGoHome = {
@@ -198,6 +218,7 @@ fun EatPoopYouCatApp(
                 }
             }
         }
+
     }
 }
 

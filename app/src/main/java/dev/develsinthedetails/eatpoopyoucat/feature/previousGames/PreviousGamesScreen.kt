@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.previousgames
+package dev.develsinthedetails.eatpoopyoucat.feature.previousGames
 
 import android.content.res.Configuration
 import android.net.Uri
@@ -46,14 +46,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavDeepLink
+import androidx.navigation.navDeepLink
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.entriesAreValid
-import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
+import dev.develsinthedetails.eatpoopyoucat.app.PreviousGames
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.entriesAreValid
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid

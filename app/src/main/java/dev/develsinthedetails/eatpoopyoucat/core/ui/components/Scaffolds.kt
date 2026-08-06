@@ -292,3 +292,24 @@ fun HomeBarPreview() {
 
     }
 }
+@Preview
+@Composable
+fun InGamePreview() {
+    Scaffolds.InGame(
+        title = stringResource(
+            id = R.string.welcome_message,
+            stringResource(id = R.string.app_name)
+        ), {}) {
+    }
+}
+
+@Preview
+@Composable
+fun BackablePreview() {
+    Scaffolds.Backable(
+        title = stringResource(
+            id = R.string.welcome_message,
+            stringResource(id = R.string.app_name)
+        ), {}) {
+    }
+}

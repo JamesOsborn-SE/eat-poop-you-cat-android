@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.importgames
+package dev.develsinthedetails.eatpoopyoucat.feature.importGames
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

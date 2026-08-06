@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.previousgames
+package dev.develsinthedetails.eatpoopyoucat.feature.previousGames
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

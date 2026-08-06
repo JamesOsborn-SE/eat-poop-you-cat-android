@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.netplay
+package dev.develsinthedetails.eatpoopyoucat.feature.netPlay
 
 import android.app.Notification
 import android.app.Service

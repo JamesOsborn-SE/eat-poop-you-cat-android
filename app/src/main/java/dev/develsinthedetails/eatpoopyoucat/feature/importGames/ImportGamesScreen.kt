@@ -1,5 +1,6 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.importgames
+package dev.develsinthedetails.eatpoopyoucat.feature.importGames
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -23,13 +24,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.MainActivity
-import dev.develsinthedetails.eatpoopyoucat.app.PreviousGames
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.ROUTE_TO
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
@@ -62,12 +62,14 @@ fun ImportGames(
     var showAlert by remember { mutableStateOf(false) }
 
     val onDismissRequest = {
-        finish()
-        val intent = Intent(context, MainActivity::class.java).apply {
-            val routeJson = Json.encodeToString(PreviousGames)
-            putExtra(ROUTE_TO, routeJson)
-        }
+//        val intent = Intent(context, MainActivity::class.java
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            "epyc://previous_games".toUri(),
+        )
+
         context.startActivity(intent)
+        (context as? Activity)?.finish()
     }
 
     if (!finished.value)
@@ -109,7 +111,7 @@ fun ImportedAlertPreview() {
 private fun ImportedAlert(
     games: Int,
     entries: Int,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit?
 ) {
     val gamesText = pluralStringResource(R.plurals.imported_games, count = games, games)
     val entriesText = pluralStringResource(R.plurals.imported_entries, count = entries, entries)
