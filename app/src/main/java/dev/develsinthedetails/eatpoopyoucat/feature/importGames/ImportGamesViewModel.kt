@@ -28,7 +28,7 @@ class ImportGamesViewModel(
 
     private suspend fun addEntries(entries: List<Entry>) {
         entries.forEach {
-            val newEntry = it.copy(playerId = appSettings.getPlayerId())
+            val newEntry = it.copy(playerId = appSettings.playerId)
             repository.createEntry(newEntry)
             _numberOfEntriesAdded.emit(++_numberOfEntriesAdded.value)
         }

@@ -12,7 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
-import androidx.compose.material.icons.rounded.PhoneAndroid
+import androidx.compose.material.icons.rounded.NetworkPing
+import androidx.compose.material.icons.rounded.Start
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.tertiaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.getBitmapFromVectorDrawable
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
@@ -43,22 +45,24 @@ import kotlin.uuid.Uuid
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onNavigateToNewGame: (Uuid) -> Unit,
-    onNavigateToPreviousGames: () -> Unit,
-    onNavigateToCredits: () -> Unit,
-    onNavigateToPrivacyPolicy: () -> Unit,
+    toNewGame: (Uuid) -> Unit,
+    toPreviousGames: () -> Unit,
+    toInProgressGames: () -> Unit,
+    toCredits: () -> Unit,
+    toPrivacyPolicy: () -> Unit,
 ) {
     HomeScreen(
         isLoading = viewModel.isLoading,
-        onNavigateToNewGame =  {
+        toNewGame = {
             val entryId = Uuid.random()
             viewModel.saveNewGame(
                 entryId
-            ) { onNavigateToNewGame(entryId) }
+            ) { toNewGame(entryId) }
         },
-        onNavigateToPreviousGames = onNavigateToPreviousGames,
-        onNavigateToCredits = onNavigateToCredits,
-        onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
+        toPreviousGames = toPreviousGames,
+        toInProgressGames = toInProgressGames,
+        toCredits = toCredits,
+        toPrivacyPolicy = toPrivacyPolicy,
     )
 }
 
@@ -66,10 +70,11 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    onNavigateToNewGame: () -> Unit,
-    onNavigateToPreviousGames: () -> Unit,
-    onNavigateToCredits: () -> Unit,
-    onNavigateToPrivacyPolicy: () -> Unit,
+    toNewGame: () -> Unit,
+    toPreviousGames: () -> Unit,
+    toInProgressGames: () -> Unit,
+    toCredits: () -> Unit,
+    toPrivacyPolicy: () -> Unit,
 ) {
     val padding = 10.dp
     Scaffolds.Home(
@@ -79,9 +84,6 @@ fun HomeScreen(
         )
     )
     { innerPadding ->
-
-
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = modifier
                 .fillMaxSize()
@@ -114,9 +116,49 @@ fun HomeScreen(
                             .padding(8.dp)
                             .clip(CircleShape)
                     )
-
-                    StartNewGame(defaultModifier, onNavigateToNewGame)
-                    ViewPreviousGames(defaultModifier, onNavigateToPreviousGames)
+                    Button(
+                        onClick = toNewGame,
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(stringResource(id = R.string.dialog_start_game))
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            Icons.Rounded.Start,
+                            contentDescription = stringResource(id = R.string.dialog_start_game),
+                        )
+                    }
+                    Button(
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally),
+                        colors = secondaryButtonColors(),
+                        onClick = {
+                            toPreviousGames()
+                        }) {
+                        Text(pluralStringResource(id = R.plurals.previous_games, 2))
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            Icons.Rounded.History,
+                            contentDescription = null,
+                        )
+                    }
+                    Button(
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally),
+                        colors = tertiaryButtonColors(),
+                        onClick = {
+                            toInProgressGames()
+                        }) {
+                        Text("In Progress Games")
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            Icons.Rounded.NetworkPing,
+                            contentDescription = null,
+                        )
+                    }
                     Text(
                         text = stringResource(id = R.string.app_description),
                         modifier = defaultModifier
@@ -129,13 +171,13 @@ fun HomeScreen(
 
                     TextButton(
                         modifier = defaultModifier,
-                        onClick = onNavigateToCredits,
+                        onClick = toCredits,
                     ) {
                         Text(stringResource(id = R.string.about))
                     }
                     TextButton(
                         modifier = defaultModifier,
-                        onClick = onNavigateToPrivacyPolicy
+                        onClick = toPrivacyPolicy
                     ) {
                         Text(stringResource(id = R.string.privacy_policy))
                     }
@@ -145,46 +187,10 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun ViewPreviousGames(modifier: Modifier, navTo: () -> Unit) {
-    Button(
-        modifier = modifier,
-        colors = secondaryButtonColors(),
-        onClick = {
-            navTo()
-        }) {
-        Text(pluralStringResource(id = R.plurals.previous_games, 2))
-        Spacer(modifier = Modifier.size(5.dp))
-        Icon(
-            Icons.Rounded.History,
-            contentDescription = null,
-        )
-    }
-}
-@Composable
-fun StartNewGame(
-    modifier: Modifier,
-    onStartGame: () -> Unit,
-) {
-    Button(
-        onClick = onStartGame,
-        modifier = modifier
-    ) {
-        Text(stringResource(id = R.string.dialog_start_game))
-        Spacer(modifier = Modifier.size(5.dp))
-        Icon(
-            Icons.Rounded.PhoneAndroid,
-            contentDescription = stringResource(id = R.string.dialog_start_game),
-        )
-    }
-}
-
 /**
  * Preview Screenshot #1
  */
-@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
 @Preview(
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     device = "spec:parent=Nexus 7 2013,orientation=landscape"
@@ -194,9 +200,11 @@ fun HomeScreenPreview() {
     AppTheme {
         HomeScreen(
             isLoading = false,
-            onNavigateToNewGame = {},
-            onNavigateToPreviousGames = {},
-            onNavigateToCredits = {},
-        ) {}
+            toNewGame = {},
+            toInProgressGames = {},
+            toPreviousGames = {},
+            toCredits = {},
+            toPrivacyPolicy = {}
+        )
     }
 }

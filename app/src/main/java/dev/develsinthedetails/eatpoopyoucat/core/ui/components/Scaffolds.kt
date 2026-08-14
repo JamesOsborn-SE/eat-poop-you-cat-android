@@ -253,6 +253,7 @@ object Scaffolds {
     fun Backable(
         title: String,
         onBack: () -> Unit,
+        floatingActionButton: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
         Scaffold(
@@ -275,6 +276,7 @@ object Scaffolds {
                     },
                 )
             },
+            floatingActionButton = floatingActionButton,
             content = content
         )
     }

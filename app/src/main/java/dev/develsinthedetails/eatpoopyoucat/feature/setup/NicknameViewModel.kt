@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
-import dev.develsinthedetails.eatpoopyoucat.app.NewGame
+import dev.develsinthedetails.eatpoopyoucat.app.Nickname
 import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
@@ -32,12 +31,10 @@ sealed interface EntryUiState {
 class NicknameViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
-    private val appSettings: AppSettings,
 ) : ViewModel() {
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
-    private val route = state.toRoute<NewGame>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.id)
-    var useNicknames = appSettings.useNicknamesFlow
+    private val route = state.toRoute<Nickname>(typeMap)
+    private val previousEntryId: Uuid = checkNotNull(route.entryId)
     private val _uiState = MutableStateFlow<EntryUiState>(EntryUiState.Loading)
     val state: StateFlow<EntryUiState> = _uiState.asStateFlow()
 

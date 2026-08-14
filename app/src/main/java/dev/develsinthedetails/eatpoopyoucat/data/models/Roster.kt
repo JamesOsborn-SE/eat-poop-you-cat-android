@@ -6,6 +6,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import dev.develsinthedetails.eatpoopyoucat.data.local.UuidSerializer
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Entity(
@@ -32,7 +33,11 @@ data class Roster(
     val gameId: Uuid,
     @Serializable(with = UuidSerializer::class)
     val playerId: Uuid,
+    val nickname: String,
+    val address: String,
+    val sequence: Int?,
     val isLeader: Boolean,
+    val lastSeen: Instant,
 )
 
 data class RosterHashAndCount(

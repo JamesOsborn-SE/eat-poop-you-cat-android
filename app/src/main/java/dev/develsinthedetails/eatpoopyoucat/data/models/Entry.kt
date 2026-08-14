@@ -70,7 +70,7 @@ enum class EntryType {
 }
 
 
-val Entry.type: Any
+val Entry.type: EntryType
     get() {
         if (this.sequence == 0 && this.sentence == null)
             return EntryType.First

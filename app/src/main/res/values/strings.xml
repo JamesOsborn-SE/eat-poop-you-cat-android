@@ -51,7 +51,7 @@
     <string name="turns">Turns: %1$d</string>
     <string name="end_game_for_all">End Game For All</string>
     <string name="app_description">A game of telephone where you take turns writing sentences and making drawings. The game is over when each person has one turn.*</string>
-    <string name="app_warning">* Family and friends are not included!</string>
+    <string name="app_warning">* Family and friends not included!</string>
     <string name="no_previous_games_found">No previous games found! Go play!</string>
     <string name="pass_to_the_next">Pass this device to the next player!</string>
     <string name="scroll_to_top">scroll to top</string>
@@ -100,6 +100,7 @@
     <string name="player_id">PlayerId: %1$s</string>
     <string name="halp" tools:ignore="Typos">halp!</string>
     <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can\'t think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"</string>
+    <string name="next">Next</string>
     <plurals name="imported_games">
         <item quantity="zero">Imported %d Games</item>
         <item quantity="one">Imported %d Game</item>

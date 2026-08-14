@@ -9,32 +9,35 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGames
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.setup.NicknameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.PrivacyPolicyScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -58,9 +61,6 @@ val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
 data object Home
 
 @Serializable
-data object ImportPreviousGames
-
-@Serializable
 data object PreviousGames
 
 @Serializable
@@ -70,72 +70,117 @@ data object Credits
 data object PrivacyPolicy
 
 @Serializable
-data class NewGame(val id: Uuid)
+data object NewGame
 
 @Serializable
-data class LanGame(val id: Uuid)
+data class Nickname(val entryId: Uuid)
 
 @Serializable
 data class PreviousGame(val gameId: Uuid)
 
 @Serializable
-data class Sentence(val id: Uuid, val nickname: String?=null)
+data class Sentence(val entryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
 
 @Serializable
-data class Draw(val id: Uuid, val nickname: String?)
+data class Draw(val entryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
+
+
+@Serializable
+data class StartNetGame(val gameId: Uuid, val gameMode: GameMode)
+
+@Serializable
+data object InProgressGames
+
+@Serializable
+data class InProgressGameDetails(val gameId: Uuid)
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun EatPoopYouCatApp() {
+fun NavGraph(appSettings: AppSettings = koinInject()) {
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-
+    val useNicknames by appSettings.useNicknamesFlow.collectAsStateWithLifecycle(
+        initialValue = false
+    )
     NavHost(
         navController = navController,
         startDestination = Home
     ) {
         composable<Home> {
             HomeScreen(
-                onNavigateToNewGame = {
-                    navController.navigate(NewGame(it)) {
+                toNewGame = {
+                    navController.navigate(NewGame) {
                         popUpTo<Home>()
                     }
                 },
-                onNavigateToPreviousGames = {
+                toPreviousGames = {
                     navController.navigate(PreviousGames) {
                         popUpTo<Home>()
                     }
                 },
-                onNavigateToCredits = {
+                toCredits = {
                     navController.navigate(Credits)
                 },
-                onNavigateToPrivacyPolicy = {
+                toInProgressGames = {
+                    navController.navigate(InProgressGameDetails)
+                },
+                toPrivacyPolicy = {
                     navController.navigate(PrivacyPolicy)
                 }
             )
         }
 
-        composable<NewGame>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
-        ) {
-            NicknameScreen(nav = navController)
+        composable<NewGame> {
+            NewGameScreen(
+                onBack = {
+                    navController.navigate(Home)
+                },
+                onNetGame = { gameId: Uuid, gameMode: GameMode ->
+                    navController.navigate(StartNetGame(gameId, gameMode))
+                },
+                onLocal = { entryId: Uuid ->
+                    if (useNicknames) {
+                        navController.navigate(Nickname(entryId))
+                    } else {
+                        navController.navigate(Sentence(entryId, GameMode.LOCAL, null))
+                    }
+                },
+            )
         }
+
         composable<Sentence>(
             typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
-
+            deepLinks = listOf(
+                navDeepLink<Sentence>(
+                    basePath = "epyc://Sentence",
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                ),
+            )
         ) {
             SentenceScreen(
-                onNavigateToDraw = { id ->
-                    navController.navigate(NewGame(id)) {
-                        popUpTo<Home>()
+                onNavigateToDraw = { entryId, gameMode ->
+                    if (useNicknames && gameMode == GameMode.LOCAL) {
+                        navController.navigate(Nickname(entryId)) {
+                            popUpTo<Home>()
+                        }
+                    } else {
+                        navController.navigate(
+                            Draw(
+                                entryId,
+                                gameMode = gameMode,
+                                nickname = null
+                            )
+                        ) {
+                            popUpTo<Home>()
+                        }
                     }
                 },
                 onNavigateToHome = {
                     navController.navigate(Home)
                 },
-                onNavigateToEndedGame = { id ->
-                    navController.navigate(PreviousGame(id)) {
+                onNavigateToEndedGame = { gameId ->
+                    navController.navigate(PreviousGame(gameId)) {
                         popUpTo<Home>()
                     }
                 }
@@ -143,16 +188,26 @@ fun EatPoopYouCatApp() {
         }
 
         composable<Draw>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            deepLinks = listOf(
+                navDeepLink<Draw>(
+                    basePath = "epyc://Draw",
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                ),
+            )
         ) {
             DrawScreen(
-                onNavigateToSentence = { id ->
-                    navController.navigate(NewGame(id)) {
-                        popUpTo<Home>()
+                onNavigateToSentence = { entryId, gameMode ->
+                    if (useNicknames && gameMode == GameMode.LOCAL) {
+                        navController.navigate(Nickname(entryId)) {
+                            popUpTo<Home>()
+                        }
+                    } else {
+                        navController.navigate(Sentence(entryId, gameMode))
                     }
                 },
-                onNavigateToEndedGame = { id ->
-                    navController.navigate(PreviousGame(id)) {
+                onNavigateToEndedGame = { gameId ->
+                    navController.navigate(PreviousGame(gameId)) {
                         popUpTo<Home>()
                     }
                 }
@@ -161,7 +216,10 @@ fun EatPoopYouCatApp() {
 
         composable<PreviousGames>(
             deepLinks = listOf(
-                navDeepLink<PreviousGames>(basePath = "epyc://previous_games")
+                navDeepLink<PreviousGames>(
+                    basePath = "epyc://PreviousGames",
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                )
             )
         ) {
             PreviousGamesScreen(
@@ -170,8 +228,8 @@ fun EatPoopYouCatApp() {
                         popUpTo<Home>()
                     }
                 },
-                onGameClick = { id ->
-                    navController.navigate(PreviousGame(id))
+                onGameClick = { gameId ->
+                    navController.navigate(PreviousGame(gameId))
                 },
                 onBackupGames = onBackupGames(coroutineScope, context),
                 onImportGames = onImportGames()
@@ -179,10 +237,16 @@ fun EatPoopYouCatApp() {
         }
 
         composable<PreviousGame>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            deepLinks = listOf(
+                navDeepLink<PreviousGame>(
+                    basePath = "epyc://PreviousGame",
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                )
+            )
         ) {
             PreviousGameScreen(
-                onContinueGame = navigateToNextNickName(navController),
+                onContinueGame = {},
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(),
                 onBack = {
@@ -210,6 +274,26 @@ fun EatPoopYouCatApp() {
             }
         }
 
+        composable<StartNetGame>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+            StartNetGameScreen(onBack = {
+                navController.navigate(Home)
+            }, onStartGame = { gameId: Uuid ->
+                navController.navigate(InProgressGameDetails(gameId))
+            })
+        }
+
+        composable<InProgressGames> {
+            InProgressGames(
+                onBack = { navController.navigate(Home) },
+                toGame = { gameId: Uuid ->
+                    navController.navigate(InProgressGameDetails(gameId))
+                }
+            )
+        }
+
+        composable<InProgressGameDetails>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+            InProgressGameDetailsScreen(onBack = { navController.navigate(InProgressGames) })
+        }
     }
 }
 
@@ -256,24 +340,3 @@ private fun onBackupGames(
         }
     }
 }
-
-@OptIn(ExperimentalUuidApi::class)
-@Composable
-fun navigateToNextTurn(navController: NavHostController): (Entry,String?) -> Unit =
-    { entry: Entry, nickname: String? ->
-        run {
-            if (entry.type == EntryType.Drawing || entry.type == EntryType.First)
-                navController.navigate(Sentence(entry.id, nickname))
-            else if (entry.type == EntryType.Sentence)
-                navController.navigate(Draw(entry.id, nickname))
-        }
-    }
-
-@OptIn(ExperimentalUuidApi::class)
-@Composable
-fun navigateToNextNickName(navController: NavHostController): (Uuid) -> Unit =
-    {
-        navController.navigate(NewGame(it)) {
-            popUpTo<Home>()
-        }
-    }

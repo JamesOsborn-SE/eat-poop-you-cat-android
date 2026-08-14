@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "557a4542ef4b02abde04ffd72157e271",
+    "identityHash": "8f24b728c132781e36d2dd209dff17ce",
     "entities": [
       {
         "tableName": "Game",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `timeout` INTEGER, `turns` INTEGER, `createdAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `timeout` INTEGER, `turns` INTEGER, `createdAt` INTEGER, `gameMode` TEXT NOT NULL DEFAULT 'LOCAL', PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -28,6 +28,13 @@
             "fieldPath": "createdAt",
             "columnName": "createdAt",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "gameMode",
+            "columnName": "gameMode",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "'LOCAL'"
           }
         ],
         "primaryKey": {
@@ -59,7 +66,7 @@
             "notNull": true
           },
           {
-            "fieldPath": "name",
+            "fieldPath": "nickname",
             "columnName": "name",
             "affinity": "TEXT",
             "notNull": true
@@ -206,7 +213,7 @@
       },
       {
         "tableName": "Roster",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` BLOB NOT NULL, `playerId` BLOB NOT NULL, `isLeader` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `playerId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` BLOB NOT NULL, `playerId` BLOB NOT NULL, `isLeader` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `playerId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "gameId",
@@ -223,6 +230,12 @@
           {
             "fieldPath": "isLeader",
             "columnName": "isLeader",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSeen",
+            "columnName": "lastSeen",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -273,7 +286,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '557a4542ef4b02abde04ffd72157e271')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8f24b728c132781e36d2dd209dff17ce')"
     ]
   }
 }

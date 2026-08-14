@@ -24,13 +24,6 @@ class SentenceViewModel(
     private val appSettings: AppSettings,
 ) : ViewModel() {
 
-    init {
-        viewModelScope.launch {
-            playerId = appSettings.getPlayerId()
-        }
-    }
-
-    lateinit var playerId: Uuid
     var isError: Boolean by mutableStateOf(false)
         private set
     var isLoading: Boolean by mutableStateOf(false)
@@ -38,7 +31,7 @@ class SentenceViewModel(
 
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Sentence>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.id)
+    private val previousEntryId: Uuid = checkNotNull(route.entryId)
     val previousEntry: LiveData<Entry?> = repository.getEntry(previousEntryId).asLiveData()
 
     private val nickname = route.nickname
@@ -73,6 +66,7 @@ class SentenceViewModel(
                 isLoading = false
             }
         } else {
+            val playerId = appSettings.playerId
             val newEntry = entry.copy(
                 id = entryId,
                 localPlayerName = nickname,
@@ -81,6 +75,7 @@ class SentenceViewModel(
                 sequence = entry.sequence.inc(),
                 playerId = playerId
             )
+
             viewModelScope.launch {
                 repository.createEntry(newEntry)
                 nextTo.invoke(entryId)

@@ -46,12 +46,6 @@ class DrawViewModel(
     private val appSettings: AppSettings,
 ) : ViewModel() {
 
-    init {
-        clearCanvas()
-        viewModelScope.launch {
-            playerId = appSettings.getPlayerId()
-        }
-    }
     var drawMode: DrawMode by mutableStateOf(DrawMode.Draw)
     private var currentX = 0f
     private var currentY = 0f
@@ -61,7 +55,7 @@ class DrawViewModel(
     private var lineProperties = MutableStateFlow(LineProperties())
     val lineProps = lineProperties.asLiveData()
 
-    lateinit var playerId: Uuid
+    val playerId = appSettings.playerId
     var isError: Boolean by mutableStateOf(false)
         private set
     var isLoading: Boolean by mutableStateOf(false)
@@ -69,9 +63,10 @@ class DrawViewModel(
 
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Draw>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.id)
-    private val prevEntry = repository.getEntry(previousEntryId)
+    private val previousEntryId: Uuid = checkNotNull(route.entryId)
     private val nickname = route.nickname
+    private val gameMode = route.gameMode
+    private val prevEntry = repository.getEntry(previousEntryId)
     val previousEntry: LiveData<Entry?> = prevEntry.asLiveData()
 
     val entryId = Uuid.random()
@@ -84,6 +79,9 @@ class DrawViewModel(
     val lineSeg = lineSegments.asLiveData()
     private var justCleared: Boolean = false
 
+    init {
+        clearCanvas()
+    }
     @OptIn(ExperimentalCoroutinesApi::class)
     val undoCount = drawingLines.flatMapLatest { lines ->
         flow {

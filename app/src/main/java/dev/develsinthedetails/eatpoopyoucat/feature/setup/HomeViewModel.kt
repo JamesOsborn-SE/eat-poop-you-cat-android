@@ -21,12 +21,11 @@ class HomeViewModel(
     var isLoading by mutableStateOf(false)
 
     private var userName by mutableStateOf("")
-    private lateinit var playerId: Uuid
+    private val playerId = appSettings.playerId
 
 
     init {
         viewModelScope.launch {
-            playerId=appSettings.getPlayerId()
             updatePlayer(userName)
         }
     }
@@ -44,7 +43,7 @@ class HomeViewModel(
         }
     }
 
-    fun saveNewGame(entryId: Uuid, onNavigateToSentence: () -> Unit) {
+    fun saveNewGame(entryId: Uuid, onToSentence: () -> Unit) {
         isLoading = true
         val gameId = Uuid.random()
 
@@ -67,7 +66,7 @@ class HomeViewModel(
                     drawing = null
                 )
             )
-            onNavigateToSentence.invoke()
+            onToSentence.invoke()
             isLoading = false
         }
     }

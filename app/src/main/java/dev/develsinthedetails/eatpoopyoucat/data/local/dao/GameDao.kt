@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -16,6 +17,10 @@ interface GameDao {
     @Transaction
     @Query("SELECT * FROM game")
     fun getAll(): Flow<List<Game>>
+
+    @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    fun get(id: Uuid): Flow<Game>
 
     @Transaction
     @Query("SELECT * FROM game")
@@ -36,6 +41,10 @@ interface GameDao {
     @Transaction
     @Query("SELECT * FROM game where id=:id")
     suspend fun getWithEntriesAsync(id: Uuid): GameWithEntries
+
+    @Transaction
+    @Query("SELECT * FROM game WHERE turns IS NULL")
+    fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>>
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)

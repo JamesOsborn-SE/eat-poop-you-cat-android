@@ -46,6 +46,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,7 +55,7 @@ import kotlin.uuid.Uuid
 @Composable
 fun SentenceScreen(
     viewModel: SentenceViewModel = koinViewModel(),
-    onNavigateToDraw: (Uuid) -> Unit,
+    onNavigateToDraw: (Uuid, GameMode) -> Unit,
     onNavigateToEndedGame: (Uuid) -> Unit,
     onNavigateToHome: () -> Unit
 ) {
@@ -69,7 +70,7 @@ fun SentenceScreen(
     val toastText = stringResource(id = R.string.pass_to_the_next)
     fun submit() {
         if (viewModel.sentenceIsNotBlank() && previousEntry != null) {
-            viewModel.saveEntry { onNavigateToDraw(idToSend) }
+            viewModel.saveEntry { onNavigateToDraw(idToSend, GameMode.LOCAL) }
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
         }
     }

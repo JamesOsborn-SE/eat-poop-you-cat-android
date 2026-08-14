@@ -1,8 +1,10 @@
 package dev.develsinthedetails.eatpoopyoucat.data.models
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.data.local.InstantSerializer
 import dev.develsinthedetails.eatpoopyoucat.data.local.UuidSerializer
 import kotlinx.serialization.Serializable
@@ -19,4 +21,6 @@ data class Game(
     val turns: Int?,
     @Serializable(InstantSerializer::class)
     val createdAt: Instant? = null,
+    @ColumnInfo(defaultValue = "'LOCAL'")
+    val gameMode: GameMode = GameMode.LOCAL //todo remove = GameMode.LOCAL
 )

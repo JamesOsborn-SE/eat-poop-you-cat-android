@@ -31,57 +31,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.Home
-import dev.develsinthedetails.eatpoopyoucat.app.PreviousGame
-import dev.develsinthedetails.eatpoopyoucat.app.navigateToNextTurn
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.AppButton
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
+import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun NicknameScreen(
     viewModel: NicknameViewModel = koinViewModel(),
-    nav: NavHostController,
+    onSubmit: (Uuid, EntryType, String) -> Unit,
+    onEnd: (Uuid) -> Unit,
 ) {
     val hardcodedNames = LocalResources.current.getStringArray(R.array.nicknames).toList()
     val fallbackName = stringResource(R.string.oof)
 
     val focusRequester = remember { FocusRequester() }
-    val onContinueGame = navigateToNextTurn(navController = nav)
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val useNicknames by viewModel.useNicknames.collectAsStateWithLifecycle(initialValue = false)
     if (state is EntryUiState.Loading)
         SpinnerScreen()
     else if (state is EntryUiState.Content) {
         val previousEntry = (state as EntryUiState.Content).previousEntry
         val nickname = (state as EntryUiState.Content).nickname
-        if (!useNicknames)
-            onContinueGame(previousEntry, nickname)
-        else {
-            viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)
-            NicknameScreen(
-                nickname = nickname,
-                previousNicknames = (state as EntryUiState.Content).previousNicknames,
-                onChange = { viewModel.updateNickname(it) },
-                onSubmit = {
-                    if (viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)) {
-                        onContinueGame(previousEntry, nickname)
-                    }
-                },
-                onEnd = {
-                    nav.navigate(PreviousGame(previousEntry.gameId)) {
-                        popUpTo(Home)
-                    }
-                },
-                nicknameError = (state as EntryUiState.Content).nicknameError,
-                focusRequester = focusRequester
-            )
-        }
+        viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)
+        NicknameScreen(
+            nickname = nickname,
+            previousNicknames = (state as EntryUiState.Content).previousNicknames,
+            onChange = { viewModel.updateNickname(it) },
+            onSubmit = {
+                if (viewModel.validateAndAutoAssignNickname(hardcodedNames, fallbackName)) {
+                    onSubmit(previousEntry.id, previousEntry.type , nickname)
+                }
+            },
+            onEnd = {onEnd(previousEntry.gameId)},
+            nicknameError = (state as EntryUiState.Content).nicknameError,
+            focusRequester = focusRequester
+        )
     }
 }
 

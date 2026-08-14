@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-import kotlin.uuid.Uuid
+import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.Serializable
 
 const val DATABASE_NAME = "eatpoopyoucat-db"
 @Suppress("SpellCheckingInspection")
@@ -8,10 +9,37 @@ const val catTestDrawingLinesInJson = """[{"lineSegments":[{"start":{"xValue":28
 const val ID = "Id"
 const val ROUTE_TO ="routeTo"
 
-enum class GameType {
+@Serializable
+enum class GameMode {
     UNKNOWN, LOCAL, LAN, INET
 }
 
 enum class DrawMode {
     Draw, Erase
 }
+
+
+val PIXEL_PALETTE_4_BIT = mapOf(
+    'A' to Color(0,0,0),
+    'B' to Color(248,248,248),
+    'C' to Color(240,216,64),
+    'D' to Color(184,104,32),
+    'E' to Color(240,160,104),
+    'F' to Color(40,40,40),
+    'G' to Color(248,120,0),
+    'H' to Color(192,24,32),
+    'I' to Color(232,96,176),
+    'J' to Color(56,144,104),
+    'K' to Color(64,216,112),
+    'L' to Color(80,144,16),
+    'M' to Color(120,184,32),
+    'N' to Color(244,144,80),
+    'O' to Color(136,88,40),
+    'P' to Color(192,128,240),
+)
+val PIXEL_PALETTE_2_BIT = mapOf(
+    'A' to Color.Red,
+    'B' to Color.Yellow,
+    'C' to Color.Blue,
+    'D' to Color.Black,
+)

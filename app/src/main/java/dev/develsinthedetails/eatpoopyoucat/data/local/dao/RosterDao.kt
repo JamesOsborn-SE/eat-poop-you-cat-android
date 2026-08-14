@@ -17,6 +17,9 @@ interface RosterDao {
     @Query("SELECT * FROM roster WHERE gameId=:id")
     fun getAllByGame(id: Uuid): Flow<List<Roster>>
 
+    @Query("SELECT * FROM roster WHERE gameId=:id and isLeader=1 LIMIT 1")
+    fun getLeaderByGame(id: Uuid): Flow<Roster>
+
     @Query("SELECT playerId FROM roster WHERE gameId=:gameId ORDER BY playerId ASC")
     fun getOrderedPlayerIds(gameId: Uuid): Flow<List<Uuid>>
 

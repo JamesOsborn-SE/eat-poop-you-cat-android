@@ -68,7 +68,7 @@ class PreviousGameDaoTests {
         val gameWithEntries = gameDao.getAllWithEntries().first()
         val player= playerDao.get(gameWithEntries[0].entries[0].playerId).first()
         assertThat(testGame, equalTo(gameWithEntries[0].game))
-        assert(player?.name == testPlayerOne.name)
+        assert(player?.nickname == testPlayerOne.nickname)
     }
 
     @Test

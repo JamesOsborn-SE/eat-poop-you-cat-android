@@ -119,6 +119,12 @@ fun secondaryButtonColors() = ButtonDefaults.buttonColors(
 )
 
 @Composable
+fun tertiaryButtonColors() = ButtonDefaults.buttonColors(
+    MaterialTheme.colorScheme.tertiaryContainer,
+    MaterialTheme.colorScheme.onTertiaryContainer,
+)
+
+@Composable
 fun primaryButtonColors() = ButtonDefaults.buttonColors(
     MaterialTheme.colorScheme.primaryContainer,
     MaterialTheme.colorScheme.onPrimaryContainer

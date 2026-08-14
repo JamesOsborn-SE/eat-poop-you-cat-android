@@ -6,6 +6,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.RosterHashAndCount
@@ -38,10 +39,12 @@ class AppRepository(
     suspend fun createGame(game: Game) {
         gameDao.insert(game.copy(createdAt = Clock.System.now()))
     }
+    fun getGame(id: Uuid) = gameDao.get(id)
 
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
     suspend fun getAllGamesWithEntriesAsync() = gameDao.getAllWithEntriesAsync()
+    fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>> = gameDao.getInProgressGamesWithRosters()
     suspend fun getAllGames() = gameDao.getAllAsync()
     fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getGameWithEntriesAsync(id: Uuid) = gameDao.getWithEntriesAsync(id)
@@ -63,6 +66,7 @@ class AppRepository(
     // ==========================================
     fun getAllRosters(): Flow<List<Roster>> = rosterDao.getAll()
     fun getRostersByGame(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByGame(id)
+    fun getLeaderByGame(id: Uuid): Flow<Roster> = rosterDao.getLeaderByGame(id)
     fun getRostersByPlayer(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByPlayer(id)
     suspend fun insert(roster: Roster) = rosterDao.insert(roster)
     suspend fun deleteByGame(gameId: Uuid) = rosterDao.deleteByGame(gameId)

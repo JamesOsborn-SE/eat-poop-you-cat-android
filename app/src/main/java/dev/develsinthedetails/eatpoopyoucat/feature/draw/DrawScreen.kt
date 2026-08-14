@@ -63,6 +63,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.drawingPen
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
 import dev.develsinthedetails.eatpoopyoucat.data.models.Line
@@ -76,7 +77,7 @@ import kotlin.uuid.Uuid
 @Composable
 fun DrawScreen(
     drawViewModel: DrawViewModel = koinViewModel(),
-    onNavigateToSentence: (Uuid) -> Unit,
+    onNavigateToSentence: (Uuid, GameMode) -> Unit,
     onNavigateToEndedGame: (Uuid) -> Unit
 ) {
     val previousEntry by drawViewModel.previousEntry.observeAsState()
@@ -100,7 +101,7 @@ fun DrawScreen(
         { onNavigateToEndedGame(previousEntry?.gameId!!) }
 
     val onSubmit = {
-        if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId) })
+        if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId, GameMode.LOCAL) })
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
     }
 

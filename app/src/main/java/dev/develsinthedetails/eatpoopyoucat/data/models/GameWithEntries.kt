@@ -15,3 +15,11 @@ data class GameWithEntries(
 fun GameWithEntries.entriesAreValid(): Boolean {
     return this.entries.all{ it.sentence.isNullOrBlank().xor(it.drawing == null) }
 }
+
+@Serializable
+data class GameWithRosters(
+    @Embedded
+    var game: Game,
+    @Relation(parentColumn = "id", entityColumn = "gameId")
+    var roster: List<Roster> = emptyList()
+)
