@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "8f24b728c132781e36d2dd209dff17ce",
+    "identityHash": "d0aafe95bd2609fe4aeacd90df6829ea",
     "entities": [
       {
         "tableName": "Game",
@@ -213,7 +213,7 @@
       },
       {
         "tableName": "Roster",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` BLOB NOT NULL, `playerId` BLOB NOT NULL, `isLeader` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `playerId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gameId` BLOB NOT NULL, `playerId` BLOB NOT NULL, `nickname` TEXT NOT NULL, `address` TEXT NOT NULL, `sequence` INTEGER, `isLeader` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, PRIMARY KEY(`gameId`, `playerId`), FOREIGN KEY(`gameId`) REFERENCES `Game`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`playerId`) REFERENCES `Player`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "gameId",
@@ -226,6 +226,23 @@
             "columnName": "playerId",
             "affinity": "BLOB",
             "notNull": true
+          },
+          {
+            "fieldPath": "nickname",
+            "columnName": "nickname",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sequence",
+            "columnName": "sequence",
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "isLeader",
@@ -286,7 +303,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8f24b728c132781e36d2dd209dff17ce')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd0aafe95bd2609fe4aeacd90df6829ea')"
     ]
   }
 }

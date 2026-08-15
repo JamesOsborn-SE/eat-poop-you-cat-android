@@ -18,7 +18,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 
 @Database(
     entities = [Game::class, Player::class, Entry::class, Roster::class],
-    version = 5,
+    version = 4,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(1,2),
