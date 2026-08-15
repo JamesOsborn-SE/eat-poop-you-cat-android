@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
@@ -47,6 +48,10 @@ interface GameDao {
     fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>>
 
     @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    fun getGameWithRosters(id: Uuid): GameWithRosters?
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(game: Game)
 
@@ -61,4 +66,8 @@ interface GameDao {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<Game>)
+
+    @Transaction
+    @Upsert
+    suspend fun updateGame(game: Game)
 }

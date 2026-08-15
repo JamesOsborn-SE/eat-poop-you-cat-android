@@ -1,5 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.data.local
 
+import android.net.Uri
+import androidx.core.net.toUri
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -21,6 +23,19 @@ object UuidSerializer : KSerializer<Uuid> {
 
     override fun serialize(encoder: Encoder, value: Uuid) {
         encoder.encodeString(value.toString())
+    }
+}
+
+object UriSerializer : KSerializer<Uri> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("Uri", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Uri) {
+        encoder.encodeString(value.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): Uri {
+        return decoder.decodeString().toUri()
     }
 }
 

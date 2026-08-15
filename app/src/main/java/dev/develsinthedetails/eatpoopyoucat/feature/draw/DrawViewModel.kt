@@ -63,7 +63,7 @@ class DrawViewModel(
 
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Draw>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.entryId)
+    private val previousEntryId: Uuid = checkNotNull(route.previousEntryId)
     private val nickname = route.nickname
     private val gameMode = route.gameMode
     private val prevEntry = repository.getEntry(previousEntryId)

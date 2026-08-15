@@ -34,7 +34,7 @@ class NicknameViewModel(
 ) : ViewModel() {
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Nickname>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.entryId)
+    private val previousEntryId: Uuid = checkNotNull(route.previousEntryId)
     private val _uiState = MutableStateFlow<EntryUiState>(EntryUiState.Loading)
     val state: StateFlow<EntryUiState> = _uiState.asStateFlow()
 

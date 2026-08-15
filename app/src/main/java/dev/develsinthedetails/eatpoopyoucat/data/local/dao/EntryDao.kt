@@ -34,6 +34,10 @@ interface EntryDao {
     suspend fun getAllEntriesByGameAsync(gameId: Uuid): List<Entry>
 
     @Transaction
+    @Query("SELECT * FROM entry WHERE gameId=:gameId AND sequence not in (:knownTurns)")
+    suspend fun getMissingEntriesAsync(gameId: Uuid, knownTurns: List<Int>): List<Entry>
+
+    @Transaction
     @Query("SELECT * FROM entry WHERE id=:id")
     suspend fun getEntryAndPlayersAsync(id: Uuid): Entry
 

@@ -46,10 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.navigation.NavDeepLink
-import androidx.navigation.navDeepLink
 import dev.develsinthedetails.eatpoopyoucat.R
-import dev.develsinthedetails.eatpoopyoucat.app.PreviousGames
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
@@ -78,7 +75,7 @@ fun PreviousGamesScreen(
             // clean up games that were created and never played.
             // These are created by the side effect of creating the game before the first sentence
             val invalidGames = games!!.filter { !it.entriesAreValid() }
-            if(invalidGames.isNotEmpty())
+            if (invalidGames.isNotEmpty())
                 viewModel.cleanup(invalidGames)
         }
 
@@ -152,7 +149,8 @@ fun PreviousGamesScreen(
                         items = games,
                         key = { it.game.id }
                     ) { game ->
-                        GameListItem(game = game,
+                        GameListItem(
+                            game = game,
                             onGotoGame = { onGotoGame(game.game.id) },
                             onDelete = { onDelete(game.game.id) })
                     }
@@ -180,16 +178,17 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
         )
         val deleteGame = createRef()
         var showDeleteConfirmation by remember { mutableStateOf(false) }
-        IconButton(modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                shape = RoundedCornerShape(32.dp)
-            )
-            .constrainAs(deleteGame)
-            {
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
-            },
+        IconButton(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = RoundedCornerShape(32.dp)
+                )
+                .constrainAs(deleteGame)
+                {
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                },
             onClick = { showDeleteConfirmation = true }) {
             Icon(
                 Icons.Rounded.DeleteForever,

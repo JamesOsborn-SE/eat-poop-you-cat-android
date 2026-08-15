@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.netPlay
+package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -8,23 +8,32 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.routes.GameRouter
+import io.ktor.serialization.kotlinx.cbor.cbor
+import io.ktor.server.application.install
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.put
+import io.ktor.server.plugins.compression.Compression
+import io.ktor.server.plugins.compression.zstd.zstd
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.resources.Resources
 import io.ktor.server.routing.routing
+import kotlinx.serialization.ExperimentalSerializationApi
+import org.koin.android.ext.android.inject
 
-class WebServerService: Service() {
-    private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
+class Server : Service() {
+    private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
+        null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return START_STICKY
     }
+
+    @OptIn(ExperimentalSerializationApi::class)
     override fun onCreate() {
         createNotificationChannel()
         super.onCreate()
@@ -45,19 +54,22 @@ class WebServerService: Service() {
         }
 
         if (server == null) {
-            server = embeddedServer(Netty, port = 3947, host = "0.0.0.0", watchPaths = emptyList()) {
-                routing {
-                    get("/status") {
-                        call.respondText("Game Lobby Active")
+            server =
+                embeddedServer(Netty, port = 3947, host = "0.0.0.0", watchPaths = emptyList()) {
+                    install(ContentNegotiation) {
+                        cbor()
                     }
-                    get("/status/user/{userId}") {}
-                    get("/status/game/{gameId}") {}
-                    get("/game/{gameId}") {}
-                    put("/user/{userId}/game/{gameId}/turn/{turnIndex}") {}
-                    put("/game/{gameId}/join") {}
-                    put("/game/{gameId}/turn") {}
-                }
-            }.start(wait = false)
+                    install(Compression) {
+                        zstd()
+                    }
+                    install(Resources)
+                    val gameRouter by inject<GameRouter>()
+                    routing {
+                        with(gameRouter) {
+                            gameRoutes()
+                        }
+                    }
+                }.start(wait = false)
         }
     }
 
@@ -65,6 +77,7 @@ class WebServerService: Service() {
         server?.stop(1000, 2000)
         super.onDestroy()
     }
+
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             "webserver",

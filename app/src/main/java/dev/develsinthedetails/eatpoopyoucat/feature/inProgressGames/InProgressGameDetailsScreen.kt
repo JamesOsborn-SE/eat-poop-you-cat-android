@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
@@ -280,17 +281,17 @@ fun InProgressGameDetailsPreview() {
         gameMode = GameMode.LAN
     )
     val roster = listOf(
-        Roster(gameId, Uuid.random(), "Bob", "127.0.0.1:3459", 0, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob2", "127.0.0.1:3459", 1, false, Clock.System.now()),
-        Roster(gameId, playerId, "Me", "127.0.0.1:3459", 2, true, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob4", "127.0.0.1:3459", 3, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob45", "127.0.0.1:3459", 4, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob31251", "127.0.0.1:3459", 5, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank", "127.0.0.1:3459", -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank1", "127.0.0.1:3459", -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank2", "127.0.0.1:3459", -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank5", "127.0.0.1:3459", -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank55", "127.0.0.1:3459", -1, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Bob", "http://127.0.0.1:3459".toUri(), 0, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Bob2", "http://127.0.0.1:3459".toUri(), 1, false, Clock.System.now()),
+        Roster(gameId, playerId, "Me", "http://127.0.0.1:3459".toUri(), 2, true, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Bob4", "http://127.0.0.1:3459".toUri(), 3, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Bob45", "http://127.0.0.1:3459".toUri(), 4, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Bob31251", "http://127.0.0.1:3459".toUri(), 5, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Frank", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Frank1", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Frank2", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Frank5", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
+        Roster(gameId, Uuid.random(), "Frank55", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
     )
     AppTheme {
         InProgressGameDetailsScreen(game, roster, playerId, onBack = {})

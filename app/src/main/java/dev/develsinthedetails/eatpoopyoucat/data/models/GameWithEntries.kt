@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.data.models
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -23,3 +24,7 @@ data class GameWithRosters(
     @Relation(parentColumn = "id", entityColumn = "gameId")
     var roster: List<Roster> = emptyList()
 )
+fun GameWithRosters.hash(){
+    val sorted = this.roster.map { it.playerId }.sortedBy { it.toString() }
+    AppRepository.Companion.generateRosterHash(sorted)
+}

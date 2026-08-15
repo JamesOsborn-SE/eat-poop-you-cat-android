@@ -41,6 +41,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.NetworkUtils
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Server
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Duration.Companion.seconds
@@ -124,7 +125,7 @@ fun StartNetGameScreen(
     LaunchedEffect(serverAction) {
         when (val action = serverAction) {
             is StartNetGameViewModel.ServerAction.StartService -> {
-                val serviceIntent = Intent(context, WebServerService::class.java)
+                val serviceIntent = Intent(context, Server::class.java)
                 context.startService(serviceIntent)
                 viewModel.resetAction()
             }

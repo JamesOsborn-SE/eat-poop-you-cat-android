@@ -73,16 +73,16 @@ data object PrivacyPolicy
 data object NewGame
 
 @Serializable
-data class Nickname(val entryId: Uuid)
+data class Nickname(val previousEntryId: Uuid)
 
 @Serializable
 data class PreviousGame(val gameId: Uuid)
 
 @Serializable
-data class Sentence(val entryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
+data class Sentence(val previousEntryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
 
 @Serializable
-data class Draw(val entryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
+data class Draw(val previousEntryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
 
 
 @Serializable
@@ -139,11 +139,11 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                 onNetGame = { gameId: Uuid, gameMode: GameMode ->
                     navController.navigate(StartNetGame(gameId, gameMode))
                 },
-                onLocal = { entryId: Uuid ->
+                onLocal = { previousEntryId: Uuid ->
                     if (useNicknames) {
-                        navController.navigate(Nickname(entryId))
+                        navController.navigate(Nickname(previousEntryId))
                     } else {
-                        navController.navigate(Sentence(entryId, GameMode.LOCAL, null))
+                        navController.navigate(Sentence(previousEntryId, GameMode.LOCAL, null))
                     }
                 },
             )
@@ -159,15 +159,15 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
             )
         ) {
             SentenceScreen(
-                onNavigateToDraw = { entryId, gameMode ->
+                onNavigateToDraw = { previousEntryId, gameMode ->
                     if (useNicknames && gameMode == GameMode.LOCAL) {
-                        navController.navigate(Nickname(entryId)) {
+                        navController.navigate(Nickname(previousEntryId)) {
                             popUpTo<Home>()
                         }
                     } else {
                         navController.navigate(
                             Draw(
-                                entryId,
+                                previousEntryId,
                                 gameMode = gameMode,
                                 nickname = null
                             )
@@ -197,13 +197,13 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
             )
         ) {
             DrawScreen(
-                onNavigateToSentence = { entryId, gameMode ->
+                onNavigateToSentence = { previousEntryId, gameMode ->
                     if (useNicknames && gameMode == GameMode.LOCAL) {
-                        navController.navigate(Nickname(entryId)) {
+                        navController.navigate(Nickname(previousEntryId)) {
                             popUpTo<Home>()
                         }
                     } else {
-                        navController.navigate(Sentence(entryId, gameMode))
+                        navController.navigate(Sentence(previousEntryId, gameMode))
                     }
                 },
                 onNavigateToEndedGame = { gameId ->

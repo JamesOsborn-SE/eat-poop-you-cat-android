@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
+import android.net.Uri
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
@@ -11,10 +12,9 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.RosterHashAndCount
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import java.security.MessageDigest
 import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 class AppRepository(
@@ -39,15 +39,20 @@ class AppRepository(
     suspend fun createGame(game: Game) {
         gameDao.insert(game.copy(createdAt = Clock.System.now()))
     }
+
     fun getGame(id: Uuid) = gameDao.get(id)
 
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
-    suspend fun getAllGamesWithEntriesAsync() = gameDao.getAllWithEntriesAsync()
-    fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>> = gameDao.getInProgressGamesWithRosters()
+    fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>> =
+        gameDao.getInProgressGamesWithRosters()
+
+    fun getGameWithRosters(id: Uuid): GameWithRosters? = gameDao.getGameWithRosters(id)
     suspend fun getAllGames() = gameDao.getAllAsync()
     fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getGameWithEntriesAsync(id: Uuid) = gameDao.getWithEntriesAsync(id)
+
+    suspend fun updateGame(game: Game) = gameDao.updateGame(game)
 
     // ==========================================
     // Entry functions
@@ -61,31 +66,37 @@ class AppRepository(
     suspend fun getEntriesAsync(gameId: Uuid) =
         entryDao.getAllEntriesByGameAsync(gameId)
 
+    suspend fun getMissingEntriesAsync(gameId: Uuid, knownTurns: List<Int>) =
+        entryDao.getMissingEntriesAsync(gameId, knownTurns)
+
     // ==========================================
     // Roster functions
     // ==========================================
     fun getAllRosters(): Flow<List<Roster>> = rosterDao.getAll()
-    fun getRostersByGame(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByGame(id)
+    fun getRostersByGame(id: Uuid): List<Roster> = rosterDao.getAllByGame(id)
+    fun getRostersByGameFlow(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByGameFlow(id)
     fun getLeaderByGame(id: Uuid): Flow<Roster> = rosterDao.getLeaderByGame(id)
     fun getRostersByPlayer(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByPlayer(id)
-    suspend fun insert(roster: Roster) = rosterDao.insert(roster)
+    fun addPlayer(roster: Roster) = rosterDao.insert(roster)
     suspend fun deleteByGame(gameId: Uuid) = rosterDao.deleteByGame(gameId)
     suspend fun deletePlayer(playerId: Uuid) = rosterDao.deletePlayer(playerId)
     suspend fun delete(gameId: Uuid, playerId: Uuid) = rosterDao.delete(gameId, playerId)
-    suspend fun update(roster: Roster) = rosterDao.update(roster)
+    suspend fun updateRoster(roster: Roster) = rosterDao.update(roster)
     suspend fun deleteAll() = rosterDao.deleteAll()
-    fun getRosterHashAndCountFlow(gameId: Uuid): Flow<RosterHashAndCount> {
-        return rosterDao.getOrderedPlayerIds(gameId).map { playerIds ->
-            RosterHashAndCount(
-                hash = generateRosterHash(playerIds), count = playerIds.size
-            )
-        }.distinctUntilChanged()
+    suspend fun updateRosterPing(address: Uri, gameId: Uuid, time: Instant) =
+        rosterDao.updateRosterPing(address, gameId, time)
+
+    fun getRosterHashAndCount(gameId: Uuid): RosterHashAndCount {
+        val playerIds = rosterDao.getOrderedPlayerIds(gameId)
+        return RosterHashAndCount(generateRosterHash(playerIds), playerIds.size)
     }
 
-    private fun generateRosterHash(playerIds: List<Uuid>): String {
-        if (playerIds.isEmpty()) return ""
-        val combinedIds = playerIds.joinToString(separator = "") { it.toString() }
-        val bytes = MessageDigest.getInstance("SHA-256").digest(combinedIds.toByteArray())
-        return bytes.joinToString("") { "%02x".format(it) }
+    companion object {
+        fun generateRosterHash(playerIds: List<Uuid>): String {
+            if (playerIds.isEmpty()) return ""
+            val combinedIds = playerIds.joinToString(separator = "") { it.toString() }
+            val bytes = MessageDigest.getInstance("SHA-256").digest(combinedIds.toByteArray())
+            return bytes.joinToString("") { "%02x".format(it) }
+        }
     }
 }

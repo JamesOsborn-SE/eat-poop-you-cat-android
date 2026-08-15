@@ -11,6 +11,7 @@
 
     <application
         android:name=".app.MainApplication"
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -64,7 +65,7 @@
             </intent-filter>
         </activity>
         <service
-        android:name=".feature.netPlay.WebServerService"
+        android:name=".feature.netPlay.services.Server"
         android:exported="false"
         android:foregroundServiceType="connectedDevice" />
         <receiver

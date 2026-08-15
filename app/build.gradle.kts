@@ -90,27 +90,32 @@ dependencies {
     implementation(libs.material.icons.extended)
 
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.serialization.cbor)
     implementation(libs.constraintlayout.compose)
 
+    implementation(libs.ktor.serialization.kotlinx.cbor)
+    implementation(libs.ktor.client.resources)
     implementation(libs.ktor.server.config.yaml)
     implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression)
     implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.compression.zstd)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
     implementation(libs.logback.classic)
 
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
 
-    testImplementation(platform(libs.koin.bom))
     testImplementation(libs.koin.test)
     testImplementation(libs.junit.ktx)
 
     androidTestImplementation(libs.core.testing)
 
-    androidTestImplementation(platform(libs.koin.bom))
     androidTestImplementation(libs.koin.test.junit4)
     androidTestImplementation(libs.koin.android.test)
 

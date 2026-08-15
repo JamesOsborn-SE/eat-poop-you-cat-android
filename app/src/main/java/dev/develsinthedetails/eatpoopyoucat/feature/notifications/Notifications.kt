@@ -41,8 +41,6 @@ fun NotificationTester() {
         }
     }
     AppTheme() {
-
-
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Button(onClick = {
                 // Check if we need to ask for permission (Android 13+)

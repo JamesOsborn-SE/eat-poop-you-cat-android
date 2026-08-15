@@ -31,7 +31,7 @@ class SentenceViewModel(
 
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<Sentence>(typeMap)
-    private val previousEntryId: Uuid = checkNotNull(route.entryId)
+    private val previousEntryId: Uuid = checkNotNull(route.previousEntryId)
     val previousEntry: LiveData<Entry?> = repository.getEntry(previousEntryId).asLiveData()
 
     private val nickname = route.nickname

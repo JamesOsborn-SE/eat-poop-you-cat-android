@@ -25,7 +25,7 @@ class InProgressGameDetailsViewModel(
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<InProgressGameDetails>(typeMap)
     private val gameId: Uuid = checkNotNull(route.gameId)
-    val players: Flow<List<Roster>?> = repository.getRostersByGame(gameId).stateIn(
+    val players: Flow<List<Roster>?> = repository.getRostersByGameFlow(gameId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
