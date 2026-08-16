@@ -38,7 +38,7 @@ class Server : Service() {
         super.onCreate()
         val notification = Notification
             .Builder(this, "webserver")
-            .setContentTitle("Host Game")
+            .setContentTitle("Net Play Game")
             .setContentText("Starting...")
             .build()
 

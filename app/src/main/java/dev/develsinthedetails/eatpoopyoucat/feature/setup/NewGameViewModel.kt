@@ -1,5 +1,8 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +23,8 @@ class NewGameViewModel(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
 ) : ViewModel() {
+    var notificationsAreEnabled: Boolean by mutableStateOf(false)
+        private set
     val gameId = Uuid.random()
     val entryId = Uuid.random()
     var game = Game(
@@ -43,6 +48,10 @@ class NewGameViewModel(
             repository.createEntry(entry)
         }
         return game
+    }
+
+    fun setNotificationsEnabled(it: Boolean) {
+        notificationsAreEnabled = it
     }
 
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)

@@ -1,12 +1,18 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Lan
@@ -20,10 +26,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -39,13 +47,18 @@ fun NewGameScreen(
     onNetGame: (Uuid, GameMode) -> Unit,
     onLocal: (Uuid) -> Unit,
 ) {
-    NewGameScreen(onBack, onNetGame = { gameMode ->
+
+    NewGameScreen(onBack, onNetGame = { gameMode: GameMode ->
         viewModel.saveNewGame(gameMode)
         onNetGame(viewModel.gameId, gameMode)
     }, onLocal = {
         viewModel.saveNewGame(GameMode.LOCAL)
         onLocal(viewModel.entryId)
-    })
+    }, notificationsEnabled = viewModel.notificationsAreEnabled,
+        setNotificationsEnabled = {
+        viewModel.setNotificationsEnabled(it)
+    }
+    )
 }
 
 @Composable
@@ -53,8 +66,18 @@ fun NewGameScreen(
     onBack: () -> Unit,
     onNetGame: (GameMode) -> Unit,
     onLocal: () -> Unit,
+    notificationsEnabled: Boolean,
+    setNotificationsEnabled: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            setNotificationsEnabled(true)
+        }
+    }
     Scaffolds.Backable(
         title = stringResource(R.string.new_game), onBack = onBack
     ) { paddingValues ->
@@ -85,9 +108,26 @@ fun NewGameScreen(
                     StartGame(onLocal, defaultModifier)
                 }
                 HorizontalDivider(Modifier.padding(20.dp), 3.dp)
+
+                Button(onClick = {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val hasPermission = ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+
+                        if (!hasPermission) {
+                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            setNotificationsEnabled(true)
+                        }
+                    }
+                }) {
+                    Text("Turn on notifications ")
+                }
                 Column(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally).visible(notificationsEnabled)
                 ) {
                     Icon(
                         Icons.Rounded.Lan,
@@ -104,7 +144,7 @@ fun NewGameScreen(
                 }
                 HorizontalDivider(Modifier.padding(20.dp), 3.dp)
                 Column(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally).visible(notificationsEnabled)
                 ) {
 
                     Icon(
@@ -128,6 +168,7 @@ fun NewGameScreen(
         }
     }
 }
+
 @Composable
 fun StartGame(
     onStartGame: () -> Unit,
@@ -161,6 +202,8 @@ fun NewGamePreview() {
             NewGameScreen(
                 onBack = {},
                 onNetGame = {},
+                notificationsEnabled = true,
+                setNotificationsEnabled = {},
                 onLocal = { },
             )
         }

@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dev.develsinthedetails.eatpoopyoucat",
+      "sha256_cert_fingerprints": [
+        "E2:F0:23:F0:8F:83:F2:B2:5B:38:38:9E:E8:9F:17:AD:98:1E:CF:E2:22:39:A7:0C:2E:68:57:B5:6D:28:89:A5",
+        "75:62:35:48:5E:D9:86:55:B2:93:1C:3F:B2:5E:63:5A:70:A7:7A:98:0A:12:4D:B7:A1:88:25:70:52:4A:07:12"
+      ]
+    }
+  }
+]

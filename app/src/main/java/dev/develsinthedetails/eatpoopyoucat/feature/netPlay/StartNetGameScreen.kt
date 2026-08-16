@@ -154,14 +154,14 @@ fun StartNetGameScreen(
         viewModel.validateNickname(it)
     }, 5, {}, 5, {}
     )
-    ShareGame(
-        sd,
-        !nickname.isNullOrBlank() && currentIp != "Server Offline",
-        onBack,
-        onStartGame = {
-            viewModel.createRoster()
-            onStartGame(viewModel.gameId)
-        })
+        ShareGame(
+            sd,
+            !nickname.isNullOrBlank() && currentIp != "Server Offline",
+            onBack,
+            onStartGame = {
+                viewModel.createRoster()
+                onStartGame(viewModel.gameId)
+            })
 }
 
 @Composable
@@ -264,6 +264,6 @@ fun ShareGamePreview() {
         nickname = "Muthafucka",
         {}, 5, {}, 10, {})
     AppTheme {
-        ShareGame(sd, true, {},{})
+        ShareGame(sd, true, {}, {})
     }
 }
