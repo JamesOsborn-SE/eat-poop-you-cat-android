@@ -17,6 +17,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.Draw
 import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.DrawMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Coordinates
@@ -65,7 +66,6 @@ class DrawViewModel(
     private val route = state.toRoute<Draw>(typeMap)
     private val previousEntryId: Uuid = checkNotNull(route.previousEntryId)
     private val nickname = route.nickname
-    private val gameMode = route.gameMode
     private val prevEntry = repository.getEntry(previousEntryId)
     val previousEntry: LiveData<Entry?> = prevEntry.asLiveData()
 
@@ -222,6 +222,15 @@ class DrawViewModel(
             lineProperties.value.strokeWidth = 48f
         else
             lineProperties.value.strokeWidth = 12f
+    }
+
+    fun getGameMode(gameId: Uuid?): GameMode {
+        var gameMode = GameMode.LOCAL
+        if (gameId != null)
+        viewModelScope.launch {
+            gameMode = repository.getGame(gameId).gameMode
+        }
+        return gameMode
     }
 
     companion object {

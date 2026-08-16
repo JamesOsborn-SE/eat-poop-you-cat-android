@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.routes.GameRouter
 import io.ktor.serialization.kotlinx.cbor.cbor
 import io.ktor.server.application.install
 import io.ktor.server.engine.EmbeddedServer

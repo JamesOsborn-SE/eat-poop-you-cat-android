@@ -30,7 +30,7 @@ class InProgressGameDetailsViewModel(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
     )
-    val game: Flow<Game?> = repository.getGame(gameId).stateIn(
+    val game: Flow<Game?> = repository.getGameFlow(gameId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null

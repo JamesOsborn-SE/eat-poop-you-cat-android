@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.NetworkUtils
@@ -44,6 +45,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Server
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
@@ -92,6 +94,7 @@ fun SelectableReadOnlyTextWithShare(link: String) {
 @Composable
 fun StartNetGameScreen(
     viewModel: StartNetGameViewModel = koinViewModel(),
+    appSettings: AppSettings = koinInject(),
     onStartGame: (Uuid) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -101,7 +104,8 @@ fun StartNetGameScreen(
     var currentIp by remember {
         mutableStateOf(NetworkUtils.getLocalIpAddress()?.let { "$it:3947" } ?: "Server Offline")
     }
-    val link = "epyc://Netplay/${currentIp}/${viewModel.gameId}"
+
+    val link = "${appSettings.playDeepLink}/${currentIp}/${viewModel.gameId}"
     val serverAction by viewModel.serverAction.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -256,7 +260,7 @@ fun ShareGame(
 @Composable
 fun ShareGamePreview() {
     val sd = ShareData(
-        link = "epyc://net/192.168.1.10:3947/${Uuid.NIL}",
+        link = "epyc://play/192.168.1.10:3947/${Uuid.NIL}",
         nickname = "Muthafucka",
         {}, 5, {}, 10, {})
     AppTheme {

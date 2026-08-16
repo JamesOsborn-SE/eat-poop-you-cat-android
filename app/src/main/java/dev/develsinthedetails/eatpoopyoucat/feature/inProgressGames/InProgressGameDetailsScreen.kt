@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.asLiveData
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
@@ -54,6 +55,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.SelectableReadOnlyTextWithShare
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -190,8 +192,12 @@ fun InProgressGameDetailsScreen(
                             .padding(end = 10.dp, start = 10.dp)
                             .align(Alignment.CenterHorizontally)
                     )
-                    if (player.isLeader)
-                        SelectableReadOnlyTextWithShare("epyc://NetPlay/${player.address}/${game.id}")
+                    if (player.isLeader) {
+                        val appSettings = koinInject<AppSettings>()
+                        SelectableReadOnlyTextWithShare(
+                            "${appSettings.playDeepLink}/${player.address}/${game.id}"
+                        )
+                    }
                 } else {
                     ListOfPlayers(players.filter { (it.sequence ?: -1) >= 0 }, playerId)
                     Text(
@@ -281,17 +287,105 @@ fun InProgressGameDetailsPreview() {
         gameMode = GameMode.LAN
     )
     val roster = listOf(
-        Roster(gameId, Uuid.random(), "Bob", "http://127.0.0.1:3459".toUri(), 0, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob2", "http://127.0.0.1:3459".toUri(), 1, false, Clock.System.now()),
-        Roster(gameId, playerId, "Me", "http://127.0.0.1:3459".toUri(), 2, true, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob4", "http://127.0.0.1:3459".toUri(), 3, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob45", "http://127.0.0.1:3459".toUri(), 4, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Bob31251", "http://127.0.0.1:3459".toUri(), 5, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank1", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank2", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank5", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
-        Roster(gameId, Uuid.random(), "Frank55", "http://127.0.0.1:3459".toUri(), -1, false, Clock.System.now()),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Bob",
+            "http://127.0.0.1:3459".toUri(),
+            0,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Bob2",
+            "http://127.0.0.1:3459".toUri(),
+            1,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            playerId,
+            "Me",
+            "http://127.0.0.1:3459".toUri(),
+            2,
+            true,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Bob4",
+            "http://127.0.0.1:3459".toUri(),
+            3,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Bob45",
+            "http://127.0.0.1:3459".toUri(),
+            4,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Bob31251",
+            "http://127.0.0.1:3459".toUri(),
+            5,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Frank",
+            "http://127.0.0.1:3459".toUri(),
+            -1,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Frank1",
+            "http://127.0.0.1:3459".toUri(),
+            -1,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Frank2",
+            "http://127.0.0.1:3459".toUri(),
+            -1,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Frank5",
+            "http://127.0.0.1:3459".toUri(),
+            -1,
+            false,
+            Clock.System.now()
+        ),
+        Roster(
+            gameId,
+            Uuid.random(),
+            "Frank55",
+            "http://127.0.0.1:3459".toUri(),
+            -1,
+            false,
+            Clock.System.now()
+        ),
     )
     AppTheme {
         InProgressGameDetailsScreen(game, roster, playerId, onBack = {})

@@ -77,7 +77,7 @@ import kotlin.uuid.Uuid
 @Composable
 fun DrawScreen(
     drawViewModel: DrawViewModel = koinViewModel(),
-    onNavigateToSentence: (Uuid, GameMode) -> Unit,
+    onNavigateToSentence: (Uuid, GameMode, Uuid?) -> Unit,
     onNavigateToEndedGame: (Uuid) -> Unit
 ) {
     val previousEntry by drawViewModel.previousEntry.observeAsState()
@@ -101,7 +101,8 @@ fun DrawScreen(
         { onNavigateToEndedGame(previousEntry?.gameId!!) }
 
     val onSubmit = {
-        if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId, GameMode.LOCAL) })
+        val gameMode = drawViewModel.getGameMode(previousEntry?.gameId)
+        if (drawViewModel.isValidDrawing { onNavigateToSentence(drawViewModel.entryId, gameMode, previousEntry?.gameId) })
             Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
     }
 

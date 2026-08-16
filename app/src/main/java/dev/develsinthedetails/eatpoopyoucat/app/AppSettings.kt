@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dev.develsinthedetails.eatpoopyoucat.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,6 +31,14 @@ class AppSettings(private val context: Context) {
         val PLAYER_ID = stringPreferencesKey("PLAYER_ID")
         val USE_NICKNAMES = stringPreferencesKey("USE_NICKNAMES")
     }
+
+    private val appScheme = context.getString(R.string.deeplink_scheme)
+    val drawDeepLink = "$appScheme://${context.getString(R.string.deeplink_draw)}"
+    val sentenceDeepLink = "$appScheme://${context.getString(R.string.deeplink_sentence)}"
+    val previousGamesDeepLink = "$appScheme://${context.getString(R.string.deeplink_previous_games)}"
+    val previousGameDetailsDeepLink = "$appScheme://${context.getString(R.string.deeplink_previous_game_details)}"
+    val playDeepLink = "$appScheme://${context.getString(R.string.deeplink_play)}"
+
     @Volatile
     var isReady: Boolean = false
         private set
@@ -54,6 +63,7 @@ class AppSettings(private val context: Context) {
             isReady = true
         }
     }
+
     val useNicknamesFlow: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[USE_NICKNAMES]?.toBoolean() ?: false
     }

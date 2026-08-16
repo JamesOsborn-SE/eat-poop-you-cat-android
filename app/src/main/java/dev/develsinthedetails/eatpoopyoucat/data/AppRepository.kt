@@ -40,8 +40,8 @@ class AppRepository(
         gameDao.insert(game.copy(createdAt = Clock.System.now()))
     }
 
-    fun getGame(id: Uuid) = gameDao.get(id)
-
+    fun getGameFlow(id: Uuid) = gameDao.getFlow(id)
+    suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
     fun getAllGamesWithEntries() = gameDao.getAllWithEntries()
     fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>> =

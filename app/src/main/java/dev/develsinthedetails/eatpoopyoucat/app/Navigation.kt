@@ -42,6 +42,7 @@ import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+
 @OptIn(ExperimentalUuidApi::class)
 val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): Uuid? {
@@ -76,13 +77,13 @@ data object NewGame
 data class Nickname(val previousEntryId: Uuid)
 
 @Serializable
-data class PreviousGame(val gameId: Uuid)
+data class PreviousGameDetails(val gameId: Uuid)
 
 @Serializable
-data class Sentence(val previousEntryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
+data class Sentence(val previousEntryId: Uuid, val nickname: String? = null)
 
 @Serializable
-data class Draw(val previousEntryId: Uuid, val gameMode: GameMode, val nickname: String? = null)
+data class Draw(val previousEntryId: Uuid, val nickname: String? = null)
 
 
 @Serializable
@@ -143,7 +144,7 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                     if (useNicknames) {
                         navController.navigate(Nickname(previousEntryId))
                     } else {
-                        navController.navigate(Sentence(previousEntryId, GameMode.LOCAL, null))
+                        navController.navigate(Sentence(previousEntryId,  null))
                     }
                 },
             )
@@ -153,7 +154,7 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
             typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
             deepLinks = listOf(
                 navDeepLink<Sentence>(
-                    basePath = "epyc://Sentence",
+                    basePath = appSettings.sentenceDeepLink,
                     typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
                 ),
             )
@@ -168,7 +169,6 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                         navController.navigate(
                             Draw(
                                 previousEntryId,
-                                gameMode = gameMode,
                                 nickname = null
                             )
                         ) {
@@ -180,7 +180,7 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                     navController.navigate(Home)
                 },
                 onNavigateToEndedGame = { gameId ->
-                    navController.navigate(PreviousGame(gameId)) {
+                    navController.navigate(PreviousGameDetails(gameId)) {
                         popUpTo<Home>()
                     }
                 }
@@ -191,23 +191,29 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
             typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
             deepLinks = listOf(
                 navDeepLink<Draw>(
-                    basePath = "epyc://Draw",
+                    basePath = appSettings.drawDeepLink,
                     typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
                 ),
             )
         ) {
             DrawScreen(
-                onNavigateToSentence = { previousEntryId, gameMode ->
-                    if (useNicknames && gameMode == GameMode.LOCAL) {
-                        navController.navigate(Nickname(previousEntryId)) {
-                            popUpTo<Home>()
+                onNavigateToSentence = { previousEntryId, gameMode, gameId ->
+                    when {
+                        useNicknames && gameMode == GameMode.LOCAL -> {
+                            navController.navigate(Nickname(previousEntryId)) {
+                                popUpTo<Home>()
+                            }
                         }
-                    } else {
-                        navController.navigate(Sentence(previousEntryId, gameMode))
+                        gameMode == GameMode.LOCAL -> {
+                            navController.navigate(Sentence(previousEntryId))
+                        }
+                        else -> {
+                            navController.navigate(InProgressGameDetails(gameId = gameId!!))
+                        }
                     }
                 },
                 onNavigateToEndedGame = { gameId ->
-                    navController.navigate(PreviousGame(gameId)) {
+                    navController.navigate(PreviousGameDetails(gameId)) {
                         popUpTo<Home>()
                     }
                 }
@@ -217,7 +223,7 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
         composable<PreviousGames>(
             deepLinks = listOf(
                 navDeepLink<PreviousGames>(
-                    basePath = "epyc://PreviousGames",
+                    basePath = appSettings.previousGamesDeepLink,
                     typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
                 )
             )
@@ -229,18 +235,18 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                     }
                 },
                 onGameClick = { gameId ->
-                    navController.navigate(PreviousGame(gameId))
+                    navController.navigate(PreviousGameDetails(gameId))
                 },
                 onBackupGames = onBackupGames(coroutineScope, context),
                 onImportGames = onImportGames()
             )
         }
 
-        composable<PreviousGame>(
+        composable<PreviousGameDetails>(
             typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
             deepLinks = listOf(
-                navDeepLink<PreviousGame>(
-                    basePath = "epyc://PreviousGame",
+                navDeepLink<PreviousGameDetails>(
+                    basePath = appSettings.previousGameDetailsDeepLink,
                     typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
                 )
             )

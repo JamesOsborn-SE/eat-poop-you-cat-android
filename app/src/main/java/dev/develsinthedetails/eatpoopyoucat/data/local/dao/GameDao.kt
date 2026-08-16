@@ -21,7 +21,7 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
-    fun get(id: Uuid): Flow<Game>
+    fun getFlow(id: Uuid): Flow<Game>
 
     @Transaction
     @Query("SELECT * FROM game")
@@ -70,4 +70,9 @@ interface GameDao {
     @Transaction
     @Upsert
     suspend fun updateGame(game: Game)
+
+    @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    suspend fun get(id: Uuid): Game
+
 }

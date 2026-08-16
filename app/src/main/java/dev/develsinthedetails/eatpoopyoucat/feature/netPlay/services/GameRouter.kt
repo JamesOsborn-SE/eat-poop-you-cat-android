@@ -1,17 +1,12 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.routes
+package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.RosterHashAndCount
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.AskTakeTurn
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GetGameWithRosters
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.JoinGame
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Ping
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.TakeTurn
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.UpdateGame
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.UpdateRoster
+import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.resources.get
@@ -20,7 +15,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
 
-class GameRouter(private val repository: AppRepository, private val client: Client) {
+class GameRouter(private val repository: AppRepository, private val client: Client, private val appSettings: AppSettings) {
     fun Route.gameRoutes() {
         /**
          * Gets game and roster of player
@@ -45,13 +40,14 @@ class GameRouter(private val repository: AppRepository, private val client: Clie
             call.respond(HttpStatusCode.OK, "Successfully joined")
         }
         post<AskTakeTurn> { askTakeTurn ->
-            val game= repository.getGameWithEntriesAsync(askTakeTurn.gameId)
+            val game = repository.getGameWithEntriesAsync(askTakeTurn.gameId)
             val gameRosters = repository.getGameWithRosters(askTakeTurn.gameId) ?: return@post
 
-            val leaderAddress = gameRosters.roster.first{ it.isLeader }.address
+            val leaderAddress = gameRosters.roster.first { it.isLeader }.address
 
             val entries = game.entries.toMutableList()
-            // update game entries
+
+            // update game entries if needed
             val missing = client.updateGame(leaderAddress, game)
             missing.forEach {
                 repository.createEntry(it)
@@ -60,13 +56,17 @@ class GameRouter(private val repository: AppRepository, private val client: Clie
 
             // update Roster and Game
             val missingPlayers = client.updateRoster(leaderAddress, gameRosters)
-            if (missingPlayers != null){
+            if (missingPlayers != null) {
                 repository.updateGame(missingPlayers.game)
                 missingPlayers.roster.forEach {
                     repository.updateRoster(it)
                 }
             }
             val previousEntry: Entry = entries.maxBy { it.sequence }
+            val dest = if (previousEntry.type == EntryType.Sentence)
+                "${appSettings.previousGameDetailsDeepLink}/?previousEntryId=${previousEntry.id}"
+            else
+                "${appSettings.sentenceDeepLink}/?previousEntryId=${previousEntry.id}"
 
             // TODO Notification
 

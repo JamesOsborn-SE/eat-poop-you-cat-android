@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.MainActivity
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -34,6 +35,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -41,6 +43,7 @@ import java.io.InputStream
 @Composable
 fun ImportGames(
     viewModel: ImportGamesViewModel = koinViewModel(),
+    appSettings: AppSettings = koinInject<AppSettings>(),
     fileUri: Uri?,
     finish: () -> Unit
 ) {
@@ -62,10 +65,9 @@ fun ImportGames(
     var showAlert by remember { mutableStateOf(false) }
 
     val onDismissRequest = {
-//        val intent = Intent(context, MainActivity::class.java
         val intent = Intent(
             Intent.ACTION_VIEW,
-            "epyc://previous_games".toUri(),
+            appSettings.previousGamesDeepLink.toUri(),
         )
 
         context.startActivity(intent)
