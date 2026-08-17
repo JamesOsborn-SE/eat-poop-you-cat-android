@@ -53,7 +53,7 @@
     <string name="turns">Tours : %1$d</string>
     <string name="end_game_for_all">Fin du jeu pour tous</string>
     <string name="app_description">Un jeu de téléphone cassé où à tour de rôle, on écrit des phrases et on fait des dessins. Le jeu se termine lorsque tout le monde a participé une fois.*</string>
-    <string name="app_warning">* Famille et amis ne sont pas inclus !</string>
+    <string name="app_warning">* Famille et amis ne sont pas inclus !</string>
     <string name="no_previous_games_found">Aucune partie précédente n\'a été trouvée ! Allez jouer !</string>
     <string name="pass_to_the_next">Passez l\'appareil au joueur suivant !</string>
     <string name="scroll_to_top">Remonter en haut de la page</string>
