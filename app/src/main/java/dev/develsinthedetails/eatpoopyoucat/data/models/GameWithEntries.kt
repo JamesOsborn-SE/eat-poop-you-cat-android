@@ -14,7 +14,7 @@ data class GameWithEntries(
 )
 
 fun GameWithEntries.entriesAreValid(): Boolean {
-    return this.entries.all{ it.sentence.isNullOrBlank().xor(it.drawing == null) }
+    return this.entries.isNotEmpty() && this.entries.all{ it.sentence.isNullOrBlank().xor(it.drawing == null) }
 }
 
 @Serializable

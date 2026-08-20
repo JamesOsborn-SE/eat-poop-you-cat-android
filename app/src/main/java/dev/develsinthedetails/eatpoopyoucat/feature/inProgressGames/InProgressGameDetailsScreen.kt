@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.lifecycle.asLiveData
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
@@ -54,6 +53,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.SelectableReadOnlyTextWithShare
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.getShareLink
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import kotlin.time.Clock
@@ -193,10 +193,8 @@ fun InProgressGameDetailsScreen(
                             .align(Alignment.CenterHorizontally)
                     )
                     if (player.isLeader) {
-                        val appSettings = koinInject<AppSettings>()
-                        SelectableReadOnlyTextWithShare(
-                            "${appSettings.playDeepLink}/${player.address}/${game.id}"
-                        )
+                        val appSettings: AppSettings = koinInject()
+                        SelectableReadOnlyTextWithShare(getShareLink(appSettings.playDeepLink, player.address, game.id))
                     }
                 } else {
                     ListOfPlayers(players.filter { (it.sequence ?: -1) >= 0 }, playerId)
@@ -291,7 +289,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Bob",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             0,
             false,
             Clock.System.now()
@@ -300,7 +298,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Bob2",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             1,
             false,
             Clock.System.now()
@@ -309,7 +307,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             playerId,
             "Me",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             2,
             true,
             Clock.System.now()
@@ -318,7 +316,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Bob4",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             3,
             false,
             Clock.System.now()
@@ -327,7 +325,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Bob45",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             4,
             false,
             Clock.System.now()
@@ -336,7 +334,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Bob31251",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             5,
             false,
             Clock.System.now()
@@ -345,7 +343,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Frank",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             -1,
             false,
             Clock.System.now()
@@ -354,7 +352,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Frank1",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             -1,
             false,
             Clock.System.now()
@@ -363,7 +361,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Frank2",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             -1,
             false,
             Clock.System.now()
@@ -372,7 +370,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Frank5",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             -1,
             false,
             Clock.System.now()
@@ -381,7 +379,7 @@ fun InProgressGameDetailsPreview() {
             gameId,
             Uuid.random(),
             "Frank55",
-            "http://127.0.0.1:3459".toUri(),
+            "http://127.0.0.1:3459",
             -1,
             false,
             Clock.System.now()

@@ -4,8 +4,11 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.io.encoding.Base64
 import kotlin.time.Instant
 import kotlin.time.toJavaInstant
+import kotlin.uuid.Uuid
+
 
 fun Date?.localTimestamp(): String =
     if (this != null) DateFormat.getTimeInstance().format(this) else ""
@@ -33,3 +36,19 @@ fun Date.saveDateFormat(): String {
     return sdf.format(this)
 }
 fun String?.valueOrEmpty(): String = this ?: ""
+
+fun String.shareEncode():String{
+    return Base64.UrlSafe.encode(this.toByteArray())
+}
+
+fun String.shareDecode(): String {
+    return Base64.UrlSafe.decode(this).decodeToString()
+}
+
+fun Uuid.shareEncode():String{
+    return Base64.UrlSafe.encode(this.toByteArray())
+}
+
+fun String.shareDecodeUuid(): Uuid {
+    return Uuid.fromByteArray(Base64.UrlSafe.decode(this))
+}

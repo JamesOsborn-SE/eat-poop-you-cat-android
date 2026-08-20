@@ -1,11 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.data.models
 
-import android.net.Uri
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
-import dev.develsinthedetails.eatpoopyoucat.data.local.UriSerializer
 import dev.develsinthedetails.eatpoopyoucat.data.local.UuidSerializer
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
@@ -36,8 +34,7 @@ data class Roster(
     @Serializable(with = UuidSerializer::class)
     val playerId: Uuid,
     val nickname: String,
-    @Serializable(with = UriSerializer::class)
-    val address: Uri,
+    val address: String,
     val sequence: Int?,
     val isLeader: Boolean,
     val lastSeen: Instant,

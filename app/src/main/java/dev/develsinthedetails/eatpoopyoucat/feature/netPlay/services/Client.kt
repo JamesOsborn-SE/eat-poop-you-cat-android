@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import android.net.Uri
+import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
@@ -34,7 +35,7 @@ class Client(val repository: AppRepository) {
 
     suspend fun ping(address: Uri, gameId: Uuid) {
         if (address.scheme.equals("http")) {
-            val getGame = httpClient.get((Ping(gameId))) {
+            val getGame = httpClient.get((Ping)) {
                 url {
                     protocol = URLProtocol.HTTP
                     host = address.host.toString()
@@ -46,7 +47,7 @@ class Client(val repository: AppRepository) {
         }
     }
 
-    suspend fun getGame(address: Uri, gameId: Uuid): GetGameWithRosters? {
+    suspend fun getGame(address: Uri, gameId: Uuid): GameWithRosters? {
         if (address.scheme.equals("http")) {
             val getGame = httpClient.get((GetGameWithRosters(gameId))) {
                 url {
@@ -56,7 +57,7 @@ class Client(val repository: AppRepository) {
                 }
             }
             if (getGame.status == HttpStatusCode.OK)
-                return getGame.body<GetGameWithRosters>()
+                return getGame.body<GameWithRosters>()
         }
         return null
     }
@@ -77,12 +78,13 @@ class Client(val repository: AppRepository) {
     }
 
     suspend fun askToTakeTurn(player: Roster): Boolean {
-        if (player.address.scheme.equals("http")) {
+        if (player.address.startsWith("http")) {
             val req = httpClient.post(AskTakeTurn(player.gameId)) {
+                val address = player.address.toUri()
                 url {
                     protocol = URLProtocol.HTTP
-                    host = player.address.host.toString()
-                    port = player.address.port
+                    host = address.host.toString()
+                    port = address.port
                 }
                 setBody(player)
             }
@@ -90,8 +92,9 @@ class Client(val repository: AppRepository) {
         return false
     }
 
-    suspend fun takeTurn(address: Uri, entry: Entry): Boolean {
-        if (address.scheme.equals("http")) {
+    suspend fun takeTurn(uri: String, entry: Entry): Boolean {
+        if (uri.startsWith("http")) {
+            val address = uri.toUri()
             val req = httpClient.post(TakeTurn()) {
                 url {
                     protocol = URLProtocol.HTTP
@@ -105,8 +108,9 @@ class Client(val repository: AppRepository) {
         return false
     }
 
-    suspend fun updateRoster(address: Uri, game: GameWithRosters): GameWithRosters? {
-        if (address.scheme.equals("http")) {
+    suspend fun updateRoster(uri: String, game: GameWithRosters): GameWithRosters? {
+        if (uri.startsWith("http")) {
+            val address = uri.toUri()
             val req = httpClient.post(UpdateRoster(game.game.id)) {
                 url {
                     protocol = URLProtocol.HTTP
@@ -120,9 +124,10 @@ class Client(val repository: AppRepository) {
         return null
     }
 
-    suspend fun updateGame(address: Uri, game: GameWithEntries): List<Entry> {
+    suspend fun updateGame(uri: String, game: GameWithEntries): List<Entry> {
         val knownSequences = game.entries.map { it.sequence }
-        if (address.scheme.equals("http")) {
+        if (uri.startsWith("http")) {
+            val address = uri.toUri()
             val req = httpClient.post(UpdateRoster(game.game.id)) {
                 url {
                     protocol = URLProtocol.HTTP

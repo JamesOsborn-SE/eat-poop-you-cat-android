@@ -23,7 +23,7 @@ import kotlin.uuid.Uuid
 class StartNetGameViewModel(
     state: SavedStateHandle,
     repository: AppRepository,
-    appSettings: AppSettings,
+    appSettings: AppSettings
 ) : ViewModel() {
     private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
     private val route = state.toRoute<StartNetGame>(typeMap)

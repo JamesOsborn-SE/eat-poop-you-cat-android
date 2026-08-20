@@ -82,6 +82,7 @@ class AppRepository(
     suspend fun deletePlayer(playerId: Uuid) = rosterDao.deletePlayer(playerId)
     suspend fun delete(gameId: Uuid, playerId: Uuid) = rosterDao.delete(gameId, playerId)
     suspend fun updateRoster(roster: Roster) = rosterDao.update(roster)
+    suspend fun updateRosters(rosters: List<Roster>) = rosterDao.insert(rosters)
     suspend fun deleteAll() = rosterDao.deleteAll()
     suspend fun updateRosterPing(address: Uri, gameId: Uuid, time: Instant) =
         rosterDao.updateRosterPing(address, gameId, time)

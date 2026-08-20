@@ -6,10 +6,11 @@ import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameRouter
-import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeViewModel
@@ -24,7 +25,7 @@ val appModule = module {
     singleOf(::AppSettings)
     singleOf(::Client)
     singleOf(::GameRouter)
-    viewModelOf(::PreviousGameViewModel)
+    viewModelOf(::PreviousGameDetailsViewModel)
     viewModelOf(::SentenceViewModel)
     viewModelOf(::PreviousGamesViewModel)
     viewModelOf(::HomeViewModel)
@@ -35,4 +36,5 @@ val appModule = module {
     viewModelOf(::StartNetGameViewModel)
     viewModelOf(::NewGameViewModel)
     viewModelOf(::InProgressGameDetailsViewModel)
+    viewModelOf(::JoinNetGameViewModel)
 }

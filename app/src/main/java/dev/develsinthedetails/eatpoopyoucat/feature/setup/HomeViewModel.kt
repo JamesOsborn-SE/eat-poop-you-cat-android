@@ -19,7 +19,7 @@ class HomeViewModel(
     private val appSettings: AppSettings,
 ) : ViewModel() {
     var isLoading by mutableStateOf(false)
-
+    var useNicknames = appSettings.useNicknamesFlow
     private var userName by mutableStateOf("")
     private val playerId = appSettings.playerId
 
@@ -68,6 +68,12 @@ class HomeViewModel(
             )
             onToSentence.invoke()
             isLoading = false
+        }
+    }
+
+    fun updateUseNicknames(enable: Boolean) {
+        viewModelScope.launch {
+            appSettings.setUseNicknames(!enable)
         }
     }
 }

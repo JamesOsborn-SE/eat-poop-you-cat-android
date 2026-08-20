@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 import kotlin.uuid.Uuid
 
 @Serializable
-@Resource("/ping/{gameId}")
-class Ping(val gameId: Uuid)
+@Resource("/ping")
+class Ping
 
 /**
  * Gets game and roster of player for new to you game

@@ -11,7 +11,7 @@ import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 
-class PreviousGameViewModel(
+class PreviousGameDetailsViewModel(
     state: SavedStateHandle,
     repository: AppRepository,
 ) : ViewModel() {

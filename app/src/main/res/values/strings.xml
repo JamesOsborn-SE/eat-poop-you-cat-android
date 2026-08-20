@@ -131,10 +131,11 @@
         <item>The Dude</item>
         <item>Pickles</item>
     </string-array>
-    <string name="deeplink_scheme" translatable="false">epyc</string>
-    <string name="deeplink_play" translatable="false">play</string>
-    <string name="deeplink_previous_games" translatable="false">previous_games</string>
-    <string name="deeplink_previous_game_details" translatable="false">previous_game_details</string>
-    <string name="deeplink_draw" translatable="false">draw</string>
-    <string name="deeplink_sentence" translatable="false">sentence</string>
+    <string name="deeplink_scheme" translatable="false">https</string>
+    <string name="deeplink_host" translatable="false">develsinthedetails.codeberg.page</string>
+    <string name="deeplink_play" translatable="false">/play</string>
+    <string name="deeplink_previous_games" translatable="false">/previous_games</string>
+    <string name="deeplink_previous_game_details" translatable="false">/previous_game_details</string>
+    <string name="deeplink_draw" translatable="false">/draw</string>
+    <string name="deeplink_sentence" translatable="false">/sentence</string>
 </resources>

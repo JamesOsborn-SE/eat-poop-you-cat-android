@@ -1,9 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,22 +18,30 @@ import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.NetworkPing
 import androidx.compose.material.icons.rounded.Start
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
@@ -51,8 +62,11 @@ fun HomeScreen(
     toCredits: () -> Unit,
     toPrivacyPolicy: () -> Unit,
 ) {
+    val useNicknames by viewModel.useNicknames.collectAsStateWithLifecycle(false)
     HomeScreen(
         isLoading = viewModel.isLoading,
+        useNickNames = useNicknames,
+        toggleUseNicknames = { viewModel.updateUseNicknames(useNicknames) },
         toNewGame = {
             val entryId = Uuid.random()
             viewModel.saveNewGame(
@@ -70,6 +84,8 @@ fun HomeScreen(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
+    useNickNames: Boolean,
+    toggleUseNicknames: () -> Unit,
     toNewGame: () -> Unit,
     toPreviousGames: () -> Unit,
     toInProgressGames: () -> Unit,
@@ -77,6 +93,7 @@ fun HomeScreen(
     toPrivacyPolicy: () -> Unit,
 ) {
     val padding = 10.dp
+    var showNicknameMoreInfo by rememberSaveable { mutableStateOf(false) }
     Scaffolds.Home(
         title = stringResource(
             id = R.string.welcome_message,
@@ -116,6 +133,27 @@ fun HomeScreen(
                             .padding(8.dp)
                             .clip(CircleShape)
                     )
+                    Row(modifier = defaultModifier.pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { toggleUseNicknames() }
+                        )
+                    }) {
+                        Checkbox(checked = useNickNames, onCheckedChange = { toggleUseNicknames() })
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = stringResource(R.string.use_nicknames)
+                        )
+                        TextButton(
+                            modifier = Modifier.rotate(13f),
+                            onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
+                            Text(stringResource(R.string.what_s_this))
+                        }
+                    }
+                    AnimatedVisibility(showNicknameMoreInfo) {
+                        Row(modifier = defaultModifier) {
+                            Text(stringResource(R.string.use_nicknames_more_info))
+                        }
+                    }
                     Button(
                         onClick = toNewGame,
                         modifier = modifier
@@ -197,9 +235,10 @@ fun HomeScreen(
 )
 @Composable
 fun HomeScreenPreview() {
-    AppTheme {
-        HomeScreen(
+    AppTheme { HomeScreen(
             isLoading = false,
+            useNickNames = false,
+            toggleUseNicknames = {},
             toNewGame = {},
             toInProgressGames = {},
             toPreviousGames = {},

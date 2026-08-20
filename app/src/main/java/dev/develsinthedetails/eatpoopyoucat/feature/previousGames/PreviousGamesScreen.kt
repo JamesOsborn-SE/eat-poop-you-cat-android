@@ -49,7 +49,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
-import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.entriesAreValid
@@ -68,32 +67,30 @@ fun PreviousGamesScreen(
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {
     val games by viewModel.games.observeAsState(initial = null)
-    if (games == null) {
-        SpinnerScreen()
-    } else {
-        LaunchedEffect(key1 = games) {
-            // clean up games that were created and never played.
-            // These are created by the side effect of creating the game before the first sentence
-            val invalidGames = games!!.filter { !it.entriesAreValid() }
-            if (invalidGames.isNotEmpty())
-                viewModel.cleanup(invalidGames)
-        }
 
-        PreviousGamesScreen(
-            modifier,
-            games = games!!.filter { it.entriesAreValid() },
-            onBackupGames = { onBackupGames(games) },
-            onImportGames = onImportGames,
-            onGotoGame = onGameClick,
-            onGoHome = onGoHome,
-            onDelete = { viewModel.deleteGame(it) })
+    LaunchedEffect(key1 = games) {
+        // clean up games that were created and never played.
+        // These are created by the side effect of creating the game before the first sentence
+        val invalidGames = games?.filter { !it.entriesAreValid() }
+        if (!invalidGames.isNullOrEmpty())
+            viewModel.cleanup(invalidGames)
     }
+
+    PreviousGamesScreen(
+        modifier,
+        games = games?.filter { it.entriesAreValid() },
+        onBackupGames = { onBackupGames(games) },
+        onImportGames = onImportGames,
+        onGotoGame = onGameClick,
+        onGoHome = onGoHome,
+        onDelete = { viewModel.deleteGame(it) })
+
 }
 
 @Composable
 fun PreviousGamesScreen(
     modifier: Modifier = Modifier,
-    games: List<GameWithEntries>,
+    games: List<GameWithEntries>?,
     onGoHome: () -> Unit,
     onBackupGames: () -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>?,
@@ -102,7 +99,7 @@ fun PreviousGamesScreen(
 ) {
     Scaffolds.PreviousGames(
         title = pluralStringResource(
-            id = R.plurals.previous_games, games.count()
+            id = R.plurals.previous_games, games?.count() ?: 0
         ),
         onBackupGames = onBackupGames,
         onImportGames = onImportGames,
@@ -115,6 +112,10 @@ fun PreviousGamesScreen(
                 .padding(innerPadding),
             color = MaterialTheme.colorScheme.primaryContainer
         ) {
+            if (games == null) {
+                Text("Loading...")
+                return@Surface
+            }
             if (games.isEmpty()) {
                 Row(
                     modifier = Modifier
@@ -136,29 +137,30 @@ fun PreviousGamesScreen(
                         text = stringResource(id = R.string.no_previous_games_found),
                     )
                 }
-            } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = modifier.testTag("game_list"),
-                    contentPadding = PaddingValues(
-                        horizontal = dimensionResource(id = R.dimen.card_side_margin),
-                        vertical = dimensionResource(id = R.dimen.header_margin)
-                    )
-                ) {
-                    items(
-                        items = games,
-                        key = { it.game.id }
-                    ) { game ->
-                        GameListItem(
-                            game = game,
-                            onGotoGame = { onGotoGame(game.game.id) },
-                            onDelete = { onDelete(game.game.id) })
-                    }
+                return@Surface
+            }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = modifier.testTag("game_list"),
+                contentPadding = PaddingValues(
+                    horizontal = dimensionResource(id = R.dimen.card_side_margin),
+                    vertical = dimensionResource(id = R.dimen.header_margin)
+                )
+            ) {
+                items(
+                    items = games,
+                    key = { it.game.id }
+                ) { game ->
+                    GameListItem(
+                        game = game,
+                        onGotoGame = { onGotoGame(game.game.id) },
+                        onDelete = { onDelete(game.game.id) })
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> Unit) {

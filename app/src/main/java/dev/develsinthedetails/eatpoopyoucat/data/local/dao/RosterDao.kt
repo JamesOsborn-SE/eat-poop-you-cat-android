@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import kotlinx.coroutines.flow.Flow
@@ -56,4 +57,8 @@ interface RosterDao {
 
     @Query("DELETE FROM roster")
     suspend fun deleteAll()
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(rosters: List<Roster>)
 }

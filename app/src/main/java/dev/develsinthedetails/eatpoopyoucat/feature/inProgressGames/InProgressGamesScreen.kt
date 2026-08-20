@@ -36,7 +36,6 @@ import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
@@ -251,7 +250,7 @@ fun InProgressGamesPreview() {
                     playerId = playerId,
                     sequence = 0,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -259,7 +258,7 @@ fun InProgressGamesPreview() {
                     gameId, Uuid.random(),
                     sequence = 1,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -267,7 +266,7 @@ fun InProgressGamesPreview() {
                     gameId, Uuid.random(),
                     sequence = 3,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 )
@@ -287,7 +286,7 @@ fun InProgressGamesPreview() {
                     playerId = playerId,
                     sequence = 2,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -295,7 +294,7 @@ fun InProgressGamesPreview() {
                     gameId2, Uuid.random(),
                     sequence = 1,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -303,7 +302,7 @@ fun InProgressGamesPreview() {
                     gameId2, Uuid.random(),
                     sequence = 0,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -311,7 +310,7 @@ fun InProgressGamesPreview() {
                     gameId2, Uuid.random(),
                     sequence = 3,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),
@@ -319,7 +318,7 @@ fun InProgressGamesPreview() {
                     gameId2, Uuid.random(),
                     sequence = 4,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 )
@@ -339,7 +338,7 @@ fun InProgressGamesPreview() {
                     playerId = playerId,
                     sequence = -1,
                     nickname = "",
-                    address = "http://127.0.0.1:666".toUri(),
+                    address = "http://127.0.0.1:666",
                     isLeader = false,
                     lastSeen = Instant.fromEpochSeconds(1786057118)
                 ),

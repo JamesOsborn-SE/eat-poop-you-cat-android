@@ -33,11 +33,12 @@ class AppSettings(private val context: Context) {
     }
 
     private val appScheme = context.getString(R.string.deeplink_scheme)
-    val drawDeepLink = "$appScheme://${context.getString(R.string.deeplink_draw)}"
-    val sentenceDeepLink = "$appScheme://${context.getString(R.string.deeplink_sentence)}"
-    val previousGamesDeepLink = "$appScheme://${context.getString(R.string.deeplink_previous_games)}"
-    val previousGameDetailsDeepLink = "$appScheme://${context.getString(R.string.deeplink_previous_game_details)}"
-    val playDeepLink = "$appScheme://${context.getString(R.string.deeplink_play)}"
+    private val appHost = context.getString(R.string.deeplink_host)
+    val drawDeepLink = "$appScheme://${appHost}${context.getString(R.string.deeplink_draw)}"
+    val sentenceDeepLink = "$appScheme://${appHost}${context.getString(R.string.deeplink_sentence)}"
+    val previousGamesDeepLink = "$appScheme://${appHost}${context.getString(R.string.deeplink_previous_games)}"
+    val previousGameDetailsDeepLink = "$appScheme://${appHost}${context.getString(R.string.deeplink_previous_game_details)}"
+    val playDeepLink = "$appScheme://${appHost}${context.getString(R.string.deeplink_play)}"
 
     @Volatile
     var isReady: Boolean = false

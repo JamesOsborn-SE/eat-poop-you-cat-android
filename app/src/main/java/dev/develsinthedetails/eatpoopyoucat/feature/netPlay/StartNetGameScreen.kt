@@ -41,6 +41,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.NetworkUtils
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareEncode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Server
 import kotlinx.coroutines.delay
@@ -58,6 +59,10 @@ data class ShareData(
     val turnTimeout: Int,
     val onChangeTurnTimeOut: (String) -> Unit,
 )
+
+fun getShareLink(deepLink: String, address: String, gameId: Uuid): String {
+    return "${deepLink}/?game=${gameId.shareEncode()}&server=${address.shareEncode()}"
+}
 
 @Composable
 fun SelectableReadOnlyTextWithShare(link: String) {
@@ -101,11 +106,11 @@ fun StartNetGameScreen(
     val context = LocalContext.current
     val player by viewModel.player.collectAsStateWithLifecycle()
     val nickname = player?.nickname
-    var currentIp by remember {
-        mutableStateOf(NetworkUtils.getLocalIpAddress()?.let { "$it:3947" } ?: "Server Offline")
+    var lanAddress by remember {
+        mutableStateOf(NetworkUtils.getLocalIpAddress()?.let { "http://$it:3947" }
+            ?: "Server Offline")
     }
-
-    val link = "${appSettings.playDeepLink}/${currentIp}/${viewModel.gameId}"
+    // todo setup onion
     val serverAction by viewModel.serverAction.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -117,8 +122,8 @@ fun StartNetGameScreen(
     LaunchedEffect(Unit) {
         while (true) {
             val ipAddress = NetworkUtils.getLocalIpAddress()
-            currentIp = if (ipAddress != null) {
-                "$ipAddress:3947"
+            lanAddress = if (ipAddress != null) {
+                "http://$ipAddress:3947"
             } else {
                 "Server Offline"
             }
@@ -150,18 +155,19 @@ fun StartNetGameScreen(
     }
 
     // todo fill in onChange*
-    val sd = ShareData(link, nickname, onChangeNickname = {
-        viewModel.validateNickname(it)
-    }, 5, {}, 5, {}
-    )
-        ShareGame(
-            sd,
-            !nickname.isNullOrBlank() && currentIp != "Server Offline",
-            onBack,
-            onStartGame = {
-                viewModel.createRoster()
-                onStartGame(viewModel.gameId)
-            })
+    ShareGame(
+        ShareData(
+            link = getShareLink(appSettings.playDeepLink, lanAddress, viewModel.gameId),
+            nickname,
+            onChangeNickname = { viewModel.validateNickname(it) },
+            5, {}, 5, {}
+        ),
+        !nickname.isNullOrBlank() && lanAddress != "Server Offline",
+        onBack,
+        onStartGame = {
+            viewModel.createRoster()
+            onStartGame(viewModel.gameId)
+        })
 }
 
 @Composable
@@ -260,7 +266,10 @@ fun ShareGame(
 @Composable
 fun ShareGamePreview() {
     val sd = ShareData(
-        link = "epyc://play/192.168.1.10:3947/${Uuid.NIL}",
+        getShareLink(
+        "https://jamesosborn-se.github.io/play", address = "http://192.168.1.10:3947",
+        gameId = Uuid.parse("4d8041a7-2001-4960-bb42-f9e66bb1c58b")
+    ),
         nickname = "Muthafucka",
         {}, 5, {}, 10, {})
     AppTheme {

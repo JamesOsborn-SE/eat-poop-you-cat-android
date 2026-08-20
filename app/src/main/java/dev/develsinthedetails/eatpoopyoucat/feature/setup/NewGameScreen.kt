@@ -1,10 +1,10 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ScrollState
@@ -24,6 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +43,6 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
-
 @Composable
 fun NewGameScreen(
     viewModel: NewGameViewModel = koinViewModel(),
@@ -47,37 +50,53 @@ fun NewGameScreen(
     onNetGame: (Uuid, GameMode) -> Unit,
     onLocal: (Uuid) -> Unit,
 ) {
+    val context = LocalContext.current
 
-    NewGameScreen(onBack, onNetGame = { gameMode: GameMode ->
-        viewModel.saveNewGame(gameMode)
-        onNetGame(viewModel.gameId, gameMode)
-    }, onLocal = {
-        viewModel.saveNewGame(GameMode.LOCAL)
-        onLocal(viewModel.entryId)
-    }, notificationsEnabled = viewModel.notificationsAreEnabled,
-        setNotificationsEnabled = {
-        viewModel.setNotificationsEnabled(it)
+    // Check permission status immediately upon composition
+    var hasNotificationPermission by remember {
+        mutableStateOf(
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                true // Pre-Tiramisu devices don't need runtime notification permission
+            }
+        )
     }
+
+    val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        hasNotificationPermission = isGranted
+    }
+
+    NewGameScreen(
+        hasNotificationPermission,
+        permissionLauncher,
+        onBack = onBack,
+        onNetGame = { gameMode: GameMode ->
+            viewModel.saveNewGame(gameMode)
+            onNetGame(viewModel.gameId, gameMode)
+        },
+        onLocal = {
+            viewModel.saveNewGame(GameMode.LOCAL)
+            onLocal(viewModel.entryId)
+        }
     )
 }
 
 @Composable
 fun NewGameScreen(
+    hasNotificationPermission: Boolean,
+    permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
     onBack: () -> Unit,
     onNetGame: (GameMode) -> Unit,
     onLocal: () -> Unit,
-    notificationsEnabled: Boolean,
-    setNotificationsEnabled: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            setNotificationsEnabled(true)
-        }
-    }
+
     Scaffolds.Backable(
         title = stringResource(R.string.new_game), onBack = onBack
     ) { paddingValues ->
@@ -109,25 +128,25 @@ fun NewGameScreen(
                 }
                 HorizontalDivider(Modifier.padding(20.dp), 3.dp)
 
-                Button(onClick = {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        val hasPermission = ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_GRANTED
-
-                        if (!hasPermission) {
-                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        } else {
-                            setNotificationsEnabled(true)
+                // Only show the button if they haven't granted the permission
+                if (!hasNotificationPermission) {
+                    Button(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        onClick = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
                         }
+                    ) {
+                        Text("Turn on notifications for multi device play?")
                     }
-                }) {
-                    Text("Turn on notifications ")
+                    return@Surface
                 }
+
                 Column(
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally).visible(notificationsEnabled)
+                        .align(Alignment.CenterHorizontally)
+                        .visible(hasNotificationPermission)
                 ) {
                     Icon(
                         Icons.Rounded.Lan,
@@ -140,13 +159,15 @@ fun NewGameScreen(
                     Next(onStartGame = {
                         onNetGame(GameMode.LAN)
                     }, defaultModifier)
-
                 }
-                HorizontalDivider(Modifier.padding(20.dp), 3.dp)
-                Column(
-                    modifier = Modifier.align(Alignment.CenterHorizontally).visible(notificationsEnabled)
-                ) {
 
+                HorizontalDivider(Modifier.padding(20.dp), 3.dp)
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .visible(hasNotificationPermission)
+                ) {
                     Icon(
                         Icons.Rounded.Wifi,
                         contentDescription = stringResource(id = R.string.dialog_start_game),
@@ -162,7 +183,6 @@ fun NewGameScreen(
                     Next(onStartGame = {
                         onNetGame(GameMode.INET)
                     }, defaultModifier)
-
                 }
             }
         }
@@ -197,13 +217,22 @@ fun Next(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NewGamePreview() {
+    val context = LocalContext.current
+
+    // Check permission status immediately upon composition
+    var hasNotificationPermission = false
+    val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        hasNotificationPermission = isGranted
+    }
     AppTheme {
         Surface {
             NewGameScreen(
+                hasNotificationPermission = hasNotificationPermission,
+                permissionLauncher = permissionLauncher,
                 onBack = {},
                 onNetGame = {},
-                notificationsEnabled = true,
-                setNotificationsEnabled = {},
                 onLocal = { },
             )
         }

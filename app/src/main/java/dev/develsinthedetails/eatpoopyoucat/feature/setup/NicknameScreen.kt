@@ -163,12 +163,14 @@ fun NicknameScreen(
 }
 
 
-@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NicknamePreview() {
     val focusRequester = remember { FocusRequester() }
-    val listOfNicknames = stringArrayResource(id = R.array.nicknames).toList()
+    val listOfNicknames = stringArrayResource(id = R.array.nicknames).toMutableList()
+    listOfNicknames.addAll(stringArrayResource(id = R.array.nicknames).toList())
+    listOfNicknames.addAll(stringArrayResource(id = R.array.nicknames).toList())
+    listOfNicknames.addAll(stringArrayResource(id = R.array.nicknames).toList())
     AppTheme {
         Surface {
             NicknameScreen(
@@ -183,7 +185,6 @@ fun NicknamePreview() {
     }
 }
 
-@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NicknamePreviewEmpty() {
@@ -203,7 +204,6 @@ fun NicknamePreviewEmpty() {
     }
 }
 
-@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun NicknamePreviewEmptyNobody() {

@@ -21,6 +21,7 @@ import androidx.navigation.navDeepLink
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesActivity
@@ -33,6 +34,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.NicknameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.PrivacyPolicyScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -144,7 +146,7 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                     if (useNicknames) {
                         navController.navigate(Nickname(previousEntryId))
                     } else {
-                        navController.navigate(Sentence(previousEntryId,  null))
+                        navController.navigate(Sentence(previousEntryId, null))
                     }
                 },
             )
@@ -204,9 +206,11 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                                 popUpTo<Home>()
                             }
                         }
+
                         gameMode == GameMode.LOCAL -> {
                             navController.navigate(Sentence(previousEntryId))
                         }
+
                         else -> {
                             navController.navigate(InProgressGameDetails(gameId = gameId!!))
                         }
@@ -252,7 +256,14 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
             )
         ) {
             PreviousGameScreen(
-                onContinueGame = {},
+                onContinueGame = { previousEntryId:Uuid, entryType: EntryType ->
+                    if (entryType == EntryType.Sentence){
+                        navController.navigate(Draw(previousEntryId))
+                    }
+                    else{
+                        navController.navigate(Sentence(previousEntryId))
+                    }
+                },
                 onBackupGame = onBackupGames(coroutineScope = coroutineScope, context = context),
                 onImportGames = onImportGames(),
                 onBack = {
@@ -299,6 +310,18 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
 
         composable<InProgressGameDetails>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
             InProgressGameDetailsScreen(onBack = { navController.navigate(InProgressGames) })
+        }
+
+        composable<Nickname>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+            NicknameScreen(
+                onEnd = { navController.navigate(PreviousGames) },
+                onSubmit = { previousEntryId: Uuid, entryType: EntryType, nickname: String ->
+                    if (entryType == EntryType.Sentence)
+                        navController.navigate(Draw(previousEntryId, nickname))
+                    else
+                        navController.navigate(Sentence(previousEntryId, nickname))
+                }
+            )
         }
     }
 }

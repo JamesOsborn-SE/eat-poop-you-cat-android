@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
-import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.getBitmapFromVectorDrawable
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
@@ -53,7 +52,9 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveBitmap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareImageUri
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -63,31 +64,34 @@ import kotlin.uuid.Uuid
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
-    viewModel: PreviousGameViewModel = koinViewModel(),
+    viewModel: PreviousGameDetailsViewModel = koinViewModel(),
     onBack: () -> Unit,
-    onContinueGame: (Uuid) -> Unit = {},
+    onContinueGame: (Uuid, EntryType) -> Unit,
     onBackupGame: (games: List<GameWithEntries>?) -> Unit,
     onImportGames: ManagedActivityResultLauncher<String, Uri?>,
 ) {
     val game by viewModel.gameWithEntries.observeAsState(initial = null)
 
-    if (game != null) {
-        PreviousGameScreen(
-            modifier = modifier,
-            entries = game!!.entries,
-            onContinueGame = { onContinueGame(game!!.entries.last().id) },
-            onBackupGame = { onBackupGame(listOf(game!!)) },
-            onImportGame = onImportGames,
-            onBack = onBack,
-        )
-    } else
-        SpinnerScreen()
+    val lastEntry = game?.entries?.last()
+    PreviousGameScreen(
+        modifier = modifier,
+        entries = game?.entries,
+        onContinueGame = {
+            onContinueGame(
+                lastEntry?.id ?: Uuid.NIL,
+                lastEntry?.type ?: EntryType.Unknown
+            )
+        },
+        onBackupGame = { onBackupGame(listOf(game!!)) },
+        onImportGame = onImportGames,
+        onBack = onBack,
+    )
 }
 
 @Composable
 fun PreviousGameScreen(
     modifier: Modifier = Modifier,
-    entries: List<Entry>,
+    entries: List<Entry>?,
     onBack: () -> Unit,
     onContinueGame: () -> Unit,
     onBackupGame: () -> Unit,
@@ -113,7 +117,7 @@ fun PreviousGameScreen(
         )
     }
     var title = pluralStringResource(id = R.plurals.previous_games, 1)
-    if (entries.first().createdAt != null)
+    if (entries?.first()?.createdAt != null)
         title += "\n${entries.first().createdAt.localDateTimestamp()}"
     Scaffolds.PreviousGame(
         title = title,
@@ -130,45 +134,50 @@ fun PreviousGameScreen(
                 .padding(innerPadding),
             color = MaterialTheme.colorScheme.background,
         ) {
-            Scaffold(floatingActionButton = {
-                Row {
-                    FloatingActionButton(
-                        modifier = Modifier.padding(3.dp),
-                        onClick = {
-                            coroutineScope.launch {
-                                listState.animateScrollToItem(0)
-                            }
-                        }) {
+            Scaffold(
+                floatingActionButton = {
+                    Row {
+                        FloatingActionButton(
+                            modifier = Modifier.padding(3.dp),
+                            onClick = {
+                                coroutineScope.launch {
+                                    listState.animateScrollToItem(0)
+                                }
+                            }) {
 
-                        Icon(
-                            Icons.Rounded.VerticalAlignTop,
+                            Icon(
+                                Icons.Rounded.VerticalAlignTop,
+                                modifier = Modifier.padding(3.dp),
+                                contentDescription = stringResource(id = R.string.scroll_to_top)
+                            )
+                        }
+                        FloatingActionButton(
                             modifier = Modifier.padding(3.dp),
-                            contentDescription = stringResource(id = R.string.scroll_to_top)
-                        )
-                    }
-                    FloatingActionButton(
-                        modifier = Modifier.padding(3.dp),
-                        onClick = onContinueGame
-                    ) {
-                        Icon(
-                            Icons.Rounded.Replay,
+                            onClick = onContinueGame
+                        ) {
+                            Icon(
+                                Icons.Rounded.Replay,
+                                modifier = Modifier.padding(3.dp),
+                                contentDescription = stringResource(id = R.string.continue_previous_game)
+                            )
+                        }
+                        FloatingActionButton(
                             modifier = Modifier.padding(3.dp),
-                            contentDescription = stringResource(id = R.string.continue_previous_game)
-                        )
+                            onClick = shareGame()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Share,
+                                modifier = Modifier.padding(3.dp),
+                                contentDescription = stringResource(R.string.share_this_game)
+                            )
+                        }
                     }
-                    FloatingActionButton(
-                        modifier = Modifier.padding(3.dp),
-                        onClick = shareGame()
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Share,
-                            modifier = Modifier.padding(3.dp),
-                            contentDescription = stringResource(R.string.share_this_game)
-                        )
-                    }
-                }
-            },
+                },
                 content = { contentPadding ->
+                    if (entries == null) {
+                        Text("Loading...")
+                        return@Scaffold
+                    }
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.padding(contentPadding),
@@ -191,30 +200,31 @@ fun PreviousGameScreen(
 
 private fun shareGame(
     coroutineScope: CoroutineScope,
-    entries: List<Entry>,
+    entries: List<Entry>?,
     appIcon: Bitmap,
     appName: String,
     bottomBlurb: String,
     context: Context
 ): () -> Unit = {
-    coroutineScope.launch {
-        val ie = ImageExport(
-            entries,
-            appIcon,
-            appName,
-            bottomBlurb
-        )
-        val game = saveBitmap(context, ie.makeBitmap())
+    if (entries != null)
+        coroutineScope.launch {
+            val ie = ImageExport(
+                entries,
+                appIcon,
+                appName,
+                bottomBlurb
+            )
+            val game = saveBitmap(context, ie.makeBitmap())
 
-        if (game != null)
-            shareImageUri(context, game)
-        else
-            Toast.makeText(
-                context,
-                context.getString(R.string.share_failed),
-                Toast.LENGTH_SHORT
-            ).show()
-    }
+            if (game != null)
+                shareImageUri(context, game)
+            else
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.share_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+        }
 }
 
 @Composable
@@ -254,10 +264,10 @@ fun EntryListItem(entry: Entry) {
     }
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "^^ ${playerName.valueOrEmpty()} $createdAt",
-                    modifier = Modifier.padding(end = 16.dp)
-                )
+            Text(
+                text = "^^ ${playerName.valueOrEmpty()} $createdAt",
+                modifier = Modifier.padding(end = 16.dp)
+            )
         }
     }
 }
