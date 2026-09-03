@@ -49,3 +49,5 @@ tmp/
 
 # screenShots
 app/src/screenshotTestDebug
+
+.kotlin

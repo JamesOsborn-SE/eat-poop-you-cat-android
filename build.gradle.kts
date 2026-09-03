@@ -1,13 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 plugins {
-    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.google.devtools.ksp) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlinJvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.kotlin.compose) apply true
-
-}
-composeCompiler {
-    reportsDestination = layout.buildDirectory.dir("compose_compiler")
+    alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.androidMultiplatformLibrary) apply false
+    alias(libs.plugins.android.lint) apply false
 }

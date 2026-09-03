@@ -13,5 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Eat Poop You Cat"
-include (":app")
+rootProject.name = "EatPoopYouCat"
+include (":androidApp")
+include(":shared")
+include(":desktopApp")
