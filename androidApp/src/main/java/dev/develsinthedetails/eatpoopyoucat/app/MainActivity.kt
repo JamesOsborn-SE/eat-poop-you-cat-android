@@ -46,9 +46,10 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition {
             !appSettings.isReady
         }
+        val importedFileUri = intent?.data?.toString()
         setContent {
             AppTheme {
-                NavGraph()
+                NavGraph(externalImportUri = importedFileUri)
             }
         }
     }

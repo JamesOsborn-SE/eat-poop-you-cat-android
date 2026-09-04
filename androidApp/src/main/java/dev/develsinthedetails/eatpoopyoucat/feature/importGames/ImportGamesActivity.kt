@@ -18,7 +18,7 @@ class ImportGamesActivity : ComponentActivity() {
                 val uri = intent.data
                 val vm: ImportGamesViewModel = koinViewModel { parametersOf(uri) }
 
-                ImportGames(viewModel = vm, fileUri = uri, finish = finish)
+                ImportGamesScreen(viewModel = vm, fileUri = uri, finish = finish)
             }
         }
     }

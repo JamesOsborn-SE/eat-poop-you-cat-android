@@ -9,13 +9,16 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toUri
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveGames
@@ -23,6 +26,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesActivity
+import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGames
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
@@ -96,12 +100,25 @@ data object InProgressGames
 @Serializable
 data class InProgressGameDetails(val gameId: Uuid)
 
+@Serializable
+data class ImportGamesRoute(val uriString: String)
+
+
 @OptIn(ExperimentalUuidApi::class)
 @Composable
-fun NavGraph(appSettings: AppSettings = koinInject()) {
+fun NavGraph(appSettings: AppSettings = koinInject(),
+             externalImportUri: String? = null,
+             ){
+
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    LaunchedEffect(externalImportUri) {
+        if (externalImportUri != null) {
+            navController.navigate(ImportGamesRoute(externalImportUri))
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -249,6 +266,18 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
                 },
                 onBackupGames = onBackupGames(coroutineScope, context),
                 onImportGames = onImportGames()
+            )
+        }
+        composable<ImportGamesRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<ImportGamesRoute>()
+
+            ImportGamesScreen(
+                fileUri = route.uriString.toUri(),
+                finish = {
+                    navController.navigate(PreviousGames) {
+                        popUpTo<Home>()
+                    }
+                }
             )
         }
 
