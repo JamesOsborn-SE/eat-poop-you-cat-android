@@ -70,7 +70,6 @@ kotlin {
                 api(libs.ktor.server.status.pages)
                 api(libs.ktor.server.compression)
                 api(libs.ktor.server.content.negotiation)
-                api(libs.ktor.server.compression.zstd)
             }
         }
 

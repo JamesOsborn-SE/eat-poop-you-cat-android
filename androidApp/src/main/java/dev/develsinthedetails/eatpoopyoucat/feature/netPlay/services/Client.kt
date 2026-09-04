@@ -103,7 +103,7 @@ class Client(val repository: AppRepository) {
     suspend fun takeTurn(uri: String, entry: Entry): Boolean {
         if (uri.startsWith("http")) {
             val address = uri.toUri()
-            val req = httpClient.put(Api.GameRoot.TakeTurn()) {
+            val req = httpClient.put(Api.GameRoot.TakeTurn(Api.GameRoot.Id(Api.GameRoot(),id = entry.gameId))) {
                 url {
                     protocol = URLProtocol.HTTP
                     host = address.host.toString()
@@ -120,7 +120,7 @@ class Client(val repository: AppRepository) {
         if (uri.startsWith("http")) {
             val address = uri.toUri()
             val req =
-                httpClient.post(GameRoot.Id.UpdateRoster(GameRoot.Id(GameRoot(),id = gameId), hash)) {
+                httpClient.post(Api.GameRoot.Id.UpdateRoster(Api.GameRoot.Id(Api.GameRoot(),id = gameId), hash)) {
                     url {
                         protocol = URLProtocol.HTTP
                         host = address.host.toString()

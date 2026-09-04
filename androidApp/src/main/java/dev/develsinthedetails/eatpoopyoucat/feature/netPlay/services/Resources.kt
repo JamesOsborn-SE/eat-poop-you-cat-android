@@ -74,7 +74,7 @@ class Api {
          */
         @Serializable
         @Resource("turn")
-        class AskTakeTurn(val parent: Id)
+        class TakeTurn(val parent: Id)
 
         /**
          * GET /game/{id}/hash/{hash}/count/{count}

@@ -65,8 +65,8 @@ class GameRouter(
         }
 
         post<Api.GameRoot.Id.AskTakeTurn> { askTakeTurn ->
-            val game = repository.getGameWithEntries(askTakeTurn.parent.id)
-            val gameRosters = repository.getGameWithRosters(askTakeTurn.parent.id) ?: return@get
+            val game = repository.getGameWithEntries(askTakeTurn.parent.id) ?: return@post
+            val gameRosters = repository.getGameWithRosters(askTakeTurn.parent.id) ?: return@post
 
             val leader = gameRosters.roster.first()
             var lastEntry = game.entries.maxByOrNull { it.sequence }
@@ -108,7 +108,7 @@ class GameRouter(
             call.respond(HttpStatusCode.OK)
         }
 
-        post<GameRoot.Id.UpdateRoster> { updateRoster ->
+        post<Api.GameRoot.Id.UpdateRoster> { updateRoster ->
             val myHash = repository.getRosterHash(updateRoster.parent.id)
             if (updateRoster.hash != myHash) {
                 call.respond(repository.getGameWithRosters(updateRoster.parent.id)!!)
