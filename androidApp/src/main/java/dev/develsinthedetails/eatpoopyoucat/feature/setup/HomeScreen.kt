@@ -46,6 +46,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.tertiaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.getBitmapFromVectorDrawable
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
@@ -60,6 +61,8 @@ fun HomeScreen(
     toPrivacyPolicy: () -> Unit,
 ) {
     val useNicknames by viewModel.useNicknames.collectAsStateWithLifecycle(false)
+    // todo add setting to toggle this
+    ManageServerLifecycle( onUpdateAddress = { } )
     HomeScreen(
         isLoading = viewModel.isLoading,
         useNickNames = useNicknames,

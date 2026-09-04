@@ -43,7 +43,7 @@ class GameRouter(
 ) {
     fun Route.gameRoutes() {
 
-        get<GameRoot.Id> { gameWithRosters ->
+        get<Api.GameRoot.Id> { gameWithRosters ->
             val gameId = gameWithRosters.id
             val game = repository.getGameWithRosters(gameId)
             if (game != null) {
@@ -53,7 +53,7 @@ class GameRouter(
             }
         }
 
-        post<GameRoot.JoinGame> {
+        post<Api.GameRoot.JoinGame> {
             val playerRoster = call.receive<Roster>()
             try {
                 repository.addPlayer(playerRoster)
@@ -64,7 +64,7 @@ class GameRouter(
             call.respond(HttpStatusCode.OK, "Successfully joined")
         }
 
-        get<GameRoot.Id.AskTakeTurn> { askTakeTurn ->
+        post<Api.GameRoot.Id.AskTakeTurn> { askTakeTurn ->
             val game = repository.getGameWithEntries(askTakeTurn.parent.id)
             val gameRosters = repository.getGameWithRosters(askTakeTurn.parent.id) ?: return@get
 
@@ -99,12 +99,12 @@ class GameRouter(
             showTurnNotification(applicationContext, destUrl)
         }
 
-        put<GameRoot.TakeTurn> {
+        put<Api.GameRoot.TakeTurn> {
             val entry = call.receive<Entry>()
             repository.upsertEntry(entry)
         }
 
-        get<Ping> {
+        get<Api.Ping> {
             call.respond(HttpStatusCode.OK)
         }
 
@@ -117,7 +117,7 @@ class GameRouter(
             }
         }
 
-        post<GameRoot.Id.UpdateGame> { updateGame ->
+        post<Api.GameRoot.Id.UpdateGame> { updateGame ->
             val knownTurns = call.receive<List<Int>>()
             call.respond(repository.getMissingEntries(updateGame.parent.id, knownTurns))
         }

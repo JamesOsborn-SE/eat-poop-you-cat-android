@@ -56,9 +56,9 @@ class AppRepository(
 
     suspend fun getPreviouslyUsedNicknames(gameId: Uuid): List<String> {
         val nicknames = getGameWithEntries(gameId)
-            .entries
-            .mapNotNull { it.localPlayerName?.takeIf { name -> name.isNotBlank() } }
-        return nicknames
+            ?.entries
+            ?.mapNotNull { it.localPlayerName?.takeIf { name -> name.isNotBlank() } }
+        return nicknames?: listOf()
     }
 
     // ==========================================
@@ -100,6 +100,8 @@ class AppRepository(
         val playerIds = rosterDao.getOrderedPlayerIds(gameId)
         return generateRosterHash(playerIds)
     }
+
+    fun getActiveHostedGameWithRostersFlow(playerId: Uuid) = gameDao.getActiveHostedGameWithRostersFlow(playerId)
 
     companion object {
         fun generateRosterHash(playerIds: List<Uuid>): String {

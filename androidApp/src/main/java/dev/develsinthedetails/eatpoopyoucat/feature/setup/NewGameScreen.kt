@@ -48,7 +48,6 @@ fun NewGameScreen(
 ) {
     val context = LocalContext.current
 
-    // Check permission status immediately upon composition
     var hasNotificationPermission by remember {
         mutableStateOf(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -157,12 +156,12 @@ fun NewGameScreen(
                     }, R.string.next, defaultModifier)
                 }
 
-                HorizontalDivider(Modifier.padding(20.dp), 3.dp)
+                HorizontalDivider(Modifier.padding(20.dp).visible(false), 3.dp)
 
                 Column(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .visible(hasNotificationPermission)
+                        .visible(false)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_wifi),
@@ -198,14 +197,32 @@ fun StartGame(
     }
 }
 
-@Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NewGamePreview() {
-    val context = LocalContext.current
-
-    // Check permission status immediately upon composition
+fun NewGameNoNotificationPreview() {
     var hasNotificationPermission = false
+    val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            hasNotificationPermission = isGranted
+        }
+    AppTheme {
+        Surface {
+            NewGameScreen(
+                hasNotificationPermission = hasNotificationPermission,
+                permissionLauncher = permissionLauncher,
+                onBack = {},
+                onNewGame = {},
+            )
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun NewGameYesNotificationPreview() {
+    var hasNotificationPermission = true
     val permissionLauncher: ManagedActivityResultLauncher<String, Boolean> =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission()

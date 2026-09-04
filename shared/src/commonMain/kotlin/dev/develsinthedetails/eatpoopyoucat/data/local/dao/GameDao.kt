@@ -11,7 +11,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
-
 @Dao
 interface GameDao {
 
@@ -41,7 +40,7 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
-    suspend fun getWithEntries(id: Uuid): GameWithEntries
+    suspend fun getWithEntries(id: Uuid): GameWithEntries?
 
     @Transaction
     @Query("SELECT * FROM game WHERE turns IS NULL")
@@ -74,4 +73,8 @@ interface GameDao {
     @Transaction
     @Query("SELECT * FROM game where id=:id")
     suspend fun get(id: Uuid): Game
+
+    @Query("SELECT g.* FROM game g JOIN roster r ON r.gameId=g.id WHERE g.turns IS NULL AND r.playerId=:playerId AND r.isLeader=1")
+    fun getActiveHostedGameWithRostersFlow(playerId: Uuid): Flow<List<Game>>
 }
+
