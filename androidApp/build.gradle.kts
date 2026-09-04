@@ -58,6 +58,7 @@ dependencies {
 
     screenshotTestImplementation(libs.screenshot.validation.api)
     screenshotTestImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.core.ktx)
