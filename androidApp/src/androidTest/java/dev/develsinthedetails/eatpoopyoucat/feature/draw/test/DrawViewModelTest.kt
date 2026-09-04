@@ -15,6 +15,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.stroke1
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.stroke2
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -36,7 +37,7 @@ class DrawViewModelTest : KoinTest {
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     // Mocks
-    private val mockRepository = mock<dev.develsinthedetails.eatpoopyoucat.data.AppRepository>()
+    private val mockRepository = mock<AppRepository>()
     private lateinit var appSettings: AppSettings
 
     private val testModule = module {

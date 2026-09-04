@@ -6,6 +6,7 @@ import androidx.room3.ColumnTypeConverters
 import androidx.room3.Database
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
+import dev.develsinthedetails.eatpoopyoucat.data.local.Converters
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.DATABASE_NAME
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao

@@ -1,8 +1,7 @@
-package dev.develsinthedetails.eatpoopyoucat.utilities
+package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.lifecycle.LiveData
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries

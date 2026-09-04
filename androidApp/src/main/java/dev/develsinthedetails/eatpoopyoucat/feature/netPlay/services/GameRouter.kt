@@ -108,7 +108,7 @@ class GameRouter(
             call.respond(HttpStatusCode.OK)
         }
 
-        get<GameRoot.Id.UpdateRoster> { updateRoster ->
+        post<GameRoot.Id.UpdateRoster> { updateRoster ->
             val myHash = repository.getRosterHash(updateRoster.parent.id)
             if (updateRoster.hash != myHash) {
                 call.respond(repository.getGameWithRosters(updateRoster.parent.id)!!)

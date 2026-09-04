@@ -19,7 +19,7 @@ kotlin {
         compileSdk {
             version = release(37)
         }
-        minSdk = 24
+        minSdk = 26
 
         withHostTestBuilder {
         }
@@ -112,5 +112,5 @@ dependencies {
     add("kspCommonMainMetadata", libs.androidx.room3.compiler)
     add("kspAndroid", libs.androidx.room3.compiler)
     add("kspJvm", libs.androidx.room3.compiler)
-    // Add any other platform target you use in your project, for example kspDesktop
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

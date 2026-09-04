@@ -28,10 +28,10 @@ import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.MainActivity
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import kotlinx.coroutines.async
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel

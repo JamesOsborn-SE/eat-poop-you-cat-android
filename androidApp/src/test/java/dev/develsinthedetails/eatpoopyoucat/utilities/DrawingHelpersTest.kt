@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.utilities
+package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Profile
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile

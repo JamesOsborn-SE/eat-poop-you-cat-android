@@ -2,15 +2,15 @@ package dev.develsinthedetails.eatpoopyoucat.data.tests
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room3.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
-import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
-import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
-import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testGame
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testGames
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerTwo
+import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
+import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
@@ -21,10 +21,10 @@ import org.junit.Rule
 import org.junit.Test
 
 class PreviousGameDetailsDaoTests {
-    private lateinit var database: dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
-    private lateinit var gameDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
-    private lateinit var entryDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
-    private lateinit var playerDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
+    private lateinit var database: AppDatabase
+    private lateinit var gameDao: GameDao
+    private lateinit var entryDao: EntryDao
+    private lateinit var playerDao: PlayerDao
     private val gameA = testGames[0]
     private val gameB = testGames[1]
     private val gameC = testGames[2]
@@ -36,7 +36,7 @@ class PreviousGameDetailsDaoTests {
     @Before
     fun createDb() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        database = Room.inMemoryDatabaseBuilder(context, _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase::class.java).build()
+        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         gameDao = database.gameDao()
         entryDao = database.entryDao()
         playerDao = database.playerDao()

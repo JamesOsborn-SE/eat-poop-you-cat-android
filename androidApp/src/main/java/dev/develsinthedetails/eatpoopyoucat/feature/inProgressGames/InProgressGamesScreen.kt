@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
+import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
@@ -41,13 +43,11 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generatePixelProfile4Bit
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.PIXEL_PALETTE_4_BIT
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
-import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.PIXEL_PALETTE_4_BIT
 import org.koin.androidx.compose.koinViewModel
 import kotlin.time.Instant
 import kotlin.uuid.Uuid

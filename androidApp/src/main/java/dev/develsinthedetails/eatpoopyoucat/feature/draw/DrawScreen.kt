@@ -1,7 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.draw
 
-import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.visible
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -25,6 +24,8 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,7 +44,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -52,21 +53,22 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.R
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.Line
+import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
+import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
+import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SubmitButton
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.drawingBackground
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.drawingPen
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.Line
-import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
-import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
-import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.NicknameColumn
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
@@ -88,7 +90,8 @@ fun DrawScreen(
     val setPencilMode: (DrawMode) -> Unit = { viewModel.setPencilMode(it) }
     val undo = { viewModel.undo() }
     val redo = { viewModel.redo() }
-    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     val toastText = stringResource(id = R.string.pass_to_the_next)
 
     val onSubmit = {
@@ -99,7 +102,9 @@ fun DrawScreen(
                     gameMode,
                 )
             })
-            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(toastText)
+            }
     }
     val focusRequester = remember { FocusRequester() }
     val hardcodedNicknames = stringArrayResource(id = R.array.nicknames).toList()
@@ -124,7 +129,8 @@ fun DrawScreen(
                 nicknameError = uiState.nicknameError,
                 focusRequester = focusRequester,
             )
-        }
+        },
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -141,6 +147,7 @@ private fun DrawScreen(
     onRedo: () -> Unit,
     onSubmit: () -> Unit,
     nicknameForm: @Composable (() -> Unit)? = null,
+    snackbarHostState: SnackbarHostState,
 ) {
     Scaffolds.InGame(
         title = stringResource(R.string.draw_turn_title),
@@ -214,6 +221,10 @@ private fun DrawScreen(
                 }
             }
         }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.padding(innerPadding).fillMaxSize().wrapContentSize()
+        )
 
     }
 }
@@ -277,7 +288,7 @@ fun DrawBox(
 ) {
     val lines: MutableList<Line> = if (drawingLines.isNotEmpty())
         drawingLines.toMutableList()
-    else if (drawingZippedJson?.isNotEmpty() ?: false)
+    else if (drawingZippedJson?.isNotEmpty() == true)
         Json.decodeFromString(Gzip.decompressToString(drawingZippedJson))
     else
         mutableListOf()
@@ -288,8 +299,6 @@ fun DrawBox(
     val drawingBackground = MaterialTheme.colorScheme.drawingBackground
     val drawingPen = MaterialTheme.colorScheme.drawingPen
 
-    var height = 0
-    var width = 0
     Canvas(
         modifier = modifier
             .aspectRatio(1f)
@@ -300,19 +309,14 @@ fun DrawBox(
             .combinedClickable(
                 onLongClick = { onLongClick.invoke() },
                 onClick = { onClick.invoke() }
-            )
-            .onPlaced {
-                height = it.size.height
-                width = it.size.width
-            }
-            .onSizeChanged {
-                height = it.height
-                width = it.width
-            },
+            ),
         contentDescription = stringResource(R.string.user_made_drawing)
-    )
-    {
-        val currentResolution = Resolution(height = height, width = width)
+    ) {
+        val currentResolution = Resolution(
+            height = size.height.toInt(),
+            width = size.width.toInt()
+        )
+
         lines.forEach {
             val drawColor = if (it.properties.eraseMode) drawingBackground else drawingPen
             val path = it.toPath()
@@ -453,15 +457,7 @@ fun Sentence(sentence: String?) {
 /**
  * Preview Screenshot #3
  */
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, device = "spec:parent=pixel_fold")
 @Preview
-@Preview(device = "spec:parent=Nexus 7 2013")
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(device = "spec:parent=Nexus 7 2013,orientation=landscape")
-@Preview(
-    device = "spec:parent=Nexus 7 2013,orientation=landscape",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
 fun DrawingWithSentencePreview() {
     val lines =
@@ -474,9 +470,10 @@ fun DrawingWithSentencePreview() {
     val uiState = DrawUiState(
         gameId = Uuid.NIL,
         gameMode = GameMode.LOCAL,
-        Entry(Uuid.NIL, Uuid.NIL, null, 1, Uuid.NIL, 5, sentence, null),
-        isError = false, isLoading = false, undoCount = 1, redoCount = 0, drawMode = DrawMode.Draw,
-        drawingLines = lines
+        Entry(Uuid.NIL, Uuid.NIL, "bob", 1, Uuid.NIL, 5, sentence, null),
+        isError = false, isLoading = false, undoCount = 14, redoCount = 0, drawMode = DrawMode.Draw,
+        drawingLines = lines,
+        nicknameIsSatisfied = true
     )
     AppTheme {
         DrawScreen(
@@ -490,6 +487,7 @@ fun DrawingWithSentencePreview() {
             onUndo = {},
             onSubmit = {},
             setPencilMode = {},
+            snackbarHostState = remember { SnackbarHostState() },
         )
     }
 }

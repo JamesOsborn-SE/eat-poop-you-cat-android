@@ -4,19 +4,19 @@ import android.app.Activity
 import androidx.room3.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame2
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.testGames
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerTwo
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame2
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.testGames
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerTwo
+import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,14 +31,14 @@ class ImportPreviousGamesTest {
     private val gameA = testGames[0]
     private val gameC = testGames[2]
 
-    private lateinit var database: dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
-    private lateinit var repository: dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-    private lateinit var gameDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
-    private lateinit var entryDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
-    private lateinit var playerDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
-    private lateinit var rosterDao: dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
+    private lateinit var database: AppDatabase
+    private lateinit var repository: AppRepository
+    private lateinit var gameDao: GameDao
+    private lateinit var entryDao: EntryDao
+    private lateinit var playerDao: PlayerDao
+    private lateinit var rosterDao: RosterDao
 
-    private lateinit var exportedGames: List<dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries>
+    private lateinit var exportedGames: List<GameWithEntries>
     private lateinit var appSettings: AppSettings
 
     @Before
@@ -49,14 +49,14 @@ class ImportPreviousGamesTest {
         appSettings = AppSettings(context)
         appSettings.waitForReady()
 
-        database = Room.inMemoryDatabaseBuilder<dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase>(
+        database = Room.inMemoryDatabaseBuilder<AppDatabase>(
             context,
         ).build()
         gameDao = database.gameDao()
         entryDao = database.entryDao()
         playerDao = database.playerDao()
         rosterDao = database.rosterDao()
-        repository = _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.AppRepository(
+        repository = AppRepository(
             gameDao,
             playerDao,
             entryDao,

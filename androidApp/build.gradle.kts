@@ -57,8 +57,9 @@ dependencies {
     implementation(project(":shared"))
 
     screenshotTestImplementation(libs.screenshot.validation.api)
-    screenshotTestImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.tooling)
+    screenshotTestImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.tooling)
+
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.core.ktx)

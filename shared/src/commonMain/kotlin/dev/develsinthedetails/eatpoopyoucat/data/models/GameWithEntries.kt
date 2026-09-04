@@ -3,6 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.data.models
 import androidx.room3.Embedded
 import androidx.room3.Relation
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
+import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import kotlinx.serialization.Serializable
 
 @Serializable

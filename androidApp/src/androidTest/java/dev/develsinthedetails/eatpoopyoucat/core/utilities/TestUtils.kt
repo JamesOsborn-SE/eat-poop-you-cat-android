@@ -1,6 +1,10 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.compose.ui.geometry.Offset
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.Player
+import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
 import kotlin.uuid.Uuid
 
 /**
@@ -65,27 +69,27 @@ val stroke2 = listOf(
 )
 
 val testGames = arrayListOf(
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Game(
+    Game(
         Uuid.parse("00000000-0000-0000-0000-000000000001"),
         0,
         0
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Game(
+    Game(
         Uuid.parse("00000000-0000-0000-0000-000000000002"),
         0,
         0
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Game(
+    Game(
         Uuid.parse("00000000-0000-0000-0000-000000000003"),
         0,
         0
     )
 )
-val testPlayerOne = _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Player(
+val testPlayerOne = Player(
     Uuid.parse("00000000-0000-0000-0000-100000000001"),
     "bob"
 )
-val testPlayerTwo = _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Player(
+val testPlayerTwo = Player(
     Uuid.parse("00000000-0000-0000-0000-100000000002"),
     "bobbie"
 )
@@ -94,7 +98,7 @@ val testPlayerTwo = _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data
 val testDrawing = Gzip.compress(catTestDrawingLinesInJson)
 val testGame = testGames[0]
 val testEntriesGame1 = arrayListOf(
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000001"),
         playerId = testPlayerOne.id,
         sequence = 0,
@@ -103,7 +107,7 @@ val testEntriesGame1 = arrayListOf(
         gameId = testGames[0].id,
         timePassed = 600
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000002"),
         playerId = testPlayerTwo.id,
         sequence = 1,
@@ -112,7 +116,7 @@ val testEntriesGame1 = arrayListOf(
         gameId = testGames[0].id,
         timePassed = 600
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000003"),
         playerId = testPlayerOne.id,
         sequence = 2,
@@ -123,7 +127,7 @@ val testEntriesGame1 = arrayListOf(
     )
 )
 val testEntriesGame2 = arrayListOf(
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000001"),
         playerId = testPlayerOne.id,
         sequence = 0,
@@ -132,7 +136,7 @@ val testEntriesGame2 = arrayListOf(
         gameId = testGames[1].id,
         timePassed = 600
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000002"),
         playerId = testPlayerTwo.id,
         sequence = 1,
@@ -141,7 +145,7 @@ val testEntriesGame2 = arrayListOf(
         gameId = testGames[1].id,
         timePassed = 600
     ),
-    _root_ide_package_.dev.develsinthedetails.eatpoopyoucat.data.models.Entry(
+    Entry(
         id = Uuid.parse("e0000000-0000-0000-0000-000000000003"),
         playerId = testPlayerOne.id,
         sequence = 2,

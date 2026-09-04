@@ -6,6 +6,8 @@ import androidx.room3.ForeignKey.Companion.CASCADE
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
 import dev.develsinthedetails.eatpoopyoucat.data.local.InstantSerializer
+import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
