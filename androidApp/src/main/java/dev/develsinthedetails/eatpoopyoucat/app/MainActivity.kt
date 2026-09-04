@@ -3,13 +3,13 @@ package dev.develsinthedetails.eatpoopyoucat.app
 import android.content.Intent
 import android.content.pm.verify.domain.DomainVerificationManager
 import android.content.pm.verify.domain.DomainVerificationUserState
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.develsinthedetails.eatpoopyoucat.R.string.deeplink_host
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -29,14 +29,12 @@ class MainActivity : ComponentActivity() {
 
         val domainState = userState?.hostToStateMap?.get(domain)
 
-        // If autoVerify failed AND the user hasn't manually approved it
         if (domainState != DomainVerificationUserState.DOMAIN_STATE_VERIFIED &&
             domainState != DomainVerificationUserState.DOMAIN_STATE_SELECTED) {
 
-            // Launch the settings screen so they can toggle it on
             val intent = Intent(
                 Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                Uri.parse("package:$packageName")
+                "package:$packageName".toUri()
             )
             startActivity(intent)
         }

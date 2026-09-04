@@ -57,6 +57,11 @@ val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
     }
 }
 
+val sentenceTypeMap = mapOf(
+    typeOf<Uuid>() to UuidNavType,
+    typeOf<GameMode>() to NavType.EnumType(GameMode::class.java) // Add this
+)
+
 @Serializable
 data object Home
 
@@ -146,11 +151,11 @@ fun NavGraph(appSettings: AppSettings = koinInject()) {
         }
 
         composable<Sentence>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            typeMap = sentenceTypeMap,
             deepLinks = listOf(
                 navDeepLink<Sentence>(
                     basePath = appSettings.sentenceDeepLink,
-                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                    typeMap = sentenceTypeMap
                 ),
             )
         ) {

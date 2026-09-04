@@ -1,72 +1,59 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.notifications
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import dev.develsinthedetails.eatpoopyoucat.R
 import dev.develsinthedetails.eatpoopyoucat.app.MainActivity
-import dev.develsinthedetails.eatpoopyoucat.app.NotificationActionReceiver
 
-@Composable
-@Preview
-fun NotificationTester() {
-    val context = LocalContext.current
-    val channelId = "net_play_games"
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            return@rememberLauncherForActivityResult
-        }
-    }
-
+enum class AppNotificationChannel(
+    val id: String,
+    val channelName: String,
+    val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
+) {
+    WEB_SERVER(
+        id = "webserver",
+        channelName = "Web Server Service",
+        importance = NotificationManager.IMPORTANCE_LOW
+    ),
+    GAME_ALERTS(
+        id = "game_alerts",
+        channelName = "Game Alerts",
+        importance = NotificationManager.IMPORTANCE_HIGH
+    )
 }
 
-
-fun showNotification(context: Context, channelId: String, destUrl: String) {
+fun showTurnNotification(context: Context, destUrl: String) {
     val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    val channel = NotificationChannel(
-        channelId,
-        "Test Notifications",
-        NotificationManager.IMPORTANCE_DEFAULT
-    ).apply {
-        description = "Channel for testing notifications"
-    }
-    notificationManager.createNotificationChannel(channel)
-
     val intentFlags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
 
-    val yesIntent = Intent(context, NotificationActionReceiver::class.java).apply {
-        action = "ACTION_YES"
-        putExtra("DEST_URL", destUrl)
-    }
-    val yesPendingIntent = PendingIntent.getBroadcast(context, 0, yesIntent, intentFlags)
-
-    val noIntent = Intent(context, NotificationActionReceiver::class.java).apply {
-        action = "ACTION_NO"
-    }
-    val mainIntent = Intent(context, MainActivity::class.java).apply {
+    val yesIntent = Intent(
+        Intent.ACTION_VIEW,
+        destUrl.toUri(),
+        context,
+        MainActivity::class.java
+    ).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
+
+    val yesPendingIntent = PendingIntent.getActivity(context, 0, yesIntent, intentFlags)
+
+    val noIntent = Intent()
+    val noPendingIntent = PendingIntent.getBroadcast(context, 1, noIntent, intentFlags)
+
     val mainPendingIntent = PendingIntent.getActivity(
         context,
         2,
-        mainIntent,
+        yesIntent,
         intentFlags
     )
-    val noPendingIntent = PendingIntent.getBroadcast(context, 1, noIntent, intentFlags)
 
-    val builder = NotificationCompat.Builder(context, channelId)
+    val builder = NotificationCompat.Builder(context, AppNotificationChannel.GAME_ALERTS.id)
         .setSmallIcon(R.drawable.ic_notification)
         .setContentTitle("Want to take your turn?")
         .setContentText("Join us!!!")

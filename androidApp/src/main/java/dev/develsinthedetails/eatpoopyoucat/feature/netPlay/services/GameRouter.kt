@@ -8,7 +8,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.hash
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
-import dev.develsinthedetails.eatpoopyoucat.feature.notifications.showNotification
+import dev.develsinthedetails.eatpoopyoucat.feature.notifications.showTurnNotification
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.resources.get
@@ -68,31 +68,35 @@ class GameRouter(
             val game = repository.getGameWithEntries(askTakeTurn.parent.id)
             val gameRosters = repository.getGameWithRosters(askTakeTurn.parent.id) ?: return@get
 
-            val leaderAddress = gameRosters.roster.first { it.isLeader }.address
+            val leader = gameRosters.roster.first()
+            var lastEntry = game.entries.maxByOrNull { it.sequence }
+            if (appSettings.playerId != leader.playerId) {
 
-            val entries = game.entries.toMutableList()
+                val entries = game.entries.toMutableList()
 
-            // update game entries if needed
-            val missing = client.updateGame(leaderAddress, game)
-            missing.forEach {
-                repository.createEntry(it)
-                entries.add(it)
-            }
-            // update Roster and Game
-            val missingPlayers =
-                client.updateRoster(leaderAddress, askTakeTurn.parent.id, gameRosters.hash())
-            if (missingPlayers != null) {
-                repository.updateGame(missingPlayers.game)
-                missingPlayers.roster.forEach {
-                    repository.upsertRoster(it)
+                // update game entries if needed
+                val missing = client.updateGame(leader.address, game)
+                missing.forEach {
+                    repository.createEntry(it)
+                    entries.add(it)
+                }
+                lastEntry = entries.maxByOrNull { it.sequence }
+                // update Roster and Game
+                val missingPlayers =
+                    client.updateRoster(leader.address, askTakeTurn.parent.id, gameRosters.hash())
+                if (missingPlayers != null) {
+                    repository.updateGame(missingPlayers.game)
+                    missingPlayers.roster.forEach {
+                        repository.upsertRoster(it)
+                    }
                 }
             }
-            val previousEntry: Entry = entries.maxBy { it.sequence }
-            val dest = if (previousEntry.type == EntryType.Sentence)
-                "${appSettings.drawDeepLink}/?gameId=${previousEntry.gameId}"
-            else
-                "${appSettings.sentenceDeepLink}/?gameId=${previousEntry.gameId}"
-            showNotification(applicationContext, "turn_channel", dest)
+            val destUrl = if (lastEntry == null || lastEntry.type == EntryType.Sentence) {
+                "${appSettings.drawDeepLink}/${askTakeTurn.parent.id}/${game.game.gameMode.name}"
+            } else {
+                "${appSettings.sentenceDeepLink}/${askTakeTurn.parent.id}/${game.game.gameMode.name}"
+            }
+            showTurnNotification(applicationContext, destUrl)
         }
 
         put<GameRoot.TakeTurn> {
