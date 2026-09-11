@@ -15,7 +15,7 @@ class InProgressGamesViewModel(
 ) : ViewModel() {
 
     val playerId = appSettings.playerId
-    val games: StateFlow<List<GameWithRosters>?> = repository.getInProgressGamesWithRosters()
+    val games: StateFlow<List<GameWithRosters>?> = repository.getInProgressGamesWithRostersFlow()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),

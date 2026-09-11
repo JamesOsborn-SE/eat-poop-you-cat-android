@@ -94,7 +94,7 @@ class SentenceViewModel(
         )
 
         viewModelScope.launch {
-            repository.upsertEntry(newEntry)
+            repository.createEntry(newEntry)
             nextTo.invoke(entryId)
         }
         _uiState.update { it.copy(isLoading = false) }

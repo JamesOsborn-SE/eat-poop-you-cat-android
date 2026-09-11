@@ -11,7 +11,7 @@ class PreviousGamesViewModel(
     val repository: AppRepository,
 ) : ViewModel() {
 
-    val games = repository.getAllGamesWithEntries()
+    val games = repository.getAllGamesWithEntriesFlow()
 
     fun deleteGame(gameId: Uuid) {
         viewModelScope.launch {
@@ -22,7 +22,7 @@ class PreviousGamesViewModel(
     fun cleanup(invalidGames: List<GameWithEntries>) {
         viewModelScope.launch {
             invalidGames.forEach {
-                    repository.deleteGame(it.game.id)
+                repository.deleteGame(it.game.id)
             }
         }
     }

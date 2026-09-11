@@ -24,13 +24,13 @@ interface RosterDao {
     fun getAllByGameFlow(id: Uuid): Flow<List<Roster>>
 
     @Query("SELECT * FROM roster WHERE gameId=:id and isLeader=1 LIMIT 1")
-    fun getLeaderByGame(id: Uuid): Flow<Roster>
+    fun getLeaderByGameFlow(id: Uuid): Flow<Roster>
 
     @Query("SELECT playerId FROM roster WHERE gameId=:gameId ORDER BY playerId ASC")
     suspend fun getOrderedPlayerIds(gameId: Uuid): List<Uuid>
 
     @Query("SELECT * FROM roster WHERE playerId=:id")
-    fun getAllByPlayer(id: Uuid): Flow<List<Roster>>
+    fun getAllByPlayerFlow(id: Uuid): Flow<List<Roster>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(roster: Roster)
@@ -47,11 +47,13 @@ interface RosterDao {
     @Upsert
     suspend fun upsert(roster: Roster)
 
-    @Query("""
+    @Query(
+        """
         UPDATE Roster 
         SET lastSeen = :time 
         WHERE address = :address AND gameId = :gameId
-    """)
+    """
+    )
     suspend fun updateRosterPing(address: String, gameId: Uuid, time: Instant)
 
     @Query("DELETE FROM roster")

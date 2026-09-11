@@ -32,6 +32,7 @@ class AppRepository(
     fun getPlayerFlow(id: Uuid): Flow<Player?> = playerDao.getFlow(id)
     suspend fun getPlayer(id: Uuid): Player? = playerDao.get(id)
     suspend fun getAllPlayers(): List<Player> = playerDao.getAll()
+
     // ==========================================
     // Game functions
     // ==========================================
@@ -42,9 +43,9 @@ class AppRepository(
     fun getGameFlow(id: Uuid) = gameDao.getFlow(id)
     suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
-    fun getAllGamesWithEntries() = gameDao.getAllWithEntriesFlow()
-    fun getInProgressGamesWithRosters(): Flow<List<GameWithRosters>> =
-        gameDao.getInProgressGamesWithRosters()
+    fun getAllGamesWithEntriesFlow() = gameDao.getAllWithEntriesFlow()
+    fun getInProgressGamesWithRostersFlow(): Flow<List<GameWithRosters>> =
+        gameDao.getInProgressGamesWithRostersFlow()
 
     suspend fun getGameWithRosters(id: Uuid): GameWithRosters? = gameDao.getGameWithRosters(id)
     suspend fun getAllGames() = gameDao.getAll()
@@ -58,7 +59,7 @@ class AppRepository(
         val nicknames = getGameWithEntries(gameId)
             ?.entries
             ?.mapNotNull { it.localPlayerName?.takeIf { name -> name.isNotBlank() } }
-        return nicknames?: listOf()
+        return nicknames ?: listOf()
     }
 
     // ==========================================
@@ -74,6 +75,7 @@ class AppRepository(
 
     suspend fun getMissingEntries(gameId: Uuid, knownTurns: List<Int>) =
         entryDao.getMissingEntries(gameId, knownTurns)
+
     suspend fun getLastEntry(gameId: Uuid) = entryDao.getLast(gameId)
 
     // ==========================================
@@ -87,6 +89,7 @@ class AppRepository(
         playerDao.upsert(Player(roster.playerId, roster.nickname, lanAddress = roster.address))
         rosterDao.insert(roster)
     }
+
     suspend fun deleteByGame(gameId: Uuid) = rosterDao.deleteByGame(gameId)
     suspend fun deletePlayer(playerId: Uuid) = rosterDao.deletePlayer(playerId)
     suspend fun delete(gameId: Uuid, playerId: Uuid) = rosterDao.delete(gameId, playerId)
@@ -101,7 +104,8 @@ class AppRepository(
         return generateRosterHash(playerIds)
     }
 
-    fun getActiveHostedGameWithRostersFlow(playerId: Uuid) = gameDao.getActiveHostedGameWithRostersFlow(playerId)
+    fun getActiveHostedGameWithRostersFlow(playerId: Uuid) =
+        gameDao.getActiveHostedGameWithRostersFlow(playerId)
 
     companion object {
         fun generateRosterHash(playerIds: List<Uuid>): String {
