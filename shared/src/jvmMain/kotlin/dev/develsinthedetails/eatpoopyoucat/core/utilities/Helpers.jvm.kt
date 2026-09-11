@@ -9,7 +9,6 @@ actual fun rememberNotificationPermissionState(): NotificationPermissionState {
         object : NotificationPermissionState {
             override val hasPermission: Boolean = true
             override fun requestPermission() {
-                // No-op: Not required on this platform
             }
         }
     }

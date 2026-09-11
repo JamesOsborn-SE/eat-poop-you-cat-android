@@ -1,4 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.data.tests
+
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room3.Room
 import androidx.test.platform.app.InstrumentationRegistry
@@ -49,7 +50,7 @@ class PreviousGameDetailsDaoTests {
     }
 
     @After
-    fun closeDb() {
+    fun burnItDown() {
         database.close()
     }
 
@@ -66,7 +67,7 @@ class PreviousGameDetailsDaoTests {
     @Test
     fun testGetAllGamesWithEntries() = runBlocking {
         val gameWithEntries = gameDao.getAllWithEntriesFlow().first()
-        val player= playerDao.getFlow(gameWithEntries[0].entries[0].playerId).first()
+        val player = playerDao.getFlow(gameWithEntries[0].entries[0].playerId).first()
         assertThat(testGame, equalTo(gameWithEntries[0].game))
         assert(player?.nickname == testPlayerOne.nickname)
     }

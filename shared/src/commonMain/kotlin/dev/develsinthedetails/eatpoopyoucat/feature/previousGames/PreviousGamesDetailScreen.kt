@@ -49,13 +49,11 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import eatpoopyoucat.shared.generated.resources.Res
-import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.continue_previous_game
 import eatpoopyoucat.shared.generated.resources.ic_launcher_foreground
 import eatpoopyoucat.shared.generated.resources.ic_replay_rounded
 import eatpoopyoucat.shared.generated.resources.ic_share_filled
 import eatpoopyoucat.shared.generated.resources.ic_vertical_align_top_rounded
-import eatpoopyoucat.shared.generated.resources.is_available_on_f_droid_and_google_play
 import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
@@ -90,8 +88,6 @@ fun PreviousGameDetailsRoute(
     val game by viewModel.gameWithEntries.collectAsState(initial = null)
     val lastEntry = game?.entries?.last()
     val snackbarHostState = remember { SnackbarHostState() }
-    val appName = stringResource(Res.string.app_name)
-    val bottomBlurb = stringResource(Res.string.is_available_on_f_droid_and_google_play, appName)
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
     val textMeasurer = rememberTextMeasurer()
     val scope = rememberCoroutineScope()
@@ -147,8 +143,6 @@ fun PreviousGameDetailsRoute(
                     val ie = ImageExport(
                         game!!.entries,
                         appIcon,
-                        appName,
-                        bottomBlurb,
                         textMeasurer
                     )
                     val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())

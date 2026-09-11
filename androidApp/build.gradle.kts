@@ -64,6 +64,7 @@ androidComponents {
 
 dependencies {
     implementation(project(":shared"))
+    implementation(libs.datastore.preferences.core)
 
     screenshotTestImplementation(libs.screenshot.validation.api)
     screenshotTestImplementation(libs.compose.ui.tooling)

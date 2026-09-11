@@ -3,7 +3,6 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_DRAW_URI
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_SENTENCE_URI
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.showTurnNotification
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
@@ -23,12 +22,9 @@ fun Route.getAllRoutes(): List<String> {
     val endpoints = mutableListOf<String>()
 
     fun traverse(route: Route) {
-        // If the route node is an HTTP method (GET, POST, etc.), it's a final endpoint
         if (route.selector is HttpMethodRouteSelector) {
             endpoints.add(route.toString())
         }
-
-        // Recursively check all nested routes
         route.children.forEach { traverse(it) }
     }
 
@@ -96,7 +92,6 @@ class GameRouter(
             } else {
                 "${DEEPLINK_SENTENCE_URI}/${askTakeTurn.parent.id}/${game.game.gameMode.name}"
             }
-            showTurnNotification(destUrl)
         }
 
         put<Api.GameRoot.TakeTurn> {

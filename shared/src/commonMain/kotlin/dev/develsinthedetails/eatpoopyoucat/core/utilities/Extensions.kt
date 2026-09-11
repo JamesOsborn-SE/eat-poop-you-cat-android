@@ -10,19 +10,11 @@ import kotlin.time.Instant
 import kotlin.time.toJavaInstant
 import kotlin.uuid.Uuid
 
-fun Date?.localTimestamp(): String =
-    if (this != null) DateFormat.getTimeInstance().format(this) else ""
-
 fun Instant?.localTimestamp(): String {
     if (this == null)
         return ""
     val date = Date.from(this.toJavaInstant())
     return DateFormat.getTimeInstance().format(date)
-}
-
-fun Instant?.toDate(): Date? {
-    if (this == null) return null
-    return Date.from(this.toJavaInstant())
 }
 
 fun Instant?.localDateTimestamp(): String {

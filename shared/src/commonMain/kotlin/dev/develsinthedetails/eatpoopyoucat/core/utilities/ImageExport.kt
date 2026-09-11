@@ -40,22 +40,36 @@ import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.ic_launcher_foreground
 import eatpoopyoucat.shared.generated.resources.is_available_on_f_droid_and_google_play
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.resources.getString
 import kotlin.math.max
 import kotlin.time.Instant
 
 class ImageExport(
     private val entries: List<Entry>,
     private val appIcon: ImageBitmap,
-    private val appName: String,
-    private val bottomBlurb: String,
     private val textMeasurer: TextMeasurer
 ) {
     private val penColor = md_theme_light_drawing_pen
     private val eraseColor = md_theme_light_drawing_background
     private val density = Density(1f)
     private val layoutDirection = LayoutDirection.Ltr
+
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private lateinit var appName: String
+    private lateinit var bottomBlurb: String
+
+
+    init {
+        scope.launch {
+            appName = getString(Res.string.app_name)
+            bottomBlurb = getString(Res.string.is_available_on_f_droid_and_google_play, appName)
+        }
+    }
 
     fun makeBitmap(): ImageBitmap {
         val bitmaps = mutableListOf<ImageBitmap>()
@@ -313,13 +327,7 @@ class ImageExport(
 @Preview
 @Composable
 fun SharePreview() {
-    val appName = stringResource(Res.string.app_name)
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
-    val isAvailableOnFDroidAndGooglePlay =
-        stringResource(Res.string.is_available_on_f_droid_and_google_play, appName)
-    val ie = ImageExport(
-        PreviewData.entries, appIcon, appName, isAvailableOnFDroidAndGooglePlay,
-        textMeasurer = rememberTextMeasurer()
-    )
+    val ie = ImageExport( PreviewData.entries, appIcon, textMeasurer = rememberTextMeasurer() )
     Image(bitmap = ie.makeBitmap(), null)
 }

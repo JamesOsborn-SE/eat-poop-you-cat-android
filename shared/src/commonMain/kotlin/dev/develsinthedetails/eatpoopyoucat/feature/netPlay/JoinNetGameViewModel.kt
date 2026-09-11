@@ -1,6 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
@@ -34,7 +33,6 @@ data class JoinUiState(
     )
 
 class JoinNetGameViewModel(
-    private val state: SavedStateHandle,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
     private val client: Client

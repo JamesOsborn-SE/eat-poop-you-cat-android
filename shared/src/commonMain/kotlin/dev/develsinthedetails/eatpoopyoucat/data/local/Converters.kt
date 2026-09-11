@@ -21,7 +21,6 @@ class Converters {
         return instant?.toEpochMilliseconds()
     }
 
-    // --- Uuid Converters ---
     @ColumnTypeConverter
     fun fromUuidByteArray(bytes: ByteArray?): Uuid? {
         if (bytes == null) return null
