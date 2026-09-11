@@ -64,6 +64,15 @@ buildConfig {
 compose.resources {
     publicResClass = true
 }
+compose.desktop {
+    application {
+        nativeDistributions {
+            linux {
+                modules("jdk.security.auth")
+            }
+        }
+    }
+}
 kotlin {
 
     // Target declarations - add or remove as needed below. These define
@@ -98,6 +107,8 @@ kotlin {
             dependencies {
                 api(libs.navigation.compose)
                 // Add KMP dependencies here
+                api(libs.filekit.core)
+                api(libs.filekit.dialogs.compose)
                 implementation(libs.lifecycle.viewmodel.compose)
                 implementation(libs.lifecycle.viewmodel.savedstate)
                 implementation(libs.koin.core)

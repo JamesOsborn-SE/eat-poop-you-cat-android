@@ -1,25 +1,28 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-import androidx.compose.ui.graphics.ImageBitmap
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import androidx.compose.runtime.Composable
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.dialogs.FileKitDialogException
 import java.util.Date
 
-val stringTime: String = Date().saveDateFormat()
-fun defaultFilename(): String {
+fun defaultImageFilename(): String {
     return "EPYC-${Date().saveDateFormat()}.png"
 }
 
-val DEFAULT_DATA_FILENAME = "EPYC-$stringTime.json"
-
-interface FileSaver {
-    fun saveGames(
-        games: List<GameWithEntries>,
-        filename: String = "data.json" // Note: default params go in the interface
-    ): String
+fun defaultDataFilename(): String {
+    return "EPYC-${Date().saveDateFormat()}.json"
 }
 
-expect suspend fun readBytesFromUriString(uriString: String): ByteArray?
+internal interface ShareFileLauncher {
+    val isSupported: Boolean
 
-expect fun shareImageUri(uri: Any?)
+    fun launch(files: List<PlatformFile>)
+    fun launch(file: PlatformFile) {
+        launch(listOf(file))
+    }
+}
 
-expect fun saveBitmap(bitmap: ImageBitmap, filename: String? = null): Any?
+@Composable
+internal expect fun rememberShareFileLauncher(
+    onError: (FileKitDialogException) -> Unit,
+): ShareFileLauncher

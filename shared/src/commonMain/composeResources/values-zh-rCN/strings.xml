@@ -30,19 +30,17 @@
     <string name="background_summary_on">你可以发送或接收游戏，即使应用程序是关闭的</string>
     <string name="write_a_sentence_to_describe_this_drawing">描述这幅画作</string>
     <string name="dialog_start_game">开始游戏</string>
-    <string name="turn_completed_time">本轮完成时长
-\n%1$d:%2$d</string>
-    <string name="time_left_to_complete">剩余时间
-\n%1$d:%2$d</string>
+    <string name="turn_completed_time">本轮完成时长\n%1$d:%2$d</string>
+    <string name="time_left_to_complete">剩余时间\n%1$d:%2$d</string>
     <string name="starting_sentence">开始句子：%1$s</string>
     <string name="no_games_to_save">您没有要保存的游戏</string>
     <string name="not_nickname">不是 %1$s</string>
     <string name="user_made_drawing">用户作画</string>
     <plurals name="imported_games">
-        <item quantity="other">已导入 %d 个游戏</item>
+        <item quantity="other">已导入 %1$d 个游戏</item>
     </plurals>
     <plurals name="imported_entries">
-        <item quantity="other">已导入 %d 个条目</item>
+        <item quantity="other">已导入 %1$d 个条目</item>
     </plurals>
     <string name="turn_passed">已经过的轮数：%1$s</string>
     <string name="dashboard">操作面板</string>
@@ -67,7 +65,7 @@
     <string name="debugging_on_label">调试于：%1$s</string>
     <string name="use_nicknames_more_info">使用昵称将提示每个玩家留下一个昵称，允许玩家记录谁已经轮到谁了，并在游戏结束时将玩家与图画和句子进行匹配。通过这种方式，你可能会弄清楚是谁画了那幅明显是猫而不是狗的图像。</string>
     <plurals name="minimum_words">
-        <item quantity="other">最少 %d 个单词。</item>
+        <item quantity="other">最少 %1$d 个单词。</item>
     </plurals>
     <string name="dialog_accept_turn">接受从 %1$s 来的一轮！</string>
     <string name="write_a_funny_sentence">写一个有趣的句子</string>

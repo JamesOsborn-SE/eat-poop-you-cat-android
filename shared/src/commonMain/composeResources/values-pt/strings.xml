@@ -61,8 +61,8 @@
     <string name="delete_game">Excluir jogo</string>
     <string name="test_cat_sentence">Um gato pisca para você com a graça de uma criança com muito sono</string>
     <plurals name="minimum_words">
-        <item quantity="one">minimum %d word.</item>
-        <item quantity="many">minimum %d words.</item>
-        <item quantity="other">minimum %d words.</item>
+        <item quantity="one">minimum %1$d word.</item>
+        <item quantity="many">minimum %1$d words.</item>
+        <item quantity="other">minimum %1$d words.</item>
     </plurals>
 </resources>

@@ -24,8 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -33,16 +35,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultImageFilename
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBitmapFromResource
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveBitmap
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareImageUri
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberShareFileLauncher
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import eatpoopyoucat.shared.generated.resources.Res
@@ -53,10 +56,23 @@ import eatpoopyoucat.shared.generated.resources.ic_replay_rounded
 import eatpoopyoucat.shared.generated.resources.ic_share_filled
 import eatpoopyoucat.shared.generated.resources.ic_vertical_align_top_rounded
 import eatpoopyoucat.shared.generated.resources.is_available_on_f_droid_and_google_play
+import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.previous_games
+import eatpoopyoucat.shared.generated.resources.saving
 import eatpoopyoucat.shared.generated.resources.scroll_to_top
 import eatpoopyoucat.shared.generated.resources.share_this_game
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.ImageFormat
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.cacheDir
+import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
+import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
+import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
+import io.github.vinceglb.filekit.saveImageToGallery
+import io.github.vinceglb.filekit.write
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
@@ -69,8 +85,7 @@ fun PreviousGameDetailsRoute(
     viewModel: PreviousGameDetailsViewModel = koinViewModel(),
     onBack: () -> Unit,
     onContinueGame: (Uuid, EntryType) -> Unit,
-    onBackupGame: (games: List<GameWithEntries>?) -> Unit,
-    onImportGames: () -> Unit,
+    onNavigateToImport: () -> Unit
 ) {
     val game by viewModel.gameWithEntries.collectAsState(initial = null)
     val lastEntry = game?.entries?.last()
@@ -79,6 +94,36 @@ fun PreviousGameDetailsRoute(
     val bottomBlurb = stringResource(Res.string.is_available_on_f_droid_and_google_play, appName)
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
     val textMeasurer = rememberTextMeasurer()
+    val scope = rememberCoroutineScope()
+    val launcher = rememberFileSaverLauncher(
+        dialogSettings = FileKitDialogSettings.createDefault(),
+        onError = { failure ->
+            scope.launch {
+                snackbarHostState.showSnackbar("Backup failed successfully!${failure.message}")
+            }
+        },
+        onResult = { file ->
+            if (file == null) {
+                // The user canceled the saver
+            } else {
+                scope.launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.saving))
+                    if (game?.entries?.isNotEmpty() == true) {
+                        val gamesJson = Json.encodeToString(listOf(game!!))
+                        val bytes = Gzip.compress(gamesJson)
+                        file.write(bytes)
+                        snackbarHostState.showSnackbar("Backup saved successfully!")
+                    } else {
+                        snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
+                    }
+                }
+            }
+        },
+    )
+    var shareError by remember { mutableStateOf<String?>(null) }
+    val shareLauncher = rememberShareFileLauncher(
+        onError = { failure -> shareError = failure.message },
+    )
     PreviousGameDetailsScreen(
         modifier = modifier,
         entries = game?.entries,
@@ -88,20 +133,31 @@ fun PreviousGameDetailsRoute(
                 lastEntry?.type ?: EntryType.Unknown
             )
         },
-        onBackupGame = { onBackupGame(listOf(game!!)) },
-        onImportGame = onImportGames,
+        onBackupGame = {
+            launcher.launch(
+                suggestedName = defaultDataFilename(),
+                defaultExtension = "gz",
+            )
+        },
+        onImportGame = onNavigateToImport,
         onBack = onBack,
         onShareGame = {
-            val ie = ImageExport(
-                game!!.entries,
-                appIcon,
-                appName,
-                bottomBlurb,
-                textMeasurer
-            )
-            val bitmap = ie.makeBitmap()
-            val x = saveBitmap(bitmap)
-            shareImageUri(x)
+            scope.launch {
+                if (shareLauncher.isSupported) {
+                    val ie = ImageExport(
+                        game!!.entries,
+                        appIcon,
+                        appName,
+                        bottomBlurb,
+                        textMeasurer
+                    )
+                    val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())
+                    val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG, 100)
+                    file.write(bytes)
+                    FileKit.saveImageToGallery(file)
+                    shareLauncher.launch(file)
+                }
+            }
         },
         snackbarHostState = snackbarHostState
     )

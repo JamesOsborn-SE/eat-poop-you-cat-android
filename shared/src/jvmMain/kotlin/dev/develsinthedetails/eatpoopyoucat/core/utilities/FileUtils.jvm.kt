@@ -1,18 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.runtime.Composable
+import io.github.vinceglb.filekit.dialogs.FileKitDialogException
 
-actual suspend fun readBytesFromUriString(uriString: String): ByteArray? {
-    TODO("Not yet implemented")
-}
-
-actual fun shareImageUri(uri: Any?) {
-    TODO("Not yet implemented")
-}
-
-actual fun saveBitmap(
-    bitmap: ImageBitmap,
-    filename: String?
-): Any? {
+@Composable
+internal actual fun rememberShareFileLauncher(onError: (FileKitDialogException) -> Unit): ShareFileLauncher {
     TODO("Not yet implemented")
 }

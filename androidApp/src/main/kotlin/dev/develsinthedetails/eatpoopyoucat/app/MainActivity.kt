@@ -18,13 +18,14 @@ import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUuid
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.dialogs.init
 import org.koin.android.ext.android.inject
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class MainActivity : ComponentActivity() {
     private val appSettings: AppSettings by inject()
-    private var externalImportUri = mutableStateOf<String?>(null)
 
     @OptIn(ExperimentalUuidApi::class)
     private var netGameParams = mutableStateOf<Pair<Uuid, String>?>(null)
@@ -59,14 +60,12 @@ class MainActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { !appSettings.isReady }
         AppContextProvider.context = applicationContext
         handleIntent(intent)
-
+        FileKit.init(this)
         setContent {
             AppTheme {
                 NavGraph(
-                    externalImportUri = externalImportUri.value,
                     netGameParams = netGameParams.value,
-                    onExternalUriConsumed = { externalImportUri.value = null },
-                    onNetGameParamsConsumed = { netGameParams.value = null }
+                    onNetGameParamsConsumed = { netGameParams.value = null },
                 )
             }
         }
@@ -81,9 +80,7 @@ class MainActivity : ComponentActivity() {
     private fun handleIntent(intent: Intent?) {
         val uri: Uri = intent?.data ?: return
 
-        if (uri.path?.endsWith("json.gz") == true || intent.type == "application/gzip" || uri.scheme == "content") {
-            externalImportUri.value = uri.toString()
-        } else if (uri.path?.contains(DEEPLINK_PLAY) == true) {
+        if (uri.path?.contains(DEEPLINK_PLAY) == true) {
             try {
                 val gameIdStr = uri.getQueryParameter("game")
                 val playerAddress = uri.getQueryParameter("server")

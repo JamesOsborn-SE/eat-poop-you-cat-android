@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="background_summary_off">Vous ne pourrez pas envoyer ou recevoir de parties si l\'application n\'est pas ouverte</string>
-    <string name="submit">J\'ai fini mon tour !</string>
+    <string name="background_summary_off">Vous ne pourrez pas envoyer ou recevoir de parties si l'application n'est pas ouverte</string>
+    <string name="submit">J'ai fini mon tour !</string>
     <string name="dialog_accept_turn">Acceptez votre tour de %1$s !</string>
     <string name="created_by">Créé par : %1$s</string>
     <string name="write_a_funny_sentence">Écrivez une phrase amusante</string>
@@ -29,7 +29,7 @@
     <string name="undo">Annuler</string>
     <string name="nickname">Pseudo</string>
     <string name="enter_a_sentence">Saisissez une phrase</string>
-    <string name="background_title">Autoriser l\'appli à communiquer en arrière-plan</string>
+    <string name="background_title">Autoriser l'appli à communiquer en arrière-plan</string>
     <string name="welcome_message">Bienvenue dans %1$s !</string>
     <string name="draw_this_sentence">Dessinez cette phrase !</string>
     <string name="no_letters_or_numbers">NE PAS utiliser de lettres ou de nombres.</string>
@@ -38,11 +38,11 @@
     <string name="draw_description">Dessiner</string>
     <string name="draw">Dessiner</string>
     <string name="undo_description">Annuler ce que vous venez de faire</string>
-    <string name="redo_description">Annuler l\'annulation</string>
+    <string name="redo_description">Annuler l'annulation</string>
     <string name="redo">Refaire</string>
     <string name="preferences_header">Préférences</string>
-    <string name="background_header">Activités d\'arrière-plan</string>
-    <string name="background_summary_on">Vous pourrez envoyer ou recevoir des parties même si l\'application est fermée</string>
+    <string name="background_header">Activités d'arrière-plan</string>
+    <string name="background_summary_on">Vous pourrez envoyer ou recevoir des parties même si l'application est fermée</string>
     <string name="dialog_start_game">Démarrer la partie</string>
     <string name="start">Commencer</string>
     <string name="cancel">Annuler</string>
@@ -54,14 +54,14 @@
     <string name="end_game_for_all">Fin du jeu pour tous</string>
     <string name="app_description">Un jeu de téléphone cassé où à tour de rôle, on écrit des phrases et on fait des dessins. Le jeu se termine lorsque tout le monde a participé une fois.*</string>
     <string name="app_warning">* Famille et amis ne sont pas inclus !</string>
-    <string name="no_previous_games_found">Aucune partie précédente n\'a été trouvée ! Allez jouer !</string>
-    <string name="pass_to_the_next">Passez l\'appareil au joueur suivant !</string>
+    <string name="no_previous_games_found">Aucune partie précédente n'a été trouvée ! Allez jouer !</string>
+    <string name="pass_to_the_next">Passez l'appareil au joueur suivant !</string>
     <string name="scroll_to_top">Remonter en haut de la page</string>
-    <string name="are_you_sure">Cela va %1$s. Voulez-vous toujours continuer \?</string>
+    <string name="are_you_sure">Cela va %1$s. Voulez-vous toujours continuer ?</string>
     <string name="yes">Oui</string>
     <string name="no">Non</string>
     <string name="delete_game">Supprimer la partie</string>
-    <string name="test_cat_sentence">Un chat vous fait un clin d\'œil avec la grâce d\'un enfant qui s\'endort</string>
+    <string name="test_cat_sentence">Un chat vous fait un clin d'œil avec la grâce d'un enfant qui s'endort</string>
     <string name="sentence_turn_title">Écris quelque-chose !</string>
     <string name="draw_turn_title">Dessine cette phrase !</string>
     <string name="about">À propos de cette appli</string>
@@ -75,46 +75,46 @@
     <string name="version_label">Version: %1$s</string>
     <string name="git_hash_label">Git Hash: %1$s</string>
     <plurals name="minimum_words">
-        <item quantity="one">minimum %d mot.</item>
-        <item quantity="many">minimum %d mots.</item>
-        <item quantity="other">minimum %d mots.</item>
+        <item quantity="one">minimum %1$d mot.</item>
+        <item quantity="many">minimum %1$d mots.</item>
+        <item quantity="other">minimum %1$d mots.</item>
     </plurals>
-    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Un chat vous regarde et cligne des yeux avec la grâce d\'un nourisson assoupi</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Un chat vous regarde et cligne des yeux avec la grâce d'un nourisson assoupi</string>
     <string name="saved_to">enregistré sous : %1$s</string>
     <string name="share_failed">le partage a foiré, oups</string>
     <string name="open">ouvrir</string>
-    <string name="application_icon">Icône de l\'Application</string>
-    <string name="import_games">Importer d\'anciennes parties</string>
+    <string name="application_icon">Icône de l'Application</string>
+    <string name="import_games">Importer d'anciennes parties</string>
     <string name="no_games_to_save">Ya pas de parties à sauvegarder poto</string>
     <string name="saving">sauvegarde…</string>
     <string name="not_nickname">Pas %1$s</string>
     <string name="james">James</string>
-    <string name="that_s_me">C\'est moi</string>
+    <string name="that_s_me">C'est moi</string>
     <plurals name="previous_games">
         <item quantity="one" tools:ignore="ImpliedQuantity">Jeu précédent</item>
         <item quantity="many">Jeux précédents</item>
         <item quantity="other">Jeux précédents</item>
     </plurals>
     <string name="use_nicknames">Utiliser des surnoms</string>
-    <string name="what_s_this">C\'est quoi ça ?</string>
-    <string name="use_nicknames_more_info">Utiliser des surnoms proposera à chaque joueur d\'utiliser un surnom, pour se souvenir de qui a joué et qui a dessiné quoi ou écrit quoi à la fin du jeu. Comme ça vous pourez savoir qui a fait ce fameux dessin du chat qui n\'est clairement pas un chien.</string>
+    <string name="what_s_this">C'est quoi ça ?</string>
+    <string name="use_nicknames_more_info">Utiliser des surnoms proposera à chaque joueur d'utiliser un surnom, pour se souvenir de qui a joué et qui a dessiné quoi ou écrit quoi à la fin du jeu. Comme ça vous pourez savoir qui a fait ce fameux dessin du chat qui n'est clairement pas un chien.</string>
     <string name="imported">Importer</string>
     <string name="ack">Werd</string>
-    <string name="user_made_drawing">Dessiné par l\'utilisateur</string>
+    <string name="user_made_drawing">Dessiné par l'utilisateur</string>
     <plurals name="imported_games">
-        <item quantity="one">%d jeu importé</item>
-        <item quantity="many">%d jeux importés</item>
-        <item quantity="other">%d jeux importés</item>
+        <item quantity="one">%1$d jeu importé</item>
+        <item quantity="many">%1$d jeux importés</item>
+        <item quantity="other">%1$d jeux importés</item>
     </plurals>
     <plurals name="imported_entries">
-        <item quantity="one">%d entrée importée</item>
-        <item quantity="many">%d entrées importées</item>
-        <item quantity="other">%d entrées importées</item>
+        <item quantity="one">%1$d entrée importée</item>
+        <item quantity="many">%1$d entrées importées</item>
+        <item quantity="other">%1$d entrées importées</item>
     </plurals>
     <string name="backup_games">Sauvegarder les anciennes parties</string>
-    <string name="sentence_is_blank">c\'est tout vide… Essaies peut-être d\'appuyer sur plus de boutons ?</string>
+    <string name="sentence_is_blank">c'est tout vide… Essaies peut-être d'appuyer sur plus de boutons ?</string>
     <string name="new_player_prompt">Nouveau joueur; Qui est-ce ?</string>
-    <string name="nickname_prompt">Comment est-ce que l\'on t\'appelle ?</string>
+    <string name="nickname_prompt">Comment est-ce que l'on t'appelle ?</string>
     <string name="previous_nicknames">Pseudonymes précédents :</string>
     <string name="no_nickname_chosen_warning">Bien, je vais en choisir un pour vous</string>
     <string name="enter_nickname_prompt">Entrez votre nom, surnom ou pseudo</string>

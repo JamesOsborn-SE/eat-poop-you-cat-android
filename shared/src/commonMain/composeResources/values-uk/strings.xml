@@ -47,10 +47,10 @@
     <string name="find_game">знайти гру</string>
     <string name="save">Зберегти</string>
     <string name="dashboard">Інформаційна панель</string>
-    <string name="default_nickname">Без ім\'я</string>
+    <string name="default_nickname">Без ім'я</string>
     <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
     <string name="app_description">Гра в телефон, де ви по черзі пишете речення та малюєте малюнки. Гра закінчується, коли кожна людина зробить один хід.*</string>
-    <string name="are_you_sure">Це буде %1$s. Ви все ще хочете продовжувати\?</string>
+    <string name="are_you_sure">Це буде %1$s. Ви все ще хочете продовжувати?</string>
     <string name="yes">Так</string>
     <string name="status_connected">Підключено</string>
     <string name="welcome_message">Ласкаво просимо до %1$s!</string>
@@ -68,10 +68,10 @@
     <string name="translations_welcome">Вітаються внески у переклад</string>
     <string name="issues">Проблеми</string>
     <plurals name="minimum_words">
-        <item quantity="one">мінімум %d слово.</item>
-        <item quantity="few">мінімум %d слова.</item>
-        <item quantity="many">мінімум %d слів.</item>
-        <item quantity="other">мінімум %d слів.</item>
+        <item quantity="one">мінімум %1$d слово.</item>
+        <item quantity="few">мінімум %1$d слова.</item>
+        <item quantity="many">мінімум %1$d слів.</item>
+        <item quantity="other">мінімум %1$d слів.</item>
     </plurals>
     <string name="loading">Завантаження</string>
     <string name="share_this_game">Поділіться цією грою</string>
@@ -101,16 +101,16 @@
     <string name="imported">Імпорт</string>
     <string name="ack">Став</string>
     <plurals name="imported_games">
-        <item quantity="one">Імпортовано %d гру</item>
-        <item quantity="few">Імпортовано %d ігор</item>
-        <item quantity="many">Імпортовано %d ігор</item>
-        <item quantity="other">Імпортовано %d ігор</item>
+        <item quantity="one">Імпортовано %1$d гру</item>
+        <item quantity="few">Імпортовано %1$d ігор</item>
+        <item quantity="many">Імпортовано %1$d ігор</item>
+        <item quantity="other">Імпортовано %1$d ігор</item>
     </plurals>
     <plurals name="imported_entries">
-        <item quantity="one">Імпортовано %d запис</item>
-        <item quantity="few">Імпортовано %d записів</item>
-        <item quantity="many">Імпортовано %d записів</item>
-        <item quantity="other">Імпортовано %d записів</item>
+        <item quantity="one">Імпортовано %1$d запис</item>
+        <item quantity="few">Імпортовано %1$d записів</item>
+        <item quantity="many">Імпортовано %1$d записів</item>
+        <item quantity="other">Імпортовано %1$d записів</item>
     </plurals>
     <string name="use_nicknames_more_info">Використання псевдонімів запропонує кожному гравцеві залишити псевдонім, дозволяючи гравцям відстежувати, хто мав хід, і зіставляти гравців з малюнками та реченнями в кінці гри. Таким чином ви зможете з’ясувати, хто намалював зображення кота, а не собаки.</string>
     <string name="debugging_on_label">Налагодження: %1$s</string>
@@ -121,6 +121,6 @@
     <string name="nickname_prompt">Як тебе тут називають?</string>
     <string name="previous_nicknames">Попередні псевдоніми:</string>
     <string name="no_nickname_chosen_warning">Добре, я виберу для вас один</string>
-    <string name="enter_nickname_prompt">Введіть своє ім\'я або псевдонім</string>
+    <string name="enter_nickname_prompt">Введіть своє ім'я або псевдонім</string>
     <string name="player_id">PlayerId: %1$s</string>
 </resources>

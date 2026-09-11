@@ -94,20 +94,20 @@
     <string name="user_made_drawing">பயனர் தயாரிக்கப்பட்ட வரைதல்</string>
     <string name="sentence_is_blank">இது காலியாக உள்ளது… மேலும் பொத்தான்களை அழுத்த முயற்சிக்கிறீர்களா?</string>
     <plurals name="imported_games">
-        <item quantity="one">இறக்குமதி செய்யப்பட்ட %d விளையாட்டு</item>
-        <item quantity="other">இறக்குமதி செய்யப்பட்ட %d விளையாட்டுகள்</item>
+        <item quantity="one">இறக்குமதி செய்யப்பட்ட %1$d விளையாட்டு</item>
+        <item quantity="other">இறக்குமதி செய்யப்பட்ட %1$d விளையாட்டுகள்</item>
     </plurals>
     <plurals name="imported_entries">
-        <item quantity="one">இறக்குமதி செய்யப்பட்ட %d நுழைவு</item>
-        <item quantity="other">இறக்குமதி செய்யப்பட்ட %d உள்ளீடுகள்</item>
+        <item quantity="one">இறக்குமதி செய்யப்பட்ட %1$d நுழைவு</item>
+        <item quantity="other">இறக்குமதி செய்யப்பட்ட %1$d உள்ளீடுகள்</item>
     </plurals>
     <plurals name="previous_games">
         <item quantity="one">முந்தைய விளையாட்டு</item>
         <item quantity="other">முந்தைய விளையாட்டுகள்</item>
     </plurals>
     <plurals name="minimum_words">
-        <item quantity="one">குறைந்தபட்ச %d சொல்.</item>
-        <item quantity="other">குறைந்தபட்ச %d சொற்கள்.</item>
+        <item quantity="one">குறைந்தபட்ச %1$d சொல்.</item>
+        <item quantity="other">குறைந்தபட்ச %1$d சொற்கள்.</item>
     </plurals>
     <string name="new_player_prompt">புதிய வீரர்; யார் டிச்?</string>
     <string name="nickname_prompt">அவர்கள் உங்களை இங்கே என்ன அழைக்கிறார்கள்?</string>

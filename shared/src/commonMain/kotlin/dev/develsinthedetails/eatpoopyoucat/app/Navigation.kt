@@ -89,7 +89,7 @@ data object InProgressGames
 data class InProgressGameDetails(val gameId: Uuid)
 
 @Serializable
-data class ImportGamesRoute(val uriString: String)
+data object ImportGamesRoute
 
 @Serializable
 data class NetGameRoute(val gameId: Uuid, val address: String)
@@ -97,19 +97,13 @@ data class NetGameRoute(val gameId: Uuid, val address: String)
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun NavGraph(
-    externalImportUri: String? = null,
     netGameParams: Pair<Uuid, String>? = null,
-    onExternalUriConsumed: () -> Unit = {},
     onNetGameParamsConsumed: () -> Unit = {},
-    onLaunchFilePicker: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
-    LaunchedEffect(externalImportUri, netGameParams) {
-        if (externalImportUri != null) {
-            navController.navigate(ImportGamesRoute(externalImportUri))
-            onExternalUriConsumed()
-        } else if (netGameParams != null) {
+    LaunchedEffect(netGameParams) {
+        if (netGameParams != null) {
             navController.navigate(NetGameRoute(netGameParams.first, netGameParams.second))
             onNetGameParamsConsumed()
         }
@@ -242,6 +236,16 @@ fun NavGraph(
             )
         }
 
+        composable<ImportGamesRoute> {
+            ImportGamesScreen(
+                finish = {
+                    navController.navigate(PreviousGames) {
+                        popUpTo<Home>()
+                    }
+                }
+            )
+        }
+
         composable<PreviousGames>(
             deepLinks = listOf(
                 navDeepLink<PreviousGames>(
@@ -251,29 +255,9 @@ fun NavGraph(
             )
         ) {
             PreviousGamesRoute(
-                onGoHome = {
-                    navController.navigate(Home) { popUpTo<Home>() }
-                },
-                onGameClick = { gameId ->
-                    navController.navigate(PreviousGameDetails(gameId))
-                },
-                onImportGames = onLaunchFilePicker,
-                onBackupGames = {} //todo fix
-            )
-        }
-
-        composable<ImportGamesRoute> { backStackEntry ->
-            val route = backStackEntry.toRoute<ImportGamesRoute>()
-
-            // Pass the raw string. ImportGamesScreen must be updated to accept a String
-            // and use an expect/actual function to resolve that string into a file on Android vs Desktop.
-            ImportGamesScreen(
-                fileUriString = route.uriString,
-                finish = {
-                    navController.navigate(PreviousGames) {
-                        popUpTo<Home>()
-                    }
-                }
+                onGoHome = { navController.navigate(Home) { popUpTo<Home>() } },
+                onGameClick = { gameId -> navController.navigate(PreviousGameDetails(gameId)) },
+                onNavigateToImport = { navController.navigate(ImportGamesRoute) },
             )
         }
 
@@ -294,14 +278,13 @@ fun NavGraph(
                         navController.navigate(Sentence(previousEntryId, gameMode = GameMode.LOCAL))
                     }
                 },
-                onImportGames = onLaunchFilePicker,
+                onNavigateToImport = { navController.navigate(ImportGamesRoute) },
                 onBack = {
                     navController.navigate(PreviousGames) {
                         popUpTo<PreviousGames>()
                         popUpTo<Home>()
                     }
-                },
-                onBackupGame = {} //todo fix
+                }
             )
         }
 

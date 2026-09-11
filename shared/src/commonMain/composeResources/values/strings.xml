@@ -84,7 +84,7 @@
     <string name="application_icon">Application Icon</string>
     <string name="not_nickname">Not %1$s</string>
     <string name="james">James</string>
-    <string name="that_s_me">That\'s me</string>
+    <string name="that_s_me">That's me</string>
     <string name="use_nicknames">Use Nicknames</string>
     <string name="what_s_this">What's this?</string>
     <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figure out who drew that clearly a cat not a dog image.</string>
@@ -95,21 +95,21 @@
     <string name="new_player_prompt">New player; Who dis?</string>
     <string name="nickname_prompt">What do they call you around here?</string>
     <string name="previous_nicknames">Previous nicknames:</string>
-    <string name="no_nickname_chosen_warning">Fine, I\'ll pick one for you</string>
+    <string name="no_nickname_chosen_warning">Fine, I'll pick one for you</string>
     <string name="enter_nickname_prompt">Enter your name or nickname</string>
     <string name="player_id">PlayerId: %1$s</string>
     <string name="halp" tools:ignore="Typos">halp!</string>
-    <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can\'t think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"</string>
+    <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example "A cat writing a long letter to a mouse with a top hat"</string>
     <string name="next">Next</string>
     <plurals name="imported_games">
-        <item quantity="zero">Imported %d Games</item>
-        <item quantity="one">Imported %d Game</item>
-        <item quantity="other">Imported %d Games</item>
+        <item quantity="zero">Imported %1$d Games</item>
+        <item quantity="one">Imported %1$d Game</item>
+        <item quantity="other">Imported %1$d Games</item>
     </plurals>
     <plurals name="imported_entries">
-        <item quantity="zero">Imported %d Entries</item>
-        <item quantity="one">Imported %d Entry</item>
-        <item quantity="other">Imported %d Entries</item>
+        <item quantity="zero">Imported %1$d Entries</item>
+        <item quantity="one">Imported %1$d Entry</item>
+        <item quantity="other">Imported %1$d Entries</item>
     </plurals>
     <plurals name="previous_games">
         <item quantity="zero">Previous Games</item>
@@ -117,8 +117,8 @@
         <item quantity="other">Previous Games</item>
     </plurals>
     <plurals name="minimum_words">
-        <item quantity="one">minimum %d word.</item>
-        <item quantity="other">minimum %d words.</item>
+        <item quantity="one">minimum %1$d word.</item>
+        <item quantity="other">minimum %1$d words.</item>
     </plurals>
     <string-array name="nicknames">
         <item>Not James</item>

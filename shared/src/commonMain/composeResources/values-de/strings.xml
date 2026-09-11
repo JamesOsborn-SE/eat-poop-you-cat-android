@@ -66,8 +66,8 @@
     <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">Eine Katze zwinkert dir so sanft wie ein sehr müdes Kleinkind zu</string>
     <string name="no_games_to_save">Du hast keine Spiele zu speichern</string>
     <plurals name="minimum_words">
-        <item quantity="one">Mindestens %d Wort.</item>
-        <item quantity="other">Mindestens %d Wörter.</item>
+        <item quantity="one">Mindestens %1$d Wort.</item>
+        <item quantity="other">Mindestens %1$d Wörter.</item>
     </plurals>
     <string name="app_description">Ein Spiel wie Stille Post, bei dem ihr euch abwechselnd Sätze schreibt und Zeichnungen macht. Das Spiel endet, wenn jede Person einmal dran war.*</string>
     <string name="application_icon">App Icon</string>
@@ -88,8 +88,8 @@
     <string name="find_game">Ein Spiel finden</string>
     <string name="starting_sentence">Anfangssatz: %1$s</string>
     <plurals name="imported_entries">
-        <item quantity="one">%d Eintrag importiert</item>
-        <item quantity="other">%d Einträge importiert</item>
+        <item quantity="one">%1$d Eintrag importiert</item>
+        <item quantity="other">%1$d Einträge importiert</item>
     </plurals>
     <plurals name="previous_games">
         <item quantity="one">Vorheriges Spiel</item>
@@ -103,8 +103,8 @@
     <string name="use_nicknames_more_info">Die Verwendung von Spitznamen fordert jeden Spieler auf, einen Spitznamen zu hinterlassen, sodass Spieler verfolgen können, wer bereits an der Reihe war, und Spieler den Zeichnungen und Sätzen am Ende des Spiels zuordnen können. Auf diese Weise könntest du herausfinden, wer dieses eindeutige Katzen und nicht Hunde Bild gezeichnet hat.</string>
     <string name="imported">Importieren</string>
     <plurals name="imported_games">
-        <item quantity="one">%d Spiel importiert</item>
-        <item quantity="other">%d Spiele importiert</item>
+        <item quantity="one">%1$d Spiel importiert</item>
+        <item quantity="other">%1$d Spiele importiert</item>
     </plurals>
     <string name="user_made_drawing">Nutzer hat eine Zeichnung gezeichnet</string>
     <string name="ack">Werd</string>

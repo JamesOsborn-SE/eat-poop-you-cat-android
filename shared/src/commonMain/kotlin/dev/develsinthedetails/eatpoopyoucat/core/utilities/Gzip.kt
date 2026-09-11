@@ -25,7 +25,6 @@ class Gzip {
             return buffer.readByteArray()
         }
 
-        // Replaced java.io.OutputStream with okio.Sink for KMP compatibility
         fun compress(string: String, sink: Sink) {
             GzipSink(sink).buffer().use { gzipSink ->
                 gzipSink.writeUtf8(string)

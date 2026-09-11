@@ -190,7 +190,7 @@ object Scaffolds {
         onShareGame: () -> Unit,
         onBackupGame: () -> Unit,
         onBack: () -> Unit,
-        onImportGame: (() -> Unit)?, // Replaced ManagedActivityResultLauncher
+        onImportGame: (() -> Unit)?,
         bottomBar: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
