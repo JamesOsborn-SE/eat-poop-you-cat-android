@@ -1,0 +1,134 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Eat Poop You Cat</string>
+    <string name="status_searching">Searching</string>
+    <string name="status_connected">Connected</string>
+    <string name="new_game">Start New Game</string>
+    <string name="welcome_message">Welcome to %1$s!</string>
+    <string name="show">Show</string>
+    <string name="send" translation_description="Text shown to prompt the player to send drawing or sentence. This is final and will end their turn">Send</string>
+    <string name="send_description">send your work</string>
+    <string name="undo">Undo</string>
+    <string name="nickname">Nickname</string>
+    <string name="enter_a_sentence">Enter a sentence</string>
+    <string name="draw_this_sentence">Draw this sentence!</string>
+    <string name="no_letters_or_numbers">DO NOT use letters or numbers.</string>
+    <string name="clear">clear</string>
+    <string name="erase_description">Erase stuff</string>
+    <string name="erase">Erase</string>
+    <string name="draw_description">Draw</string>
+    <string name="draw">Draw</string>
+    <string name="undo_description">Undo what you just did</string>
+    <string name="redo_description">Undo the undo</string>
+    <string name="redo">Redo</string>
+    <string name="preferences_header">Preferences</string>
+    <string name="background_header">Background activity</string>
+    <string name="background_title">"Allow app to communicate in the background"</string>
+    <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
+    <string name="background_summary_on">You will be able to send or receive games even if the app is closed</string>
+    <string name="write_a_sentence_to_describe_this_drawing">Describe this drawing</string>
+    <string name="dialog_start_game">Start Game</string>
+    <string name="start">Start</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">End My Turn!</string>
+    <string name="dialog_accept_turn">Accept turn from %1$s!</string>
+    <string name="created_by">Created By: %1$s</string>
+    <string name="write_a_funny_sentence">Write a funny sentence</string>
+    <string name="no_really_write_a_funny_sentence">For reals write a funny sentence!!</string>
+    <string name="dialog_one_entry_allowed">Only one entry per game is allowed</string>
+    <string name="oof">Oof</string>
+    <string name="save">Save</string>
+    <string name="find_game">find a game</string>
+    <string name="starting_sentence">Starting Sentence: %1$s</string>
+    <string name="turn_completed_time">Turn complete time %1$d:%2$d</string>
+    <string name="time_left_to_complete">Time left to complete %1$d:%2$d</string>
+    <string name="turn_passed">Turn passed: %1$s</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="default_nickname">No Name</string>
+    <string name="title_activity_eat_poop_you_cat_app">EatPoopYouCatApp</string>
+    <string name="title_activity_sentence_screen">SentenceScreen</string>
+    <string name="write_sentence_error">Write a more better sentence!</string>
+    <string name="drawing_error">make a more better drawing.</string>
+    <string name="turns">Turns: %1$d</string>
+    <string name="end_game_for_all">End Game For All</string>
+    <string name="app_description">A game of telephone where you take turns writing sentences and making drawings. The game is over when each person has one turn.*</string>
+    <string name="app_warning">* Family and friends not included!</string>
+    <string name="no_previous_games_found">No previous games found! Go play!</string>
+    <string name="pass_to_the_next">Pass this device to the next player!</string>
+    <string name="scroll_to_top">scroll to top</string>
+    <string name="are_you_sure">This will %1$s. Do you still want to continue?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_game">Delete Game</string>
+    <string name="test_cat_sentence">A cat winks at you with the grace of a very sleepy toddler</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="sentence_turn_title">Write Something!</string>
+    <string name="draw_turn_title">Draw this sentence!</string>
+    <string name="about">About this app</string>
+    <string name="translations_welcome">Translation contributions welcome</string>
+    <string name="issues">Issues</string>
+    <string name="share_this_game">Share this game</string>
+    <string name="is_available_on_f_droid_and_google_play">%1$s is available on F-Droid and Google Play</string>
+    <string name="continue_previous_game">Continue an old game</string>
+    <string name="loading">Loading</string>
+    <string name="debugging_on_label">Debugging on: %1$s</string>
+    <string name="version_label">Version: %1$s</string>
+    <string name="git_hash_label">Git Hash: %1$s</string>
+    <string name="backup_games">Backup Games</string>
+    <string name="import_games">Import games</string>
+    <string name="a_cat_winks_at_you_with_the_grace_of_a_very_sleepy_toddler">A cat winks at you with the grace of a very sleepy toddler</string>
+    <string name="no_games_to_save">You has no games to save bruh</string>
+    <string name="saving">saving…</string>
+    <string name="saved_to">saved to: %1$s</string>
+    <string name="share_failed">share done goofed, oof</string>
+    <string name="open">open</string>
+    <string name="application_icon">Application Icon</string>
+    <string name="not_nickname">Not %1$s</string>
+    <string name="james">James</string>
+    <string name="that_s_me">That\'s me</string>
+    <string name="use_nicknames">Use Nicknames</string>
+    <string name="what_s_this">What's this?</string>
+    <string name="use_nicknames_more_info">Using Nicknames will prompt each player to leave a nickname, allowing players to keep track of who has had a turn and to match players to drawings and sentences at the end of the game. This way you might be able to figure out who drew that clearly a cat not a dog image.</string>
+    <string name="imported">Import</string>
+    <string name="ack">Werd</string>
+    <string name="user_made_drawing">User made drawing</string>
+    <string name="sentence_is_blank">this is blank… Maybe try pressing more buttons?</string>
+    <string name="new_player_prompt">New player; Who dis?</string>
+    <string name="nickname_prompt">What do they call you around here?</string>
+    <string name="previous_nicknames">Previous nicknames:</string>
+    <string name="no_nickname_chosen_warning">Fine, I\'ll pick one for you</string>
+    <string name="enter_nickname_prompt">Enter your name or nickname</string>
+    <string name="player_id">PlayerId: %1$s</string>
+    <string name="halp" tools:ignore="Typos">halp!</string>
+    <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can\'t think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example \"A cat writing a long letter to a mouse with a top hat\"</string>
+    <string name="next">Next</string>
+    <plurals name="imported_games">
+        <item quantity="zero">Imported %d Games</item>
+        <item quantity="one">Imported %d Game</item>
+        <item quantity="other">Imported %d Games</item>
+    </plurals>
+    <plurals name="imported_entries">
+        <item quantity="zero">Imported %d Entries</item>
+        <item quantity="one">Imported %d Entry</item>
+        <item quantity="other">Imported %d Entries</item>
+    </plurals>
+    <plurals name="previous_games">
+        <item quantity="zero">Previous Games</item>
+        <item quantity="one">Previous Game</item>
+        <item quantity="other">Previous Games</item>
+    </plurals>
+    <plurals name="minimum_words">
+        <item quantity="one">minimum %d word.</item>
+        <item quantity="other">minimum %d words.</item>
+    </plurals>
+    <string-array name="nicknames">
+        <item>Not James</item>
+        <item>Knucklebutt</item>
+        <item>Hot Sauce</item>
+        <item>Pebbles</item>
+        <item>Sassy</item>
+        <item>Shrinkwrap</item>
+        <item>That guy</item>
+        <item>The Dude</item>
+        <item>Pickles</item>
+    </string-array>
+</resources>

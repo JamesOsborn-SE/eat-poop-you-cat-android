@@ -1,0 +1,51 @@
+package dev.develsinthedetails.eatpoopyoucat.di
+
+import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameRouter
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameViewModel
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.module
+
+expect val platformServerModule: Module
+
+val appModule = module {
+    single {
+        AppRepository(
+            gameDao = get(),
+            entryDao = get(),
+            playerDao = get(),
+            rosterDao = get()
+        )
+    }
+    singleOf(::SharedKtorServer)
+    includes(platformServerModule)
+    singleOf(::AppSettings)
+    singleOf(::Client)
+    singleOf(::GameRouter)
+    viewModelOf(::PreviousGameDetailsViewModel)
+    viewModelOf(::SentenceViewModel)
+    viewModelOf(::PreviousGamesViewModel)
+    viewModelOf(::HomeViewModel)
+    viewModelOf(::DrawViewModel)
+    viewModelOf(::ImportGamesViewModel)
+    viewModelOf(::InProgressGamesViewModel)
+    viewModelOf(::StartNetGameViewModel)
+    viewModelOf(::NewGameViewModel)
+    viewModelOf(::InProgressGameDetailsViewModel)
+    viewModelOf(::JoinNetGameViewModel)
+}

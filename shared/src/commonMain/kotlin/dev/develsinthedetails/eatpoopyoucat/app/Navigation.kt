@@ -1,0 +1,350 @@
+package dev.develsinthedetails.eatpoopyoucat.app
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
+import androidx.navigation.toRoute
+import androidx.savedstate.SavedState
+import androidx.savedstate.read
+import androidx.savedstate.write
+import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_DRAW_URI
+import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PREVIOUS_GAMES_URI
+import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PREVIOUS_GAME_DETAILS_URI
+import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_SENTENCE_URI
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGames
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.NetGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsRoute
+import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesRoute
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.PrivacyPolicyScreen
+import kotlinx.serialization.Serializable
+import kotlin.reflect.typeOf
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+
+@OptIn(ExperimentalUuidApi::class)
+val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
+
+    override fun get(bundle: SavedState, key: String): Uuid {
+        return bundle.read {
+            getString(key).let { Uuid.parse(it) }
+        }
+    }
+
+    override fun parseValue(value: String): Uuid {
+        return Uuid.parse(value)
+    }
+
+    override fun put(bundle: SavedState, key: String, value: Uuid) {
+        bundle.write {
+            putString(key, value.toString())
+        }
+    }
+}
+
+@Serializable
+data object Home
+
+@Serializable
+data object PreviousGames
+
+@Serializable
+data object Credits
+
+@Serializable
+data object PrivacyPolicy
+
+@Serializable
+data object NewGame
+
+@Serializable
+data class PreviousGameDetails(val gameId: Uuid)
+
+@Serializable
+data class Sentence(val gameId: Uuid, val gameMode: GameMode)
+
+@Serializable
+data class Draw(val gameId: Uuid, val gameMode: GameMode)
+
+@Serializable
+data class StartNetGame(val gameId: Uuid, val gameMode: GameMode)
+
+@Serializable
+data object InProgressGames
+
+@Serializable
+data class InProgressGameDetails(val gameId: Uuid)
+
+@Serializable
+data class ImportGamesRoute(val uriString: String)
+
+@Serializable
+data class NetGameRoute(val gameId: Uuid, val address: String)
+
+@OptIn(ExperimentalUuidApi::class)
+@Composable
+fun NavGraph(
+    externalImportUri: String? = null,
+    netGameParams: Pair<Uuid, String>? = null,
+    onExternalUriConsumed: () -> Unit = {},
+    onNetGameParamsConsumed: () -> Unit = {},
+    onLaunchFilePicker: () -> Unit = {}
+) {
+    val navController = rememberNavController()
+
+    LaunchedEffect(externalImportUri, netGameParams) {
+        if (externalImportUri != null) {
+            navController.navigate(ImportGamesRoute(externalImportUri))
+            onExternalUriConsumed()
+        } else if (netGameParams != null) {
+            navController.navigate(NetGameRoute(netGameParams.first, netGameParams.second))
+            onNetGameParamsConsumed()
+        }
+    }
+
+    NavHost(
+        navController = navController,
+        startDestination = Home
+    ) {
+        composable<Home> {
+            HomeScreen(
+                toNewGame = {
+                    navController.navigate(NewGame) {
+                        popUpTo<Home>()
+                    }
+                },
+                toPreviousGames = {
+                    navController.navigate(PreviousGames) {
+                        popUpTo<Home>()
+                    }
+                },
+                toCredits = {
+                    navController.navigate(Credits)
+                },
+                toInProgressGames = {
+                    navController.navigate(InProgressGames)
+                },
+                toPrivacyPolicy = {
+                    navController.navigate(PrivacyPolicy)
+                }
+            )
+        }
+
+        composable<NewGame> {
+            NewGameScreen(
+                onBack = {
+                    navController.navigate(Home)
+                },
+                onNewGame = { gameId: Uuid, gameMode: GameMode ->
+                    when (gameMode) {
+                        GameMode.LOCAL -> {
+                            navController.navigate(Sentence(gameId, gameMode = GameMode.LOCAL))
+                        }
+
+                        else -> {
+                            navController.navigate(StartNetGame(gameId, gameMode))
+                        }
+                    }
+                },
+            )
+        }
+
+        composable<Sentence>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            deepLinks = listOf(
+                navDeepLink<Sentence>(
+                    basePath = DEEPLINK_SENTENCE_URI,
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+                ),
+            )
+        ) {
+            SentenceScreen(
+                toDraw = { gameId, gameMode ->
+                    when (gameMode) {
+                        GameMode.LOCAL -> {
+                            navController.navigate(
+                                Draw(
+                                    gameId,
+                                    gameMode
+                                )
+                            ) {
+                                popUpTo<Home>()
+                            }
+                        }
+
+                        else -> {
+                            navController.navigate(InProgressGameDetails(gameId)) {
+                                popUpTo<InProgressGames>()
+                            }
+                        }
+                    }
+                },
+                toHome = {
+                    navController.navigate(Home)
+                },
+                toEndedGame = { gameId, gameMode ->
+                    when (gameMode) {
+                        GameMode.LOCAL -> {
+                            navController.navigate(PreviousGameDetails(gameId)) {
+                                popUpTo<Home>()
+                            }
+                        }
+
+                        else -> {
+                            navController.navigate(InProgressGameDetails(gameId)) {
+                                popUpTo<InProgressGames>()
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        composable<Draw>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            deepLinks = listOf(
+                navDeepLink<Draw>(
+                    basePath = DEEPLINK_DRAW_URI,
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                ),
+            )
+        ) {
+            DrawScreen(
+                toSentence = { gameId, gameMode ->
+                    when {
+                        gameMode == GameMode.LOCAL -> {
+                            navController.navigate(Sentence(gameId, gameMode))
+                        }
+
+                        else -> {
+                            navController.navigate(InProgressGameDetails(gameId = gameId))
+                        }
+                    }
+                },
+                toEndedGame = { gameId ->
+                    navController.navigate(PreviousGameDetails(gameId)) {
+                        popUpTo<PreviousGames>()
+                    }
+                }
+            )
+        }
+
+        composable<PreviousGames>(
+            deepLinks = listOf(
+                navDeepLink<PreviousGames>(
+                    basePath = DEEPLINK_PREVIOUS_GAMES_URI,
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                )
+            )
+        ) {
+            PreviousGamesRoute(
+                onGoHome = {
+                    navController.navigate(Home) { popUpTo<Home>() }
+                },
+                onGameClick = { gameId ->
+                    navController.navigate(PreviousGameDetails(gameId))
+                },
+                onImportGames = onLaunchFilePicker,
+                onBackupGames = {} //todo fix
+            )
+        }
+
+        composable<ImportGamesRoute> { backStackEntry ->
+            val route = backStackEntry.toRoute<ImportGamesRoute>()
+
+            // Pass the raw string. ImportGamesScreen must be updated to accept a String
+            // and use an expect/actual function to resolve that string into a file on Android vs Desktop.
+            ImportGamesScreen(
+                fileUriString = route.uriString,
+                finish = {
+                    navController.navigate(PreviousGames) {
+                        popUpTo<Home>()
+                    }
+                }
+            )
+        }
+
+        composable<PreviousGameDetails>(
+            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            deepLinks = listOf(
+                navDeepLink<PreviousGameDetails>(
+                    basePath = DEEPLINK_PREVIOUS_GAME_DETAILS_URI,
+                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                )
+            )
+        ) {
+            PreviousGameDetailsRoute(
+                onContinueGame = { previousEntryId: Uuid, entryType: EntryType ->
+                    if (entryType == EntryType.Sentence) {
+                        navController.navigate(Draw(previousEntryId, gameMode = GameMode.LOCAL))
+                    } else {
+                        navController.navigate(Sentence(previousEntryId, gameMode = GameMode.LOCAL))
+                    }
+                },
+                onImportGames = onLaunchFilePicker,
+                onBack = {
+                    navController.navigate(PreviousGames) {
+                        popUpTo<PreviousGames>()
+                        popUpTo<Home>()
+                    }
+                },
+                onBackupGame = {} //todo fix
+            )
+        }
+
+        composable<NetGameRoute>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) { backStackEntry ->
+            val route = backStackEntry.toRoute<NetGameRoute>()
+            NetGameScreen(gameId = route.gameId, address = route.address)
+        }
+
+        composable<Credits> {
+            CreditsScreen {
+                navController.navigate(Home) {
+                    popUpTo<Home>()
+                }
+            }
+        }
+
+        composable<PrivacyPolicy> {
+            PrivacyPolicyScreen {
+                navController.navigate(Home) {
+                    popUpTo<Home>()
+                }
+            }
+        }
+
+        composable<StartNetGame>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+            StartNetGameScreen(onBack = {
+                navController.navigate(Home)
+            }, onStartGame = { gameId: Uuid ->
+                navController.navigate(InProgressGameDetails(gameId))
+            })
+        }
+
+        composable<InProgressGames> {
+            InProgressGames(
+                onBack = { navController.navigate(Home) },
+                toGame = { gameId: Uuid ->
+                    navController.navigate(InProgressGameDetails(gameId))
+                }
+            )
+        }
+
+        composable<InProgressGameDetails>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+            InProgressGameDetailsScreen(onBack = { navController.navigate(InProgressGames) })
+        }
+    }
+}

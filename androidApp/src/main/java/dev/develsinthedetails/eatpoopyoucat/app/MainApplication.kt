@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.StrictMode
 import dev.develsinthedetails.eatpoopyoucat.BuildConfig
+import dev.develsinthedetails.eatpoopyoucat.di.androidModule
 import dev.develsinthedetails.eatpoopyoucat.di.appModule
 import dev.develsinthedetails.eatpoopyoucat.di.databaseModule
 import dev.develsinthedetails.eatpoopyoucat.feature.notifications.AppNotificationChannel
@@ -30,7 +31,7 @@ class MainApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@MainApplication)
-            modules(databaseModule, appModule)
+            modules(databaseModule, appModule, androidModule)
         }
     }
 

@@ -7,8 +7,63 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.androidx.room3)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.buildconfig)
+}
+val gitHash = providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+}.standardOutput.asText.getOrElse("unknown").trim()
+val scheme = project.findProperty("deeplink.scheme").toString()
+val host = project.findProperty("deeplink.host").toString()
+val baseUri = "$scheme://$host"
+
+val playUri = "$baseUri${project.findProperty("deeplink.play")}"
+val drawUri = "$baseUri${project.findProperty("deeplink.draw")}"
+val sentenceUri = "$baseUri${project.findProperty("deeplink.sentence")}"
+val previousGamesUri = "$baseUri${project.findProperty("deeplink.previousGames")}"
+val previousGameDetailsUri = "$baseUri${project.findProperty("deeplink.previousGameDetails")}"
+
+buildConfig {
+    packageName("dev.develsinthedetails.eatpoopyoucat.config")
+
+    useKotlinOutput {
+        topLevelConstants = true
+        internalVisibility = false
+    }
+    buildConfigField("String", "DEEPLINK_SCHEME", "\"$scheme\"")
+    buildConfigField("String", "DEEPLINK_HOST", "\"$host\"")
+    buildConfigField("String", "DEEPLINK_PLAY", "\"${project.findProperty("deeplink.play")}\"")
+    buildConfigField("String", "DEEPLINK_DRAW", "\"${project.findProperty("deeplink.draw")}\"")
+    buildConfigField(
+        "String",
+        "DEEPLINK_SENTENCE",
+        "\"${project.findProperty("deeplink.sentence")}\""
+    )
+    buildConfigField(
+        "String",
+        "DEEPLINK_PREVIOUS_GAMES",
+        "\"${project.findProperty("deeplink.previousGames")}\""
+    )
+    buildConfigField(
+        "String",
+        "DEEPLINK_PREVIOUS_GAME_DETAILS",
+        "\"${project.findProperty("deeplink.previousGameDetails")}\""
+    )
+    buildConfigField("String", "DEEPLINK_BASE_URI", "\"$baseUri\"")
+    buildConfigField("String", "DEEPLINK_PLAY_URI", "\"$playUri\"")
+    buildConfigField("String", "DEEPLINK_DRAW_URI", "\"$drawUri\"")
+    buildConfigField("String", "DEEPLINK_SENTENCE_URI", "\"$sentenceUri\"")
+    buildConfigField("String", "DEEPLINK_PREVIOUS_GAMES_URI", "\"$previousGamesUri\"")
+    buildConfigField("String", "DEEPLINK_PREVIOUS_GAME_DETAILS_URI", "\"$previousGameDetailsUri\"")
+
+    buildConfigField("String", "VERSION_NAME", "\"${project.version}\"")
+    buildConfigField("String", "GIT_HASH", "\"$gitHash\"")
+    val isDebug = project.findProperty("isDebug")?.toString()?.toBoolean() ?: true
+    buildConfigField("Boolean", "DEBUG", isDebug.toString())
 }
 
+compose.resources {
+    publicResClass = true
+}
 kotlin {
 
     // Target declarations - add or remove as needed below. These define
@@ -16,6 +71,7 @@ kotlin {
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     android {
         namespace = "dev.develsinthedetails.eatpoopyoucat"
+        androidResources.enable = true
         compileSdk {
             version = release(37)
         }
@@ -40,12 +96,19 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                api(libs.navigation.compose)
                 // Add KMP dependencies here
+                implementation(libs.lifecycle.viewmodel.compose)
+                implementation(libs.lifecycle.viewmodel.savedstate)
+                implementation(libs.koin.core)
+                api(libs.koin.compose)
+                implementation(libs.core.bundle)
+                api(libs.koin.compose.viewmodel)
                 implementation(libs.kotlin.stdlib)
-
-                api(libs.androidx.datastore.core)
-                api(libs.androidx.datastore.preferences.core)
-                api(libs.androidx.datastore.preferences)
+                api(libs.okio)
+                api(libs.compose.components.resources)
+                api(libs.datastore.core)
+                api(libs.datastore.preferences.core)
                 api(libs.androidx.room3.runtime)
                 api(libs.androidx.sqlite.bundled)
                 api(libs.androidx.compose.ui.unit)
@@ -86,6 +149,7 @@ kotlin {
                 // dependencies declared in commonMain.
                 api(libs.ktor.client.android)
                 implementation(project.dependencies.platform(libs.koin.bom))
+                api(libs.datastore.preferences.android)
                 api(libs.koin.android)
                 api(libs.koin.androidx.compose)
                 api(libs.logback.classic)
@@ -112,4 +176,5 @@ dependencies {
     add("kspAndroid", libs.androidx.room3.compiler)
     add("kspJvm", libs.androidx.room3.compiler)
     androidRuntimeClasspath(libs.compose.ui.tooling)
+    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
 }

@@ -4,7 +4,6 @@ import androidx.compose.ui.geometry.Offset
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.catTestDrawingLinesInJson
 import kotlin.uuid.Uuid
 
 /**

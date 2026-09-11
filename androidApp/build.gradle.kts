@@ -21,6 +21,15 @@ android {
 
         testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"
         proguardFiles("proguard-rules.pro")
+        manifestPlaceholders += mapOf(
+            "deeplinkScheme" to project.findProperty("deeplink.scheme").toString(),
+            "deeplinkHost" to project.findProperty("deeplink.host").toString(),
+            "deeplinkPlay" to project.findProperty("deeplink.play").toString(),
+            "deeplinkDraw" to project.findProperty("deeplink.draw").toString(),
+            "deeplinkSentence" to project.findProperty("deeplink.sentence").toString(),
+            "deeplinkPreviousGames" to project.findProperty("deeplink.previousGames").toString(),
+            "deeplinkPreviousGameDetails" to project.findProperty("deeplink.previousGameDetails").toString()
+        )
     }
 
     compileOptions {
@@ -58,7 +67,6 @@ dependencies {
 
     screenshotTestImplementation(libs.screenshot.validation.api)
     screenshotTestImplementation(libs.compose.ui.tooling)
-    debugImplementation(libs.compose.ui.tooling)
 
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -69,7 +77,6 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.navigation.compose)
     implementation(libs.constraintlayout.compose)
-    implementation(libs.runtime.livedata)
 
     implementation(libs.kotlinx.serialization.json)
 
