@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.StartNetGame
-import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
+import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.validateNickname
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import kotlin.reflect.typeOf
 import kotlin.time.Clock
 import kotlin.uuid.Uuid
 
@@ -47,7 +46,7 @@ class StartNetGameViewModel(
     val repository: AppRepository,
     appSettings: AppSettings
 ) : ViewModel() {
-    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val typeMap = appTypeMap
     private val route = state.toRoute<StartNetGame>(typeMap)
 
     private val _uiState = MutableStateFlow(

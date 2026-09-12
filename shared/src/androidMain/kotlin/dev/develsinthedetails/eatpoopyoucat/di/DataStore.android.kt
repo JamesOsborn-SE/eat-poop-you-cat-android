@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
@@ -16,7 +17,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
     }
 )
 
-val androidModule = module {
+actual val platformDataStoreModule: Module = module {
     single<DataStore<Preferences>> {
         androidContext().dataStore
     }

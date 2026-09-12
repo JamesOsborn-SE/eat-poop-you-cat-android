@@ -10,6 +10,7 @@ kotlin {
     sourceSets {
         jvmMain {
             dependencies {
+                implementation(libs.kotlinx.coroutines.swing)
                 implementation(project(":shared"))
                 implementation(compose.desktop.currentOs)
             }

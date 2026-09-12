@@ -112,6 +112,8 @@ kotlin {
                 implementation(libs.lifecycle.viewmodel.compose)
                 implementation(libs.lifecycle.viewmodel.savedstate)
                 implementation(libs.koin.core)
+                implementation(libs.kotlinx.coroutines.core)
+                api(libs.compose.ui.graphics)
                 api(libs.koin.compose)
                 implementation(libs.core.bundle)
                 api(libs.koin.compose.viewmodel)

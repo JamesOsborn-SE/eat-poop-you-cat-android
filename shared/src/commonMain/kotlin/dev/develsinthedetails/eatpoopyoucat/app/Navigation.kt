@@ -35,6 +35,25 @@ import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+val GameModeType = object : NavType<GameMode>(isNullableAllowed = false) {
+
+    override fun get(bundle: SavedState, key: String): GameMode {
+        return bundle.read {
+            getString(key).let { GameMode.valueOf(it) }
+        }
+    }
+
+    override fun parseValue(value: String): GameMode {
+        return GameMode.valueOf(value)
+    }
+
+    override fun put(bundle: SavedState, key: String, value: GameMode) {
+        bundle.write {
+            putString(key, value.name)
+        }
+    }
+}
+
 @OptIn(ExperimentalUuidApi::class)
 val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
 
@@ -74,13 +93,22 @@ data object NewGame
 data class PreviousGameDetails(val gameId: Uuid)
 
 @Serializable
-data class Sentence(val gameId: Uuid, val gameMode: GameMode)
+data class Sentence(
+    val gameId: Uuid,
+    val gameMode: GameMode
+)
 
 @Serializable
-data class Draw(val gameId: Uuid, val gameMode: GameMode)
+data class Draw(
+    val gameId: Uuid,
+    val gameMode: GameMode
+)
 
 @Serializable
-data class StartNetGame(val gameId: Uuid, val gameMode: GameMode)
+data class StartNetGame(
+    val gameId: Uuid,
+    val gameMode: GameMode
+)
 
 @Serializable
 data object InProgressGames
@@ -92,7 +120,15 @@ data class InProgressGameDetails(val gameId: Uuid)
 data object ImportGamesRoute
 
 @Serializable
-data class NetGameRoute(val gameId: Uuid, val address: String)
+data class NetGameRoute(
+    val gameId: Uuid,
+    val address: String
+)
+
+val appTypeMap = mapOf(
+    typeOf<Uuid>() to UuidNavType,
+    typeOf<GameMode>() to GameModeType
+)
 
 @OptIn(ExperimentalUuidApi::class)
 @Composable
@@ -145,7 +181,7 @@ fun NavGraph(
                 onNewGame = { gameId: Uuid, gameMode: GameMode ->
                     when (gameMode) {
                         GameMode.LOCAL -> {
-                            navController.navigate(Sentence(gameId, gameMode = GameMode.LOCAL))
+                            navController.navigate(Sentence(gameId, GameMode.LOCAL))
                         }
 
                         else -> {
@@ -157,11 +193,14 @@ fun NavGraph(
         }
 
         composable<Sentence>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            typeMap = appTypeMap,
             deepLinks = listOf(
                 navDeepLink<Sentence>(
                     basePath = DEEPLINK_SENTENCE_URI,
-                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+                    typeMap = mapOf(
+                        typeOf<Uuid>() to UuidNavType,
+                        typeOf<GameMode>() to GameModeType
+                    ),
                 ),
             )
         ) {
@@ -208,11 +247,14 @@ fun NavGraph(
         }
 
         composable<Draw>(
-            typeMap = mapOf(typeOf<Uuid>() to UuidNavType),
+            typeMap = appTypeMap,
             deepLinks = listOf(
                 navDeepLink<Draw>(
                     basePath = DEEPLINK_DRAW_URI,
-                    typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+                    typeMap = mapOf(
+                        typeOf<Uuid>() to UuidNavType,
+                        typeOf<GameMode>() to GameModeType
+                    )
                 ),
             )
         ) {
@@ -309,7 +351,9 @@ fun NavGraph(
             }
         }
 
-        composable<StartNetGame>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
+        composable<StartNetGame>(
+            typeMap = appTypeMap
+        ) {
             StartNetGameScreen(onBack = {
                 navController.navigate(Home)
             }, onStartGame = { gameId: Uuid ->

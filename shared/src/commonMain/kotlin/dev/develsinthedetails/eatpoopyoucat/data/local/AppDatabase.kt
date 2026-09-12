@@ -1,13 +1,11 @@
 package dev.develsinthedetails.eatpoopyoucat.data.local
 
-import android.content.Context
 import androidx.room3.AutoMigration
 import androidx.room3.ColumnTypeConverters
+import androidx.room3.ConstructedBy
 import androidx.room3.Database
-import androidx.room3.Room
 import androidx.room3.RoomDatabase
-import dev.develsinthedetails.eatpoopyoucat.data.local.Converters
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.DATABASE_NAME
+import androidx.room3.RoomDatabaseConstructor
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
@@ -22,30 +20,19 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
     version = 4,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(1,2),
-        AutoMigration(2,3),
-        AutoMigration(3,4),
+        AutoMigration(1, 2),
+        AutoMigration(2, 3),
+        AutoMigration(3, 4),
     ]
 )
-
+@ConstructedBy(AppDatabaseConstructor::class)
 @ColumnTypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun playerDao(): PlayerDao
     abstract fun gameDao(): GameDao
     abstract fun entryDao(): EntryDao
     abstract fun rosterDao(): RosterDao
-
-    companion object {
-        private var instance: AppDatabase? = null
-        fun getInstance(context: Context): AppDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
-            }
-        }
-
-        private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-                .build()
-        }
-    }
 }
+
+@Suppress("NO_ACTUAL_FOR_EXPECT")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase>

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.Sentence
-import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
+import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.generateNickname
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.validateNickname
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
-import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 data class SentenceUiState(
@@ -44,7 +43,7 @@ class SentenceViewModel(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
 ) : ViewModel() {
-    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val typeMap = appTypeMap
     private val route = state.toRoute<Sentence>(typeMap)
     private val gameMode = checkNotNull(route.gameMode)
     private val gameId = checkNotNull(route.gameId)
@@ -94,7 +93,7 @@ class SentenceViewModel(
         )
 
         viewModelScope.launch {
-            repository.createEntry(newEntry)
+            repository.upsertEntry(newEntry)
             nextTo.invoke(entryId)
         }
         _uiState.update { it.copy(isLoading = false) }

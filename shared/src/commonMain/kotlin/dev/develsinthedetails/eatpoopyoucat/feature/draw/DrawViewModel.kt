@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.Draw
-import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
+import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.generateNickname
@@ -33,7 +33,6 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 enum class DrawMode {
@@ -71,7 +70,7 @@ class DrawViewModel(
 
     private var undoneLines: List<Line> = emptyList()
 
-    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val typeMap = appTypeMap
     private val route = state.toRoute<Draw>(typeMap)
     private val gameId: Uuid = checkNotNull(route.gameId)
     private val gameMode = checkNotNull(route.gameMode)

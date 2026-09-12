@@ -3,7 +3,7 @@ activityCompose = "1.13.0"
 agp = "9.4.0"
 compose = "1.12.0"
 compose-bom = "2026.08.00"
-compose-plugin = "2.4.10"
+compose-plugin = "2.4.20"
 constraintlayout-compose = "1.1.2"
 core = "1.7.0"
 core-ktx = "1.19.0"
@@ -13,16 +13,16 @@ datastore = "1.2.1"
 graphicsShapes = "1.1.0"
 junit-ktx = "1.2.0"
 koin-bom = "4.2.2"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 kotlinx-serialization = "1.11.0"
 ksp = "2.3.11"
 ktorVersion = "3.5.2"
 lifecycleViewmodelKtx = "2.11.0"
 logback = "1.6.3"
-material3 = "1.4.0"
+material3 = "1.9.0"
 mockitoAndroid = "5.23.0"
 mockitoKotlin = "6.3.0"
-navigation-compose = "2.10.0-alpha02"
+navigation-compose = "2.10.0-beta01"
 okio = "3.18.2"
 room3 = "3.0.3"
 runner = "1.7.0"
@@ -33,8 +33,11 @@ lifecycle = "2.11.0"
 core-bundle = "1.0.1"
 buildconfig = "6.0.10"
 filekit = "0.16.0"
+coroutines = "1.11.0"
 
 [libraries]
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "filekit" }
@@ -58,6 +61,7 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-desktop = { module = "org.jetbrains.compose.desktop:desktop", version.ref = "compose" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+compose-ui-graphics = { module = "org.jetbrains.compose.ui:ui-graphics", version.ref = "compose" }
 compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
 constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout-compose" }
@@ -92,7 +96,7 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorV
 ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktorVersion" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }

@@ -24,6 +24,7 @@ import org.koin.dsl.module
 expect val platformServerModule: Module
 
 val appModule = module {
+    includes(databaseModule)
     single {
         AppRepository(
             gameDao = get(),
@@ -34,6 +35,7 @@ val appModule = module {
     }
     singleOf(::SharedKtorServer)
     includes(platformServerModule)
+    includes(platformDataStoreModule)
     singleOf(::AppSettings)
     singleOf(::Client)
     singleOf(::GameRouter)

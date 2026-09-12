@@ -69,7 +69,9 @@ class AppRepository(
         entryDao.insert(entry.copy(createdAt = Clock.System.now()))
 
     suspend fun getEntry(id: Uuid) = entryDao.get(id)
-    suspend fun upsertEntry(entry: Entry) = entryDao.upsert(entry)
+    suspend fun upsertEntry(entry: Entry) =
+        entryDao.upsert(entry.copy(createdAt = Clock.System.now()))
+
     suspend fun getEntries(gameId: Uuid) =
         entryDao.getAllEntriesByGame(gameId)
 
