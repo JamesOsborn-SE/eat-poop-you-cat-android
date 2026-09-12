@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames
+package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

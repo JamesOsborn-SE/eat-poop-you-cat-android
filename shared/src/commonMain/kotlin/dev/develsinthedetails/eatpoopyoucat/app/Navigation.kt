@@ -19,10 +19,10 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGameDetailsScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames.InProgressGames
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.NetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGames
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen

@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.inProgressGames
+package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
