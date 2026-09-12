@@ -49,11 +49,13 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import eatpoopyoucat.shared.generated.resources.Res
+import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.continue_previous_game
 import eatpoopyoucat.shared.generated.resources.ic_launcher_foreground
 import eatpoopyoucat.shared.generated.resources.ic_replay_rounded
 import eatpoopyoucat.shared.generated.resources.ic_share_filled
 import eatpoopyoucat.shared.generated.resources.ic_vertical_align_top_rounded
+import eatpoopyoucat.shared.generated.resources.is_available_on
 import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
@@ -89,6 +91,10 @@ fun PreviousGameDetailsRoute(
     val lastEntry = game?.entries?.last()
     val snackbarHostState = remember { SnackbarHostState() }
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
+    val appName = stringResource(Res.string.app_name)
+    val isAvailableOn =
+        stringResource(Res.string.is_available_on, appName)
+
     val textMeasurer = rememberTextMeasurer()
     val scope = rememberCoroutineScope()
     val launcher = rememberFileSaverLauncher(
@@ -139,16 +145,19 @@ fun PreviousGameDetailsRoute(
         onBack = onBack,
         onShareGame = {
             scope.launch {
+                val ie = ImageExport(
+                    game!!.entries,
+                    appIcon,
+                    appName,
+                    isAvailableOn,
+                    textMeasurer
+                )
+                val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())
+                val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG, 100)
+                file.write(bytes)
+                FileKit.saveImageToGallery(file)
+                snackbarHostState.showSnackbar("Saved to device gallery")
                 if (shareLauncher.isSupported) {
-                    val ie = ImageExport(
-                        game!!.entries,
-                        appIcon,
-                        textMeasurer
-                    )
-                    val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())
-                    val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG, 100)
-                    file.write(bytes)
-                    FileKit.saveImageToGallery(file)
                     shareLauncher.launch(file)
                 }
             }

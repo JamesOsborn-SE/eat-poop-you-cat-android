@@ -39,50 +39,35 @@ import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviewData
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.ic_launcher_foreground
-import eatpoopyoucat.shared.generated.resources.is_available_on_f_droid_and_google_play
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import eatpoopyoucat.shared.generated.resources.is_available_on
 import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.max
 import kotlin.time.Instant
 
 class ImageExport(
     private val entries: List<Entry>,
     private val appIcon: ImageBitmap,
+    private val appName: String,
+    private val bottomBlurb: String,
     private val textMeasurer: TextMeasurer
 ) {
     private val penColor = md_theme_light_drawing_pen
     private val eraseColor = md_theme_light_drawing_background
     private val density = Density(1f)
     private val layoutDirection = LayoutDirection.Ltr
-
-    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    private lateinit var appName: String
-    private lateinit var bottomBlurb: String
-
-
-    init {
-        scope.launch {
-            appName = getString(Res.string.app_name)
-            bottomBlurb = getString(Res.string.is_available_on_f_droid_and_google_play, appName)
-        }
-    }
-
     fun makeBitmap(): ImageBitmap {
         val bitmaps = mutableListOf<ImageBitmap>()
         bitmaps.add(headerBitmap())
 
         if (entries.first().createdAt != null) {
             val dateText = entries.first().createdAt.localDateTimestamp()
-            bitmaps.add(sentenceBitmap(dateText, center = true))
+            bitmaps.add(sentenceBitmap(dateText, center = true, isBubble = false))
         }
 
         entries.forEach {
             if (it.type == EntryType.Sentence) {
-                bitmaps.add(sentenceBitmap(it.sentence!!))
+                bitmaps.add(sentenceBitmap(it.sentence!!, isBubble = true))
             }
             if (it.type == EntryType.Drawing) {
                 bitmaps.add(drawingBitmap(it.drawing!!))
@@ -236,7 +221,7 @@ class ImageExport(
         return tmpBitmap
     }
 
-    private fun sentenceBitmap(sentence: String, center: Boolean = false): ImageBitmap {
+    private fun sentenceBitmap(sentence: String, center: Boolean = false, isBubble: Boolean): ImageBitmap {
         val bubbleColor = Color(0xFFF0F2F5)
         val tailHeight = 20f
 
@@ -265,19 +250,20 @@ class ImageExport(
             val rectSize = Size(WIDTH.toFloat() - PADDING * 4, rectHeight)
 
             drawRoundRect(
-                color = bubbleColor,
+                color = if (isBubble) bubbleColor else Color.White,
                 topLeft = offset,
                 size = rectSize,
                 cornerRadius = CornerRadius(40f, 40f)
             )
-            val tail = Path().apply {
-                moveTo(offset.x + 50f, offset.y + rectSize.height - 10f)
-                lineTo(offset.x + 20f, offset.y + rectSize.height + tailHeight)
-                lineTo(offset.x + 80f, offset.y + rectSize.height)
-                close()
+            if (isBubble) {
+                val tail = Path().apply {
+                    moveTo(offset.x + 50f, offset.y + rectSize.height - 10f)
+                    lineTo(offset.x + 20f, offset.y + rectSize.height + tailHeight)
+                    lineTo(offset.x + 80f, offset.y + rectSize.height)
+                    close()
+                }
+                drawPath(tail, bubbleColor)
             }
-            drawPath(tail, bubbleColor)
-
             translate(left = offset.x + PADDING * 2, top = offset.y + PADDING * 2) {
                 drawText(textLayout)
             }
@@ -328,6 +314,9 @@ class ImageExport(
 @Composable
 fun SharePreview() {
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
-    val ie = ImageExport( PreviewData.entries, appIcon, textMeasurer = rememberTextMeasurer() )
+    val appName = stringResource(Res.string.app_name)
+    val isAvailableOn =
+        stringResource(Res.string.is_available_on, appName)
+    val ie = ImageExport(PreviewData.entries, appIcon,appName, isAvailableOn,  textMeasurer = rememberTextMeasurer())
     Image(bitmap = ie.makeBitmap(), null)
 }

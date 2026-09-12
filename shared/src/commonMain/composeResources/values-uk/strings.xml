@@ -116,7 +116,7 @@
     <string name="debugging_on_label">Налагодження: %1$s</string>
     <string name="user_made_drawing">Малюнок, створений користувачем</string>
     <string name="backup_games">Резервні ігри</string>
-    <string name="is_available_on_f_droid_and_google_play">%1$s доступний у F-Droid і Google Play</string>
+    <string name="is_available_on">%1$s доступний у F-Droid і Google Play</string>
     <string name="new_player_prompt">Новий гравець; Хто є?</string>
     <string name="nickname_prompt">Як тебе тут називають?</string>
     <string name="previous_nicknames">Попередні псевдоніми:</string>
