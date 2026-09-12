@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
@@ -243,17 +245,23 @@ fun PreviousGameDetailsScreen(
                     Text("Loading...", modifier = Modifier.padding(contentPadding))
                     return@Scaffold
                 }
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.padding(contentPadding),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-                ) {
-                    items(
-                        items = entries,
-                        key = { entry -> entry.id }
-                    ) { entry ->
-                        EntryListItem(entry)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.padding(contentPadding),
+                        contentPadding = PaddingValues(bottom = 80.dp)
+                    ) {
+                        items(
+                            items = entries,
+                            key = { entry -> entry.id }
+                        ) { entry ->
+                            EntryListItem(entry)
+                        }
                     }
+                    PlatformVerticalScrollbar(
+                        listState = listState,
+                        modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                    )
                 }
             }
         }

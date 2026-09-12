@@ -5,12 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
@@ -79,6 +82,7 @@ fun InProgressGameDetailsScreen(
 fun InProgressGameDetailsScreen(
     game: Game?, players: List<Roster>?, playerId: Uuid, onBack: () -> Unit
 ) {
+    val listState = rememberLazyListState()
     Scaffolds.Backable("Network game", onBack = onBack) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -93,157 +97,164 @@ fun InProgressGameDetailsScreen(
                 return@Surface
             }
             val thisRosterPlayer = players.first { it.playerId == playerId }
-            LazyColumn(
-                modifier = Modifier
-                    .padding(horizontal = 3.dp)
-                    .fillMaxSize()
-            ) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .padding(10.dp)
-                    ) {
-                        Row {
-                            when (game.gameMode) {
-                                GameMode.LAN -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.ic_lan),
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 3.dp)
+                        .fillMaxSize(),
+                    state = listState,
+                ) {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .padding(10.dp)
+                        ) {
+                            Row {
+                                when (game.gameMode) {
+                                    GameMode.LAN -> {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.ic_lan),
+                                            contentDescription = "Share text",
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .padding(end = 10.dp)
+                                        )
+                                    }
+
+                                    GameMode.INET -> Icon(
+                                        painter = painterResource(Res.drawable.ic_wifi),
                                         contentDescription = "Share text",
                                         modifier = Modifier
                                             .size(50.dp)
                                             .padding(end = 10.dp)
                                     )
-                                }
 
-                                GameMode.INET -> Icon(
-                                    painter = painterResource(Res.drawable.ic_wifi),
-                                    contentDescription = "Share text",
+                                    else -> Icon(
+                                        painter = painterResource(Res.drawable.ic_question_mark),
+                                        contentDescription = "Share text"
+                                    )
+                                }
+                                val generatedProfile = generateOrganicProfile(game.id)
+                                Box(
                                     modifier = Modifier
                                         .size(50.dp)
-                                        .padding(end = 10.dp)
-                                )
+                                        .background(generatedProfile.backgroundColor),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CustomRoundedPolygon(
+                                        generated = generatedProfile,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                                when (players.any {
+                                    it.playerId == playerId && it.sequence >= 0
+                                }) {
+                                    true -> {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.ic_check_circle),
+                                            contentDescription = "player had a turn",
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .padding(end = 10.dp, start = 10.dp),
+                                            tint = Color.Green
+                                        )
+                                    }
 
-                                else -> Icon(
-                                    painter = painterResource(Res.drawable.ic_question_mark),
-                                    contentDescription = "Share text"
-                                )
-                            }
-                            val generatedProfile = generateOrganicProfile(game.id)
-                            Box(
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .background(generatedProfile.backgroundColor),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CustomRoundedPolygon(
-                                    generated = generatedProfile,
-                                    modifier = Modifier.fillMaxSize()
-                                )
+                                    false -> {
+                                        Icon(
+                                            painter = painterResource(Res.drawable.ic_schedule),
+                                            contentDescription = "player has not had a turn",
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .padding(end = 10.dp, start = 10.dp)
+                                        )
+                                    }
+                                }
+
+                                Column {
+                                    Text(
+                                        text = "Started: ${game.createdAt.localDateTimestamp()}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+
+                                    Text(
+                                        text = "Turns: $turns",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
                             when (players.any {
                                 it.playerId == playerId && it.sequence >= 0
                             }) {
                                 true -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.ic_check_circle),
-                                        contentDescription = "player had a turn",
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .padding(end = 10.dp, start = 10.dp),
-                                        tint = Color.Green
+                                    Text(
+                                        text = "Your work here is done",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
 
                                 false -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.ic_schedule),
-                                        contentDescription = "player has not had a turn",
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .padding(end = 10.dp, start = 10.dp)
+                                    Text(
+                                        text = "Waiting for turn",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
                             }
-
-                            Column {
-                                Text(
-                                    text = "Started: ${game.createdAt.localDateTimestamp()}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-
-                                Text(
-                                    text = "Turns: $turns",
-                                    style = MaterialTheme.typography.bodyMedium
+                            if (thisRosterPlayer.isLeader) {
+                                SelectableReadOnlyTextWithShare(
+                                    Modifier.padding(bottom = 15.dp),
+                                    getShareLink(
+                                        thisRosterPlayer.address,
+                                        game.id
+                                    )
                                 )
                             }
-                        }
-                        when (players.any {
-                            it.playerId == playerId && it.sequence >= 0
-                        }) {
-                            true -> {
-                                Text(
-                                    text = "Your work here is done",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                            if (turns == 0 && players.size == 1) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.ic_cake),
+                                    contentDescription = "Waiting for players. the cake is a lie",
+                                    modifier = Modifier
+                                        .size(200.dp)
+                                        .padding(end = 10.dp, start = 10.dp).fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
                                 )
                             }
 
-                            false -> {
-                                Text(
-                                    text = "Waiting for turn",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                            }
                         }
-                        if (thisRosterPlayer.isLeader) {
-                            SelectableReadOnlyTextWithShare(
-                                Modifier.padding(bottom = 15.dp),
-                                getShareLink(
-                                    thisRosterPlayer.address,
-                                    game.id
-                                )
-                            )
-                        }
-                        if (turns == 0 && players.size==1 ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_cake),
-                                contentDescription = "Waiting for players. the cake is a lie",
-                                modifier = Modifier
-                                    .size(200.dp)
-                                    .padding(end = 10.dp, start = 10.dp).fillMaxWidth()
-                                    .align(Alignment.CenterHorizontally)
-                            )
-                        }
-
+                    }
+                    itemsIndexed(players.filter { it.sequence >= 0 }
+                        .sortedBy { it.sequence }) { index, player ->
+                        RosterPlayerItem(index, player, playerId)
+                    }
+                    item {
+                        Text(
+                            "Joined",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 15.dp),
+                            fontSize = 30.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
+                        )
+                    }
+                    itemsIndexed(players.filter { it.sequence < 0 }
+                        .sortedBy { it.sequence }) { index, rosterPlayer ->
+                        RosterPlayerItem(index, rosterPlayer, playerId)
+                    }
+                    item {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
+                        )
                     }
                 }
-                itemsIndexed(players.filter { it.sequence >= 0 }
-                    .sortedBy { it.sequence }) { index, player ->
-                    RosterPlayerItem(index, player, playerId)
-                }
-                item {
-                    Text(
-                        "Joined",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 15.dp),
-                        fontSize = 30.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
-                    )
-                }
-                itemsIndexed(players.filter { it.sequence < 0 }
-                    .sortedBy { it.sequence }) { index, rosterPlayer ->
-                    RosterPlayerItem(index, rosterPlayer, playerId)
-                }
-                item {
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
-                    )
-                }
+                PlatformVerticalScrollbar(
+                    listState = listState,
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                )
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
@@ -75,7 +78,8 @@ fun InProgressGames(
     toGame: (Uuid) -> Unit,
     onBack: () -> Unit
 ) {
-
+    // TODO Pixel pushing
+    val listState = rememberLazyListState()
     Scaffolds.Backable("Network games", onBack = onBack) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -102,131 +106,145 @@ fun InProgressGames(
                     r.playerId == playerId && r.sequence >= 0
                 }
             }
-            Column {
-                // TODO Pixel pushing
-                if (waitingGame.isNotEmpty()) {
-                    Text(
-                        "Waiting for turn", modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 20.dp)
-                    )
-                    ListGames(waitingGame, toGame, playerId)
-                    HorizontalDivider(modifier = Modifier.padding(20.dp))
-                }
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.clickable(onClick = {}),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item {
 
-                if (notWaiting.isNotEmpty()) {
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 15.dp),
-                        text = "In Progress Games"
-                    )
-                    ListGames(notWaiting, toGame, playerId)
+                        if (waitingGame.isNotEmpty()) {
+                            Text(
+                                "Waiting for turn", modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .padding(bottom = 20.dp)
+                            )
+                        }
+                    }
+                    itemsIndexed(waitingGame.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
+                        ListGame(gameWithRosters, index, toGame, playerId)
+                    }
+                    item {
+                        if (waitingGame.isNotEmpty()) {
+                            HorizontalDivider(modifier = Modifier.padding(20.dp))
+                        }
+                    }
+                    item {
+
+                        if (notWaiting.isNotEmpty()) {
+                            Text(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .padding(bottom = 15.dp),
+                                text = "In Progress Games"
+                            )
+                        }
+                    }
+                    itemsIndexed(notWaiting.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
+                        ListGame(gameWithRosters, index, toGame, playerId)
+                    }
                 }
+                PlatformVerticalScrollbar(
+                    listState = listState,
+                    modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+                )
             }
         }
     }
-
 }
 
 @Composable
-private fun ListGames(
-    games: List<GameWithRosters>,
+private fun ListGame(
+    gameWithRosters: GameWithRosters,
+    index: Int,
     toGame: (Uuid) -> Unit,
     playerId: Uuid
 ) {
-    LazyColumn(
-        modifier = Modifier.clickable(onClick = {}),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    val game = gameWithRosters.game
+    val player = gameWithRosters.roster
+    val rowColor = if (index % 2 == 0) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.background
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(rowColor)
+            .padding(10.dp)
+            .clickable { toGame(gameWithRosters.game.id) }
     ) {
-        itemsIndexed(games.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
-            val game = gameWithRosters.game
-            val player = gameWithRosters.roster
-            val rowColor = if (index % 2 == 0) {
-                MaterialTheme.colorScheme.surfaceVariant
-            } else {
-                MaterialTheme.colorScheme.background
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(rowColor)
-                    .padding(10.dp)
-                    .clickable { toGame(gameWithRosters.game.id) }
-            ) {
-                Text(
-                    text = "Created at: ${game.createdAt.localDateTimestamp()}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Row {
-                    when (game.gameMode) {
-                        GameMode.LAN -> {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_lan),
-                                contentDescription = "Share text",
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(end = 10.dp)
-                            )
-                        }
-
-                        GameMode.INET ->
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_wifi),
-                                contentDescription = "Share text",
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(end = 10.dp)
-                            )
-
-                        else -> Icon(
-                            painter = painterResource(Res.drawable.ic_question_mark),
-                            contentDescription = "Share text"
-                        )
-                    }
-                    val generatedProfile = generateOrganicProfile(game.id)
-                    Box(
+        Text(
+            text = "Created at: ${game.createdAt.localDateTimestamp()}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Row {
+            when (game.gameMode) {
+                GameMode.LAN -> {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_lan),
+                        contentDescription = "Share text",
                         modifier = Modifier
                             .size(50.dp)
-                            .background(generatedProfile.backgroundColor),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CustomRoundedPolygon(
-                            generated = generatedProfile,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                    LazyRow(modifier = Modifier.padding(horizontal = 3.dp)) {
-                        itemsIndexed(player.sortedBy { it.sequence }
-                            .take(4)) { index, entry ->
-                            var m = Modifier
-                                .size(50.dp)
-                                .rotate(90f)
-                                .padding(horizontal = 5.dp)
-                            if (playerId == entry.playerId) {
-                                m = m.dropShadow(
-                                    shape = RoundedCornerShape(3.dp),
-                                    shadow = Shadow(
-                                        radius = 4.dp,
-                                        spread = 2.dp,
-                                        color = Color.Yellow,
-                                        offset = DpOffset(x = 0.dp, 0.dp)
-                                    )
-                                )
-                            }
-                            PixelArtImage(
-                                generatePixelProfile4Bit(entry.playerId),
-                                PIXEL_PALETTE_4_BIT, m
-                            )
-                        }
-                    }
+                            .padding(end = 10.dp)
+                    )
                 }
-                Text(
-                    text = "Players: ${player.size}",
-                    style = MaterialTheme.typography.bodyMedium
+
+                GameMode.INET ->
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_wifi),
+                        contentDescription = "Share text",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .padding(end = 10.dp)
+                    )
+
+                else -> Icon(
+                    painter = painterResource(Res.drawable.ic_question_mark),
+                    contentDescription = "Share text"
                 )
             }
+            val generatedProfile = generateOrganicProfile(game.id)
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(generatedProfile.backgroundColor),
+                contentAlignment = Alignment.Center
+            ) {
+                CustomRoundedPolygon(
+                    generated = generatedProfile,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            LazyRow(modifier = Modifier.padding(horizontal = 3.dp)) {
+                itemsIndexed(player.sortedBy { it.sequence }
+                    .take(4)) { index, entry ->
+                    var m = Modifier
+                        .size(50.dp)
+                        .rotate(90f)
+                        .padding(horizontal = 5.dp)
+                    if (playerId == entry.playerId) {
+                        m = m.dropShadow(
+                            shape = RoundedCornerShape(3.dp),
+                            shadow = Shadow(
+                                radius = 4.dp,
+                                spread = 2.dp,
+                                color = Color.Yellow,
+                                offset = DpOffset(x = 0.dp, 0.dp)
+                            )
+                        )
+                    }
+                    PixelArtImage(
+                        generatePixelProfile4Bit(entry.playerId),
+                        PIXEL_PALETTE_4_BIT, m
+                    )
+                }
+            }
         }
+        Text(
+            text = "Players: ${player.size}",
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
 
