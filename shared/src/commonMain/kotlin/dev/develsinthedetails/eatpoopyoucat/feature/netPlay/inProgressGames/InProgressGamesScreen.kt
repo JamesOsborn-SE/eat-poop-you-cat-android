@@ -112,7 +112,6 @@ fun InProgressGames(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-
                         if (waitingGame.isNotEmpty()) {
                             Text(
                                 "Waiting for turn", modifier = Modifier
@@ -130,7 +129,6 @@ fun InProgressGames(
                         }
                     }
                     item {
-
                         if (notWaiting.isNotEmpty()) {
                             Text(
                                 modifier = Modifier

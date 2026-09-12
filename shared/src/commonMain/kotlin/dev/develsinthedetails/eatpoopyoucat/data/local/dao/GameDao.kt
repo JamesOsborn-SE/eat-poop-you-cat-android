@@ -44,7 +44,7 @@ interface GameDao {
     suspend fun getWithEntries(id: Uuid): GameWithEntries?
 
     @Transaction
-    @Query("SELECT * FROM game WHERE turns IS NULL")
+    @Query("SELECT * FROM game WHERE turns IS NULL AND gameMode!='LOCAL'")
     fun getInProgressGamesWithRostersFlow(): Flow<List<GameWithRosters>>
 
     @Transaction
