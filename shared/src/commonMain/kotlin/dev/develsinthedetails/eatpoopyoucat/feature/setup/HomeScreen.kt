@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.tertiaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
@@ -139,11 +140,11 @@ fun HomeScreen(
                         contentDescription = stringResource(Res.string.application_icon),
                         modifier = defaultModifier
                             .background(
-                                MaterialTheme.colorScheme.secondaryContainer,
+                                app_icon_background,
                                 shape = CircleShape
                             )
-                            .size(100.dp)
-                            .padding(8.dp)
+                            .size(140.dp)
+                            .padding(15.dp)
                     )
                     Row(modifier = defaultModifier.pointerInput(Unit) {
                         detectTapGestures(

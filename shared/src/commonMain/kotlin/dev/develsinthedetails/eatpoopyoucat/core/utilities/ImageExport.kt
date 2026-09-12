@@ -12,18 +12,21 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
@@ -45,17 +48,25 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.math.max
 import kotlin.time.Instant
 
+data class EstimatedTextLayout(
+    val lines: List<String>,
+    val totalHeightPx: Float,
+    val lineSpacingPx: Float
+)
+
 class ImageExport(
     private val entries: List<Entry>,
-    private val appIcon: ImageBitmap,
+    appIcon: ImageBitmap,
     private val appName: String,
     private val bottomBlurb: String,
     private val textMeasurer: TextMeasurer
 ) {
     private val penColor = md_theme_light_drawing_pen
     private val eraseColor = md_theme_light_drawing_background
-    private val density = Density(1f)
+    private val density = Density(density = 1f, fontScale = 1f)
     private val layoutDirection = LayoutDirection.Ltr
+    private val scaledAppIcon = scaleBitmap(appIcon, targetWidth = 100, targetHeight = 100)
+
     fun makeBitmap(): ImageBitmap {
         val bitmaps = mutableListOf<ImageBitmap>()
         bitmaps.add(headerBitmap())
@@ -65,15 +76,21 @@ class ImageExport(
             bitmaps.add(sentenceBitmap(dateText, center = true, isBubble = false))
         }
 
-        entries.forEach {
-            if (it.type == EntryType.Sentence) {
-                bitmaps.add(sentenceBitmap(it.sentence!!, isBubble = true))
+        entries.forEach { entry ->
+            if (entry.type == EntryType.Sentence) {
+                bitmaps.add(sentenceBitmap(entry.sentence!!, isBubble = true))
             }
-            if (it.type == EntryType.Drawing) {
-                bitmaps.add(drawingBitmap(it.drawing!!))
+            if (entry.type == EntryType.Drawing) {
+                bitmaps.add(drawingBitmap(entry.drawing!!))
             }
-            if (it.createdAt != null || it.localPlayerName != null) {
-                bitmaps.add(metadataBitmap(it.createdAt, it.localPlayerName))
+            if (entry.createdAt != null || entry.localPlayerName != null) {
+                bitmaps.add(
+                    metadataBitmap(
+                        entry.createdAt,
+                        entry.localPlayerName,
+                        entry.type == EntryType.Drawing
+                    )
+                )
             }
         }
         bitmaps.add(footerBitmap())
@@ -100,56 +117,128 @@ class ImageExport(
         return finalBitmap
     }
 
-    private fun metadataBitmap(createdAt: Instant?, playerName: String?): ImageBitmap {
-        val dateText = createdAt?.localTimestamp() ?: ""
-        val text = "^ ${playerName.valueOrEmpty()} $dateText"
+    private fun estimateLayout(
+        text: String,
+        fontSizePx: Float,
+        maxWidthPx: Float,
+        maxLines: Int = 5
+    ): EstimatedTextLayout {
+        val monoCharWidthPx = fontSizePx * 0.6f
+        val lineHeightPx = fontSizePx * 1.2f
+        val maxCharsPerLine = (maxWidthPx / monoCharWidthPx).toInt()
 
-        val textLayout = textMeasurer.measure(
-            text = AnnotatedString(text),
-            style = TextStyle(color = Color.Gray, fontSize = 20.sp, textAlign = TextAlign.Right),
-            constraints = Constraints(maxWidth = WIDTH - PADDING * 4)
+        val words = text.split(" ")
+        val lines = mutableListOf<String>()
+        var currentLine = ""
+
+        for (word in words) {
+            if ((currentLine.length + word.length + 1) <= maxCharsPerLine) {
+                currentLine += if (currentLine.isEmpty()) word else " $word"
+            } else {
+                if (currentLine.isNotEmpty()) lines.add(currentLine)
+                currentLine = word
+            }
+        }
+        if (currentLine.isNotEmpty()) {
+            lines.add(currentLine)
+        }
+
+        val truncatedLines = lines.take(maxLines)
+
+        return EstimatedTextLayout(
+            lines = truncatedLines,
+            totalHeightPx = truncatedLines.size * lineHeightPx,
+            lineSpacingPx = lineHeightPx
         )
+    }
 
-        val textHeight = textLayout.size.height + PADDING * 2
-        val tmpBitmap = ImageBitmap(WIDTH, textHeight)
+    private fun DrawScope.drawManualLines(
+        layout: EstimatedTextLayout,
+        style: TextStyle,
+        maxWidth: Float
+    ) {
+        var currentY = 0f
+        layout.lines.forEach { line ->
+            val paintedLine = textMeasurer.measure(
+                text = AnnotatedString(line),
+                style = style,
+                density = this@ImageExport.density
+            )
+
+            val xOffset = when (style.textAlign) {
+                TextAlign.Center -> (maxWidth - paintedLine.size.width) / 2f
+                TextAlign.Right, TextAlign.End -> maxWidth - paintedLine.size.width.toFloat()
+                else -> 0f
+            }
+
+            drawText(paintedLine, topLeft = Offset(xOffset, currentY))
+
+            currentY += layout.lineSpacingPx
+        }
+    }
+
+    private fun metadataBitmap(
+        createdAt: Instant?,
+        playerName: String?,
+        isRight: Boolean = false
+    ): ImageBitmap {
+        val dateText = createdAt?.localTimestamp() ?: ""
+        val text = "${playerName.valueOrEmpty()} $dateText"
+
+        val style = TextStyle(
+            fontFamily = FontFamily.Monospace,
+            color = Color.Gray,
+            fontSize = 20.sp,
+            textAlign = if (isRight) TextAlign.Right else TextAlign.Left
+        )
+        val layout = estimateLayout(text, style.fontSize.value, WIDTH - PADDING * 4f, 1)
+        val textHeight = layout.totalHeightPx + PADDING * 2
+        val tmpBitmap = ImageBitmap(WIDTH, textHeight.toInt())
 
         CanvasDrawScope().draw(
             density,
             layoutDirection,
             Canvas(tmpBitmap),
-            Size(WIDTH.toFloat(), textHeight.toFloat())
+            Size(WIDTH.toFloat(), textHeight)
         ) {
             translate(left = PADDING.toFloat() * 2, top = 0f) {
-                drawText(textLayout)
+                drawManualLines(layout, style, WIDTH - PADDING * 4f)
             }
         }
         return tmpBitmap
     }
 
     private fun headerBitmap(): ImageBitmap {
-        val textLayout = textMeasurer.measure(
-            text = AnnotatedString(appName),
-            style = TextStyle(color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold),
-            constraints = Constraints(maxWidth = WIDTH - PADDING * 4 - appIcon.width),
-            maxLines = 5
+        val style = TextStyle(
+            fontFamily = FontFamily.Monospace,
+            color = Color.Black,
+            fontSize = 45.sp,
+            fontWeight = FontWeight.Bold,
         )
+        val layout =
+            estimateLayout(
+                appName,
+                style.fontSize.value,
+                WIDTH - PADDING * 4f - scaledAppIcon.width,
+                5
+            )
 
-        val textHeight = textLayout.size.height + PADDING
-        val height = max(appIcon.height + PADDING * 2, textHeight)
-        val textOffset = if (appName.count() > 30) 0f else (height / 2f) - PADDING * 4
+        val textHeight = layout.totalHeightPx
+        val height = max(scaledAppIcon.height + PADDING * 2f, textHeight)
+        val textOffset = (height - textHeight) / 2f
 
-        val tmpBitmap = ImageBitmap(WIDTH, height)
+        val tmpBitmap = ImageBitmap(WIDTH, height.toInt())
         CanvasDrawScope().draw(
             density,
             layoutDirection,
             Canvas(tmpBitmap),
-            Size(WIDTH.toFloat(), height.toFloat())
+            Size(WIDTH.toFloat(), height)
         ) {
             drawRect(color = app_icon_background, size = size)
-            drawImage(image = appIcon, topLeft = Offset(PADDING.toFloat(), PADDING.toFloat()))
+            drawImage(image = scaledAppIcon, topLeft = Offset(PADDING.toFloat(), PADDING.toFloat()))
 
-            translate(left = PADDING.toFloat() * 3 + appIcon.width, top = textOffset) {
-                drawText(textLayout)
+            translate(left = PADDING.toFloat() * 3 + scaledAppIcon.width, top = textOffset) {
+                drawManualLines(layout, style, WIDTH - PADDING * 4f - scaledAppIcon.width)
             }
         }
         return tmpBitmap
@@ -179,11 +268,17 @@ class ImageExport(
                 size = rectSize,
                 cornerRadius = CornerRadius(40f, 40f)
             )
-
+            val tailXOffset = 150f
             val tail = Path().apply {
-                moveTo(offset.x + rectSize.width - 50f, offset.y + rectSize.height - 10f)
-                lineTo(offset.x + rectSize.width - 20f, offset.y + rectSize.height + tailHeight)
-                lineTo(offset.x + rectSize.width - 80f, offset.y + rectSize.height)
+                moveTo(
+                    offset.x + rectSize.width - 50f - tailXOffset,
+                    offset.y + rectSize.height - 10f
+                )
+                lineTo(
+                    offset.x + rectSize.width - 20f - tailXOffset,
+                    offset.y + rectSize.height + tailHeight
+                )
+                lineTo(offset.x + rectSize.width - 80f - tailXOffset, offset.y + rectSize.height)
                 close()
             }
             drawPath(tail, bubbleColor)
@@ -221,22 +316,23 @@ class ImageExport(
         return tmpBitmap
     }
 
-    private fun sentenceBitmap(sentence: String, center: Boolean = false, isBubble: Boolean): ImageBitmap {
+    private fun sentenceBitmap(
+        sentence: String,
+        center: Boolean = false,
+        isBubble: Boolean
+    ): ImageBitmap {
         val bubbleColor = Color(0xFFF0F2F5)
-        val tailHeight = 20f
+        val tailHeight = if (isBubble) 20f else 0f
 
-        val textLayout = textMeasurer.measure(
-            text = AnnotatedString(sentence),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 28.sp,
-                textAlign = if (center) TextAlign.Center else TextAlign.Start
-            ),
-            constraints = Constraints(maxWidth = WIDTH - PADDING * 8),
-            maxLines = 5
+        val style = TextStyle(
+            fontFamily = FontFamily.Monospace,
+            color = Color.Black,
+            fontSize = 28.sp,
+            textAlign = if (center) TextAlign.Center else TextAlign.Start
         )
+        val layout = estimateLayout(sentence, style.fontSize.value, WIDTH - PADDING * 8f, 5)
 
-        val rectHeight = textLayout.size.height + PADDING * 4f
+        val rectHeight = layout.totalHeightPx + PADDING * 4f
         val totalHeight = (rectHeight + tailHeight + PADDING * 2).toInt()
         val tmpBitmap = ImageBitmap(WIDTH, totalHeight)
 
@@ -265,41 +361,61 @@ class ImageExport(
                 drawPath(tail, bubbleColor)
             }
             translate(left = offset.x + PADDING * 2, top = offset.y + PADDING * 2) {
-                drawText(textLayout)
+                drawManualLines(layout, style, WIDTH - PADDING * 8f)
             }
         }
         return tmpBitmap
     }
 
     private fun footerBitmap(): ImageBitmap {
-        val textLayout = textMeasurer.measure(
-            text = AnnotatedString(bottomBlurb),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-            ),
-            constraints = Constraints(maxWidth = WIDTH - PADDING * 4),
-            maxLines = 5
+        val style = TextStyle(
+            fontFamily = FontFamily.Monospace,
+            color = Color.Black,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
+        val layout = estimateLayout(bottomBlurb, style.fontSize.value, WIDTH - PADDING * 4f, 5)
 
-        val textHeight = textLayout.size.height + PADDING * 2
+        val textHeight = layout.totalHeightPx + PADDING * 2
         val height = textHeight + PADDING * 2
-        val tmpBitmap = ImageBitmap(WIDTH, height)
+        val tmpBitmap = ImageBitmap(WIDTH, height.toInt())
+        val textOffset = (height - layout.totalHeightPx) / 2f
 
         CanvasDrawScope().draw(
             density,
             layoutDirection,
             Canvas(tmpBitmap),
-            Size(WIDTH.toFloat(), height.toFloat())
+            Size(WIDTH.toFloat(), height)
         ) {
             drawRect(color = app_icon_background, size = size)
-            translate(left = PADDING.toFloat(), top = PADDING.toFloat()) {
-                drawText(textLayout)
+            translate(left = PADDING.toFloat(), top = textOffset) {
+                drawManualLines(layout, style, WIDTH - PADDING * 4f)
             }
         }
         return tmpBitmap
+    }
+
+    private fun scaleBitmap(
+        original: ImageBitmap,
+        targetWidth: Int,
+        targetHeight: Int
+    ): ImageBitmap {
+        val scaledBitmap = ImageBitmap(targetWidth, targetHeight)
+
+        CanvasDrawScope().draw(
+            density = density,
+            layoutDirection = layoutDirection,
+            canvas = Canvas(scaledBitmap),
+            size = Size(targetWidth.toFloat(), targetHeight.toFloat())
+        ) {
+            drawImage(
+                image = original,
+                dstOffset = IntOffset.Zero,
+                dstSize = IntSize(targetWidth, targetHeight)
+            )
+        }
+        return scaledBitmap
     }
 
     companion object {
@@ -313,10 +429,12 @@ class ImageExport(
 @Preview
 @Composable
 fun SharePreview() {
-    val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
     val appName = stringResource(Res.string.app_name)
-    val isAvailableOn =
-        stringResource(Res.string.is_available_on, appName)
-    val ie = ImageExport(PreviewData.entries, appIcon,appName, isAvailableOn,  textMeasurer = rememberTextMeasurer())
+    val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
+    val isAvailableOnFDroidAndGooglePlay = stringResource(Res.string.is_available_on, appName)
+    val ie = ImageExport(
+        PreviewData.entries, appIcon, appName, isAvailableOnFDroidAndGooglePlay,
+        textMeasurer = rememberTextMeasurer()
+    )
     Image(bitmap = ie.makeBitmap(), null)
 }

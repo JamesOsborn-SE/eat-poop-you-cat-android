@@ -153,7 +153,7 @@ fun PreviousGameDetailsRoute(
                     textMeasurer
                 )
                 val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())
-                val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG, 100)
+                val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
                 file.write(bytes)
                 FileKit.saveImageToGallery(file)
                 snackbarHostState.showSnackbar("Saved to device gallery")
