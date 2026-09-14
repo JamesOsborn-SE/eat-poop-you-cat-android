@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.concurrent.Volatile
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -24,6 +25,7 @@ class AppSettings(
         val PLAYER_ID = stringPreferencesKey("PLAYER_ID")
         val USE_NICKNAMES = stringPreferencesKey("USE_NICKNAMES")
     }
+
     @Volatile
     var isReady: Boolean = false
         private set

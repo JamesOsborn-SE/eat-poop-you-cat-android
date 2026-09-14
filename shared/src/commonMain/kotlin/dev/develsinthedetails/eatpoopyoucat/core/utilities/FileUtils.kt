@@ -3,14 +3,14 @@ package dev.develsinthedetails.eatpoopyoucat.core.utilities
 import androidx.compose.runtime.Composable
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.dialogs.FileKitDialogException
-import java.util.Date
+import kotlin.time.Clock
 
 fun defaultImageFilename(): String {
-    return "EPYC-${Date().saveDateFormat()}.png"
+    return "EPYC-${Clock.System.now().saveDateFormat()}.png"
 }
 
 fun defaultDataFilename(): String {
-    return "EPYC-${Date().saveDateFormat()}.json"
+    return "EPYC-${Clock.System.now().saveDateFormat()}.json"
 }
 
 internal interface ShareFileLauncher {

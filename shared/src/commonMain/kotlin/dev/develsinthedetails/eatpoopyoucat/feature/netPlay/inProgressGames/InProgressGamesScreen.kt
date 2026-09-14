@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
-import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformVerticalScrollbar
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
@@ -142,7 +142,7 @@ fun InProgressGames(
                         ListGame(gameWithRosters, index, toGame, playerId)
                     }
                 }
-                PlatformVerticalScrollbar(
+                PlatformLazyVerticalScrollbar(
                     listState = listState,
                     modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
                 )

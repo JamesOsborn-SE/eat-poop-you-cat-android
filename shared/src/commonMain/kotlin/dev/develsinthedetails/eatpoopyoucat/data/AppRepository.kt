@@ -9,8 +9,8 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
+import korlibs.crypto.sha256
 import kotlinx.coroutines.flow.Flow
-import java.security.MessageDigest
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -113,8 +113,7 @@ class AppRepository(
         fun generateRosterHash(playerIds: List<Uuid>): String {
             if (playerIds.isEmpty()) return ""
             val combinedIds = playerIds.joinToString(separator = "") { it.toString() }
-            val bytes = MessageDigest.getInstance("SHA-256").digest(combinedIds.toByteArray())
-            return bytes.joinToString("") { "%02x".format(it) }
+            return combinedIds.encodeToByteArray().sha256().hex
         }
     }
 }

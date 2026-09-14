@@ -1,25 +1,18 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-import okio.Buffer
-import okio.GzipSink
-import okio.GzipSource
-import okio.buffer
-import okio.use
+import korlibs.io.compression.compress
+import korlibs.io.compression.deflate.GZIP
+import korlibs.io.compression.uncompress
 
 class Gzip {
     companion object {
         fun compress(string: String): ByteArray {
-            val buffer = Buffer()
-            GzipSink(buffer).buffer().use { sink ->
-                sink.writeUtf8(string)
-            }
-            return buffer.readByteArray()
+            return string.encodeToByteArray().compress(GZIP)
         }
+
         fun decompressToString(compressed: ByteArray): String {
-            val sourceBuffer = Buffer().write(compressed)
-            return GzipSource(sourceBuffer).buffer().use { source ->
-                source.readUtf8()
-            }
+            return compressed.uncompress(GZIP).decodeToString()
         }
     }
 }
+

@@ -35,7 +35,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformVerticalScrollbar
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
@@ -258,7 +258,7 @@ fun PreviousGameDetailsScreen(
                             EntryListItem(entry)
                         }
                     }
-                    PlatformVerticalScrollbar(
+                    PlatformLazyVerticalScrollbar(
                         listState = listState,
                         modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight()
                     )

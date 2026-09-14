@@ -6,8 +6,6 @@ import androidx.room3.ForeignKey.Companion.CASCADE
 import androidx.room3.Index
 import androidx.room3.PrimaryKey
 import dev.develsinthedetails.eatpoopyoucat.data.local.InstantSerializer
-import dev.develsinthedetails.eatpoopyoucat.data.models.Game
-import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
@@ -33,7 +31,6 @@ import kotlin.uuid.Uuid
     indices = [Index("gameId"), Index("playerId")],
 )
 
-//@OptIn(ExperimentalUuidApi::class)
 @Serializable
 data class Entry(
     @PrimaryKey val id: Uuid,
@@ -49,7 +46,7 @@ data class Entry(
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other == null || this::class != other::class) return false
 
         other as Entry
 

@@ -213,7 +213,7 @@ fun PreviousGamesScreen(
 @Composable
 fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> Unit) {
     val firstSentence = game.entries
-        .minByOrNull { it.sequence }?.sentence ?: String()
+        .minByOrNull { it.sequence }?.sentence ?: ""
     val lastDrawing = game.entries
         .sortedBy { it.sequence }
         .lastOrNull { it.drawing != null }

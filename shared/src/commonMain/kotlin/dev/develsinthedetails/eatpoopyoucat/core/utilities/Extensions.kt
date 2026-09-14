@@ -1,33 +1,69 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.compose.runtime.Composable
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import korlibs.io.lang.toByteArray
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import kotlin.io.encoding.Base64
 import kotlin.time.Instant
-import kotlin.time.toJavaInstant
 import kotlin.uuid.Uuid
 
+private val timeFormat = LocalTime.Format {
+    hour()
+    char(':')
+    minute()
+    char(':')
+    second()
+}
+
 fun Instant?.localTimestamp(): String {
-    if (this == null)
-        return ""
-    val date = Date.from(this.toJavaInstant())
-    return DateFormat.getTimeInstance().format(date)
+    if (this == null) return ""
+    val localTime = this.toLocalDateTime(TimeZone.currentSystemDefault()).time
+    return localTime.format(timeFormat)
+}
+
+private val mediumDateTimeFormat = LocalDateTime.Format {
+    monthName(MonthNames.ENGLISH_ABBREVIATED)
+    char(' ')
+    day()
+    char(',')
+    char(' ')
+    year()
+    char(' ')
+    hour()
+    char(':')
+    minute()
+    char(':')
+    second()
 }
 
 fun Instant?.localDateTimestamp(): String {
-    if (this == null)
-        return ""
-    val date = Date.from(this.toJavaInstant())
-    return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(date)
+    if (this == null) return ""
+    val localDateTime = this.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.format(mediumDateTimeFormat)
 }
 
-fun Date.saveDateFormat(): String {
-    val sdf = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-    return sdf.format(this)
+private val saveFormat = LocalDateTime.Format {
+    year()
+    monthNumber()
+    day()
+    char('_')
+    hour()
+    minute()
+    second()
 }
+
+// Note: Receiver changed from Java Date to Kotlin Instant
+fun Instant.saveDateFormat(): String {
+    val localDateTime = this.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.format(saveFormat)
+}
+
 
 fun String?.valueOrEmpty(): String = this ?: ""
 

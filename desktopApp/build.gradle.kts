@@ -36,6 +36,7 @@ compose.desktop {
             linux {
                 shortcut = true
                 iconFile.set(project.file("packaging/icons/linux_launch_icon.png"))
+                modules("jdk.security.auth")
             }
         }
     }

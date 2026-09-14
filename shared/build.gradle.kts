@@ -1,3 +1,9 @@
+@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
@@ -9,9 +15,11 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.buildconfig)
 }
+
 val gitHash = providers.exec {
     commandLine("git", "rev-parse", "--short", "HEAD")
 }.standardOutput.asText.getOrElse("unknown").trim()
+
 val scheme = project.findProperty("deeplink.scheme").toString()
 val host = project.findProperty("deeplink.host").toString()
 val baseUri = "$scheme://$host"
@@ -48,6 +56,7 @@ buildConfig {
         "DEEPLINK_PREVIOUS_GAME_DETAILS",
         "\"${project.findProperty("deeplink.previousGameDetails")}\""
     )
+
     buildConfigField("String", "DEEPLINK_BASE_URI", "\"$baseUri\"")
     buildConfigField("String", "DEEPLINK_PLAY_URI", "\"$playUri\"")
     buildConfigField("String", "DEEPLINK_DRAW_URI", "\"$drawUri\"")
@@ -64,20 +73,23 @@ buildConfig {
 compose.resources {
     publicResClass = true
 }
-compose.desktop {
-    application {
-        nativeDistributions {
-            linux {
-                modules("jdk.security.auth")
-            }
-        }
-    }
+
+fun KotlinDependencyHandler.jvmAndAndroidDependencies() {
+    api(libs.androidx.sqlite.bundled)
+    implementation(libs.androidx.compose.ui.unit)
+    // Ktor Server
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.compression)
+    implementation(libs.ktor.server.content.negotiation)
 }
+
 kotlin {
     jvmToolchain(17)
-    // Target declarations - add or remove as needed below. These define
-    // which platforms this KMP module supports.
-    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
+
     android {
         namespace = "dev.develsinthedetails.eatpoopyoucat"
         androidResources.enable = true
@@ -86,8 +98,7 @@ kotlin {
         }
         minSdk = 26
 
-        withHostTestBuilder {
-        }
+        withHostTestBuilder { }
 
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
@@ -95,18 +106,20 @@ kotlin {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
     }
+
     jvm()
 
-    // Source set declarations.
-    // Declaring a target automatically creates a source set with the same name. By default, the
-    // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
-    // common to share sources between related targets.
-    // See: https://kotlinlang.org/docs/multiplatform-hierarchy.html
+    wasmJs {
+        browser()
+    }
+
     sourceSets {
         commonMain {
             dependencies {
+                api(libs.korlibs.compression)
+                api(libs.korlibs.crypto)
+                api(libs.kotlinx.datetime)
                 api(libs.navigation.compose)
-                // Add KMP dependencies here
                 api(libs.filekit.core)
                 api(libs.filekit.dialogs.compose)
                 implementation(libs.lifecycle.viewmodel.compose)
@@ -123,8 +136,7 @@ kotlin {
                 api(libs.datastore.core)
                 api(libs.datastore.preferences.core)
                 api(libs.androidx.room3.runtime)
-                api(libs.androidx.sqlite.bundled)
-                api(libs.androidx.compose.ui.unit)
+
                 api(libs.compose.ui)
                 api(libs.compose.ui.tooling.preview)
                 api(libs.compose.foundation)
@@ -137,15 +149,6 @@ kotlin {
                 api(libs.ktor.client.content.negotiation)
                 api(libs.ktor.client.cio)
                 api(libs.ktor.serialization.kotlinx.cbor)
-
-                // Ktor Server
-                api(libs.ktor.server.core)
-                api(libs.ktor.server.config.yaml)
-                api(libs.ktor.server.resources)
-                api(libs.ktor.server.netty)
-                api(libs.ktor.server.status.pages)
-                api(libs.ktor.server.compression)
-                api(libs.ktor.server.content.negotiation)
             }
         }
 
@@ -157,9 +160,8 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+                jvmAndAndroidDependencies()
+
                 api(libs.ktor.client.android)
                 implementation(project.dependencies.platform(libs.koin.bom))
                 api(libs.datastore.preferences.android)
@@ -169,17 +171,28 @@ kotlin {
             }
         }
 
+        jvmMain {
+            dependencies {
+                jvmAndAndroidDependencies()
+            }
+        }
+
+        wasmJsMain {
+            dependencies {
+                implementation(libs.androidx.sqlite.web)
+            }
+        }
+
         getByName("androidDeviceTest") {
             dependencies {
                 api(libs.androidx.core)
                 api(libs.ext.junit)
                 api(libs.runner)
-
             }
         }
     }
-
 }
+
 room3 {
     schemaDirectory("$projectDir/schemas")
 }
@@ -188,6 +201,7 @@ dependencies {
     add("kspCommonMainMetadata", libs.androidx.room3.compiler)
     add("kspAndroid", libs.androidx.room3.compiler)
     add("kspJvm", libs.androidx.room3.compiler)
+    add("kspWasmJs", libs.androidx.room3.compiler)
     androidRuntimeClasspath(libs.compose.ui.tooling)
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
 }

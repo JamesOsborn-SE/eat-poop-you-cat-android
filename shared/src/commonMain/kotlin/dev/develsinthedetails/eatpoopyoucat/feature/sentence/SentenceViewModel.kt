@@ -28,7 +28,7 @@ data class SentenceUiState(
     val previousEntry: Entry? = null,
     val isError: Boolean = false,
     val isLoading: Boolean = true,
-    val sentence: String = String(),
+    val sentence: String = "",
     val gameMode: GameMode,
 
     val nickname: String? = null,

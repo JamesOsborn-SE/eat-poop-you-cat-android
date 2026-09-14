@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-actual fun PlatformVerticalScrollbar(
+actual fun PlatformLazyVerticalScrollbar(
     listState: LazyListState,
     modifier: Modifier
 ) {
@@ -14,7 +14,7 @@ actual fun PlatformVerticalScrollbar(
 }
 
 @Composable
-actual fun PlatformVerticalScrollbar(
+actual fun PlatformColumnVerticalScrollbar(
     scrollState: ScrollState,
     modifier: Modifier
 ) {
