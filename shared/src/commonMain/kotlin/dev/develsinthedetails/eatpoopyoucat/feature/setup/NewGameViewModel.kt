@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.uuid.Uuid
 
 class NewGameViewModel(
@@ -17,11 +19,13 @@ class NewGameViewModel(
             timeout = null,
             turns = null,
         )
-    fun saveNewGame(gameMode: GameMode): Game {
+    fun saveNewGame(gameMode: GameMode, onNewGame: (Uuid, GameMode) -> Unit) {
         game = game.copy(gameMode=gameMode)
         viewModelScope.launch {
             repository.createGame(game)
+            withContext(Dispatchers.Main) {
+                onNewGame.invoke(gameId, gameMode)
+            }
         }
-        return game
     }
 }

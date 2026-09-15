@@ -20,4 +20,4 @@ rootProject.name = "EatPoopYouCat"
 include(":androidApp")
 include(":shared")
 include(":desktopApp")
-include(":wasmJsApp")
+include(":webApp")

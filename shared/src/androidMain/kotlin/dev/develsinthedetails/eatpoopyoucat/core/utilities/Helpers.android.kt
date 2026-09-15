@@ -1,7 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-// In your androidMain module
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build

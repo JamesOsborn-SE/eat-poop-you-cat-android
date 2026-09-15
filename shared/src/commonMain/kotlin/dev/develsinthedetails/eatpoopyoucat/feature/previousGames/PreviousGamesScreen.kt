@@ -47,6 +47,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBackupFileSaver
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.entriesAreValid
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
@@ -58,9 +59,6 @@ import eatpoopyoucat.shared.generated.resources.no_previous_games_found
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
 import eatpoopyoucat.shared.generated.resources.turns
-import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
-import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
-import io.github.vinceglb.filekit.write
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
@@ -89,28 +87,15 @@ fun PreviousGamesRoute(
     }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val launcher = rememberFileSaverLauncher(
-        dialogSettings = FileKitDialogSettings.createDefault(),
+    val launcher = rememberBackupFileSaver(
         onError = { failure ->
             scope.launch {
-                snackbarHostState.showSnackbar("Backup failed successfully!${failure.message}")
+                snackbarHostState.showSnackbar("Backup failed: ${failure.message}")
             }
         },
-        onResult = { file ->
-            if (file == null) {
-                // The user canceled the saver
-            } else {
-                scope.launch {
-                    snackbarHostState.showSnackbar(getString(Res.string.saving))
-                    if (games?.isNotEmpty() == true) {
-                        val gamesJson = Json.encodeToString(games!!)
-                        val bytes = Gzip.compress(gamesJson)
-                        file.write(bytes)
-                        snackbarHostState.showSnackbar("Backup saved successfully!")
-                    } else {
-                        snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
-                    }
-                }
+        onSuccess = {
+            scope.launch {
+                snackbarHostState.showSnackbar("Backup saved successfully!")
             }
         },
     )
@@ -119,10 +104,22 @@ fun PreviousGamesRoute(
         games = games?.filter { it.entriesAreValid() },
         snackbarHostState,
         onBackupGames = {
-            launcher.launch(
-                suggestedName = defaultDataFilename(),
-                defaultExtension = "gz",
-            )
+            if (games?.isNotEmpty() == true) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.saving))
+                    val gamesJson = Json.encodeToString(games!!)
+                    val bytes = Gzip.compress(gamesJson)
+                    launcher.saveBackup(
+                        bytes = bytes,
+                        suggestedName = defaultDataFilename(),
+                        extension = "gz"
+                    )
+                }
+            } else {
+                scope.launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
+                }
+            }
         },
         onImportGames = onNavigateToImport,
         onGotoGame = onGameClick,

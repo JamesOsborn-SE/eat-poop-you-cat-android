@@ -144,7 +144,7 @@ kotlin {
 
                 // Serialization & Ktor
                 api(libs.kotlinx.serialization.json)
-                api(libs.ktor.client.core)
+                implementation(libs.ktor.client.core)
                 api(libs.ktor.client.resources)
                 api(libs.ktor.client.content.negotiation)
                 api(libs.ktor.client.cio)
@@ -178,7 +178,9 @@ kotlin {
         }
 
         wasmJsMain {
+            languageSettings.optIn("kotlin.js.ExperimentalWasmJsInterop")
             dependencies {
+                implementation(libs.kotlinXw3c)
                 implementation(libs.androidx.sqlite.web)
             }
         }

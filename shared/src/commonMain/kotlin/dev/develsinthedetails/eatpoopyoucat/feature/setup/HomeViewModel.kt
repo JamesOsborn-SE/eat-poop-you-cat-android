@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import kotlinx.coroutines.launch
@@ -40,27 +39,21 @@ class HomeViewModel(
         }
     }
 
-    fun saveNewGame(entryId: Uuid, onToSentence: () -> Unit) {
+    fun saveNewGame(onToSentence: () -> Unit) {
         isLoading = true
         val gameId = Uuid.random()
-
         viewModelScope.launch {
+            val player = repository.getPlayer(playerId)
+            println("DEBUG: $player")
+            println("DEBUG: $playerId")
+            if (player == null) {
+                repository.createPlayer(Player(playerId, nickname))
+            }
             repository.createGame(
                 Game(
                     id = gameId,
                     timeout = null,
                     turns = null
-                )
-            )
-            repository.createEntry(
-                Entry(
-                    id = entryId,
-                    playerId = playerId,
-                    sequence = 0,
-                    gameId = gameId,
-                    timePassed = 0,
-                    sentence = null,
-                    drawing = null
                 )
             )
             onToSentence.invoke()

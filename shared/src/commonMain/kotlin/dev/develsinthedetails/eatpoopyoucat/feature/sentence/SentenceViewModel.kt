@@ -14,12 +14,14 @@ import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.no_nickname_chosen_warning
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getString
 import kotlin.uuid.Uuid
 
@@ -93,8 +95,21 @@ class SentenceViewModel(
         )
 
         viewModelScope.launch {
-            repository.upsertEntry(newEntry)
-            nextTo.invoke(entryId)
+            println("DEBUG: Attempting to insert Entry.")
+            println("DEBUG: Entry's gameId = $gameId")
+            println("DEBUG: Entry's playerId = $playerId")
+            println("DEBUG: Entry's sentence = ${newEntry.sentence}")
+
+            try {
+                repository.upsertEntry(newEntry)
+
+                withContext(Dispatchers.Main) {
+                    nextTo.invoke(entryId)
+                }
+            } catch (e: Exception) {
+                println("DEBUG: Insert failed! One of those IDs is missing in the parent tables.")
+                e.printStackTrace()
+            }
         }
         _uiState.update { it.copy(isLoading = false) }
     }

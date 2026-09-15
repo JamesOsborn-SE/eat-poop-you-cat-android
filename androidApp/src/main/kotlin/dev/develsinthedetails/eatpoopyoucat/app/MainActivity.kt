@@ -15,7 +15,6 @@ import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_HOST
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY
-import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUuid
 import io.github.vinceglb.filekit.FileKit
@@ -57,17 +56,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splashScreen.setKeepOnScreenCondition { !appSettings.isReady }
+        splashScreen.setKeepOnScreenCondition { !appSettings.isReadyFlow.value }
         AppContextProvider.context = applicationContext
         handleIntent(intent)
         FileKit.init(this)
         setContent {
-            AppTheme {
-                NavGraph(
-                    netGameParams = netGameParams.value,
-                    onNetGameParamsConsumed = { netGameParams.value = null },
-                )
-            }
+            App()
         }
     }
 

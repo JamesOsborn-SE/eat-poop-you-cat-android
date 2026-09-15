@@ -40,11 +40,12 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultImageFilename
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localTimestamp
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBackupFileSaver
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBitmapFromResource
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberShareFileLauncher
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveToGallery
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
@@ -63,15 +64,8 @@ import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
 import eatpoopyoucat.shared.generated.resources.scroll_to_top
 import eatpoopyoucat.shared.generated.resources.share_this_game
-import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.ImageFormat
-import io.github.vinceglb.filekit.PlatformFile
-import io.github.vinceglb.filekit.cacheDir
-import io.github.vinceglb.filekit.dialogs.FileKitDialogSettings
-import io.github.vinceglb.filekit.dialogs.compose.rememberFileSaverLauncher
 import io.github.vinceglb.filekit.dialogs.compose.util.encodeToByteArray
-import io.github.vinceglb.filekit.saveImageToGallery
-import io.github.vinceglb.filekit.write
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
@@ -99,28 +93,15 @@ fun PreviousGameDetailsRoute(
 
     val textMeasurer = rememberTextMeasurer()
     val scope = rememberCoroutineScope()
-    val launcher = rememberFileSaverLauncher(
-        dialogSettings = FileKitDialogSettings.createDefault(),
+    val launcher = rememberBackupFileSaver(
         onError = { failure ->
             scope.launch {
-                snackbarHostState.showSnackbar("Backup failed successfully!${failure.message}")
+                snackbarHostState.showSnackbar("Backup failed: ${failure.message}")
             }
         },
-        onResult = { file ->
-            if (file == null) {
-                // The user canceled the saver
-            } else {
-                scope.launch {
-                    snackbarHostState.showSnackbar(getString(Res.string.saving))
-                    if (game?.entries?.isNotEmpty() == true) {
-                        val gamesJson = Json.encodeToString(listOf(game!!))
-                        val bytes = Gzip.compress(gamesJson)
-                        file.write(bytes)
-                        snackbarHostState.showSnackbar("Backup saved successfully!")
-                    } else {
-                        snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
-                    }
-                }
+        onSuccess = {
+            scope.launch {
+                snackbarHostState.showSnackbar("Backup saved successfully!")
             }
         },
     )
@@ -138,10 +119,22 @@ fun PreviousGameDetailsRoute(
             )
         },
         onBackupGame = {
-            launcher.launch(
-                suggestedName = defaultDataFilename(),
-                defaultExtension = "gz",
-            )
+            if (game?.entries?.isNotEmpty() == true) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.saving))
+                    val gamesJson = Json.encodeToString(listOf(game!!))
+                    val bytes = Gzip.compress(gamesJson)
+                    launcher.saveBackup(
+                        bytes = bytes,
+                        suggestedName = defaultDataFilename(),
+                        extension = "gz"
+                    )
+                }
+            } else {
+                scope.launch {
+                    snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
+                }
+            }
         },
         onImportGame = onNavigateToImport,
         onBack = onBack,
@@ -154,13 +147,12 @@ fun PreviousGameDetailsRoute(
                     isAvailableOn,
                     textMeasurer
                 )
-                val file = PlatformFile(FileKit.cacheDir, defaultImageFilename())
                 val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
-                file.write(bytes)
-                FileKit.saveImageToGallery(file)
+
+                saveToGallery(bytes, defaultDataFilename())
                 snackbarHostState.showSnackbar("Saved to device gallery")
                 if (shareLauncher.isSupported) {
-                    shareLauncher.launch(file)
+                    shareLauncher.launch(bytes, defaultDataFilename())
                 }
             }
         },

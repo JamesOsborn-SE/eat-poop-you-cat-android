@@ -77,5 +77,9 @@ interface GameDao {
 
     @Query("SELECT g.* FROM game g JOIN roster r ON r.gameId=g.id WHERE g.turns IS NULL AND r.playerId=:playerId AND r.isLeader=1")
     fun getActiveHostedGameWithRostersFlow(playerId: Uuid): Flow<List<Game>>
+
+    @Transaction
+    @Upsert
+    suspend fun upsert(game: Game)
 }
 

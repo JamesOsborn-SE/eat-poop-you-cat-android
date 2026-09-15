@@ -47,8 +47,7 @@ fun NewGameScreen(
         onRequestPermission = { permissionState.requestPermission() },
         onBack = onBack,
         onNewGame = { gameMode: GameMode ->
-            viewModel.saveNewGame(gameMode)
-            onNewGame(viewModel.gameId, gameMode)
+            viewModel.saveNewGame(gameMode, onNewGame)
         }
     )
 }

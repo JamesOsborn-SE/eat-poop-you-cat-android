@@ -39,7 +39,7 @@ class AppRepository(
     suspend fun createGame(game: Game) {
         gameDao.insert(game.copy(createdAt = Clock.System.now()))
     }
-
+    suspend fun upsertGame(game: Game) = gameDao.upsert(game.copy(createdAt = Clock.System.now()))
     fun getGameFlow(id: Uuid) = gameDao.getFlow(id)
     suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
