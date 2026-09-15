@@ -25,10 +25,12 @@ fun App() {
         }
     } else {
         AppTheme {
-            NavGraph(
-                netGameParams = null,
-                onNetGameParamsConsumed = { },
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                NavGraph(
+                    netGameParams = null,
+                    onNetGameParamsConsumed = { },
+                )
+            }
         }
     }
 }

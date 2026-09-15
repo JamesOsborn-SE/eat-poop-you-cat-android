@@ -2,12 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eat Poop You Cat</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
-        html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                background-color: #000000;
+            }
+
+            canvas {
+                width: 100%;
+                height: 100%;
+                display: block;
+                outline: none;
+            }
     </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').then(() => {
+                    // If the browser disabled SharedArrayBuffer, we know we need a reload!
+                    if (!window.crossOriginIsolated) {
+                        console.log("Headers injected. Reloading to activate OPFS...");
+                        window.location.reload();
+                    }
+                });
+            }
+    </script>
 </head>
 <body>
+<canvas id="ComposeTarget"></canvas>
 <script type="application/javascript" src="webApp.js"></script>
 <div id="compose-target"></div>
 </body>

@@ -7,6 +7,7 @@ import org.w3c.dom.HTMLAnchorElement
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class BackupFileSaver(
     private val launchBlock: (ByteArray, String, String) -> Unit
 ) {

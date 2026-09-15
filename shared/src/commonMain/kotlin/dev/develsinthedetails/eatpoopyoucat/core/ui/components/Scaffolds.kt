@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.core.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -104,6 +105,7 @@ object Scaffolds {
         content: @Composable (PaddingValues) -> Unit,
     ) {
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
             topBar = {
                 CenterAlignedTopAppBar(
                     modifier = Modifier.fillMaxWidth(),

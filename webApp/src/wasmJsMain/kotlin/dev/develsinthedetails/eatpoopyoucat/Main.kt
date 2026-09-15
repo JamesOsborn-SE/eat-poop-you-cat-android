@@ -12,8 +12,7 @@ fun main() {
     startKoin {
         modules(appModule)
     }
-    val targetElement = document.getElementById("compose-target") ?: document.body!!
-    ComposeViewport(targetElement) {
+    ComposeViewport(document.body!!) {
         App()
     }
 }

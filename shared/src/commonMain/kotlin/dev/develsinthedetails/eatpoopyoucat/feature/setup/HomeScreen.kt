@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -121,119 +122,116 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (isLoading)
                     Spinner()
-                Column {
-                    val defaultModifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(padding)
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(padding),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Image(
+                        painter = painterResource(Res.drawable.epyc_icon),
+                        contentDescription = stringResource(Res.string.application_icon),
                         modifier = Modifier
+                            .background(
+                                app_icon_background,
+                                shape = CircleShape
+                            )
+                            .size(140.dp)
+                            .padding(15.dp)
+                    )
+                    Row(modifier = Modifier.pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { toggleUseNicknames() }
+                        )
+                    }) {
+                        Checkbox(
+                            checked = useNickNames,
+                            onCheckedChange = { toggleUseNicknames() })
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = stringResource(Res.string.use_nicknames)
+                        )
+                        TextButton(
+                            modifier = Modifier.rotate(13f),
+                            onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
+                            Text(stringResource(Res.string.what_s_this))
+                        }
+                    }
+                    AnimatedVisibility(showNicknameMoreInfo) {
+                        Row(modifier = Modifier) {
+                            Text(stringResource(Res.string.use_nicknames_more_info))
+                        }
+                    }
+                    Button(
+                        onClick = toNewGame,
+                        modifier = modifier
+                            .padding(5.dp)
                             .align(Alignment.CenterHorizontally)
-                            .padding(padding)
                     ) {
-
-                        Image(
-                            painter = painterResource(Res.drawable.epyc_icon),
-                            contentDescription = stringResource(Res.string.application_icon),
-                            modifier = defaultModifier
-                                .background(
-                                    app_icon_background,
-                                    shape = CircleShape
-                                )
-                                .size(140.dp)
-                                .padding(15.dp)
+                        Text(stringResource(Res.string.dialog_start_game))
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_start_rounded),
+                            contentDescription = stringResource(Res.string.dialog_start_game),
                         )
-                        Row(modifier = defaultModifier.pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = { toggleUseNicknames() }
-                            )
+                    }
+                    Button(
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally),
+                        colors = secondaryButtonColors(),
+                        onClick = {
+                            toPreviousGames()
                         }) {
-                            Checkbox(
-                                checked = useNickNames,
-                                onCheckedChange = { toggleUseNicknames() })
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = stringResource(Res.string.use_nicknames)
-                            )
-                            TextButton(
-                                modifier = Modifier.rotate(13f),
-                                onClick = { showNicknameMoreInfo = !showNicknameMoreInfo }) {
-                                Text(stringResource(Res.string.what_s_this))
-                            }
-                        }
-                        AnimatedVisibility(showNicknameMoreInfo) {
-                            Row(modifier = defaultModifier) {
-                                Text(stringResource(Res.string.use_nicknames_more_info))
-                            }
-                        }
-                        Button(
-                            onClick = toNewGame,
-                            modifier = modifier
-                                .padding(5.dp)
-                                .align(Alignment.CenterHorizontally)
-                        ) {
-                            Text(stringResource(Res.string.dialog_start_game))
-                            Spacer(modifier = Modifier.size(5.dp))
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_start_rounded),
-                                contentDescription = stringResource(Res.string.dialog_start_game),
-                            )
-                        }
-                        Button(
-                            modifier = modifier
-                                .padding(5.dp)
-                                .align(Alignment.CenterHorizontally),
-                            colors = secondaryButtonColors(),
-                            onClick = {
-                                toPreviousGames()
-                            }) {
-                            Text(pluralStringResource(Res.plurals.previous_games, 2))
-                            Spacer(modifier = Modifier.size(5.dp))
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_history_rounded),
-                                contentDescription = null,
-                            )
-                        }
-                        Button(
-                            modifier = modifier
-                                .padding(5.dp)
-                                .align(Alignment.CenterHorizontally),
-                            colors = tertiaryButtonColors(),
-                            onClick = {
-                                toInProgressGames()
-                            }) {
-                            Text("In Progress Games")
-                            Spacer(modifier = Modifier.size(5.dp))
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_network_ping_rounded),
-                                contentDescription = null,
-                            )
-                        }
-                        Text(
-                            text = stringResource(Res.string.app_description),
-                            modifier = defaultModifier
+                        Text(pluralStringResource(Res.plurals.previous_games, 2))
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_history_rounded),
+                            contentDescription = null,
                         )
-                        Text(
-                            text = stringResource(Res.string.app_warning),
-                            modifier = defaultModifier,
-                            fontSize = 12.sp
+                    }
+                    Button(
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally),
+                        colors = tertiaryButtonColors(),
+                        onClick = {
+                            toInProgressGames()
+                        }) {
+                        Text("In Progress Games")
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_network_ping_rounded),
+                            contentDescription = null,
                         )
+                    }
+                    Text(
+                        text = stringResource(Res.string.app_description),
+                        modifier = Modifier
+                    )
+                    Text(
+                        text = stringResource(Res.string.app_warning),
+                        modifier = Modifier,
+                        fontSize = 12.sp
+                    )
 
-                        TextButton(
-                            modifier = defaultModifier,
-                            onClick = toCredits,
-                        ) {
-                            Text(stringResource(Res.string.about))
-                        }
-                        TextButton(
-                            modifier = defaultModifier,
-                            onClick = toPrivacyPolicy
-                        ) {
-                            Text(stringResource(Res.string.privacy_policy))
-                        }
+                    TextButton(
+                        modifier = Modifier,
+                        onClick = toCredits,
+                    ) {
+                        Text(stringResource(Res.string.about))
+                    }
+                    TextButton(
+                        modifier = Modifier,
+                        onClick = toPrivacyPolicy
+                    ) {
+                        Text(stringResource(Res.string.privacy_policy))
                     }
                 }
             }
