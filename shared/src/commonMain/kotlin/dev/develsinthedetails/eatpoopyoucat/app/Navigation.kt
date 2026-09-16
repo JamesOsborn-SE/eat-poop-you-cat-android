@@ -156,6 +156,9 @@ fun NavGraph(
                         popUpTo<Home>()
                     }
                 },
+                toJoinGame ={ gameId, serverAddress ->
+                    navController.navigate(NetGameRoute(gameId, serverAddress))
+                },
                 toPreviousGames = {
                     navController.navigate(PreviousGames) {
                         popUpTo<Home>()

@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.compose.runtime.Composable
+import io.ktor.http.Url
 import korlibs.io.lang.toByteArray
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -81,6 +82,16 @@ fun Uuid.shareEncode(): String {
 
 fun String.shareDecodeUuid(): Uuid {
     return Uuid.fromByteArray(Base64.UrlSafe.decode(this))
+}
+
+fun String.shareDecodeUrl(): Pair<Uuid, String> {
+    val url = Url(this)
+    val gameId = url.parameters["game"]?.shareDecodeUuid()
+    val address = url.parameters["server"]?.shareDecode()
+    if (gameId != null && address != null) {
+        return Pair(gameId, address)
+    }
+    return Pair(Uuid.NIL, "")
 }
 
 @Composable

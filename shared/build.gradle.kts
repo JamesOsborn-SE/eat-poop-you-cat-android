@@ -89,6 +89,7 @@ fun KotlinDependencyHandler.jvmAndAndroidDependencies() {
 
 kotlin {
     jvmToolchain(17)
+    compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 
     android {
         namespace = "dev.develsinthedetails.eatpoopyoucat"

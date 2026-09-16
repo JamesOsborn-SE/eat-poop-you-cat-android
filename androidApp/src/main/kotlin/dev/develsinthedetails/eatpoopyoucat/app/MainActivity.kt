@@ -15,8 +15,7 @@ import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_HOST
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecode
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUuid
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUrl
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.init
 import org.koin.android.ext.android.inject
@@ -76,14 +75,7 @@ class MainActivity : ComponentActivity() {
 
         if (uri.path?.contains(DEEPLINK_PLAY) == true) {
             try {
-                val gameIdStr = uri.getQueryParameter("game")
-                val playerAddress = uri.getQueryParameter("server")
-
-                if (gameIdStr != null && playerAddress != null) {
-                    val gameId = gameIdStr.shareDecodeUuid()
-                    val address = playerAddress.shareDecode()
-                    netGameParams.value = Pair(gameId, address)
-                }
+                netGameParams.value = uri.toString().shareDecodeUrl()
             } catch (_: Exception) {
                 // Ignore invalid deep links
             }

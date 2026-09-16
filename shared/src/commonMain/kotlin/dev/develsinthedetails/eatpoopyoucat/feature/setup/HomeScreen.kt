@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,6 +42,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.tertiaryButtonColors
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUrl
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
@@ -53,6 +56,7 @@ import eatpoopyoucat.shared.generated.resources.epyc_icon
 import eatpoopyoucat.shared.generated.resources.ic_history_rounded
 import eatpoopyoucat.shared.generated.resources.ic_network_ping_rounded
 import eatpoopyoucat.shared.generated.resources.ic_start_rounded
+import eatpoopyoucat.shared.generated.resources.ic_wifi
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.privacy_policy
 import eatpoopyoucat.shared.generated.resources.use_nicknames
@@ -64,12 +68,14 @@ import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     serverManager: ServerManager = koinInject(),
     toNewGame: () -> Unit,
+    toJoinGame: (Uuid, String) -> Unit,
     toPreviousGames: () -> Unit,
     toInProgressGames: () -> Unit,
     toCredits: () -> Unit,
@@ -85,6 +91,7 @@ fun HomeScreen(
         toNewGame = {
             viewModel.saveNewGame(toNewGame)
         },
+        toJoinGame = toJoinGame,
         toPreviousGames = toPreviousGames,
         toInProgressGames = toInProgressGames,
         toCredits = toCredits,
@@ -99,11 +106,14 @@ fun HomeScreen(
     useNickNames: Boolean,
     toggleUseNicknames: () -> Unit,
     toNewGame: () -> Unit,
+    toJoinGame: (Uuid, String) -> Unit,
     toPreviousGames: () -> Unit,
     toInProgressGames: () -> Unit,
     toCredits: () -> Unit,
     toPrivacyPolicy: () -> Unit,
 ) {
+    var showJoinDialog by rememberSaveable { mutableStateOf(false) }
+    var joinLinkText by rememberSaveable { mutableStateOf("") }
     val padding = 10.dp
     var showNicknameMoreInfo by rememberSaveable { mutableStateOf(false) }
     Scaffolds.Home(
@@ -185,6 +195,19 @@ fun HomeScreen(
                         modifier = modifier
                             .padding(5.dp)
                             .align(Alignment.CenterHorizontally),
+                        onClick = { showJoinDialog = true }
+                    ) {
+                        Text("Join Game via Link")
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_wifi),
+                            contentDescription = null,
+                        )
+                    }
+                    Button(
+                        modifier = modifier
+                            .padding(5.dp)
+                            .align(Alignment.CenterHorizontally),
                         colors = secondaryButtonColors(),
                         onClick = {
                             toPreviousGames()
@@ -235,6 +258,46 @@ fun HomeScreen(
                     }
                 }
             }
+            if (showJoinDialog) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showJoinDialog = false
+                        joinLinkText = "" // Reset on dismiss
+                    },
+                    title = { Text("Join Game") },
+                    text = {
+                        OutlinedTextField(
+                            value = joinLinkText,
+                            onValueChange = { joinLinkText = it },
+                            label = { Text("Paste Link") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                val (gameId, address) = joinLinkText.shareDecodeUrl()
+                                toJoinGame(gameId, address)
+                                showJoinDialog = false
+                                joinLinkText = ""
+                            }
+                        ) {
+                            Text("Join")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showJoinDialog = false
+                                joinLinkText = ""
+                            }
+                        ) {
+                            Text("Cancel")
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -251,6 +314,7 @@ fun HomeScreenPreview() {
             useNickNames = false,
             toggleUseNicknames = {},
             toNewGame = {},
+            toJoinGame = { _, _ -> },
             toInProgressGames = {},
             toPreviousGames = {},
             toCredits = {},
