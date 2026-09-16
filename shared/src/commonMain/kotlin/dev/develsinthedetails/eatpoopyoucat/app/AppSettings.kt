@@ -7,13 +7,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -35,18 +33,22 @@ class AppSettings(
 
     init {
         appScope.launch {
-            val prefs = dataStore.data.first()
-            val savedId = prefs[PLAYER_ID]
+            try {
+                val prefs = dataStore.data.first()
+                val savedId = prefs[PLAYER_ID]
 
-            if (savedId != null) {
-                playerId = Uuid.parse(savedId)
-            } else {
-                val newId = Uuid.random().toString()
-                dataStore.edit { it[PLAYER_ID] = newId }
-                playerId = Uuid.parse(newId)
+                if (savedId != null && savedId != Uuid.NIL.toString()) {
+                    playerId = Uuid.parse(savedId)
+                } else {
+                    val newId = Uuid.random().toString()
+                    dataStore.edit { it[PLAYER_ID] = newId }
+                    playerId = Uuid.parse(newId)
+                }
+                isReadyFlow.value = true
+            } catch (e: Exception) {
+                println("CRITICAL ERROR: DataStore failed to initialize!")
+                e.printStackTrace()
             }
-            waitForReady()
-            isReadyFlow.emit(true)
         }
     }
 
@@ -58,11 +60,5 @@ class AppSettings(
         dataStore.edit { prefs ->
             prefs[USE_NICKNAMES] = useNicknames.toString()
         }
-    }
-
-    tailrec suspend fun waitForReady(): Boolean {
-        if (playerId != Uuid.NIL) return true
-        delay(100.milliseconds)
-        return waitForReady()
     }
 }

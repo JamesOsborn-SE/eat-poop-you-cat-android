@@ -11,6 +11,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InPr
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameRouter
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.StaticRouter
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceViewModel
@@ -39,6 +40,7 @@ val appModule = module {
     singleOf(::AppSettings)
     singleOf(::Client)
     singleOf(::GameRouter)
+    singleOf(::StaticRouter)
     viewModelOf(::PreviousGameDetailsViewModel)
     viewModelOf(::SentenceViewModel)
     viewModelOf(::PreviousGamesViewModel)

@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 import java.net.NetworkInterface
 
 class DesktopServerManager(
@@ -7,7 +8,7 @@ class DesktopServerManager(
 ) : ServerManager {
 
     override val currentAddress: String?
-        get() = getLocalIpv4Address()?.let { "http://$it:3947" }
+        get() = getLocalIpv4Address()?.let { "http://$it:$SERVER_PORT" }
 
     override fun startServer() {
         sharedKtorServer.start()

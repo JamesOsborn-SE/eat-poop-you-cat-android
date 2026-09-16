@@ -3,6 +3,7 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.cbor.cbor
@@ -32,6 +33,7 @@ import kotlin.uuid.Uuid
 
 actual class SharedKtorServer actual constructor(
     private val gameRouter: GameRouter,
+    private val staticRouter: StaticRouter,
     private val repository: AppRepository,
     private val client: Client,
     private val appSettings: AppSettings
@@ -45,12 +47,13 @@ actual class SharedKtorServer actual constructor(
     actual fun start() {
         if (server == null) {
             serverScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-            server = embeddedServer(Netty, port = 3947, host = "0.0.0.0") {
+            server = embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0") {
                 install(ContentNegotiation) { cbor() }
                 install(Resources)
 
                 routing {
                     with(gameRouter) { gameRoutes() }
+                    with(staticRouter) { staticRoutes() }
                     get("api/endpoints") {
                         val routes = this@routing.getAllRoutes()
                         call.respondText(routes.joinToString("\n"))

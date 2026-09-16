@@ -28,6 +28,7 @@ import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY_URI
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareEncode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareLink
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
@@ -197,7 +198,7 @@ fun ShareGame(
 fun ShareGamePreview() {
     val sd = NewNetGameUiState(
         Uuid.NIL, GameMode.LAN, Player(Uuid.NIL, nickname = "Muthafucka"),
-        address = "http://192.168.1.10:3947",
+        address = "http://192.168.1.10:$SERVER_PORT",
     )
     AppTheme {
         ShareGame(sd, {}, {}, {}, {}, {})

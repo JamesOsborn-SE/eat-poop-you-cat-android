@@ -20,6 +20,7 @@ class WebServerManager() : ServerManager {
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class SharedKtorServer actual constructor(
     gameRouter: GameRouter,
+    staticRouter: StaticRouter,
     repository: AppRepository,
     client: Client,
     appSettings: AppSettings

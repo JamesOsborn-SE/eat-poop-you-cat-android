@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.serialization.Serializable
 
 const val DATABASE_NAME = "eatpoopyoucat-db"
+const val SERVER_PORT: Int = "3792"
 
 @Suppress("SpellCheckingInspection")
 const val catTestDrawingLinesInJson =

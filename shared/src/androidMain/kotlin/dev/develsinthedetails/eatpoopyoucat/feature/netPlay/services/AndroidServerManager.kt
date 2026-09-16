@@ -5,11 +5,12 @@ import android.os.Build
 import android.provider.Settings
 import dev.develsinthedetails.eatpoopyoucat.app.AppContextProvider
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.NetworkUtils
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 
 class AndroidServerManager : ServerManager {
     val context = AppContextProvider.context
     override val currentAddress: String?
-        get() = NetworkUtils.getLocalIpAddress()?.let { "http://$it:3947" }
+        get() = NetworkUtils.getLocalIpAddress()?.let { "http://$it:$SERVER_PORT" }
 
     override fun startServer() {
         val serviceIntent = Intent(context, AndroidForegroundServerService::class.java)
