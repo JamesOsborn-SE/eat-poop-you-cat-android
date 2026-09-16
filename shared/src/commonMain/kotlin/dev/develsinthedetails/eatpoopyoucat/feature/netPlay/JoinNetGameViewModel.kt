@@ -79,6 +79,7 @@ class JoinNetGameViewModel(
     fun onYesPlay() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            println("DEBUG: Player:$playerAddress Game=$gameId")
             if (playerAddress != null && gameId != null)
                 viewModelScope.launch {
                     val player = _uiState.value.player

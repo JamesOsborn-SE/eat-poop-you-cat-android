@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
@@ -39,7 +40,7 @@ fun NetGameScreen(
     address: String
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ManageServerLifecycle(serverManager, onUpdateAddress = { viewModel.updateAddress(it) } )
+    ManageServerLifecycle(serverManager, onUpdateAddress = { viewModel.updateAddress(it) })
 
     viewModel.initFromDeepLink(gameId, address)
     if (uiState.isLoading) {
@@ -85,7 +86,7 @@ fun AskToJoinScreen(
                         onDone = { joinData.onChangeNickname }),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 20.dp),
+                        .padding(vertical = 20.dp, horizontal = 20.dp),
                     enabled = true,
                     readOnly = false,
                     maxLines = 1,
@@ -96,16 +97,15 @@ fun AskToJoinScreen(
                     },
                 )
                 val m = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(.3f)
                     .align(Alignment.CenterHorizontally)
-                    .padding(20.dp)
                 Button(joinData.onYesPlay, content = {
                     Text("Yes")
                 }, modifier = m)
 
                 Button(joinData.onNoPlay, content = {
                     Text("No")
-                }, modifier = m)
+                },colors = secondaryButtonColors(), modifier = m)
             }
         }
     }
@@ -120,6 +120,6 @@ data class JoinData(
 @Preview
 @Composable
 fun AskToJoinPreview() {
-    val d = JoinData( {}, {}, {})
+    val d = JoinData({}, {}, {})
     AskToJoinScreen(JoinUiState(Uuid.NIL, player = Player(Uuid.NIL, "oofster")), d)
 }
