@@ -5,6 +5,16 @@ plugins {
     alias(libs.plugins.screenshot)
 }
 
+fun getGitHash(): String {
+    val isCI = providers.environmentVariable("CI").isPresent
+    if (!isCI) {
+        return "local-dev"
+    }
+    return providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+    }.standardOutput.asText.get().trim()
+}
+
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
     compileSdk = 37
@@ -19,7 +29,8 @@ android {
 
         resValue("string", "git_hash", getGitHash())
 
-        testInstrumentationRunner = "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"
+        testInstrumentationRunner =
+            "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"
         proguardFiles("proguard-rules.pro")
         manifestPlaceholders += mapOf(
             "deeplinkScheme" to project.findProperty("deeplink.scheme").toString(),
@@ -28,7 +39,8 @@ android {
             "deeplinkDraw" to project.findProperty("deeplink.draw").toString(),
             "deeplinkSentence" to project.findProperty("deeplink.sentence").toString(),
             "deeplinkPreviousGames" to project.findProperty("deeplink.previousGames").toString(),
-            "deeplinkPreviousGameDetails" to project.findProperty("deeplink.previousGameDetails").toString()
+            "deeplinkPreviousGameDetails" to project.findProperty("deeplink.previousGameDetails")
+                .toString()
         )
     }
 
@@ -103,8 +115,3 @@ dependencies {
 
 }
 
-fun getGitHash(): String {
-    return providers.exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-    }.standardOutput.asText.get().trim()
-}

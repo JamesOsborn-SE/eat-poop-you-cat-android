@@ -15,10 +15,15 @@ plugins {
     alias(libs.plugins.android.lint)
     alias(libs.plugins.buildconfig)
 }
-
-val gitHash = providers.exec {
-    commandLine("git", "rev-parse", "--short", "HEAD")
-}.standardOutput.asText.getOrElse("unknown").trim()
+fun getGitHash(): String {
+    val isCI = providers.environmentVariable("CI").isPresent
+    if (!isCI) {
+        return "local-dev"
+    }
+    return providers.exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+    }.standardOutput.asText.get().trim()
+}
 
 val scheme = project.findProperty("deeplink.scheme").toString()
 val host = project.findProperty("deeplink.host").toString()
@@ -65,7 +70,7 @@ buildConfig {
     buildConfigField("String", "DEEPLINK_PREVIOUS_GAME_DETAILS_URI", "\"$previousGameDetailsUri\"")
 
     buildConfigField("String", "VERSION_NAME", "\"${project.version}\"")
-    buildConfigField("String", "GIT_HASH", "\"$gitHash\"")
+    buildConfigField("String", "GIT_HASH", "\"${getGitHash()}\"")
     val isDebug = project.findProperty("isDebug")?.toString()?.toBoolean() ?: true
     buildConfigField("Boolean", "DEBUG", isDebug.toString())
 }
