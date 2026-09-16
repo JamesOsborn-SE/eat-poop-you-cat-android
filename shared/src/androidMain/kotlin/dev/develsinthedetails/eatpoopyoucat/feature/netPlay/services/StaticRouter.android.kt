@@ -39,7 +39,8 @@ actual class StaticRouter {
 
                 call.respondBytes(bytes, contentType)
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotFound)
+                println("Error serving static asset: $assetPath")
+                call.respond(HttpStatusCode.NotFound, e.message ?: "Not found")
             }
         }
     }
