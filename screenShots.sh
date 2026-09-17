@@ -1,10 +1,8 @@
 #!/bin/bash
 ## written with help from Gemini 3.1 Pro
 
-# Define paths
-RES_DIR="app/src/main/res"
-# Using the package path from our previous classloader fix
-OUTPUT_DIR="app/src/screenshotTest/kotlin/"
+RES_DIR="shared/src/commonMain/composeResources/"
+OUTPUT_DIR="androidApp/src/screenshotTest/kotlin/"
 OUTPUT_FILE="$OUTPUT_DIR/GenerateScreenShots.kt"
 
 echo "🔍 Scanning for locales..."
@@ -40,11 +38,11 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.tools.screenshot.PreviewTest
-import dev.develsinthedetails.eatpoopyoucat.ui.draw.DrawingWithSentencePreview
-import dev.develsinthedetails.eatpoopyoucat.ui.screens.HomeScreenPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.sentence.SentenceScreenWithDrawingPreview
-import dev.develsinthedetails.eatpoopyoucat.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawingWithSentencePreview
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreenPreview
+import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreenWithDrawingPreview
+import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreenPreview
 
 EOF
 
@@ -90,6 +88,7 @@ for screen_info in "${SCREENS[@]}"; do
                 "pl") loc_label="pl-PL" ;;
                 "ru") loc_label="ru-RU" ;;
                 "sv") loc_label="sv-SE" ;;
+                "ta") loc_label="ta-IN" ;;
                 "tr") loc_label="tr-TR" ;;
                 # If a locale already contains a region (e.g., pt-BR) or doesn't need mapping, keep it as is
                 *) loc_label="$loc" ;;
@@ -123,10 +122,10 @@ EOF
 index=$((index+1))
 done
 
-./gradlew :app:updateDebugScreenshotTest
+./gradlew :androidApp:updateDebugScreenshotTest
 echo "✅ Success! Screenshots generated."
 
-SRC_DIR="app/src/screenshotTestDebug/reference/GenerateScreenShotsKt"
+SRC_DIR="androidApp/src/screenshotTestDebug/reference/GenerateScreenShotsKt"
 
 echo "🖼️ Processing and merging screenshots..."
 
