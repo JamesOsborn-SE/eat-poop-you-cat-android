@@ -7,15 +7,14 @@ plugins {
 
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
-    compileSdk = 37
+    compileSdk = ProjectConfig.COMPILE_SDK
     experimentalProperties["android.experimental.enableScreenshotTest"] = true
-
     defaultConfig {
         applicationId = "dev.develsinthedetails.eatpoopyoucat"
-        minSdk = 26
-        targetSdk = 37
-        versionCode = 25
-        versionName = "1.9.9"
+        minSdk = ProjectConfig.MIN_SDK
+        targetSdk = ProjectConfig.TARGET_SDK
+        versionCode = ProjectConfig.VERSION_CODE
+        versionName = ProjectConfig.VERSION_NAME
 
         testInstrumentationRunner =
             "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"
@@ -99,7 +98,5 @@ dependencies {
 
     androidTestImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.mockito.android)
-
-
 }
 

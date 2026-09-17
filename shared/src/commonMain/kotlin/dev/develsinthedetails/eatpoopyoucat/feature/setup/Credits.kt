@@ -26,6 +26,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.config.DEBUG
 import dev.develsinthedetails.eatpoopyoucat.config.GIT_HASH
 import dev.develsinthedetails.eatpoopyoucat.config.VERSION_NAME
+import dev.develsinthedetails.eatpoopyoucat.config.VERSION_CODE
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ReadMetadata
@@ -95,7 +96,7 @@ fun CreditsScreen(playerId: Uuid, onBack: () -> Unit){
                         }
                     }
                 }
-                Text(text = stringResource(Res.string.version_label, VERSION_NAME))
+                Text(text = stringResource(Res.string.version_label, "$VERSION_NAME ($VERSION_CODE)"))
                 Text(
                     text = stringResource(
                         Res.string.git_hash_label,

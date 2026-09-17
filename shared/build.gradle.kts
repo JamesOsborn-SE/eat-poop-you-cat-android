@@ -69,7 +69,8 @@ buildConfig {
     buildConfigField("String", "DEEPLINK_PREVIOUS_GAMES_URI", "\"$previousGamesUri\"")
     buildConfigField("String", "DEEPLINK_PREVIOUS_GAME_DETAILS_URI", "\"$previousGameDetailsUri\"")
 
-    buildConfigField("String", "VERSION_NAME", "\"${project.version}\"")
+    buildConfigField("String", "VERSION_CODE", "\"${ProjectConfig.VERSION_CODE}\"")
+    buildConfigField("String", "VERSION_NAME", "\"${ProjectConfig.VERSION_NAME}\"")
     buildConfigField("String", "GIT_HASH", "\"${getGitHash()}\"")
     val isDebug = project.findProperty("isDebug")?.toString()?.toBoolean() ?: true
     buildConfigField("Boolean", "DEBUG", isDebug.toString())
