@@ -3,8 +3,8 @@ package dev.develsinthedetails.eatpoopyoucat.core.utilities
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Profile
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
 import kotlinx.serialization.json.Json
-import org.junit.Test
 import kotlin.test.DefaultAsserter.assertEquals
+import kotlin.test.Test
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

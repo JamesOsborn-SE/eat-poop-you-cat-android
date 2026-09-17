@@ -22,9 +22,9 @@ private val timeFormat = LocalTime.Format {
     second()
 }
 
-fun Instant?.localTimestamp(): String {
+fun Instant?.localTimestamp(localTimeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     if (this == null) return ""
-    val localTime = this.toLocalDateTime(TimeZone.currentSystemDefault()).time
+    val localTime = this.toLocalDateTime(localTimeZone).time
     return localTime.format(timeFormat)
 }
 

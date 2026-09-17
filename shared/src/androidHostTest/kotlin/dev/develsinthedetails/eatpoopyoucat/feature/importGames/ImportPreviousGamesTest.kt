@@ -25,11 +25,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
+import org.robolectric.RobolectricTestRunner
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.Uuid
 
+@RunWith(RobolectricTestRunner::class)
 class ImportPreviousGamesTest {
     private val gameA = testGames[0]
     private val gameC = testGames[2]

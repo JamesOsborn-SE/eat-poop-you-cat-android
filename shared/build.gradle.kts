@@ -115,15 +115,39 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
+
     }
 
     jvm()
-
     wasmJs {
         browser()
+        binaries.executable()
     }
 
     sourceSets {
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+        jvmTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
+        wasmJsTest.dependencies {
+            implementation(kotlin("test"))
+        }
+        val androidHostTest by getting {
+            dependencies {
+                implementation(libs.androidx.core)
+                implementation(libs.core.testing)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.kotlin.test)
+                implementation(libs.ext.junit)
+                implementation(libs.runner)
+                implementation(libs.robolectric)
+                implementation(libs.androidx.core.ktx)
+                implementation(libs.mockito.kotlin)
+            }
+        }
         commonMain {
             dependencies {
                 api(libs.korlibs.compression)
@@ -192,14 +216,6 @@ kotlin {
                 implementation(libs.kotlinXw3c)
                 implementation(libs.androidx.sqlite.web)
                 implementation(libs.ktor.client.js)
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                api(libs.androidx.core)
-                api(libs.ext.junit)
-                api(libs.runner)
             }
         }
     }

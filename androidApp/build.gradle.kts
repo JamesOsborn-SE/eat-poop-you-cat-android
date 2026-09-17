@@ -16,8 +16,6 @@ android {
         versionCode = ProjectConfig.VERSION_CODE
         versionName = ProjectConfig.VERSION_NAME
 
-        testInstrumentationRunner =
-            "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"
         proguardFiles("proguard-rules.pro")
         manifestPlaceholders += mapOf(
             "deeplinkScheme" to project.findProperty("deeplink.scheme").toString(),
