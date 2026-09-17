@@ -5,6 +5,7 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.cbor.cbor
 import io.ktor.server.application.install
@@ -13,6 +14,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respondText
@@ -50,7 +52,14 @@ actual class SharedKtorServer actual constructor(
             server = embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0") {
                 install(ContentNegotiation) { cbor() }
                 install(Resources)
-
+                install(CORS) {
+                    allowHost("localhost:$SERVER_PORT")
+                    allowMethod(HttpMethod.Options)
+                    allowMethod(HttpMethod.Get)
+                    allowMethod(HttpMethod.Post)
+                    allowMethod(HttpMethod.Put)
+                    allowHeader(io.ktor.http.HttpHeaders.ContentType)
+                }
                 routing {
                     with(gameRouter) { gameRoutes() }
                     with(staticRouter) { staticRoutes() }

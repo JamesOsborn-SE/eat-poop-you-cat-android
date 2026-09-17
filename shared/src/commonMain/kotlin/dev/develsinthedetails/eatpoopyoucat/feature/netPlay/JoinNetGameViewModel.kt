@@ -104,7 +104,6 @@ class JoinNetGameViewModel(
                         repository.upsertRosters(game.roster)
 
                         repository.upsertRoster(myRoster)
-                        client.joinGame(Url(playerAddress!!), myRoster)
                     }
 
                 }

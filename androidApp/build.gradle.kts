@@ -5,16 +5,6 @@ plugins {
     alias(libs.plugins.screenshot)
 }
 
-fun getGitHash(): String {
-    val isCI = providers.environmentVariable("CI").isPresent
-    if (!isCI) {
-        return "local-dev"
-    }
-    return providers.exec {
-        commandLine("git", "rev-parse", "--short", "HEAD")
-    }.standardOutput.asText.get().trim()
-}
-
 android {
     namespace = "dev.develsinthedetails.eatpoopyoucat"
     compileSdk = 37
@@ -26,8 +16,6 @@ android {
         targetSdk = 37
         versionCode = 25
         versionName = "1.9.9"
-
-        resValue("string", "git_hash", getGitHash())
 
         testInstrumentationRunner =
             "dev.develsinthedetails.eatpoopyoucat.core.utilities.MainTestRunner"

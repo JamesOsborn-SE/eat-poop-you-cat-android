@@ -6,7 +6,12 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class ReadMetadata() {
     suspend fun getFullDescription(): String {
-        val fileContents = getMetadataFile("full_description.txt")
+        val fileContents = getMetadataFile("full_description.txt").replace(
+            Regex(
+                "<a\\b[^>]*>.*?</a>",
+                RegexOption.IGNORE_CASE
+            ), ""
+        )
         val lines = fileContents.split("\n")
         if (lines.isEmpty()) return ""
         val link = lines.last()

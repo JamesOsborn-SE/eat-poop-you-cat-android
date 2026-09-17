@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.compose.runtime.Composable
+import io.ktor.http.Url
 
 fun validateNickname(
     currentNickname: String?,
@@ -22,3 +23,5 @@ interface NotificationPermissionState {
 
 @Composable
 expect fun rememberNotificationPermissionState(): NotificationPermissionState
+
+expect fun getRealAddress(address: Url): Url

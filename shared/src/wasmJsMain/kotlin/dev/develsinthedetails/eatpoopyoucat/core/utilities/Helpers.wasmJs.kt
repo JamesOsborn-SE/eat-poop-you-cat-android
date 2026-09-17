@@ -5,6 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import io.ktor.http.Url
+import kotlinx.browser.window
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun hasNotificationApi(): Boolean = js("typeof Notification !== 'undefined'")
@@ -39,4 +43,39 @@ actual fun rememberNotificationPermissionState(): NotificationPermissionState {
             }
         }
     }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+fun consumeGameIdFromUrl(): Uuid? {
+    val search = window.location.search
+
+    if (search.isBlank()) return null
+
+    val gameIdString = search.removePrefix("?")
+        .split("&")
+        .map { it.split("=") }
+        .firstOrNull { it.size == 2 && it[0] == "gameId" }
+        ?.get(1)
+
+    if (gameIdString != null) {
+        window.history.replaceState(
+            data = null,
+            title = "",
+            url = window.location.pathname
+        )
+    }
+
+    return try {
+        gameIdString?.let { Uuid.parse(it) }
+    } catch (e: Exception) {
+        null
+    }
+}
+
+fun getServerBaseUrl(): String {
+    return window.location.origin
+}
+
+actual fun getRealAddress(address: Url): Url {
+    return Url(getServerBaseUrl())
 }

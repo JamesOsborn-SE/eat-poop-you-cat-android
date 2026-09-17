@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import io.ktor.http.Url
 
 @Composable
 actual fun rememberNotificationPermissionState(): NotificationPermissionState {
@@ -13,3 +14,5 @@ actual fun rememberNotificationPermissionState(): NotificationPermissionState {
         }
     }
 }
+
+actual fun getRealAddress(address: Url): Url = address

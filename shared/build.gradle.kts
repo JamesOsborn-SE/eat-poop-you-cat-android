@@ -84,12 +84,15 @@ fun KotlinDependencyHandler.jvmAndAndroidDependencies() {
     implementation(libs.androidx.compose.ui.unit)
     // Ktor Server
     implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.config.yaml)
     implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression)
     implementation(libs.ktor.server.content.negotiation)
+    // Ktor Client
+    implementation(libs.ktor.client.cio)
 }
 
 kotlin {
@@ -153,7 +156,6 @@ kotlin {
                 implementation(libs.ktor.client.core)
                 api(libs.ktor.client.resources)
                 api(libs.ktor.client.content.negotiation)
-                api(libs.ktor.client.cio)
                 api(libs.ktor.serialization.kotlinx.cbor)
             }
         }
@@ -188,6 +190,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotlinXw3c)
                 implementation(libs.androidx.sqlite.web)
+                implementation(libs.ktor.client.js)
             }
         }
 

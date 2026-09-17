@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.getRealAddress
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
@@ -7,7 +8,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.resources.Resources
@@ -28,10 +28,7 @@ import kotlin.uuid.Uuid
 
 class Client(val repository: AppRepository) {
     @OptIn(ExperimentalSerializationApi::class)
-    val httpClient = HttpClient(CIO) {
-        engine {
-            requestTimeout = 30000
-        }
+    val httpClient = HttpClient {
         install(ContentNegotiation) { cbor() }
         install(Resources)
         defaultRequest {
@@ -39,7 +36,9 @@ class Client(val repository: AppRepository) {
         }
     }
 
+    // todo normalize url address
     suspend fun ping(address: Url, gameId: Uuid) {
+        val address = getRealAddress(address)
         if (address.protocol.equals("http")) {
             val getGame = httpClient.get(Api.Ping()) {
                 url {
@@ -54,6 +53,7 @@ class Client(val repository: AppRepository) {
     }
 
     suspend fun getGame(address: Url, gameId: Uuid): GameWithRosters? {
+        val address = getRealAddress(address)
         if (address.protocol.equals("http")) {
             val getGame = httpClient.get((Api.GameRoot.Id(Api.GameRoot(), id = gameId))) {
                 url {
@@ -69,6 +69,8 @@ class Client(val repository: AppRepository) {
     }
 
     suspend fun joinGame(address: Url, player: Roster): Boolean {
+        val address = getRealAddress(address)
+        println("DEBUG: JoinGame Player:$player")
         if (address.protocol.equals("http")) {
             val req = httpClient.post(Api.GameRoot.JoinGame()) {
                 url {
@@ -93,7 +95,7 @@ class Client(val repository: AppRepository) {
                     )
                 )
             ) {
-                val address = Url(player.address)
+                val address = getRealAddress(Url(player.address))
                 url {
                     protocol = URLProtocol.HTTP
                     host = address.host
@@ -106,9 +108,9 @@ class Client(val repository: AppRepository) {
         return false
     }
 
-    suspend fun takeTurn(uri: String, entry: Entry): Boolean {
-        if (uri.startsWith("http")) {
-            val address = Url(uri)
+    suspend fun takeTurn(url: String, entry: Entry): Boolean {
+        if (url.startsWith("http")) {
+            val address = getRealAddress(Url(url))
             val req = httpClient.put(
                 Api.GameRoot.TakeTurn(
                     Api.GameRoot.Id(
@@ -129,9 +131,9 @@ class Client(val repository: AppRepository) {
         return false
     }
 
-    suspend fun updateRoster(uri: String, gameId: Uuid, hash: String): GameWithRosters? {
-        if (uri.startsWith("http")) {
-            val address = Url(uri)
+    suspend fun updateRoster(url: String, gameId: Uuid, hash: String): GameWithRosters? {
+        if (url.startsWith("http")) {
+            val address = getRealAddress(Url(url))
             val req =
                 httpClient.post(
                     Api.GameRoot.Id.UpdateRoster(
@@ -153,10 +155,10 @@ class Client(val repository: AppRepository) {
         return null
     }
 
-    suspend fun updateGame(uri: String, game: GameWithEntries): List<Entry> {
+    suspend fun updateGame(url: String, game: GameWithEntries): List<Entry> {
         val knownSequences = game.entries.map { it.sequence }
-        if (uri.startsWith("http")) {
-            val address = Url(uri)
+        if (url.startsWith("http")) {
+            val address = getRealAddress(Url(url))
             val req = httpClient.post(
                 Api.GameRoot.Id.UpdateGame(
                     Api.GameRoot.Id(
