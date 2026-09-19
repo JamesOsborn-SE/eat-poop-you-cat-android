@@ -1,6 +1,5 @@
 package dev.develsinthedetails.eatpoopyoucat.core.utilities
 
-import dev.develsinthedetails.eatpoopyoucat.platform
 import kotlinx.datetime.TimeZone
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,11 +20,8 @@ class ExtensionsTest {
     }
 
     @Test
+    @IgnoreOnWasm
     fun `ensure Human Readable Time`() {
-        if (platform() == "WebAssembly") {
-            println("Skipping test on WasmJs")
-            return
-        }
         val dateTime = Instant.fromEpochMilliseconds(1714286585712)
         val laTimeZone = TimeZone.of("America/Los_Angeles")
 

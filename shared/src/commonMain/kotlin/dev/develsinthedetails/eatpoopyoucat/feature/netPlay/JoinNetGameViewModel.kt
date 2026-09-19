@@ -83,7 +83,6 @@ class JoinNetGameViewModel(
             if (playerAddress != null && gameId != null)
                 viewModelScope.launch {
                     val player = _uiState.value.player
-
                     val game = client.getGame(Url(playerAddress!!), gameId!!)
                     if (game !== null) {
                         val myRoster = Roster(

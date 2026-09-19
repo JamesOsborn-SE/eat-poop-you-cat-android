@@ -101,6 +101,7 @@
     <string name="halp" tools:ignore="Typos">halp!</string>
     <string name="sentence_tip">Start off with a bang! Write a funny or ambiguous sentence. Try this formula if you can't think of something. A (thing/animal/person) (doing something) (with or to a thing/animal/person). Throw in some descriptive words for more fun. For example "A cat writing a long letter to a mouse with a top hat"</string>
     <string name="next">Next</string>
+    <string name="ask_join">Wanna Play</string>"
     <plurals name="imported_games">
         <item quantity="zero">Imported %1$d Games</item>
         <item quantity="one">Imported %1$d Game</item>

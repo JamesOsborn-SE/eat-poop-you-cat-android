@@ -139,7 +139,6 @@ fun HomeScreen(
                     Spinner()
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(padding),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

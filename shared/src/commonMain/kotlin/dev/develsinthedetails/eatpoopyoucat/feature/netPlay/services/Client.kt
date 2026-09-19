@@ -54,7 +54,8 @@ class Client(val repository: AppRepository) {
 
     suspend fun getGame(address: Url, gameId: Uuid): GameWithRosters? {
         val address = getRealAddress(address)
-        if (address.protocol.equals("http")) {
+        println("DEBUG: get game. Address:$address GameId:$gameId")
+        if (address.protocol == URLProtocol.HTTP) {
             val getGame = httpClient.get((Api.GameRoot.Id(Api.GameRoot(), id = gameId))) {
                 url {
                     protocol = URLProtocol.HTTP
@@ -70,8 +71,7 @@ class Client(val repository: AppRepository) {
 
     suspend fun joinGame(address: Url, player: Roster): Boolean {
         val address = getRealAddress(address)
-        println("DEBUG: JoinGame Player:$player")
-        if (address.protocol.equals("http")) {
+        if (address.protocol == URLProtocol.HTTP) {
             val req = httpClient.post(Api.GameRoot.JoinGame()) {
                 url {
                     protocol = URLProtocol.HTTP
@@ -86,7 +86,8 @@ class Client(val repository: AppRepository) {
     }
 
     suspend fun askToTakeTurn(player: Roster): Boolean {
-        if (player.address.startsWith("http")) {
+        val address = getRealAddress(Url(player.address))
+        if (address.protocol == URLProtocol.HTTP) {
             val req = httpClient.post(
                 Api.GameRoot.Id.AskTakeTurn(
                     Api.GameRoot.Id(
@@ -95,7 +96,6 @@ class Client(val repository: AppRepository) {
                     )
                 )
             ) {
-                val address = getRealAddress(Url(player.address))
                 url {
                     protocol = URLProtocol.HTTP
                     host = address.host

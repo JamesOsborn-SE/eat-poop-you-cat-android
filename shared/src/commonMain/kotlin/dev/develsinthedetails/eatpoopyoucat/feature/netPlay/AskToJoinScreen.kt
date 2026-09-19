@@ -27,6 +27,12 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
+import eatpoopyoucat.shared.generated.resources.Res
+import eatpoopyoucat.shared.generated.resources.ask_join
+import eatpoopyoucat.shared.generated.resources.no
+import eatpoopyoucat.shared.generated.resources.oof
+import eatpoopyoucat.shared.generated.resources.yes
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
@@ -74,7 +80,7 @@ fun AskToJoinScreen(
     modifier: Modifier = Modifier
 ) {
     AppTheme {
-        Scaffolds.Backable("Wanna Play", onBack = joinData.onNoPlay) { pad ->
+        Scaffolds.Backable(stringResource(Res.string.ask_join), onBack = joinData.onNoPlay) { pad ->
             Column(modifier.padding(pad)) {
                 OutlinedTextField(
                     value = uiState.player.nickname.valueOrEmpty(),
@@ -100,11 +106,11 @@ fun AskToJoinScreen(
                     .fillMaxWidth(.3f)
                     .align(Alignment.CenterHorizontally)
                 Button(joinData.onYesPlay, content = {
-                    Text("Yes")
+                    Text(stringResource(Res.string.yes))
                 }, modifier = m)
 
                 Button(joinData.onNoPlay, content = {
-                    Text("No")
+                    Text(stringResource(Res.string.no))
                 },colors = secondaryButtonColors(), modifier = m)
             }
         }
@@ -121,5 +127,5 @@ data class JoinData(
 @Composable
 fun AskToJoinPreview() {
     val d = JoinData({}, {}, {})
-    AskToJoinScreen(JoinUiState(Uuid.NIL, player = Player(Uuid.NIL, "oofster")), d)
+    AskToJoinScreen(JoinUiState(Uuid.NIL, player = Player(Uuid.NIL, stringResource(Res.string.oof))), d)
 }
