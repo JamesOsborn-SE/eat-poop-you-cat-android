@@ -10,3 +10,11 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary) apply false
     alias(libs.plugins.android.lint) apply false
 }
+
+tasks.register<Exec>("installGitHooks") {
+    group = "git hooks"
+    description = "Installs the shared git hooks"
+    commandLine("git", "config", "core.hooksPath", ".githooks")
+}
+
+tasks.getByPath(":shared:assemble").dependsOn("installGitHooks")

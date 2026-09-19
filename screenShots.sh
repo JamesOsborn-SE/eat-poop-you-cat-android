@@ -2,8 +2,16 @@
 ## written with help from Gemini 3.1 Pro
 
 RES_DIR="shared/src/commonMain/composeResources/"
-OUTPUT_DIR="androidApp/src/screenshotTest/kotlin/"
+OUTPUT_DIR="androidApp/src/screenshotTest/kotlin"
 OUTPUT_FILE="$OUTPUT_DIR/GenerateScreenShots.kt"
+
+# Define the screens we want to capture (Name:ComposableFunction)
+SCREENS=(
+    "HomeScreen:HomeScreenPreview()"
+    "SentenceScreen:SentenceScreenPreview()"
+    "DrawingWithSentence:DrawingWithSentencePreview()"
+    "SentenceScreenWithDrawing:SentenceScreenWithDrawingPreview()"
+)
 
 echo "🔍 Scanning for locales..."
 
@@ -46,13 +54,6 @@ import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreenPreview
 
 EOF
 
-# Define the screens we want to capture (Name:ComposableFunction)
-SCREENS=(
-    "HomeScreen:HomeScreenPreview()"
-    "SentenceScreen:SentenceScreenPreview()"
-    "DrawingWithSentence:DrawingWithSentencePreview()"
-    "SentenceScreenWithDrawing:SentenceScreenWithDrawingPreview()"
-)
 
 index=1
 
@@ -171,7 +172,7 @@ for darkImage in $(find "$SRC_DIR" -iname "*_Dark_*.png" -type f); do
     mkdir -p "${dest%/*}"
     echo "made dir ${dest%/*}"
 
-    magick "$darkImage" "$lightImage" <(magick "$darkImage" -clone 0 -alpha off -fill black -colorize 100 -fill white -draw "polygon 0,0 0,%h %w,%h" - ) -composite "$dest"
+    magick "$darkImage" "$lightImage" <(magick "$darkImage" -clone 0 -alpha off -fill black -colorize 100 -fill white -draw "polygon 0,0 0,%h %w,%h" - ) -strip -composite "$dest"
     echo "✅ Created $dest"
 done
 
