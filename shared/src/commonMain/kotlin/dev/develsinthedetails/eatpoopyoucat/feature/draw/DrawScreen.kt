@@ -78,7 +78,6 @@ import eatpoopyoucat.shared.generated.resources.ic_undo_rounded
 import eatpoopyoucat.shared.generated.resources.nicknames
 import eatpoopyoucat.shared.generated.resources.no_letters_or_numbers
 import eatpoopyoucat.shared.generated.resources.oof
-import eatpoopyoucat.shared.generated.resources.pass_to_the_next
 import eatpoopyoucat.shared.generated.resources.redo
 import eatpoopyoucat.shared.generated.resources.undo
 import eatpoopyoucat.shared.generated.resources.user_made_drawing
@@ -109,20 +108,17 @@ fun DrawScreen(
     val redo = { viewModel.redo() }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val snackText = stringResource(Res.string.pass_to_the_next)
 
     val onSubmit = {
-        val gameMode = viewModel.getGameMode(previousEntry.gameId)
-        if (viewModel.isValidDrawing {
-                toSentence(
-                    uiState.gameId,
-                    gameMode,
-                )
-            })
+        if (viewModel.isValidDrawing()) {
+            viewModel.saveDrawing()
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(snackText)
+                snackbarHostState.showSnackbar(uiState.nextText)
             }
+            toSentence(uiState.gameId,uiState.gameMode)
+        }
     }
+
     val focusRequester = remember { FocusRequester() }
     val hardcodedNicknames = stringArrayResource(Res.array.nicknames).toList()
     val fallbackNick = stringResource(Res.string.oof)
@@ -191,13 +187,15 @@ private fun DrawScreen(
                                 containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                                 elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                             ) {
-                                Icon(painter = painterResource(Res.drawable.ic_send_rounded), "Localized description")
+                                Icon(
+                                    painter = painterResource(Res.drawable.ic_send_rounded),
+                                    "Localized description"
+                                )
                             }
                         else
                             SubmitButton(onSubmit = onSubmit)
                     }
-                }
-            , modifier = Modifier.visible(uiState.nicknameIsSatisfied))
+                }, modifier = Modifier.visible(uiState.nicknameIsSatisfied))
         }
     )
     { innerPadding ->

@@ -9,6 +9,7 @@ import androidx.room3.Upsert
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import kotlinx.coroutines.flow.Flow
 import kotlin.uuid.Uuid
 
@@ -41,6 +42,10 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
+    fun getNetGameFlow(id: Uuid): Flow<NetGame>
+
+    @Transaction
+    @Query("SELECT * FROM game where id=:id")
     suspend fun getWithEntries(id: Uuid): GameWithEntries?
 
     @Transaction
@@ -68,10 +73,6 @@ interface GameDao {
     suspend fun insertAll(games: List<Game>)
 
     @Transaction
-    @Upsert
-    suspend fun updateGame(game: Game)
-
-    @Transaction
     @Query("SELECT * FROM game where id=:id")
     suspend fun get(id: Uuid): Game
 
@@ -81,5 +82,6 @@ interface GameDao {
     @Transaction
     @Upsert
     suspend fun upsert(game: Game)
+
 }
 

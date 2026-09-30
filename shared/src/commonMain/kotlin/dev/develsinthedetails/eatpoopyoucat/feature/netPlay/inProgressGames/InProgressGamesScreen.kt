@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -79,6 +78,7 @@ fun InProgressGames(
     onBack: () -> Unit
 ) {
     // TODO Pixel pushing
+    val inProgressGames = games?.filter { it.game.turns == null }
     val listState = rememberLazyListState()
     Scaffolds.Backable("Network games", onBack = onBack) { innerPadding ->
         Surface(
@@ -92,19 +92,9 @@ fun InProgressGames(
                 Spinner()
                 return@Surface
             }
-            if (games.isEmpty()) {
+            if (inProgressGames?.isEmpty() == true) {
                 Text("go back start a game")
                 return@Surface
-            }
-            val waitingGame = games.filter { g ->
-                g.roster.any { r ->
-                    r.playerId == playerId && r.sequence < 0
-                }
-            }
-            val notWaiting = games.filter { g ->
-                g.roster.any { r ->
-                    r.playerId == playerId && r.sequence >= 0
-                }
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
@@ -112,33 +102,14 @@ fun InProgressGames(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     item {
-                        if (waitingGame.isNotEmpty()) {
-                            Text(
-                                "Waiting for turn", modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .padding(bottom = 20.dp)
-                            )
-                        }
-                    }
-                    itemsIndexed(waitingGame.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
-                        ListGame(gameWithRosters, index, toGame, playerId)
-                    }
-                    item {
-                        if (waitingGame.isNotEmpty()) {
-                            HorizontalDivider(modifier = Modifier.padding(20.dp))
-                        }
-                    }
-                    item {
-                        if (notWaiting.isNotEmpty()) {
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .padding(bottom = 15.dp),
                                 text = "In Progress Games"
                             )
-                        }
                     }
-                    itemsIndexed(notWaiting.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
+                    itemsIndexed(inProgressGames!!.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
                         ListGame(gameWithRosters, index, toGame, playerId)
                     }
                 }
@@ -215,8 +186,7 @@ private fun ListGame(
                 )
             }
             LazyRow(modifier = Modifier.padding(horizontal = 3.dp)) {
-                itemsIndexed(player.sortedBy { it.sequence }
-                    .take(4)) { index, entry ->
+                itemsIndexed(player.take(4)) { _, entry ->
                     var m = Modifier
                         .size(50.dp)
                         .rotate(90f)
@@ -249,11 +219,10 @@ private fun ListGame(
 @Preview
 @Composable
 fun InProgressGamesPreview() {
-    // Todo replace randos with static Uuids for screenshot reasons
-    val playerId = Uuid.random()
-    val gameId = Uuid.random()
-    val gameId2 = Uuid.random()
-    val gameId3 = Uuid.random()
+    val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val gameId2 = Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb")
+    val gameId3 = Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9")
     val gameWithRosters = listOf(
         GameWithRosters(
             Game(
@@ -267,27 +236,16 @@ fun InProgressGamesPreview() {
                 Roster(
                     gameId,
                     playerId = playerId,
-                    sequence = 0,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    nickname = ""
                 ),
                 Roster(
-                    gameId, Uuid.random(),
-                    sequence = 1,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId,
+                    Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b"),
+                    nickname = ""
                 ),
                 Roster(
-                    gameId, Uuid.random(),
-                    sequence = 3,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId, Uuid.parse("670f27a7-e146-4463-8774-935958c8d298"),
+                    nickname = ""
                 )
             )
         ),
@@ -303,43 +261,23 @@ fun InProgressGamesPreview() {
                 Roster(
                     gameId2,
                     playerId = playerId,
-                    sequence = 2,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    nickname = ""
                 ),
                 Roster(
-                    gameId2, Uuid.random(),
-                    sequence = 1,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId2, Uuid.parse("0ce3fd21-6b6e-41e3-9d4d-547a2f83b281"),
+                    nickname = ""
                 ),
                 Roster(
-                    gameId2, Uuid.random(),
-                    sequence = 0,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId2, Uuid.parse("a81c33fb-c43f-46eb-9e95-f93485906e2e"),
+                    nickname = ""
                 ),
                 Roster(
-                    gameId2, Uuid.random(),
-                    sequence = 3,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId2, Uuid.parse("bc58e47a-6e72-4509-bf4d-7b72b6af813f"),
+                    nickname = ""
                 ),
                 Roster(
-                    gameId2, Uuid.random(),
-                    sequence = 4,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    gameId2, Uuid.parse("6c47151b-c6cc-4d22-8a05-652779d1c72c"),
+                    nickname = ""
                 )
             )
         ),
@@ -355,11 +293,7 @@ fun InProgressGamesPreview() {
                 Roster(
                     gameId,
                     playerId = playerId,
-                    sequence = -1,
-                    nickname = "",
-                    address = "http://127.0.0.1:666",
-                    isLeader = false,
-                    lastSeen = Instant.fromEpochSeconds(1786057118)
+                    nickname = ""
                 ),
             )
         ),

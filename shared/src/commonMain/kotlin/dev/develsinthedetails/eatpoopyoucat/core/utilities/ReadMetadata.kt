@@ -29,9 +29,7 @@ class ReadMetadata() {
 
         return try {
             // Attempt to read localized file
-            Res.readBytes(localePath).decodeToString().also {
-                println("ReadMetadata: Loaded $localePath")
-            }
+            Res.readBytes(localePath).decodeToString()
         } catch (e: Exception) {
             // File doesn't exist, fallback to en-US
             println("ReadMetadata: $localePath not found, trying fallback.")

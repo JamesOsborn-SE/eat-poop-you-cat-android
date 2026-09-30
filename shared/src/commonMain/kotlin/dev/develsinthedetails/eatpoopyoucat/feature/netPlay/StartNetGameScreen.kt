@@ -17,22 +17,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY_URI
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareEncode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareLink
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
-import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
@@ -44,9 +44,6 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
-fun getShareLink(address: String, gameId: Uuid): String {
-    return "${DEEPLINK_PLAY_URI}/?game=${gameId.shareEncode()}&server=${address.shareEncode()}"
-}
 
 @Composable
 fun SelectableReadOnlyTextWithShare(modifier: Modifier = Modifier, link: String) {
@@ -91,7 +88,7 @@ fun StartNetGameScreen(
         { viewModel.updateTimeOut(it) },
         onBack,
         onStartGame = {
-            viewModel.createRoster()
+            viewModel.startNetGame()
             onStartGame(uiState.gameId)
         })
 }
@@ -105,10 +102,15 @@ fun ShareGame(
     onBack: () -> Unit,
     onStartGame: () -> Unit,
 ) {
-    val canStart = !uiState.player.nickname.isBlank() && uiState.address != "Server Offline"
+    val focusRequester = remember { FocusRequester() }
 
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+    val canStart = !uiState.nickname.isBlank() && uiState.address != "Server Offline"
+    val displayName = uiState.nickname.ifBlank { "Pick a name!!" }
     Scaffolds.Backable(
-        "Let's go ${uiState.player.nickname.ifBlank { "Pick a name!!" }}!",
+        "Let's go $displayName!",
         onBack,
         floatingActionButton = {
             Button(onClick = onStartGame, enabled = canStart) {
@@ -124,8 +126,10 @@ fun ShareGame(
         ) {
             Column {
                 OutlinedTextField(
-                    value = uiState.player.nickname.valueOrEmpty(),
-                    onValueChange = onNickNameChange,
+                    value = uiState.nickname,
+                    onValueChange = {
+                        onNickNameChange(it)
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
                     ),
@@ -133,14 +137,15 @@ fun ShareGame(
                         onDone = null
                     ),
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     enabled = true,
                     readOnly = false,
                     maxLines = 1,
                     shape = RoundedCornerShape(8.dp),
 
                     label = {
-                        Text("Change you nickname?")
+                        Text("Your nickname")
                     },
                 )
                 OutlinedTextField(
@@ -197,7 +202,7 @@ fun ShareGame(
 @Composable
 fun ShareGamePreview() {
     val sd = NewNetGameUiState(
-        Uuid.NIL, GameMode.LAN, Player(Uuid.NIL, nickname = "Muthafucka"),
+        Uuid.NIL, GameMode.LAN, Uuid.NIL,
         address = "http://192.168.1.10:$SERVER_PORT",
     )
     AppTheme {

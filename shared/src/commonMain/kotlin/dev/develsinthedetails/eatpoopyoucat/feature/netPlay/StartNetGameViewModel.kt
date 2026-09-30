@@ -28,14 +28,14 @@ import kotlin.uuid.Uuid
 data class NewNetGameUiState(
     val gameId: Uuid,
     val gameMode: GameMode,
-    val player: Player = Player(Uuid.NIL, ""),
+    val playerId: Uuid,
     val address: String = "Server Offline",
 
     val isError: Boolean = false,
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val timeout: Int = 5,
     val turnTimeout: Int = 5,
-
+    val nickname: String = "",
     val nicknameError: String? = null,
     val nicknameIsSatisfied: Boolean = false,
 )
@@ -44,7 +44,7 @@ data class NewNetGameUiState(
 class StartNetGameViewModel(
     state: SavedStateHandle,
     val repository: AppRepository,
-    appSettings: AppSettings
+    val appSettings: AppSettings
 ) : ViewModel() {
     private val typeMap = appTypeMap
     private val route = state.toRoute<StartNetGame>(typeMap)
@@ -53,19 +53,12 @@ class StartNetGameViewModel(
         NewNetGameUiState(
             gameId = route.gameId,
             gameMode = route.gameMode,
+            nickname = appSettings.nickname,
+            playerId = appSettings.playerId,
             address = "Server Offline"
         )
     )
     val uiState: StateFlow<NewNetGameUiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            val player = repository.getPlayer(appSettings.playerId)
-            if (player != null)
-                _uiState.update { it.copy(player = player, isLoading = false) }
-
-        }
-    }
 
     fun updateTurnTimeOut(int: String?) {
         val turnTimeout = int?.toInt() ?: 0
@@ -85,17 +78,12 @@ class StartNetGameViewModel(
         }
     }
 
-    fun updateNickname(nickname: String?) {
-        _uiState.update { state ->
-            state.copy(
-                player = _uiState.value.player.copy(nickname = nickname ?: "")
-            )
-        }
-        isNicknameValid()
+    fun updateNickname(nickname: String) {
+        _uiState.update { it.copy(nickname = nickname) }
     }
 
     fun isNicknameValid(): Boolean {
-        val isValid = validateNickname(_uiState.value.player.nickname, listOf())
+        val isValid = validateNickname(_uiState.value.nickname, listOf())
         if (!isValid) {
             viewModelScope.launch {
                 _uiState.update {
@@ -110,11 +98,17 @@ class StartNetGameViewModel(
         return isValid
     }
 
-    fun createRoster() {
+    fun startNetGame() {
         if (isNicknameValid())
             viewModelScope.launch {
                 val state = _uiState.value
-                repository.upsertPlayer(state.player)
+                appSettings.setNickname(state.nickname)
+                var player = repository.getPlayer(state.playerId)
+                if (player == null)
+                    player = Player(state.playerId, "")
+                player = player.copy(nickname = state.nickname)
+
+                repository.upsertPlayer(player)
                 repository.createGame(
                     Game(
                         state.gameId,
@@ -127,12 +121,9 @@ class StartNetGameViewModel(
                 repository.upsertRoster(
                     Roster(
                         state.gameId,
-                        state.player.id,
-                        state.player.nickname,
-                        state.address,
-                        -1,
-                        true,
-                        Clock.System.now()
+                        player.id,
+                        isLeader = true,
+                        nickname = player.nickname
                     )
                 )
             }

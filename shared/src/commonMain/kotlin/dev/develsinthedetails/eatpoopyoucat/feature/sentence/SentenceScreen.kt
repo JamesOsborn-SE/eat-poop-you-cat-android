@@ -56,7 +56,6 @@ import eatpoopyoucat.shared.generated.resources.a_cat_winks_at_you_with_the_grac
 import eatpoopyoucat.shared.generated.resources.halp
 import eatpoopyoucat.shared.generated.resources.nicknames
 import eatpoopyoucat.shared.generated.resources.oof
-import eatpoopyoucat.shared.generated.resources.pass_to_the_next
 import eatpoopyoucat.shared.generated.resources.sentence_is_blank
 import eatpoopyoucat.shared.generated.resources.sentence_tip
 import eatpoopyoucat.shared.generated.resources.sentence_turn_title
@@ -81,12 +80,17 @@ fun SentenceScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    val toastText = stringResource(Res.string.pass_to_the_next)
     fun submit() {
-        viewModel.saveEntry { toDraw(uiState.gameId, uiState.gameMode) }
-        if (!uiState.isError && gameMode == GameMode.LOCAL) {
+        if (viewModel.isSentenceValid()) {
+            viewModel.saveEntry()
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(toastText)
+                snackbarHostState.showSnackbar(uiState.nextText)
+            }
+            if (gameMode == GameMode.LOCAL) {
+                toDraw(uiState.gameId, uiState.gameMode)
+            }
+            else{
+                toEndedGame(uiState.gameId, uiState.gameMode)
             }
         }
     }

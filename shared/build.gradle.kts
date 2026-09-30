@@ -83,21 +83,23 @@ compose.resources {
 fun KotlinDependencyHandler.jvmAndAndroidDependencies() {
     api(libs.androidx.sqlite.bundled)
     implementation(libs.androidx.compose.ui.unit)
+    implementation(libs.ktor.client.okhttp)
     // Ktor Server
-    implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.config.yaml)
     implementation(libs.ktor.server.resources)
-    implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression)
+    implementation(libs.ktor.server.compression.zstd)
     implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.ws)
+    implementation(libs.ktor.server.netty)
     // Ktor Client
-    implementation(libs.ktor.client.cio)
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
     compilerOptions.freeCompilerArgs.add("-Xexpect-actual-classes")
 
     android {
@@ -108,10 +110,12 @@ kotlin {
         }
         minSdk = 26
 
-        withHostTestBuilder { }
+        withHostTestBuilder { }.configure {
+            isIncludeAndroidResources = true
+        }
 
         withDeviceTestBuilder {
-            sourceSetTreeName = "test"
+            sourceSetTreeName = "androidNativeTest"
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
@@ -125,18 +129,18 @@ kotlin {
     }
 
     sourceSets {
-        commonTest.dependencies {
-            implementation(kotlin("test"))
-        }
         jvmTest.dependencies {
             implementation(kotlin("test"))
+            implementation(libs.kotlin.junit)
         }
 
         wasmJsTest.dependencies {
             implementation(kotlin("test"))
         }
-        val androidHostTest by getting {
+
+        val androidHostTest = getByName("androidHostTest") {
             dependencies {
+                implementation(kotlin("test"))
                 implementation(libs.androidx.core)
                 implementation(libs.core.testing)
                 implementation(libs.kotlinx.coroutines.test)
@@ -146,7 +150,14 @@ kotlin {
                 implementation(libs.robolectric)
                 implementation(libs.androidx.core.ktx)
                 implementation(libs.mockito.kotlin)
+                implementation(libs.kotlin.junit)
             }
+        }
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotlin.test)
+            implementation(libs.mockito.kotlin)
         }
         commonMain {
             dependencies {
@@ -178,6 +189,7 @@ kotlin {
 
                 // Serialization & Ktor
                 api(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.client.ws)
                 implementation(libs.ktor.client.core)
                 api(libs.ktor.client.resources)
                 api(libs.ktor.client.content.negotiation)
@@ -194,8 +206,10 @@ kotlin {
         androidMain {
             dependencies {
                 jvmAndAndroidDependencies()
-
-                api(libs.ktor.client.android)
+                api(libs.kotlinx.coroutines.android)
+//                api(libs.ktor.server.core.jvm)
+//                api(libs.ktor.server.netty.jvm)
+//                api(libs.ktor.server.ws.jvm)
                 implementation(project.dependencies.platform(libs.koin.bom))
                 api(libs.datastore.preferences.android)
                 api(libs.koin.android)
@@ -207,6 +221,9 @@ kotlin {
         jvmMain {
             dependencies {
                 jvmAndAndroidDependencies()
+//                implementation(libs.ktor.server.core)
+//                implementation(libs.ktor.server.ws)
+//                implementation(libs.ktor.server.netty)
             }
         }
 
@@ -220,7 +237,6 @@ kotlin {
         }
     }
 }
-
 room3 {
     schemaDirectory("$projectDir/schemas")
 }
@@ -232,4 +248,13 @@ dependencies {
     add("kspWasmJs", libs.androidx.room3.compiler)
     androidRuntimeClasspath(libs.compose.ui.tooling)
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs(
+        "--add-opens=java.base/jdk.internal.access=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
 }

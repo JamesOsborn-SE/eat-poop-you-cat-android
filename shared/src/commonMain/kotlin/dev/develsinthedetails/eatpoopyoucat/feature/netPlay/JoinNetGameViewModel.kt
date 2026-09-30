@@ -4,114 +4,96 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
-import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 import kotlin.uuid.Uuid
 
 
 data class JoinUiState(
-    val gameId: Uuid,
-    val player: Player = Player(Uuid.NIL, ""),
-    val address: String = "Server Offline",
-
+    val playerId: Uuid,
+    val nickname: String = "",
     val isError: Boolean = false,
     val isLoading: Boolean = true,
     val timeout: Int = 5,
     val turnTimeout: Int = 5,
-
     val nicknameError: Int? = null,
     val nicknameIsSatisfied: Boolean = false,
-
-    )
+    val isInGameAlready: Boolean = false,
+)
 
 class JoinNetGameViewModel(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
     private val client: Client
 ) : ViewModel() {
-    private var gameId: Uuid? = null
-    private var playerAddress: String? = null
+    private lateinit var gameId: Uuid
     private val _uiState = MutableStateFlow(
-        JoinUiState(
-            gameId = Uuid.NIL,
-            address = "Server Offline"
-        )
+        JoinUiState(playerId = appSettings.playerId, nickname = appSettings.nickname)
     )
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
-    fun updateAddress(link: String?) {
-        _uiState.update { state ->
-            state.copy(
-                address = link ?: ""
-            )
-        }
-    }
-
-    init {
+    fun initFromDeepLink(gameId: Uuid) {
+        this.gameId = gameId
         viewModelScope.launch {
-            val player = repository.getPlayer(appSettings.playerId)
-            if (player != null) {
-                _uiState.update { it.copy(player = player) }
+            val game = client.getGame(gameId)
+            if (game != null && game.roster.any { it.playerId == _uiState.value.playerId }) {
+                repository.upsertGameWithRosters(game)
+                val gameWithEntries =
+                    client.updateGame(GameWithEntries(game = game.game, entries = listOf()))
+                repository.upsertEntries(gameWithEntries)
+                println("already in game")
+                _uiState.update { it.copy(isInGameAlready = true) }
             }
         }
-    }
-
-    fun initFromDeepLink(parsedGameId: Uuid, parsedAddress: String) {
-        this.gameId = parsedGameId
-        this.playerAddress = parsedAddress
-
         _uiState.update { it.copy(isLoading = false) }
-
     }
 
     fun updateNickname(newName: String) {
-        _uiState.update { it.copy(player = _uiState.value.player.copy(nickname = newName)) }
+        _uiState.update { it.copy(nickname = newName) }
     }
 
     fun onYesPlay() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            println("DEBUG: Player:$playerAddress Game=$gameId")
-            if (playerAddress != null && gameId != null)
-                viewModelScope.launch {
-                    val player = _uiState.value.player
-                    val game = client.getGame(Url(playerAddress!!), gameId!!)
-                    if (game !== null) {
-                        val myRoster = Roster(
-                            gameId!!,
-                            player.id,
-                            player.nickname,
-                            _uiState.value.address,
-                            -1,
-                            false,
-                            Clock.System.now()
-                        )
-                        client.joinGame(Url(playerAddress!!), myRoster)
-                        repository.updateGame(game.game)
-                        for (r in game.roster) {
-                            repository.upsertPlayer(Player(r.playerId, r.nickname, r.address))
-                        }
-                        repository.upsertPlayer(player)
-                        repository.upsertRosters(game.roster)
+        val state = _uiState.value
+        if (!state.nickname.isBlank()) {
+            viewModelScope.launch {
+                _uiState.update { it.copy(isLoading = true) }
+                println("DEBUG: Game=$gameId")
+                var player = repository.getPlayer(state.playerId)
+                if (player == null)
+                    player = Player(state.playerId, "")
+                player = player.copy(nickname = state.nickname)
+                appSettings.setNickname(player.nickname)
+                repository.upsertPlayer(player)
 
-                        repository.upsertRoster(myRoster)
-                    }
+                val gameWithRosters = client.getGame(gameId)
+                if (gameWithRosters != null) {
+                    val gameWithEntries =
+                        client.updateGame(GameWithEntries(gameWithRosters.game, emptyList()))
+                    val myRoster = Roster(
+                        gameId,
+                        player.id,
+                        player.nickname
+                    )
 
+                    repository.upsertGameWithRosters(gameWithRosters)
+                    repository.upsertRoster(myRoster)
+                    repository.upsertEntries(gameWithEntries)
+                    client.joinGame(myRoster)
+                    _uiState.update { it.copy(isInGameAlready = true) }
+                } else {
+                    _uiState.update { it.copy(isError = true) }
                 }
-            else {
-                TODO() // error
+                _uiState.update { it.copy(isLoading = false) }
             }
-            _uiState.update { it.copy(isLoading = false) }
-
-
+        } else {
+            _uiState.update { it.copy(nicknameError = 1, isLoading = false) }
         }
     }
 }

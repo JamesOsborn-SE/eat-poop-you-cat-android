@@ -49,7 +49,8 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBackupFileSaver
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.entriesAreValid
+import dev.develsinthedetails.eatpoopyoucat.data.models.gameIsComplete
+import dev.develsinthedetails.eatpoopyoucat.data.models.gameToCleanUp
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.delete_game
@@ -81,9 +82,10 @@ fun PreviousGamesRoute(
     LaunchedEffect(key1 = games) {
         // clean up games that were created and never played.
         // These are created by the side effect of creating the game before the first sentence
-        val invalidGames = games?.filter { !it.entriesAreValid() }
-        if (!invalidGames.isNullOrEmpty())
-            viewModel.cleanup(invalidGames)
+        // Should be fixed but long time users may still benefit.
+        val cleanup = games?.filter { !it.gameToCleanUp() }
+        if (!cleanup.isNullOrEmpty())
+            viewModel.cleanup(cleanup)
     }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -101,7 +103,7 @@ fun PreviousGamesRoute(
     )
     PreviousGamesScreen(
         modifier,
-        games = games?.filter { it.entriesAreValid() },
+        games = games?.filter { it.gameIsComplete() },
         snackbarHostState,
         onBackupGames = {
             if (games?.isNotEmpty() == true) {

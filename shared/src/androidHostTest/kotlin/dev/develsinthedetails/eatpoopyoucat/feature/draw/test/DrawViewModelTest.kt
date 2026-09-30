@@ -6,6 +6,7 @@ import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerType
 import androidx.lifecycle.SavedStateHandle
+import androidx.test.platform.app.InstrumentationRegistry
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.MainDispatcherRule
@@ -15,10 +16,13 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.setResourceReaderAndroidContext
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +31,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 
+@OptIn(ExperimentalResourceApi::class)
 @RunWith(RobolectricTestRunner::class)
 class DrawViewModelTest {
 
@@ -38,14 +43,16 @@ class DrawViewModelTest {
 
     private val mockRepository = mock<AppRepository>()
     private val mockAppSettings = mock<AppSettings>()
+    private val mockClient = mock<Client>()
     private lateinit var viewModel: DrawViewModel
     private val testGameId = testEntriesGame1[0].gameId
 
     @Before
     fun setUp() = runBlocking {
+        setResourceReaderAndroidContext(InstrumentationRegistry.getInstrumentation().targetContext)
         `when`(mockAppSettings.playerId).thenReturn(testPlayerOne.id)
+        `when`(mockAppSettings.nicknameFlow).thenReturn(flowOf(testPlayerOne.nickname))
         `when`(mockAppSettings.useNicknamesFlow).thenReturn(flowOf(false))
-
         `when`(mockRepository.getLastEntry(testGameId)).thenReturn(testEntriesGame1[0])
 
         val savedStateHandle = SavedStateHandle(
@@ -57,7 +64,8 @@ class DrawViewModelTest {
         viewModel = DrawViewModel(
             state = savedStateHandle,
             repository = mockRepository,
-            appSettings = mockAppSettings
+            appSettings = mockAppSettings,
+            client = mockClient
         )
     }
 
@@ -73,7 +81,7 @@ class DrawViewModelTest {
         simulateDrawing(stroke1, viewModel)
         simulateDrawing(stroke2, viewModel)
 
-        viewModel.isValidDrawing {}
+        viewModel.isValidDrawing()
 
         assert(viewModel.uiState.value.isError)
     }

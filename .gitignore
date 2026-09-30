@@ -52,3 +52,5 @@ app/src/screenshotTestDebug
 
 .kotlin
 /androidApp/src/screenshotTest/kotlin/GenerateScreenShots.kt
+
+*.*.gz

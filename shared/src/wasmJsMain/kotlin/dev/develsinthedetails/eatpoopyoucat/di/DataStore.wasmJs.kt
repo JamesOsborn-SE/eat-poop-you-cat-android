@@ -12,6 +12,8 @@ import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
+const val DATA_STORE_NAME = "eat_poop_you_cat"
+
 actual val platformDataStoreModule: Module = module {
     single<DataStore<Preferences>> {
         object : DataStore<Preferences> {
@@ -32,12 +34,12 @@ actual val platformDataStoreModule: Module = module {
                 }
 
                 val jsonString = Json.encodeToString(map)
-                localStorage.setItem("my_app_datastore", jsonString)
+                localStorage.setItem(DATA_STORE_NAME, jsonString)
             }
 
             private fun loadFromStorage(): Preferences {
                 val jsonString =
-                    localStorage.getItem("my_app_datastore") ?: return emptyPreferences()
+                    localStorage.getItem(DATA_STORE_NAME) ?: return emptyPreferences()
 
                 return try {
                     val parsedMap = Json.decodeFromString<Map<String, String>>(jsonString)

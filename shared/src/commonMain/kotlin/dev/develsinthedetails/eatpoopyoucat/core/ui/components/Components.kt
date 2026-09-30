@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -61,8 +60,6 @@ fun Spinner(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(100.dp)
-                .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
         ) {
             CircularProgressIndicator()
         }

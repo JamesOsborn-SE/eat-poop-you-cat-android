@@ -1,9 +1,13 @@
+@file:Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
-import dev.develsinthedetails.eatpoopyoucat.app.AppContextProvider
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.fromFilePath
 import io.ktor.server.request.path
+import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
@@ -14,33 +18,30 @@ actual class StaticRouter {
     fun Route.staticRoutes() {
         get("/{...}") {
             val requestPath = call.request.path().removePrefix("/").ifEmpty { "index.html" }
-            val assetPath = "web/$requestPath"
+            val contentType = ContentType.fromFilePath(requestPath).firstOrNull()
+                ?: ContentType.Application.OctetStream
 
-            try {
-                val bytes = AppContextProvider.context.assets.open(assetPath).readBytes()
+            val resourcePath = "web/$requestPath.gz"
 
-                val contentType = when {
-                    requestPath.endsWith(".html") -> ContentType.Text.Html
-                    requestPath.endsWith(".js") || requestPath.endsWith(".mjs") -> ContentType(
-                        "text",
-                        "javascript"
-                    )
+            val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)
+                ?: this@StaticRouter.javaClass.classLoader?.getResourceAsStream(resourcePath)
 
-                    requestPath.endsWith(".wasm") -> ContentType("application", "wasm")
-                    requestPath.endsWith(".css") -> ContentType.Text.CSS
-                    requestPath.endsWith(".png") -> ContentType.Image.PNG
-                    requestPath.endsWith(".svg") -> ContentType.Image.SVG
-                    requestPath.endsWith(".ico") -> ContentType.Image.Any
-                    requestPath.endsWith(".xml") -> ContentType.Application.Xml
-                    requestPath.endsWith(".json") -> ContentType.Application.Json
-                    requestPath.endsWith(".cvr") -> ContentType.Application.OctetStream
-                    else -> ContentType.Application.OctetStream
+            if (stream != null) {
+                val bytes = stream.readBytes()
+                val cacheControl = if (requestPath.endsWith(".html")) {
+                    "no-cache"
+                } else if (requestPath.endsWith(".wasm")) {
+                    "public, max-age=31536000" // 1 year .wasm filename changes on build
+                } else {
+                    "public, max-age=604800" // 7 days; most other filenames do not change on build
                 }
 
+                call.response.header(HttpHeaders.CacheControl, cacheControl)
+                call.response.header(HttpHeaders.ContentEncoding, "gzip")
                 call.respondBytes(bytes, contentType)
-            } catch (e: Exception) {
-                println("Error serving static asset: $assetPath")
-                call.respond(HttpStatusCode.NotFound, e.message ?: "Not found")
+            } else {
+                println("Error serving static asset: $resourcePath")
+                call.respond(HttpStatusCode.NotFound, "Not found")
             }
         }
     }

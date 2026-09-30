@@ -15,6 +15,9 @@ import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * App settings, stored as cookies in wasmJs
+ */
 @OptIn(ExperimentalUuidApi::class)
 class AppSettings(
     private val dataStore: DataStore<Preferences>,
@@ -22,11 +25,15 @@ class AppSettings(
     companion object {
         val PLAYER_ID = stringPreferencesKey("PLAYER_ID")
         val USE_NICKNAMES = stringPreferencesKey("USE_NICKNAMES")
+        val NICKNAME = stringPreferencesKey("NICKNAME")
     }
 
     val isReadyFlow = MutableStateFlow(false)
 
     var playerId: Uuid = Uuid.NIL
+        private set
+
+    var nickname: String = ""
         private set
 
     private val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -36,6 +43,8 @@ class AppSettings(
             try {
                 val prefs = dataStore.data.first()
                 val savedId = prefs[PLAYER_ID]
+                val savedNickname = prefs[NICKNAME]
+                nickname = savedNickname ?: ""
 
                 if (savedId != null && savedId != Uuid.NIL.toString()) {
                     playerId = Uuid.parse(savedId)
@@ -59,6 +68,17 @@ class AppSettings(
     suspend fun setUseNicknames(useNicknames: Boolean) {
         dataStore.edit { prefs ->
             prefs[USE_NICKNAMES] = useNicknames.toString()
+        }
+    }
+
+    val nicknameFlow: Flow<String> = dataStore.data.map { prefs ->
+        prefs[NICKNAME] ?: ""
+    }
+
+    suspend fun setNickname(nickname: String) {
+        this.nickname = nickname
+        dataStore.edit { prefs ->
+            prefs[NICKNAME] = nickname
         }
     }
 }

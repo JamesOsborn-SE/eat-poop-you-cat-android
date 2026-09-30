@@ -8,34 +8,41 @@
 - Link `epyc://[Player's Address][:3792]/[gameId]`
 
 All data available to all players eventually
+
 - [Game](app/src/main/java/dev/develsinthedetails/eatpoopyoucat/data/Game.kt)
 - [Roster](app/src/main/java/dev/develsinthedetails/eatpoopyoucat/data/Roster.kt)
 - [Entry](app/src/main/java/dev/develsinthedetails/eatpoopyoucat/data/Entry.kt)
 
 Active player is the source of truth for game data
+
 - may not have the latest roster data
 
 ## Flow
 
 First player (leader prime) starts an empty game to generate link.
+
 - Sends link to n players
 - n players sends same or own link to n more players (leader prime remains)
 
 Players open link
+
 - app opens "accept?"
 - registers as available player on Registrars and pulls roster
 
 When new player registers push roster to all players
 
 Leader active picks player
+
 - sends tap and shows notification
 - if no ACK
   - pick new next player
 
 Timeout for draw/write
+
 - Leader picks next player
 
 Active player draws/writes and submits
+
 - send turn data to other players
   - includes list of player IDs
   - if receiver knows Players not in list sends to them
@@ -43,13 +50,68 @@ Active player draws/writes and submits
 - other players will request missing turns from other players who have had a turn.
 
 When no more registered users
+
 - double check hash/count with leader
 - end game
 - send turn data to other players completed date/time stamp
 
 If leader is not responsive elect new leader
-- sync registration 
+
+- sync registration
   - Hash and count is sent with voting if different push-pull registry
+
+## Sequence example
+
+```mermaid
+
+sequenceDiagram
+    actor Kris
+    actor Susie
+    actor Lancer
+    actor Noelle
+    actor Ralsei
+    Note over Kris: Starts New Net Game
+    Kris ->> The Gang: "GAME!" <br> (sent link to the gang)
+    Susie -->> Kris: Why the hell not
+    Kris ->> The Gang: "..." <br> (Susie joined)
+    Lancer -->> Kris: Wow! Me...!?
+    Kris ->> The Gang: "..." <br> (Lancer joined)
+    Note over Ralsei: I am not touching <br> that link!
+    Noelle -->> Kris: Sure!
+    Kris ->> Noelle: "..." <br> (Noelle joined)
+    Note over Kris: 5min pass <br> Rolls 4 sided die
+    Kris ->> Noelle: "TURN?!" <br> (It's your turn <br> wanna take it now?)
+    Noelle -->> Kris: WHAT! No! I'm not ready yet!!
+    Note over Kris: Rolls 4 sided die
+    Kris ->> Susie: "TURN?!" <br> (It's your turn <br> wanna take it now?)
+    Susie -->> Kris: Let's do this!!!
+    Note over Susie: Writes a sentence with <br> bad grammar and spelling errs
+    Susie -->> Kris: Here, I wrote some words.
+    Kris ->> The Gang: "..." Susie words (The Gang gets a copy they can't look at)
+    Note over Kris: Rolls 3 sided die
+    Note over Kris: Draws picture using Susie's words
+    Kris ->> The Gang: "Drawing" <br> (The Gang gets a copy they can't look at)
+    Note over Ralsei: taps link
+    Ralsei -->> Kris: Fine I'll play
+    Kris ->> The Gang: "..." <br> Ralsei joined
+    Note over Kris: Rolls 3 sided die
+    Kris ->> Lancer: "TURN?!" <br> (It's your turn <br> wanna take it now?)
+    Lancer -->> Kris: Writes 'Potatoe'
+    Kris ->> The Gang: "..." <br> Lancer's words (The Gang gets a copy they can't look at)
+    Note over Kris: Rolls 2 sided die
+    Note over Kris: Draws A potato with a toe nail
+    Kris ->> The Gang: "..." <br> Drawing using Lancer's words (The Gang gets a copy they can't look at)
+    Note over Kris: Rolls 1 sided die
+    Kris ->> Noelle: "TURN?!" <br> (It's your turn <br> wanna take it now?)
+    Noelle -->> Kris: Writes a paragraph about a rock
+    Kris ->> The Gang: "..." <br> Noelle's words
+    Note over Kris: "END" Ends game for all
+    Kris ->> The Gang: "..." <br> Game Ended
+    Note over The Gang: checks if they have all the parts
+    Note over The Gang: Looks at the whole game
+    Note over The Gang: Susie's laugh was heard from space
+
+```
 
 ## Todo
 
@@ -57,9 +119,8 @@ If leader is not responsive elect new leader
 - allow re-share of same game with sharer's address in link
   - leader stays the same
 - keep incomplete net game hidden in history
-- clean up temp tables
+- clean up roster tables?
 
 ## Screens needed
-- 
 
 ## Known issues

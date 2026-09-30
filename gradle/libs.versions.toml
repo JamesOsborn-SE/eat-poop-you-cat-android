@@ -1,8 +1,8 @@
 [versions]
 activityCompose = "1.13.0"
-agp = "9.4.0"
+agp = "9.4.1"
 compose = "1.12.0"
-compose-bom = "2026.08.00"
+compose-bom = "2026.09.00"
 compose-plugin = "2.4.20"
 constraintlayout-compose = "1.1.2"
 core = "1.7.0"
@@ -16,12 +16,12 @@ koin-bom = "4.2.2"
 kotlin = "2.4.20"
 kotlinx-serialization = "1.11.0"
 ksp = "2.3.11"
-ktorVersion = "3.5.2"
+ktorVersion = "3.6.0"
 lifecycleViewmodelKtx = "2.11.0"
-logback = "1.6.3"
+logback = "1.6.4"
 material3 = "1.9.0"
-mockitoAndroid = "5.23.0"
-mockitoKotlin = "6.3.0"
+mockitoAndroid = "5.24.0"
+mockitoKotlin = "6.4.0"
 navigation-compose = "2.10.0-beta01"
 okio = "3.18.2"
 robolectric = "4.17"
@@ -32,14 +32,16 @@ sqlite = "2.7.1"
 uiUnit = "1.12.1"
 lifecycle = "2.11.0"
 core-bundle = "1.0.1"
-buildconfig = "6.0.10"
+buildconfig = "6.1.1"
 filekit = "0.16.0"
 coroutines = "1.11.0"
 korlibs = "6.1.0"
 kotlinx = "0.8.0"
 kXw3c = "0.5.0"
+mockito = "5.24.0"
 
 [libraries]
+mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 androidx-core-ktx = { module = "androidx.test:core-ktx", version.ref = "core" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx" }
 kotlinXw3c = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kXw3c" }
@@ -49,6 +51,8 @@ androidx-sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sq
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktorVersion" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
@@ -92,21 +96,32 @@ koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-bom" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlin-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorVersion" }
+
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorVersion" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
+ktor-client-ws = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorVersion" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktorVersion" }
 ktor-serialization-kotlinx-cbor = { module = "io.ktor:ktor-serialization-kotlinx-cbor", version.ref = "ktorVersion" }
+
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktorVersion" }
+ktor-server-compression-zstd = { module = "io.ktor:ktor-server-compression-zstd", version.ref = "ktorVersion" }
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktorVersion" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
+
+#ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktorVersion" }
+ktor-server-ws = { module = "io.ktor:ktor-server-websockets", version.ref = "ktorVersion" }
+#ktor-server-ws-jvm = { module = "io.ktor:ktor-server-websockets-jvm", version.ref = "ktorVersion" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
+#ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktorVersion" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVersion" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktorVersion" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
+
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }

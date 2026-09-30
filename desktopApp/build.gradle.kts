@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
     jvm()
-    jvmToolchain(17)
+    jvmToolchain(21)
     sourceSets {
         jvmMain {
             dependencies {
@@ -20,7 +20,7 @@ kotlin {
 
 compose.desktop {
     application {
-        javaHome = "/usr/lib/jvm/java-17-openjdk"
+        javaHome = "/usr/lib/jvm/java-21-openjdk"
         mainClass = "dev.develsinthedetails.eatpoopyoucat.MainKt"
 
         nativeDistributions {

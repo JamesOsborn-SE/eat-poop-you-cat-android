@@ -1,23 +1,40 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.NetworkInterface
 
 class DesktopServerManager(
-    private val sharedKtorServer: SharedKtorServer
+    private val sharedKtorServer: SharedKtorServer,
 ) : ServerManager {
 
-    override val currentAddress: String?
-        get() = getLocalIpv4Address()?.let { "http://$it:$SERVER_PORT" }
+    private val _serverState = MutableStateFlow<ServerState>(ServerState.Stopped)
+
+    override val serverState: StateFlow<ServerState> = _serverState.asStateFlow()
 
     override fun startServer() {
+        _serverState.value = ServerState.Starting
+
+        val ip = getLocalIpv4Address()
+
+        if (ip == null) {
+            _serverState.value = ServerState.Error("No active network connection detected.")
+            return
+        }
+
         sharedKtorServer.start()
+
+        val address = "http://$ip:$SERVER_PORT"
+        _serverState.value = ServerState.Running(address)
     }
 
     override fun stopServer() {
         sharedKtorServer.stop()
+        _serverState.value = ServerState.Stopped
     }
 
     override fun promptNetworkSettings() {

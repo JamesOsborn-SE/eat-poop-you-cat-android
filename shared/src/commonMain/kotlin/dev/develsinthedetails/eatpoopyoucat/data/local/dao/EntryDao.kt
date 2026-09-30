@@ -58,6 +58,10 @@ interface EntryDao {
     suspend fun upsert(entry: Entry)
 
     @Transaction
+    @Upsert
+    suspend fun upsert(entry: List<Entry>)
+
+    @Transaction
     @Query("SELECT gameId FROM entry where id=:id")
     suspend fun getGameId(id: Uuid): Uuid
 

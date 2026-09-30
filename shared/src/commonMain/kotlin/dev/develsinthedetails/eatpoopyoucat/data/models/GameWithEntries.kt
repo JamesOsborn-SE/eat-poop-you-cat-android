@@ -2,8 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.data.models
 
 import androidx.room3.Embedded
 import androidx.room3.Relation
-import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,9 +13,14 @@ data class GameWithEntries(
     var entries: List<Entry> = emptyList()
 )
 
-fun GameWithEntries.entriesAreValid(): Boolean {
-    return this.entries.isNotEmpty() && this.entries.all{ it.sentence.isNullOrBlank().xor(it.drawing == null) }
-}
+fun GameWithEntries.gameIsComplete() =
+    (this.game.gameMode == GameMode.LOCAL || (this.game.gameMode != GameMode.LOCAL && this.game.turns != null))
+            && (this.entries.isNotEmpty()
+            && this.entries.all { it.sentence.isNullOrBlank().xor(it.drawing == null) })
+
+fun GameWithEntries.gameToCleanUp() = this.game.gameMode == GameMode.LOCAL
+        && this.entries.isNotEmpty()
+        && this.entries.all { it.sentence.isNullOrBlank().xor(it.drawing == null) }
 
 @Serializable
 data class GameWithRosters(
@@ -26,7 +30,12 @@ data class GameWithRosters(
     var roster: List<Roster> = emptyList()
 )
 
-fun GameWithRosters.hash(): String{
-    val sorted = this.roster.map { it.playerId }.sortedBy { it.toString() }
-    return AppRepository.generateRosterHash(sorted)
-}
+@Serializable
+data class NetGame(
+    @Embedded
+    var game: Game,
+    @Relation(parentColumns = ["id"], entityColumns = ["gameId"])
+    var roster: List<Roster> = emptyList(),
+    @Relation(parentColumns = ["id"], entityColumns = ["gameId"])
+    var entries: List<Entry> = emptyList()
+)

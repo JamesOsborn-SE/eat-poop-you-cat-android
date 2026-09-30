@@ -3,121 +3,93 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
-import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_DRAW_URI
-import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_SENTENCE_URI
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
-import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
-import dev.develsinthedetails.eatpoopyoucat.data.models.hash
-import dev.develsinthedetails.eatpoopyoucat.data.models.type
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.request.receive
-import io.ktor.server.resources.get
-import io.ktor.server.resources.post
-import io.ktor.server.resources.put
-import io.ktor.server.response.respond
-import io.ktor.server.routing.HttpMethodRouteSelector
-import io.ktor.server.routing.Route
+import io.ktor.server.websocket.DefaultWebSocketServerSession
+import kotlinx.serialization.ExperimentalSerializationApi
 
-
-fun Route.getAllRoutes(): List<String> {
-    val endpoints = mutableListOf<String>()
-
-    fun traverse(route: Route) {
-        if (route.selector is HttpMethodRouteSelector) {
-            endpoints.add(route.toString())
-        }
-        route.children.forEach { traverse(it) }
-    }
-
-    traverse(this)
-    return endpoints
-}
-
-actual class GameRouter actual constructor(
+actual class GameServerRouter actual constructor(
     private val repository: AppRepository,
-    private val client: Client,
     private val appSettings: AppSettings,
 ) {
-    fun Route.gameRoutes() {
-
-        get<Api.GameRoot.Id> { gameWithRosters ->
-            val gameId = gameWithRosters.id
-            val game = repository.getGameWithRosters(gameId)
-            if (game != null) {
-                call.respond(game)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Game not found")
-            }
+    @OptIn(ExperimentalSerializationApi::class)
+    suspend fun handleWebSocketEvent(
+        event: GameEvent,
+        session: DefaultWebSocketServerSession,
+        connectionManager: WebSocketConnectionManager
+    ) {
+        suspend fun reply(event: GameEvent) {
+            connectionManager.send(session, event)
         }
 
-        post<Api.GameRoot.JoinGame> {
-            val playerRoster = call.receive<Roster>()
-            try {
-                repository.addPlayer(playerRoster)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.Conflict, "Could not join game: ${e.message}")
-                return@post
-            }
-            call.respond(HttpStatusCode.OK, "Successfully joined")
-        }
+        when (event) {
+            is GameEvent.JoinGame -> {
+                try {
+                    repository.addPlayer(event.player)
 
-        post<Api.GameRoot.Id.AskTakeTurn> { askTakeTurn ->
-            val game = repository.getGameWithEntries(askTakeTurn.parent.id) ?: return@post
-            val gameRosters = repository.getGameWithRosters(askTakeTurn.parent.id) ?: return@post
+                    connectionManager.associatePlayer(
+                        playerId = event.player.playerId,
+                        session = session
+                    )
 
-            val leader = gameRosters.roster.first()
-            var lastEntry = game.entries.maxByOrNull { it.sequence }
-            if (appSettings.playerId != leader.playerId) {
-
-                val entries = game.entries.toMutableList()
-
-                // update game entries if needed
-                val missing = client.updateGame(leader.address, game)
-                missing.forEach {
-                    repository.createEntry(it)
-                    entries.add(it)
+                    reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+                } catch (e: Exception) {
+                    reply(
+                        GameEvent.Error(
+                            "Could not join game: ${e.message}", requestId = event.requestId
+                        )
+                    )
                 }
-                lastEntry = entries.maxByOrNull { it.sequence }
-                // update Roster and Game
-                val missingPlayers =
-                    client.updateRoster(leader.address, askTakeTurn.parent.id, gameRosters.hash())
-                if (missingPlayers != null) {
-                    repository.updateGame(missingPlayers.game)
-                    missingPlayers.roster.forEach {
-                        repository.upsertRoster(it)
-                    }
+                connectionManager.broadcast(event.copy(requestId = null))
+            }
+
+            is GameEvent.TurnComplete -> {
+                if (event.entry == null) {
+                    reply(GameEvent.Error("Entry cannot be null", requestId = event.requestId))
+                    return
                 }
+                repository.upsertEntry(event.entry)
+                reply(GameEvent.Success("Turn saved", requestId = event.requestId))
+
+                // Sync users with latest turn
+                connectionManager.broadcast(event.copy(requestId = null))
             }
-            val destUrl = if (lastEntry == null || lastEntry.type == EntryType.Sentence) {
-                "${DEEPLINK_DRAW_URI}/${askTakeTurn.parent.id}/${game.game.gameMode.name}"
-            } else {
-                "${DEEPLINK_SENTENCE_URI}/${askTakeTurn.parent.id}/${game.game.gameMode.name}"
+
+            is GameEvent.TakeYourTurn -> {
+                if (event.entry == null) {
+                    reply(GameEvent.Error("Entry cannot be null", requestId = event.requestId))
+                    return
+                }
+                repository.upsertEntry(event.entry)
+                reply(GameEvent.Success("Turn saved", requestId = event.requestId))
+
+                // Sync users with latest turn
+                connectionManager.broadcast(event.copy(requestId = null))
             }
-        }
 
-        put<Api.GameRoot.TakeTurn> {
-            val entry = call.receive<Entry>()
-            repository.upsertEntry(entry)
-        }
-
-        get<Api.Ping> {
-            call.respond(HttpStatusCode.OK)
-        }
-
-        post<Api.GameRoot.Id.UpdateRoster> { updateRoster ->
-            val myHash = repository.getRosterHash(updateRoster.parent.id)
-            if (updateRoster.hash != myHash) {
-                call.respond(repository.getGameWithRosters(updateRoster.parent.id)!!)
-            } else {
-                call.respond(HttpStatusCode.OK)
+            is GameEvent.RequestGameWithRosters -> {
+                val game = repository.getGameWithRosters(event.gameId)
+                reply(GameEvent.ResponseGameWithRosters(game, requestId = event.requestId))
             }
-        }
 
-        post<Api.GameRoot.Id.UpdateGame> { updateGame ->
-            val knownTurns = call.receive<List<Int>>()
-            call.respond(repository.getMissingEntries(updateGame.parent.id, knownTurns))
+            is GameEvent.RequestMissingEntries -> {
+                val missing = repository.getMissingEntries(
+                    event.gameId,
+                    event.knownTurns
+                )
+
+                reply(GameEvent.ResponseMissingEntries(missing, requestId = event.requestId))
+            }
+
+            is GameEvent.RegisterPlayerId -> {
+                println("DEBUG: RegisterPlayerId=${event.playerId}")
+                connectionManager.associatePlayer(
+                    playerId = event.playerId,
+                    session = session
+                )
+                reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+            }
+
+            else -> Unit
         }
     }
 }

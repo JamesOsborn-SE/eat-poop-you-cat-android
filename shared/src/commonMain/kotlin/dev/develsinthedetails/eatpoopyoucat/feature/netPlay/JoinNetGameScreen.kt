@@ -23,32 +23,25 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
-import dev.develsinthedetails.eatpoopyoucat.data.models.Player
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.ask_join
 import eatpoopyoucat.shared.generated.resources.no
 import eatpoopyoucat.shared.generated.resources.oof
 import eatpoopyoucat.shared.generated.resources.yes
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
 
 @Composable
-fun NetGameScreen(
+fun JoinNetGameScreen(
     viewModel: JoinNetGameViewModel = koinViewModel(),
-    serverManager: ServerManager = koinInject(),
     gameId: Uuid,
-    address: String
+    onBack: () -> Unit,
+    toInProgressGame: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ManageServerLifecycle(serverManager, onUpdateAddress = { viewModel.updateAddress(it) })
-
-    viewModel.initFromDeepLink(gameId, address)
+    viewModel.initFromDeepLink(gameId)
     if (uiState.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -60,11 +53,12 @@ fun NetGameScreen(
         val joinData = JoinData(
             onChangeNickname = { newName -> viewModel.updateNickname(newName) },
             onYesPlay = { viewModel.onYesPlay() },
-            onNoPlay = { }
+            onNoPlay = { onBack() }
         )
 
-        AskToJoinScreen(
+        JoinNetGameScreen(
             uiState,
+            toInProgressGame = toInProgressGame,
             joinData = joinData,
             modifier = Modifier
                 .fillMaxSize()
@@ -74,16 +68,20 @@ fun NetGameScreen(
 }
 
 @Composable
-fun AskToJoinScreen(
+fun JoinNetGameScreen(
     uiState: JoinUiState,
     joinData: JoinData,
+    toInProgressGame: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    if (uiState.isInGameAlready) {
+        toInProgressGame()
+    }
     AppTheme {
         Scaffolds.Backable(stringResource(Res.string.ask_join), onBack = joinData.onNoPlay) { pad ->
             Column(modifier.padding(pad)) {
                 OutlinedTextField(
-                    value = uiState.player.nickname.valueOrEmpty(),
+                    value = uiState.nickname,
                     onValueChange = joinData.onChangeNickname,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
@@ -111,7 +109,7 @@ fun AskToJoinScreen(
 
                 Button(joinData.onNoPlay, content = {
                     Text(stringResource(Res.string.no))
-                },colors = secondaryButtonColors(), modifier = m)
+                }, colors = secondaryButtonColors(), modifier = m)
             }
         }
     }
@@ -125,7 +123,10 @@ data class JoinData(
 
 @Preview
 @Composable
-fun AskToJoinPreview() {
+fun JoinNetGamePreview() {
     val d = JoinData({}, {}, {})
-    AskToJoinScreen(JoinUiState(Uuid.NIL, player = Player(Uuid.NIL, stringResource(Res.string.oof))), d)
+    JoinNetGameScreen(
+        JoinUiState(playerId = Uuid.NIL,stringResource(Res.string.oof)), d,
+        toInProgressGame = {},
+    )
 }

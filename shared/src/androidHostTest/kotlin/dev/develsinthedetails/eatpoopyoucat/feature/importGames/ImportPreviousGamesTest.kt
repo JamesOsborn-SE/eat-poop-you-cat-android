@@ -32,6 +32,7 @@ import org.robolectric.RobolectricTestRunner
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.uuid.Uuid
 
+@Suppress("RunBlocking")
 @RunWith(RobolectricTestRunner::class)
 class ImportPreviousGamesTest {
     private val gameA = testGames[0]

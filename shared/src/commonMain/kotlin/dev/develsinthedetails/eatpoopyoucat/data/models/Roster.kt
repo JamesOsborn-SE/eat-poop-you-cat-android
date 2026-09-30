@@ -5,9 +5,7 @@ import androidx.room3.ForeignKey
 import androidx.room3.ForeignKey.Companion.CASCADE
 import androidx.room3.Index
 import dev.develsinthedetails.eatpoopyoucat.data.local.UuidSerializer
-import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import kotlinx.serialization.Serializable
-import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Entity(
@@ -34,8 +32,6 @@ data class Roster(
     @Serializable(with = UuidSerializer::class)
     val playerId: Uuid,
     val nickname: String,
-    val address: String,
-    val sequence: Int = -1,
-    val isLeader: Boolean,
-    val lastSeen: Instant,
-)
+    val isLeader: Boolean = false,
+
+    )

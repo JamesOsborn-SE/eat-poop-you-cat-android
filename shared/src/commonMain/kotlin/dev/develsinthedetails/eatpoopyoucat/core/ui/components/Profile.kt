@@ -183,25 +183,25 @@ fun generatePixelProfile2Bit(uuid: Uuid): List<String> {
 fun TwoBitTest(){
     Column {
         PixelArtImage(
-            generatePixelProfile2Bit(Uuid.random()),
+            generatePixelProfile2Bit(Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")),
             PIXEL_PALETTE_2_BIT,
             Modifier.size(120.dp).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile2Bit(Uuid.random()),
+            generatePixelProfile2Bit(Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb")),
             PIXEL_PALETTE_2_BIT,
             Modifier.size(120.dp).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile2Bit(Uuid.random()),
+            generatePixelProfile2Bit(Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9")),
             PIXEL_PALETTE_2_BIT,
             Modifier.size(120.dp).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile2Bit(Uuid.random()),
+            generatePixelProfile2Bit(Uuid.parse("670f27a7-e146-4463-8774-935958c8d298")),
             PIXEL_PALETTE_2_BIT,
             Modifier.size(120.dp).padding(10.dp)
         )
@@ -213,25 +213,25 @@ fun TwoBitTest(){
 fun FourBitTest(){
     Column {
         PixelArtImage(
-            generatePixelProfile4Bit(Uuid.random()),
+            generatePixelProfile4Bit(Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")),
             PIXEL_PALETTE_4_BIT,
             Modifier.size(120.dp).rotate(90f).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile4Bit(Uuid.random()),
+            generatePixelProfile4Bit(Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb")),
             PIXEL_PALETTE_4_BIT,
             Modifier.size(120.dp).rotate(90f).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile4Bit(Uuid.random()),
+            generatePixelProfile4Bit(Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9")),
             PIXEL_PALETTE_4_BIT,
             Modifier.size(120.dp).rotate(90f).padding(10.dp)
         )
         HorizontalDivider()
         PixelArtImage(
-            generatePixelProfile4Bit(Uuid.random()),
+            generatePixelProfile4Bit(Uuid.parse("670f27a7-e146-4463-8774-935958c8d298")),
             PIXEL_PALETTE_4_BIT,
             Modifier.size(120.dp).rotate(90f).padding(10.dp)
         )

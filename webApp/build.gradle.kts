@@ -16,6 +16,10 @@ kotlin {
         browser {
             commonWebpackConfig {
                 outputFileName = "webApp.js"
+                devServer = (devServer
+                    ?: org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer()).apply {
+                    port = 3792
+                }
             }
         }
         binaries.executable()

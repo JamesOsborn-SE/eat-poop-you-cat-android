@@ -1,63 +1,43 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.Game
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.uuid.Uuid
+
+data class HomeUiState(
+    val isLoading: Boolean = true,
+)
 
 class HomeViewModel(
-    private val repository: AppRepository,
     private val appSettings: AppSettings,
+    private val appRepository: AppRepository,
 ) : ViewModel() {
-    var isLoading by mutableStateOf(false)
+    private val _uiState = MutableStateFlow(
+        HomeUiState(
+            isLoading = true,
+        )
+    )
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     var useNicknames = appSettings.useNicknamesFlow
-    private var nickname by mutableStateOf("")
-    private val playerId = appSettings.playerId
-
 
     init {
         viewModelScope.launch {
-            updatePlayer(nickname)
-        }
-    }
-
-    private fun updatePlayer(nickname: String) {
-        val newPlayer = Player(playerId, nickname)
-        viewModelScope.launch {
-            val player = repository.getPlayer(playerId)
-
+            println("HomeViewModel init")
+            _uiState.update { it.copy(isLoading = true) }
+            var player = appRepository.getPlayer(appSettings.playerId)
             if (player == null) {
-                repository.createPlayer(newPlayer)
+                appRepository.createPlayer(Player(id = appSettings.playerId, ""))
             }
-        }
-    }
+            println("HomeViewModel init complete")
+            _uiState.update { it.copy(isLoading = false) }
 
-    fun saveNewGame(onToSentence: () -> Unit) {
-        isLoading = true
-        val gameId = Uuid.random()
-        viewModelScope.launch {
-            val player = repository.getPlayer(playerId)
-            println("DEBUG: $player")
-            println("DEBUG: $playerId")
-            if (player == null) {
-                repository.createPlayer(Player(playerId, nickname))
-            }
-            repository.createGame(
-                Game(
-                    id = gameId,
-                    timeout = null,
-                    turns = null
-                )
-            )
-            onToSentence.invoke()
-            isLoading = false
         }
     }
 

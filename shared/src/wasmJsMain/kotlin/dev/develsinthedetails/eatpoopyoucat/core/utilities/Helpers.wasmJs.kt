@@ -7,7 +7,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.ktor.http.Url
 import kotlinx.browser.window
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalWasmJsInterop::class)
@@ -45,16 +44,14 @@ actual fun rememberNotificationPermissionState(): NotificationPermissionState {
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
-fun consumeGameIdFromUrl(): Uuid? {
+actual fun getGameIdFromUrl(): Uuid? {
     val search = window.location.search
 
     if (search.isBlank()) return null
-
     val gameIdString = search.removePrefix("?")
         .split("&")
         .map { it.split("=") }
-        .firstOrNull { it.size == 2 && it[0] == "gameId" }
+        .firstOrNull { it.size == 2 && it[0] == "game" }
         ?.get(1)
 
     if (gameIdString != null) {
@@ -68,6 +65,8 @@ fun consumeGameIdFromUrl(): Uuid? {
     return try {
         gameIdString?.let { Uuid.parse(it) }
     } catch (e: Exception) {
+        println("Error parsing game id: $gameIdString")
+        println("Error parsing game exception: $e")
         null
     }
 }
@@ -76,6 +75,6 @@ fun getServerBaseUrl(): String {
     return window.location.origin
 }
 
-actual fun getRealAddress(address: Url): Url {
+actual fun getServerUrl(): Url {
     return Url(getServerBaseUrl())
 }

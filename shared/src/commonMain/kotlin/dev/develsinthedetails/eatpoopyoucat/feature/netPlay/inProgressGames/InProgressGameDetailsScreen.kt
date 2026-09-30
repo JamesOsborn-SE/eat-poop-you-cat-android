@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,12 +44,19 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generatePixelProf
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.PIXEL_PALETTE_4_BIT
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.getShareLink
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
+import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
+import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
+import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.SelectableReadOnlyTextWithShare
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.getShareLink
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
+import eatpoopyoucat.shared.generated.resources.end_game_for_all
 import eatpoopyoucat.shared.generated.resources.ic_cake
 import eatpoopyoucat.shared.generated.resources.ic_check_circle
 import eatpoopyoucat.shared.generated.resources.ic_draw_rounded
@@ -56,34 +64,74 @@ import eatpoopyoucat.shared.generated.resources.ic_lan
 import eatpoopyoucat.shared.generated.resources.ic_question_mark
 import eatpoopyoucat.shared.generated.resources.ic_schedule
 import eatpoopyoucat.shared.generated.resources.ic_sms
+import eatpoopyoucat.shared.generated.resources.ic_warning_rounded
 import eatpoopyoucat.shared.generated.resources.ic_wifi
+import eatpoopyoucat.shared.generated.resources.nicknames
+import eatpoopyoucat.shared.generated.resources.scroll_to_top
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringArrayResource
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Composable
 fun InProgressGameDetailsScreen(
     viewModel: InProgressGameDetailsViewModel = koinViewModel(),
-    onBack: () -> Unit
+    serverManager: ServerManager = koinInject(),
+    onBack: () -> Unit,
+    onEnd: (Uuid) -> Unit,
 ) {
     val game by viewModel.game.collectAsState(null)
+    val uiState by viewModel.uiState.collectAsState()
     val players: List<Roster>? by viewModel.players.collectAsState(null)
+
+    ManageServerLifecycle(
+        serverManager = serverManager,
+        onUpdateAddress = { viewModel.updateAddress(it) }
+    )
     InProgressGameDetailsScreen(
+        uiState = uiState,
         game = game,
         players = players,
         playerId = viewModel.playerId,
-        onBack = onBack
+        onBack = onBack,
+        gameOverMan = {
+            viewModel.gameOverMan()
+            val gameId= game?.game?.id
+            if (gameId != null)
+                onEnd(gameId)
+        }
     )
 }
 
 @Composable
 fun InProgressGameDetailsScreen(
-    game: Game?, players: List<Roster>?, playerId: Uuid, onBack: () -> Unit
+    uiState: InProgressGamesUiState,
+    game: GameWithEntries?, players: List<Roster>?, playerId: Uuid, onBack: () -> Unit,
+    gameOverMan: () -> Unit
 ) {
+    // todo don't show users in Joined who already took a turn.
     val listState = rememberLazyListState()
-    Scaffolds.Backable("Network game", onBack = onBack) { innerPadding ->
+    Scaffolds.Backable("Network game", onBack = onBack, floatingActionButton = {
+        Row {
+            // todo pixel pushing
+            FloatingActionButton(
+                modifier = Modifier.padding(3.dp),
+                onClick = { gameOverMan() }
+            ) {
+                Row {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_warning_rounded),
+                        modifier = Modifier.padding(3.dp),
+                        contentDescription = stringResource(Res.string.scroll_to_top)
+                    )
+                    Text(stringResource(Res.string.end_game_for_all))
+                }
+            }
+        }
+    }) { innerPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -91,12 +139,13 @@ fun InProgressGameDetailsScreen(
                 .padding(horizontal = 15.dp),
             color = MaterialTheme.colorScheme.background,
         ) {
-            val turns = players?.count { it.sequence >= 0 } ?: 0
+            val turns = game?.entries?.size ?: 0
             if (game == null || players == null) {
                 Spinner()
                 return@Surface
             }
             val thisRosterPlayer = players.first { it.playerId == playerId }
+
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
                     modifier = Modifier
@@ -110,7 +159,7 @@ fun InProgressGameDetailsScreen(
                                 .padding(10.dp)
                         ) {
                             Row {
-                                when (game.gameMode) {
+                                when (game.game.gameMode) {
                                     GameMode.LAN -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.ic_lan),
@@ -134,7 +183,7 @@ fun InProgressGameDetailsScreen(
                                         contentDescription = "Share text"
                                     )
                                 }
-                                val generatedProfile = generateOrganicProfile(game.id)
+                                val generatedProfile = generateOrganicProfile(game.game.id)
                                 Box(
                                     modifier = Modifier
                                         .size(50.dp)
@@ -146,8 +195,8 @@ fun InProgressGameDetailsScreen(
                                         modifier = Modifier.fillMaxSize()
                                     )
                                 }
-                                when (players.any {
-                                    it.playerId == playerId && it.sequence >= 0
+                                when (players.any { player ->
+                                    player.playerId == playerId && game.entries.any { it.playerId == playerId }
                                 }) {
                                     true -> {
                                         Icon(
@@ -173,7 +222,7 @@ fun InProgressGameDetailsScreen(
 
                                 Column {
                                     Text(
-                                        text = "Started: ${game.createdAt.localDateTimestamp()}",
+                                        text = "Started: ${game.game.createdAt.localDateTimestamp()}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
 
@@ -183,8 +232,8 @@ fun InProgressGameDetailsScreen(
                                     )
                                 }
                             }
-                            when (players.any {
-                                it.playerId == playerId && it.sequence >= 0
+                            when (players.any { player ->
+                                player.playerId == playerId && game.entries.any { it.playerId == playerId }
                             }) {
                                 true -> {
                                     Text(
@@ -206,8 +255,8 @@ fun InProgressGameDetailsScreen(
                                 SelectableReadOnlyTextWithShare(
                                     Modifier.padding(bottom = 15.dp),
                                     getShareLink(
-                                        thisRosterPlayer.address,
-                                        game.id
+                                        uiState.address,
+                                        game.game.id
                                     )
                                 )
                             }
@@ -224,9 +273,9 @@ fun InProgressGameDetailsScreen(
 
                         }
                     }
-                    itemsIndexed(players.filter { it.sequence >= 0 }
-                        .sortedBy { it.sequence }) { index, player ->
-                        RosterPlayerItem(index, player, playerId)
+                    itemsIndexed(game.entries.sortedBy { it.sequence }) { _, entry ->
+                        val player = players.first { it.playerId == entry.playerId }
+                        RosterPlayerItem(entry.sequence, player, game.entries, playerId)
                     }
                     item {
                         Text(
@@ -241,9 +290,8 @@ fun InProgressGameDetailsScreen(
                             modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
                         )
                     }
-                    itemsIndexed(players.filter { it.sequence < 0 }
-                        .sortedBy { it.sequence }) { index, rosterPlayer ->
-                        RosterPlayerItem(index, rosterPlayer, playerId)
+                    itemsIndexed(players) { index, rosterPlayer ->
+                        RosterPlayerItem(index, rosterPlayer, game.entries, playerId)
                     }
                     item {
                         HorizontalDivider(
@@ -261,7 +309,7 @@ fun InProgressGameDetailsScreen(
 }
 
 @Composable
-fun RosterPlayerItem(index: Int, player: Roster, playerId: Uuid) {
+fun RosterPlayerItem(index: Int, player: Roster, entries: List<Entry>, playerId: Uuid) {
     val rowColor = if (index % 2 == 0) {
         MaterialTheme.colorScheme.surfaceVariant
     } else {
@@ -289,7 +337,7 @@ fun RosterPlayerItem(index: Int, player: Roster, playerId: Uuid) {
         PixelArtImage(
             generatePixelProfile4Bit(player.playerId), PIXEL_PALETTE_4_BIT, m
         )
-        if (player.sequence >= 0 && player.sequence % 2 == 0) {
+        if (entries.any { it.playerId == player.playerId && it.type == EntryType.Sentence }) {
             Icon(
                 painter = painterResource(Res.drawable.ic_sms),
                 contentDescription = "Sentence Turn",
@@ -297,7 +345,7 @@ fun RosterPlayerItem(index: Int, player: Roster, playerId: Uuid) {
                     .size(50.dp)
                     .padding(end = 10.dp, start = 10.dp)
             )
-        } else if (player.sequence >= 0) {
+        } else if (entries.any { it.playerId == player.playerId && it.type == EntryType.Drawing }) {
             Icon(
                 painter = painterResource(Res.drawable.ic_draw_rounded),
                 contentDescription = "Draw Turn",
@@ -324,147 +372,102 @@ fun RosterPlayerItem(index: Int, player: Roster, playerId: Uuid) {
 @Composable
 @Preview
 fun InProgressGameDetailsPreview() {
-    val playerId = Uuid.random()
-    val gameId = Uuid.random()
-    val game = Game(
-        gameId,
-        timeout = 100,
-        turns = null,
-        createdAt = Instant.fromEpochSeconds(1786057118),
-        gameMode = GameMode.LAN
+    val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val game = GameWithEntries(
+        Game(
+            gameId,
+            timeout = 100,
+            turns = null,
+            createdAt = Instant.fromEpochSeconds(1786057118),
+            gameMode = GameMode.LAN
+        ), listOf(
+            Entry(
+                sequence = 1,
+                id = Uuid.NIL,
+                playerId = playerId,
+                localPlayerName = "TODO()",
+                gameId = gameId,
+                timePassed = 0,
+                sentence = "TODO()",
+                drawing = null,
+                createdAt = Instant.fromEpochSeconds(1786057118),
+            )
+        )
     )
+    val nicknames = stringArrayResource(Res.array.nicknames)
     val roster = listOf(
         Roster(
             gameId,
-            Uuid.random(),
-            "Bob",
-            "http://127.0.0.1:3459",
-            0,
-            false,
-            Clock.System.now()
+            Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb"),
+            nicknames[0]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Bob2",
-            "http://127.0.0.1:3459",
-            1,
-            false,
-            Clock.System.now()
+            Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9"),
+            nicknames[1]
         ),
         Roster(
             gameId,
             playerId,
-            "Me",
-            "http://127.0.0.1:3459",
-            2,
-            true,
-            Clock.System.now()
+            nicknames[2]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Bob4",
-            "http://127.0.0.1:3459",
-            3,
-            false,
-            Clock.System.now()
+            Uuid.parse("670f27a7-e146-4463-8774-935958c8d298"),
+            nicknames[3]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Bob45",
-            "http://127.0.0.1:3459",
-            4,
-            false,
-            Clock.System.now()
+            Uuid.parse("0ce3fd21-6b6e-41e3-9d4d-547a2f83b281"),
+            nicknames[4]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Bob31251",
-            "http://127.0.0.1:3459",
-            5,
-            false,
-            Clock.System.now()
+            Uuid.parse("a81c33fb-c43f-46eb-9e95-f93485906e2e"),
+            nicknames[5]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Frank",
-            "http://127.0.0.1:3459",
-            -1,
-            false,
-            Clock.System.now()
+            Uuid.parse("bc58e47a-6e72-4509-bf4d-7b72b6af813f"),
+            nicknames[6]
         ),
         Roster(
             gameId,
-            Uuid.random(),
-            "Frank1",
-            "http://127.0.0.1:3459",
-            -1,
-            false,
-            Clock.System.now()
-        ),
-        Roster(
-            gameId,
-            Uuid.random(),
-            "Frank2",
-            "http://127.0.0.1:3459",
-            -1,
-            false,
-            Clock.System.now()
-        ),
-        Roster(
-            gameId,
-            Uuid.random(),
-            "Frank5",
-            "http://127.0.0.1:3459",
-            -1,
-            false,
-            Clock.System.now()
-        ),
-        Roster(
-            gameId,
-            Uuid.random(),
-            "Frank55",
-            "http://127.0.0.1:3459",
-            -1,
-            false,
-            Clock.System.now()
+            Uuid.parse("6c47151b-c6cc-4d22-8a05-652779d1c72c"),
+            nicknames[7]
         ),
     )
-
+    val uiState = InProgressGamesUiState("http://127.0.0.1:3459")
     AppTheme {
-        InProgressGameDetailsScreen(game, roster, playerId, onBack = {})
+        InProgressGameDetailsScreen(uiState, game, roster, playerId, onBack = {}, gameOverMan = {})
     }
 }
 
 @Composable
 @Preview
 fun InProgressGameDetailsSoloPreview() {
-    val playerId = Uuid.random()
-    val gameId = Uuid.random()
-    val game = Game(
-        gameId,
-        timeout = 100,
-        turns = null,
-        createdAt = Instant.fromEpochSeconds(1786057118),
-        gameMode = GameMode.LAN
+    val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
+    val game = GameWithEntries(
+        Game(
+            gameId,
+            timeout = 100,
+            turns = null,
+            createdAt = Instant.fromEpochSeconds(1786057118),
+            gameMode = GameMode.LAN
+        ), listOf()
     )
     val roster = listOf(
         Roster(
             gameId,
             playerId,
-            "Me",
-            "http://127.0.0.1:3459",
-            -1,
-            true,
-            Clock.System.now()
+            "Me"
         ),
     )
 
+    val uiState = InProgressGamesUiState("http://127.0.0.1:3459")
     AppTheme {
-        InProgressGameDetailsScreen(game, roster, playerId, onBack = {})
+        InProgressGameDetailsScreen(uiState, game, roster, playerId, onBack = {},{})
     }
 }

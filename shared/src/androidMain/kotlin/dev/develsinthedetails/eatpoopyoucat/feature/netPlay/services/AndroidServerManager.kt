@@ -6,20 +6,37 @@ import android.provider.Settings
 import dev.develsinthedetails.eatpoopyoucat.app.AppContextProvider
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.NetworkUtils
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class AndroidServerManager : ServerManager {
     val context = AppContextProvider.context
-    override val currentAddress: String?
-        get() = NetworkUtils.getLocalIpAddress()?.let { "http://$it:$SERVER_PORT" }
+
+    private val _serverState = MutableStateFlow<ServerState>(ServerState.Stopped)
+    override val serverState: StateFlow<ServerState> = _serverState.asStateFlow()
 
     override fun startServer() {
+        _serverState.value = ServerState.Starting
+
+        val ip = NetworkUtils.getLocalIpAddress()
+        if (ip == null) {
+            _serverState.value = ServerState.Error("No Wi-Fi or LAN connection detected.")
+            return
+        }
+
+        val address = "http://$ip:$SERVER_PORT"
         val serviceIntent = Intent(context, AndroidForegroundServerService::class.java)
-        context.startService(serviceIntent)
+
+        context.startForegroundService(serviceIntent)
+
+        _serverState.value = ServerState.Running(address)
     }
 
     override fun stopServer() {
         val serviceIntent = Intent(context, AndroidForegroundServerService::class.java)
         context.stopService(serviceIntent)
+        _serverState.value = ServerState.Stopped
     }
 
     override fun promptNetworkSettings() {
@@ -30,5 +47,11 @@ class AndroidServerManager : ServerManager {
         }
         panelIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(panelIntent)
+    }
+
+    override fun clearError() {
+        if (_serverState.value is ServerState.Error) {
+            _serverState.value = ServerState.Stopped
+        }
     }
 }

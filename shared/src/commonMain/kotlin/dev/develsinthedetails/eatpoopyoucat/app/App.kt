@@ -7,13 +7,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import org.koin.compose.koinInject
 
 @Composable
-fun App() {
+fun App(
+    onNavHostReady: suspend (NavController) -> Unit = {}
+) {
     val appSettings: AppSettings = koinInject()
+
     val isReady by appSettings.isReadyFlow.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -25,8 +29,7 @@ fun App() {
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
                     NavGraph(
-                        netGameParams = null,
-                        onNetGameParamsConsumed = { },
+                        onNavHostReady = onNavHostReady
                     )
                 }
             }

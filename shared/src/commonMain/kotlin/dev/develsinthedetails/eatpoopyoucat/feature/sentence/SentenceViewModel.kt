@@ -9,19 +9,19 @@ import dev.develsinthedetails.eatpoopyoucat.app.Sentence
 import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.generateNickname
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.nextText
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.validateNickname
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.no_nickname_chosen_warning
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.compose.resources.getString
 import kotlin.uuid.Uuid
 
@@ -37,13 +37,14 @@ data class SentenceUiState(
     val nicknameError: String? = null,
     val nicknameIsSatisfied: Boolean = false,
     val previousNicknames: List<String> = listOf(),
-
-    )
+    val nextText: String = "",
+)
 
 class SentenceViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
+    private val client: Client,
 ) : ViewModel() {
     private val typeMap = appTypeMap
     private val route = state.toRoute<Sentence>(typeMap)
@@ -55,14 +56,18 @@ class SentenceViewModel(
 
     init {
         viewModelScope.launch {
-            val doNotUseNicknames =
-                !appSettings.useNicknamesFlow.first() && gameMode == GameMode.LOCAL
+            val nickname = appSettings.nicknameFlow.first()
+            val nicknameIsSatisfied =
+                (!appSettings.useNicknamesFlow.first() && gameMode == GameMode.LOCAL)
+                        || (gameMode != GameMode.LOCAL && nickname.isNotBlank())
             val previousEntry = repository.getLastEntry(gameId)
             _uiState.update {
                 it.copy(
                     previousEntry = previousEntry,
                     isLoading = false,
-                    nicknameIsSatisfied = doNotUseNicknames
+                    nickname = nickname,
+                    nicknameIsSatisfied = nicknameIsSatisfied,
+                    nextText = nextText(gameMode)
                 )
             }
         }
@@ -72,12 +77,17 @@ class SentenceViewModel(
         _uiState.update { it.copy(sentence = sentence) }
     }
 
-    fun saveEntry(nextTo: (Uuid) -> Unit) {
+    fun isSentenceValid(): Boolean {
         val state = _uiState.value
         if (state.sentence.isBlank()) {
             _uiState.update { it.copy(isError = true) }
-            return
+            return false
         }
+        return true
+    }
+
+    fun saveEntry() {
+        val state = _uiState.value
         _uiState.update { it.copy(isLoading = true) }
 
         val entry = state.previousEntry
@@ -95,21 +105,15 @@ class SentenceViewModel(
         )
 
         viewModelScope.launch {
-            println("DEBUG: Attempting to insert Entry.")
-            println("DEBUG: Entry's gameId = $gameId")
-            println("DEBUG: Entry's playerId = $playerId")
-            println("DEBUG: Entry's sentence = ${newEntry.sentence}")
-
             try {
+                appSettings.setNickname(state.nickname ?: "")
                 repository.upsertEntry(newEntry)
-
-                withContext(Dispatchers.Main) {
-                    nextTo.invoke(entryId)
-                }
             } catch (e: Exception) {
                 println("DEBUG: Insert failed! One of those IDs is missing in the parent tables.")
                 e.printStackTrace()
             }
+            if (gameMode != GameMode.LOCAL)
+                client.turnComplete(newEntry)
         }
         _uiState.update { it.copy(isLoading = false) }
     }

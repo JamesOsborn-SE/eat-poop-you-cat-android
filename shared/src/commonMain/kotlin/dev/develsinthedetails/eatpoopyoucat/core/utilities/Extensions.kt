@@ -94,6 +94,10 @@ fun String.shareDecodeUrl(): Pair<Uuid, String> {
     return Pair(Uuid.NIL, "")
 }
 
+fun getShareLink(address: String, gameId: Uuid): String {
+    return "${address.trimEnd('/')}/#join_$gameId"
+}
+
 @Composable
 expect fun SystemBackHandler(enabled: Boolean = true, onBack: () -> Unit)
 

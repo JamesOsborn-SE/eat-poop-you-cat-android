@@ -13,6 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.generateNickname
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.nextText
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.validateNickname
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Coordinates
@@ -21,6 +22,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.no_nickname_chosen_warning
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,12 +58,14 @@ data class DrawUiState(
     val nicknameError: String? = null,
     val nicknameIsSatisfied: Boolean = false,
     val previousNicknames: List<String> = listOf(),
+    val nextText: String = "",
 )
 
 class DrawViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
+    private val client: Client,
 ) : ViewModel() {
 
     private var currentX = 0f
@@ -82,14 +86,18 @@ class DrawViewModel(
     init {
         clearCanvas()
         viewModelScope.launch {
-            val doNotUseNicknames =
-                !appSettings.useNicknamesFlow.first() && gameMode == GameMode.LOCAL
+            val nickname = appSettings.nicknameFlow.first()
+            println("Nickname: $nickname")
+            val nicknameIsSatisfied = nickname.isNotBlank()
+                    || (!appSettings.useNicknamesFlow.first() && gameMode == GameMode.LOCAL)
             val entry = repository.getLastEntry(gameId)
             _uiState.update {
                 it.copy(
                     previousEntry = entry,
                     isLoading = false,
-                    nicknameIsSatisfied = doNotUseNicknames
+                    nickname = nickname,
+                    nicknameIsSatisfied = nicknameIsSatisfied,
+                    nextText = nextText(gameMode)
                 )
             }
         }
@@ -106,7 +114,7 @@ class DrawViewModel(
         }
     }
 
-    fun isValidDrawing(onNavigateToSentence: () -> Unit): Boolean {
+    fun isValidDrawing(): Boolean {
         val currentState = _uiState.value
         if (currentState.drawingLines.size < 3
             || currentResolution.height == 0
@@ -115,26 +123,31 @@ class DrawViewModel(
             _uiState.update { it.copy(isError = true) }
             return false
         }
+        return true
+    }
 
+    fun saveDrawing() {
+        val state = _uiState.value
         _uiState.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            val previousEntry = currentState.previousEntry
+            appSettings.setNickname(state.nickname ?: "")
+            val previousEntry = state.previousEntry
             if (previousEntry != null) {
                 val newEntry: Entry = previousEntry.copy(
                     id = entryId,
-                    localPlayerName = currentState.nickname,
+                    localPlayerName = state.nickname,
                     sentence = null,
-                    drawing = Gzip.compress(Json.encodeToString(currentState.drawingLines)),
+                    drawing = Gzip.compress(Json.encodeToString(state.drawingLines)),
                     sequence = previousEntry.sequence.inc(),
                     playerId = playerId
                 )
                 repository.createEntry(newEntry)
-                onNavigateToSentence.invoke()
+                if (gameMode != GameMode.LOCAL)
+                    client.turnComplete(newEntry)
             }
             _uiState.update { it.copy(isLoading = false) }
         }
-        return true
     }
 
     fun touchStart(inputChange: PointerInputChange) {
@@ -272,16 +285,6 @@ class DrawViewModel(
                 )
             )
         }
-    }
-
-    fun getGameMode(gameId: Uuid?): GameMode {
-        var gameMode = GameMode.LOCAL
-        if (gameId != null) {
-            viewModelScope.launch {
-                gameMode = repository.getGame(gameId).gameMode
-            }
-        }
-        return gameMode
     }
 
     fun updateNickname(nickname: String?) {

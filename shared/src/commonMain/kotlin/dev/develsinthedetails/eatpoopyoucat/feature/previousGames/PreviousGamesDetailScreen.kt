@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
@@ -81,7 +82,8 @@ fun PreviousGameDetailsRoute(
     viewModel: PreviousGameDetailsViewModel = koinViewModel(),
     onBack: () -> Unit,
     onContinueGame: (Uuid, EntryType) -> Unit,
-    onNavigateToImport: () -> Unit
+    onNavigateToImport: () -> Unit,
+    onNavigateToInProgress: (Uuid) -> Unit
 ) {
     val game by viewModel.gameWithEntries.collectAsState(initial = null)
     val lastEntry = game?.entries?.last()
@@ -109,6 +111,11 @@ fun PreviousGameDetailsRoute(
     val shareLauncher = rememberShareFileLauncher(
         onError = { failure -> shareError = failure.message },
     )
+    // todo fix hack.. send to in progress games
+    if (game != null && game?.game?.gameMode != GameMode.LOCAL && game?.game?.turns == null) {
+        onNavigateToInProgress(viewModel.gameId)
+    }
+
     PreviousGameDetailsScreen(
         modifier = modifier,
         entries = game?.entries,

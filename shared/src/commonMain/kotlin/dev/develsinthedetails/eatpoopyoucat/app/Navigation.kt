@@ -2,6 +2,7 @@ package dev.develsinthedetails.eatpoopyoucat.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,10 +20,12 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.NetGameScreen
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGames
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.IncomingEventProcessor
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.sentence.SentenceScreen
@@ -30,7 +33,9 @@ import dev.develsinthedetails.eatpoopyoucat.feature.setup.CreditsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.HomeScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.NewGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.setup.PrivacyPolicyScreen
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.koin.compose.koinInject
 import kotlin.reflect.typeOf
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -75,54 +80,66 @@ val UuidNavType = object : NavType<Uuid>(isNullableAllowed = false) {
 }
 
 @Serializable
+@SerialName("Home")
 data object Home
 
 @Serializable
+@SerialName("PreviousGames")
 data object PreviousGames
 
 @Serializable
+@SerialName("Credits")
 data object Credits
 
 @Serializable
+@SerialName("PrivacyPolicy")
 data object PrivacyPolicy
 
 @Serializable
-data object NewGame
+@SerialName("New")
+data object New
 
 @Serializable
+@SerialName("PreviousGameDetails")
 data class PreviousGameDetails(val gameId: Uuid)
 
 @Serializable
+@SerialName("Sentence")
 data class Sentence(
     val gameId: Uuid,
     val gameMode: GameMode
 )
 
 @Serializable
+@SerialName("Draw")
 data class Draw(
     val gameId: Uuid,
     val gameMode: GameMode
 )
 
 @Serializable
+@SerialName("StartNetGame")
 data class StartNetGame(
     val gameId: Uuid,
     val gameMode: GameMode
 )
 
 @Serializable
+@SerialName("InProgressGames")
 data object InProgressGames
 
 @Serializable
+@SerialName("InProgressGameDetails")
 data class InProgressGameDetails(val gameId: Uuid)
 
 @Serializable
-data object ImportGamesRoute
+@SerialName("Import")
+data object Import
 
 @Serializable
-data class NetGameRoute(
-    val gameId: Uuid,
-    val address: String
+@SerialName("Join")
+data class Join(
+    val gameId: Uuid
 )
 
 val appTypeMap = mapOf(
@@ -133,15 +150,36 @@ val appTypeMap = mapOf(
 @OptIn(ExperimentalUuidApi::class)
 @Composable
 fun NavGraph(
-    netGameParams: Pair<Uuid, String>? = null,
-    onNetGameParamsConsumed: () -> Unit = {},
+    onNavHostReady: suspend (NavController) -> Unit = {},
+    navigationManager: NavigationManager = koinInject(),
+    incomingEventProcessor: IncomingEventProcessor = koinInject()
 ) {
     val navController = rememberNavController()
+    LaunchedEffect(navigationManager) {
+        incomingEventProcessor.start(this)
+        navigationManager.commands.collect { command ->
+            when (command) {
+                is NavigationCommand.OpenDraw ->
+                    navController.navigate(
+                        Draw(command.gameId, command.gameMode)
+                    ) {
+                        popUpTo<Home>()
+                    }
 
-    LaunchedEffect(netGameParams) {
-        if (netGameParams != null) {
-            navController.navigate(NetGameRoute(netGameParams.first, netGameParams.second))
-            onNetGameParamsConsumed()
+                is NavigationCommand.OpenSentence ->
+                    navController.navigate(
+                        Sentence(command.gameId, command.gameMode)
+                    ) {
+                        popUpTo<Home>()
+                    }
+
+                is NavigationCommand.OpenPreviousGameDetails ->
+                    navController.navigate(
+                        PreviousGameDetails(command.gameId)
+                    ) {
+                        popUpTo<Home>()
+                    }
+            }
         }
     }
 
@@ -152,12 +190,9 @@ fun NavGraph(
         composable<Home> {
             HomeScreen(
                 toNewGame = {
-                    navController.navigate(NewGame) {
+                    navController.navigate(New) {
                         popUpTo<Home>()
                     }
-                },
-                toJoinGame ={ gameId, serverAddress ->
-                    navController.navigate(NetGameRoute(gameId, serverAddress))
                 },
                 toPreviousGames = {
                     navController.navigate(PreviousGames) {
@@ -176,7 +211,7 @@ fun NavGraph(
             )
         }
 
-        composable<NewGame> {
+        composable<New> {
             NewGameScreen(
                 onBack = {
                     navController.navigate(Home)
@@ -281,7 +316,7 @@ fun NavGraph(
             )
         }
 
-        composable<ImportGamesRoute> {
+        composable<Import> {
             ImportGamesScreen(
                 finish = {
                     navController.navigate(PreviousGames) {
@@ -302,7 +337,7 @@ fun NavGraph(
             PreviousGamesRoute(
                 onGoHome = { navController.navigate(Home) { popUpTo<Home>() } },
                 onGameClick = { gameId -> navController.navigate(PreviousGameDetails(gameId)) },
-                onNavigateToImport = { navController.navigate(ImportGamesRoute) },
+                onNavigateToImport = { navController.navigate(Import) },
             )
         }
 
@@ -323,19 +358,35 @@ fun NavGraph(
                         navController.navigate(Sentence(previousEntryId, gameMode = GameMode.LOCAL))
                     }
                 },
-                onNavigateToImport = { navController.navigate(ImportGamesRoute) },
+                onNavigateToImport = { navController.navigate(Import) },
                 onBack = {
                     navController.navigate(PreviousGames) {
                         popUpTo<PreviousGames>()
+                        popUpTo<Home>()
+                    }
+                },
+                onNavigateToInProgress = {
+                    navController.navigate(InProgressGameDetails(it)) {
+                        popUpTo<InProgressGames>()
                         popUpTo<Home>()
                     }
                 }
             )
         }
 
-        composable<NetGameRoute>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) { backStackEntry ->
-            val route = backStackEntry.toRoute<NetGameRoute>()
-            NetGameScreen(gameId = route.gameId, address = route.address)
+        composable<Join>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) { backStackEntry ->
+            val route = backStackEntry.toRoute<Join>()
+            JoinNetGameScreen(
+                gameId = route.gameId,
+                onBack = {
+                    navController.navigate(Home) {
+                        popUpTo<Home>()
+                    }
+                }, toInProgressGame = {
+                    navController.navigate(InProgressGameDetails(route.gameId)) {
+                        popUpTo<Home>()
+                    }
+                })
         }
 
         composable<Credits> {
@@ -374,7 +425,13 @@ fun NavGraph(
         }
 
         composable<InProgressGameDetails>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
-            InProgressGameDetailsScreen(onBack = { navController.navigate(InProgressGames) })
+            InProgressGameDetailsScreen(
+                onBack = { navController.navigate(InProgressGames) },
+                onEnd = { gameId -> navController.navigate(PreviousGameDetails(gameId)) },
+            )
         }
+    }
+    LaunchedEffect(navController) {
+        onNavHostReady(navController)
     }
 }

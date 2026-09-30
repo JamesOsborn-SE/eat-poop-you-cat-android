@@ -77,3 +77,14 @@ val Entry.type: EntryType
         else
             EntryType.Unknown
     }
+
+val Entry?.nextType: EntryType
+    get() {
+        if (this == null)
+            return EntryType.Sentence
+        if (this.type == EntryType.Sentence)
+            return EntryType.Drawing
+        if (this.type == EntryType.Drawing)
+            return EntryType.Sentence
+        return EntryType.Unknown
+    }

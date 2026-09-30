@@ -8,7 +8,6 @@ import androidx.room3.Transaction
 import androidx.room3.Upsert
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import kotlinx.coroutines.flow.Flow
-import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @Dao
@@ -46,15 +45,6 @@ interface RosterDao {
 
     @Upsert
     suspend fun upsert(roster: Roster)
-
-    @Query(
-        """
-        UPDATE Roster 
-        SET lastSeen = :time 
-        WHERE address = :address AND gameId = :gameId
-    """
-    )
-    suspend fun updateRosterPing(address: String, gameId: Uuid, time: Instant)
 
     @Query("DELETE FROM roster")
     suspend fun deleteAll()
