@@ -107,10 +107,11 @@ fun InProgressGameDetailsScreen(
 @Composable
 fun InProgressGameDetailsScreen(
     uiState: InProgressGamesUiState,
-    game: NetGame?, myPlayerId: Uuid, onBack: () -> Unit,
+    game: NetGame?,
+    myPlayerId: Uuid,
+    onBack: () -> Unit,
     gameOverMan: () -> Unit
 ) {
-    // todo don't show users in Joined who already took a turn.
     val listState = rememberLazyListState()
     Scaffolds.Backable("Network game", onBack = onBack, floatingActionButton = {
         Row {
@@ -138,7 +139,7 @@ fun InProgressGameDetailsScreen(
             color = MaterialTheme.colorScheme.background,
         ) {
             val turns = game?.entries?.size ?: 0
-            if (game == null || game.roster.isEmpty()) {
+            if (game == null) {
                 Spinner()
                 return@Surface
             }
@@ -288,7 +289,7 @@ fun InProgressGameDetailsScreen(
                         )
                     }
                     itemsIndexed(game.roster.filter { r ->
-                        game.entries.any { r.playerId != it.playerId }
+                        game.entries.none { r.playerId == it.playerId }
                     }) { index, rosterPlayer ->
                         RosterPlayerItem(index, rosterPlayer, game.entries, myPlayerId)
                     }
@@ -384,7 +385,7 @@ fun InProgressGameDetailsPreview() {
         ), entries = (
                 listOf(
                     Entry(
-                        sequence = 1,
+                        sequence = 0,
                         id = Uuid.NIL,
                         playerId = playerId,
                         localPlayerName = "TODO()",

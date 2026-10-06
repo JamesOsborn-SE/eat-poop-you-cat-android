@@ -50,7 +50,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBackupFileSaver
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.gameIsComplete
-import dev.develsinthedetails.eatpoopyoucat.data.models.gameToCleanUp
+import dev.develsinthedetails.eatpoopyoucat.data.models.invalidGames
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.delete_game
@@ -84,9 +84,9 @@ fun PreviousGamesRoute(
         // clean up games that were created and never played.
         // These are created by the side effect of creating the game before the first sentence
         // Should be fixed but long time users may still benefit.
-        val cleanup = games?.filter { !it.gameToCleanUp() }
-        if (!cleanup.isNullOrEmpty())
-            println("TESTING: viewModel.cleanup(cleanup)")
+        val invalidGames = games?.filter { it.invalidGames() }
+        if (invalidGames?.isNotEmpty() ?: false)
+            viewModel.cleanup(invalidGames)
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
