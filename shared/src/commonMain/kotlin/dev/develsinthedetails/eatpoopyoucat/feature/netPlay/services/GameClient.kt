@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
@@ -40,13 +41,11 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-class Client(
+class GameClient(
     private val serverUrl: Url,
+    private val repository: AppRepository,
     private val appSettings: AppSettings
 ) {
-    // find build/dist/wasmJs/productionExecutable -type f \( -name "*.wasm" -o -name "*.js" -o -name "*.css" -o -name "*.htm*" -o -name "*.svg" \) -exec gzip -9 -k {} \;
-    // find . -type f \( -name "*.wasm" -o -name "*.js" -o -name "*.css" -o -name "*.htm*" -o -name "*.svg" -o -name "*.xml" -o -name "*.cvr" \) -exec gzip -9 {} \;
-    // todo CD wipe pngs in ./file for smaller file sizes
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Default
     )
@@ -333,6 +332,20 @@ class Client(
         return response?.entries.orEmpty()
     }
 
+    suspend fun ensureGameMatchesServer(gameId: Uuid) {
+        var myGame = repository.getGameWithEntries(gameId)
+        if (myGame == null) {
+            val gameWithRoster = getGame(gameId) ?: return
+            repository.upsertGameWithRosters(gameWithRoster)
+            myGame = GameWithEntries(gameWithRoster.game, emptyList())
+        }
+
+        val entries = updateGame(myGame)
+
+        if (entries.isEmpty()) return //means we good
+        repository.upsertEntries(entries)
+    }
+
     suspend fun close() {
         if (closed) {
             return
@@ -358,37 +371,5 @@ class Client(
         closed = true
         scope.cancel()
         httpClient.close()
-    }
-}
-
-private fun GameEvent.withRequestId(
-    requestId: String,
-): GameEvent {
-    return when (this) {
-        is GameEvent.RequestGameWithRosters ->
-            copy(requestId = requestId)
-
-        is GameEvent.JoinGame ->
-            copy(requestId = requestId)
-
-        is GameEvent.TakeYourTurn ->
-            copy(requestId = requestId)
-
-        is GameEvent.RequestMissingEntries ->
-            copy(requestId = requestId)
-
-        is GameEvent.ResponseGameWithRosters ->
-            copy(requestId = requestId)
-
-        is GameEvent.ResponseMissingEntries ->
-            copy(requestId = requestId)
-
-        is GameEvent.Success ->
-            copy(requestId = requestId)
-
-        is GameEvent.Error ->
-            copy(requestId = requestId)
-
-        else -> this
     }
 }

@@ -1,18 +1,25 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
+import dev.develsinthedetails.eatpoopyoucat.app.Join
+import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.reflect.typeOf
 import kotlin.uuid.Uuid
 
 
@@ -31,28 +38,40 @@ data class JoinUiState(
 class JoinNetGameViewModel(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
-    private val client: Client
+    private val client: GameClient,
+    state: SavedStateHandle,
 ) : ViewModel() {
-    private lateinit var gameId: Uuid
+
+    private val typeMap = mapOf(typeOf<Uuid>() to UuidNavType)
+    private val route = state.toRoute<Join>(typeMap)
+    private val gameId: Uuid = checkNotNull(route.gameId)
     private val _uiState = MutableStateFlow(
         JoinUiState(playerId = appSettings.playerId, nickname = appSettings.nickname)
     )
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
-    fun initFromDeepLink(gameId: Uuid) {
-        this.gameId = gameId
-        viewModelScope.launch {
-            val game = client.getGame(gameId)
-            if (game != null && game.roster.any { it.playerId == _uiState.value.playerId }) {
-                repository.upsertGameWithRosters(game)
-                val gameWithEntries =
-                    client.updateGame(GameWithEntries(game = game.game, entries = listOf()))
-                repository.upsertEntries(gameWithEntries)
-                println("already in game")
-                _uiState.update { it.copy(isInGameAlready = true) }
+    init {
+        repository.getGameWithRostersFlow(gameId)
+            .onEach { gameData ->
+                val isAlreadyInGame = gameData?.roster?.any { it.playerId == appSettings.playerId }?:false
+
+                if (isAlreadyInGame) {
+                    _uiState.update {
+                        it.copy(
+                            isInGameAlready = true,
+                            isLoading = false
+                        )
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(
+                            isInGameAlready = false,
+                            isLoading = false
+                        )
+                    }
+                }
             }
-        }
-        _uiState.update { it.copy(isLoading = false) }
+            .launchIn(viewModelScope)
     }
 
     fun updateNickname(newName: String) {

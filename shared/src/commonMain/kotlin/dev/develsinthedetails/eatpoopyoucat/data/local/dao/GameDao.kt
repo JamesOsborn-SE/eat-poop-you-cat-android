@@ -57,6 +57,10 @@ interface GameDao {
     suspend fun getGameWithRosters(id: Uuid): GameWithRosters?
 
     @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    fun getGameWithRostersFlow(id: Uuid): Flow<GameWithRosters?>
+
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(game: Game)
 
@@ -74,7 +78,7 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
-    suspend fun get(id: Uuid): Game
+    suspend fun get(id: Uuid): Game?
 
     @Query("SELECT g.* FROM game g JOIN roster r ON r.gameId=g.id WHERE g.turns IS NULL AND r.playerId=:playerId AND r.isLeader=1")
     fun getActiveHostedGameWithRostersFlow(playerId: Uuid): Flow<List<Game>>
@@ -82,6 +86,9 @@ interface GameDao {
     @Transaction
     @Upsert
     suspend fun upsert(game: Game)
+
+    @Query("SELECT g.id FROM game g JOIN roster r ON r.gameId=g.id WHERE r.playerId=:playerId")
+    suspend fun getGamesForPlayer(playerId: Uuid): List<Uuid>
 
 }
 

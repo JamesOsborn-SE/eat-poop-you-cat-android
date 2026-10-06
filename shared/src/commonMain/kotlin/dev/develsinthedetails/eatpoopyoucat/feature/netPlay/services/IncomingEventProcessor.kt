@@ -3,10 +3,8 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.NavigationCommand
 import dev.develsinthedetails.eatpoopyoucat.app.Notifier
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.getGameIdFromUrl
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.nextType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import kotlin.uuid.Uuid
 
 class NavigationManager {
     private val _commands = MutableSharedFlow<NavigationCommand>(
@@ -28,7 +25,7 @@ class NavigationManager {
 }
 
 class IncomingEventProcessor(
-    private val client: Client,
+    private val client: GameClient,
     private val repository: AppRepository,
     private val notifier: Notifier,
     private val navigationManager: NavigationManager,
@@ -54,12 +51,12 @@ class IncomingEventProcessor(
         when (event) {
             is GameEvent.TurnComplete -> {
                 println("Received TurnComplete event: $event")
-                ensureGameMatchesServer(event.gameId)
+                client.ensureGameMatchesServer(event.gameId)
             }
 
             is GameEvent.TakeYourTurn -> {
                 println("Received TakeYourTurn event: $event")
-                ensureGameMatchesServer(event.gameId)
+                client.ensureGameMatchesServer(event.gameId)
                 val entry = event.entry
 
                 notifier.show(
@@ -91,7 +88,7 @@ class IncomingEventProcessor(
                     return
                 }
 
-                ensureGameMatchesServer(event.game.id)
+                client.ensureGameMatchesServer(event.game.id)
 
                 stop()
                 client.close()
@@ -104,9 +101,12 @@ class IncomingEventProcessor(
                 repository.addPlayer(event.player)
             }
 
-            is GameEvent.RegisterPlayerId -> {
-                val gameId = getGameIdFromUrl() ?: return
-                ensureGameMatchesServer(gameId)
+            is GameEvent.GamesPlayerIsIn -> {
+                if (event.gameIds.isNullOrEmpty())
+                    return
+                event.gameIds.forEach { gameId ->
+                    client.ensureGameMatchesServer(gameId)
+                }
             }
 
             else -> {
@@ -115,17 +115,4 @@ class IncomingEventProcessor(
         }
     }
 
-    private suspend fun ensureGameMatchesServer(gameId: Uuid) {
-        var myGame = repository.getGameWithEntries(gameId)
-        if (myGame == null) {
-            val gameWithRoster = client.getGame(gameId) ?: return
-            repository.upsertGameWithRosters(gameWithRoster)
-            myGame = GameWithEntries(gameWithRoster.game, emptyList())
-        }
-
-        val entries = client.updateGame(myGame)
-
-        if (entries.isEmpty()) return //means we good
-        repository.upsertEntries(entries)
-    }
 }

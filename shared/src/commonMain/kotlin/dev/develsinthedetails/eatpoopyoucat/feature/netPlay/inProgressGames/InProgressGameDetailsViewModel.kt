@@ -8,8 +8,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.InProgressGameDetails
 import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,12 +53,8 @@ class InProgressGameDetailsViewModel(
     private val typeMap = appTypeMap
     private val route = state.toRoute<InProgressGameDetails>(typeMap)
     private val gameId: Uuid = checkNotNull(route.gameId)
-    val players: Flow<List<Roster>?> = repository.getRostersByGameFlow(gameId).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = null
-    )
-    val game: Flow<GameWithEntries?> = repository.getGameWithEntriesFlow(gameId).stateIn(
+
+    val game: Flow<NetGame?> = repository.getNetGameFlow(gameId).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null
@@ -67,12 +62,16 @@ class InProgressGameDetailsViewModel(
 
     fun gameOverMan(){
         viewModelScope.launch {
-            val gameWithEntries = game.first() ?: return@launch
-            var game = gameWithEntries.game
-            val turns = gameWithEntries.entries.size
-            game = game.copy(turns = turns)
-            repository.upsertGame(game)
-            server.sendGameComplete(game)
+            val netGame = game.first() ?: return@launch
+            if (netGame.entries.isEmpty()) return@launch
+
+            if (netGame.roster.any{it.playerId == playerId && it.isLeader}) {
+                var game = netGame.game
+                val turns = netGame.entries.size
+                game = game.copy(turns = turns)
+                repository.upsertGame(game)
+                server.sendGameComplete(game)
+            }
         }
     }
 

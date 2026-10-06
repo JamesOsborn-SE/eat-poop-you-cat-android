@@ -49,7 +49,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.SelectableReadOnlyTextWithShare
@@ -85,7 +85,6 @@ fun InProgressGameDetailsScreen(
 ) {
     val game by viewModel.game.collectAsState(null)
     val uiState by viewModel.uiState.collectAsState()
-    val players: List<Roster>? by viewModel.players.collectAsState(null)
 
     ManageServerLifecycle(
         serverManager = serverManager,
@@ -94,12 +93,11 @@ fun InProgressGameDetailsScreen(
     InProgressGameDetailsScreen(
         uiState = uiState,
         game = game,
-        players = players,
-        playerId = viewModel.playerId,
+        myPlayerId = viewModel.playerId,
         onBack = onBack,
         gameOverMan = {
             viewModel.gameOverMan()
-            val gameId= game?.game?.id
+            val gameId = game?.game?.id
             if (gameId != null)
                 onEnd(gameId)
         }
@@ -109,7 +107,7 @@ fun InProgressGameDetailsScreen(
 @Composable
 fun InProgressGameDetailsScreen(
     uiState: InProgressGamesUiState,
-    game: GameWithEntries?, players: List<Roster>?, playerId: Uuid, onBack: () -> Unit,
+    game: NetGame?, myPlayerId: Uuid, onBack: () -> Unit,
     gameOverMan: () -> Unit
 ) {
     // todo don't show users in Joined who already took a turn.
@@ -140,11 +138,11 @@ fun InProgressGameDetailsScreen(
             color = MaterialTheme.colorScheme.background,
         ) {
             val turns = game?.entries?.size ?: 0
-            if (game == null || players == null) {
+            if (game == null || game.roster.isEmpty()) {
                 Spinner()
                 return@Surface
             }
-            val thisRosterPlayer = players.first { it.playerId == playerId }
+            val thisRosterPlayer = game.roster.first { it.playerId == myPlayerId }
 
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
@@ -195,8 +193,8 @@ fun InProgressGameDetailsScreen(
                                         modifier = Modifier.fillMaxSize()
                                     )
                                 }
-                                when (players.any { player ->
-                                    player.playerId == playerId && game.entries.any { it.playerId == playerId }
+                                when (game.roster.any { player ->
+                                    player.playerId == myPlayerId && game.entries.any { it.playerId == myPlayerId }
                                 }) {
                                     true -> {
                                         Icon(
@@ -232,8 +230,8 @@ fun InProgressGameDetailsScreen(
                                     )
                                 }
                             }
-                            when (players.any { player ->
-                                player.playerId == playerId && game.entries.any { it.playerId == playerId }
+                            when (game.roster.any { player ->
+                                player.playerId == myPlayerId && game.entries.any { it.playerId == myPlayerId }
                             }) {
                                 true -> {
                                     Text(
@@ -260,7 +258,7 @@ fun InProgressGameDetailsScreen(
                                     )
                                 )
                             }
-                            if (turns == 0 && players.size == 1) {
+                            if (turns == 0 && game.roster.size == 1) {
                                 Icon(
                                     painter = painterResource(Res.drawable.ic_cake),
                                     contentDescription = "Waiting for players. the cake is a lie",
@@ -274,8 +272,7 @@ fun InProgressGameDetailsScreen(
                         }
                     }
                     itemsIndexed(game.entries.sortedBy { it.sequence }) { _, entry ->
-                        val player = players.first { it.playerId == entry.playerId }
-                        RosterPlayerItem(entry.sequence, player, game.entries, playerId)
+                        RosterPlayerItem(entry.sequence, thisRosterPlayer, game.entries, myPlayerId)
                     }
                     item {
                         Text(
@@ -290,8 +287,10 @@ fun InProgressGameDetailsScreen(
                             modifier = Modifier.padding(vertical = 10.dp), thickness = 5.dp
                         )
                     }
-                    itemsIndexed(players) { index, rosterPlayer ->
-                        RosterPlayerItem(index, rosterPlayer, game.entries, playerId)
+                    itemsIndexed(game.roster.filter { r ->
+                        game.entries.any { r.playerId != it.playerId }
+                    }) { index, rosterPlayer ->
+                        RosterPlayerItem(index, rosterPlayer, game.entries, myPlayerId)
                     }
                     item {
                         HorizontalDivider(
@@ -374,73 +373,74 @@ fun RosterPlayerItem(index: Int, player: Roster, entries: List<Entry>, playerId:
 fun InProgressGameDetailsPreview() {
     val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
-    val game = GameWithEntries(
+    val nicknames = stringArrayResource(Res.array.nicknames)
+    val game = NetGame(
         Game(
             gameId,
             timeout = 100,
             turns = null,
             createdAt = Instant.fromEpochSeconds(1786057118),
             gameMode = GameMode.LAN
-        ), listOf(
-            Entry(
-                sequence = 1,
-                id = Uuid.NIL,
-                playerId = playerId,
-                localPlayerName = "TODO()",
-                gameId = gameId,
-                timePassed = 0,
-                sentence = "TODO()",
-                drawing = null,
-                createdAt = Instant.fromEpochSeconds(1786057118),
-            )
+        ), entries = (
+                listOf(
+                    Entry(
+                        sequence = 1,
+                        id = Uuid.NIL,
+                        playerId = playerId,
+                        localPlayerName = "TODO()",
+                        gameId = gameId,
+                        timePassed = 0,
+                        sentence = "TODO()",
+                        drawing = null,
+                        createdAt = Instant.fromEpochSeconds(1786057118),
+                    )
+                )),
+        roster = listOf(
+            Roster(
+                gameId,
+                Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb"),
+                nicknames[0]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9"),
+                nicknames[1]
+            ),
+            Roster(
+                gameId,
+                playerId,
+                nicknames[2]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("670f27a7-e146-4463-8774-935958c8d298"),
+                nicknames[3]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("0ce3fd21-6b6e-41e3-9d4d-547a2f83b281"),
+                nicknames[4]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("a81c33fb-c43f-46eb-9e95-f93485906e2e"),
+                nicknames[5]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("bc58e47a-6e72-4509-bf4d-7b72b6af813f"),
+                nicknames[6]
+            ),
+            Roster(
+                gameId,
+                Uuid.parse("6c47151b-c6cc-4d22-8a05-652779d1c72c"),
+                nicknames[7]
+            ),
         )
-    )
-    val nicknames = stringArrayResource(Res.array.nicknames)
-    val roster = listOf(
-        Roster(
-            gameId,
-            Uuid.parse("927fb5d6-a27a-48b6-a97c-3494f17e6beb"),
-            nicknames[0]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("0d7b2219-6db7-4ab7-a3b1-2ad06169dfc9"),
-            nicknames[1]
-        ),
-        Roster(
-            gameId,
-            playerId,
-            nicknames[2]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("670f27a7-e146-4463-8774-935958c8d298"),
-            nicknames[3]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("0ce3fd21-6b6e-41e3-9d4d-547a2f83b281"),
-            nicknames[4]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("a81c33fb-c43f-46eb-9e95-f93485906e2e"),
-            nicknames[5]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("bc58e47a-6e72-4509-bf4d-7b72b6af813f"),
-            nicknames[6]
-        ),
-        Roster(
-            gameId,
-            Uuid.parse("6c47151b-c6cc-4d22-8a05-652779d1c72c"),
-            nicknames[7]
-        ),
     )
     val uiState = InProgressGamesUiState("http://127.0.0.1:3459")
     AppTheme {
-        InProgressGameDetailsScreen(uiState, game, roster, playerId, onBack = {}, gameOverMan = {})
+        InProgressGameDetailsScreen(uiState, game, playerId, onBack = {}, gameOverMan = {})
     }
 }
 
@@ -449,25 +449,24 @@ fun InProgressGameDetailsPreview() {
 fun InProgressGameDetailsSoloPreview() {
     val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
-    val game = GameWithEntries(
+    val game = NetGame(
         Game(
             gameId,
             timeout = 100,
             turns = null,
             createdAt = Instant.fromEpochSeconds(1786057118),
             gameMode = GameMode.LAN
-        ), listOf()
-    )
-    val roster = listOf(
-        Roster(
-            gameId,
-            playerId,
-            "Me"
-        ),
+        ), entries = listOf(), roster = listOf(
+            Roster(
+                gameId,
+                playerId,
+                "Me"
+            ),
+        )
     )
 
     val uiState = InProgressGamesUiState("http://127.0.0.1:3459")
     AppTheme {
-        InProgressGameDetailsScreen(uiState, game, roster, playerId, onBack = {},{})
+        InProgressGameDetailsScreen(uiState, game, playerId, onBack = {}, {})
     }
 }

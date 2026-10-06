@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -23,8 +24,11 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberNotificationPermissionState
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.ask_join
+import eatpoopyoucat.shared.generated.resources.nickname_prompt
 import eatpoopyoucat.shared.generated.resources.no
 import eatpoopyoucat.shared.generated.resources.oof
 import eatpoopyoucat.shared.generated.resources.yes
@@ -36,12 +40,18 @@ import kotlin.uuid.Uuid
 @Composable
 fun JoinNetGameScreen(
     viewModel: JoinNetGameViewModel = koinViewModel(),
-    gameId: Uuid,
     onBack: () -> Unit,
     toInProgressGame: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    viewModel.initFromDeepLink(gameId)
+
+    val permissionState = rememberNotificationPermissionState()
+    if(!SharedKtorServer.providesServer) {
+        LaunchedEffect(permissionState) {
+            permissionState.requestPermission()
+        }
+    }
+
     if (uiState.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -97,7 +107,7 @@ fun JoinNetGameScreen(
                     shape = RoundedCornerShape(8.dp),
 
                     label = {
-                        Text("Change you nickname?")
+                        Text(stringResource(Res.string.nickname_prompt))
                     },
                 )
                 val m = Modifier
@@ -126,7 +136,7 @@ data class JoinData(
 fun JoinNetGamePreview() {
     val d = JoinData({}, {}, {})
     JoinNetGameScreen(
-        JoinUiState(playerId = Uuid.NIL,stringResource(Res.string.oof)), d,
+        JoinUiState(playerId = Uuid.NIL, stringResource(Res.string.oof)), d,
         toInProgressGame = {},
     )
 }

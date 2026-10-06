@@ -78,15 +78,17 @@ fun PreviousGamesRoute(
     onNavigateToImport: () -> Unit
 ) {
     val games by viewModel.games.collectAsState(null)
-
+    println("DEBUG: Games: $games")
+    // todo move to VM
     LaunchedEffect(key1 = games) {
         // clean up games that were created and never played.
         // These are created by the side effect of creating the game before the first sentence
         // Should be fixed but long time users may still benefit.
         val cleanup = games?.filter { !it.gameToCleanUp() }
         if (!cleanup.isNullOrEmpty())
-            viewModel.cleanup(cleanup)
+            println("TESTING: viewModel.cleanup(cleanup)")
     }
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val launcher = rememberBackupFileSaver(

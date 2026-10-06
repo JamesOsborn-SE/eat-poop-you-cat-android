@@ -16,4 +16,7 @@ expect class SharedKtorServer(
     fun start()
     fun stop()
     suspend fun sendGameComplete(game: Game)
+    companion object {
+        val providesServer: Boolean
+    }
 }

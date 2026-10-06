@@ -37,4 +37,8 @@ actual class SharedKtorServer actual constructor(
     }
 
     actual suspend fun sendGameComplete(game: Game) {}
+
+    actual companion object {
+        actual val providesServer = false
+    }
 }

@@ -12,6 +12,13 @@ sealed class GameEvent {
     abstract val requestId: String?
 
     @Serializable
+    data class GamesPlayerIsIn(
+        val playerId: Uuid,
+        val gameIds: List<Uuid>? = null,
+        override val requestId: String? = null
+    ) : GameEvent()
+
+    @Serializable
     data class RegisterPlayerId(
         val playerId: Uuid,
         override val requestId: String? = null
@@ -97,6 +104,70 @@ sealed class GameEvent {
     ) : GameEvent()
 
     @Serializable
-    data class GameComplete(val game: Game, override val requestId: String? = null
+    data class GameComplete(
+        val game: Game, override val requestId: String? = null
     ) : GameEvent()
+}
+
+
+fun GameEvent.withRequestId(
+    requestId: String,
+): GameEvent {
+    return when (this) {
+        is GameEvent.RequestGameWithRosters ->
+            copy(requestId = requestId)
+
+        is GameEvent.JoinGame ->
+            copy(requestId = requestId)
+
+        is GameEvent.TakeYourTurn ->
+            copy(requestId = requestId)
+
+        is GameEvent.RequestMissingEntries ->
+            copy(requestId = requestId)
+
+        is GameEvent.ResponseGameWithRosters ->
+            copy(requestId = requestId)
+
+        is GameEvent.ResponseMissingEntries ->
+            copy(requestId = requestId)
+
+        is GameEvent.Success ->
+            copy(requestId = requestId)
+
+        is GameEvent.Error ->
+            copy(requestId = requestId)
+
+        else -> this
+    }
+}
+
+fun GameEvent.withoutRequestId(): GameEvent {
+    return when (this) {
+        is GameEvent.RequestGameWithRosters ->
+            copy(requestId = null)
+
+        is GameEvent.JoinGame ->
+            copy(requestId = null)
+
+        is GameEvent.TakeYourTurn ->
+            copy(requestId = null)
+
+        is GameEvent.RequestMissingEntries ->
+            copy(requestId = null)
+
+        is GameEvent.ResponseGameWithRosters ->
+            copy(requestId = null)
+
+        is GameEvent.ResponseMissingEntries ->
+            copy(requestId = null)
+
+        is GameEvent.Success ->
+            copy(requestId = null)
+
+        is GameEvent.Error ->
+            copy(requestId = null)
+
+        else -> this
+    }
 }

@@ -16,7 +16,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.testEntriesGame1
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.testPlayerOne
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -43,7 +43,7 @@ class DrawViewModelTest {
 
     private val mockRepository = mock<AppRepository>()
     private val mockAppSettings = mock<AppSettings>()
-    private val mockClient = mock<Client>()
+    private val mockClient = mock<GameClient>()
     private lateinit var viewModel: DrawViewModel
     private val testGameId = testEntriesGame1[0].gameId
 

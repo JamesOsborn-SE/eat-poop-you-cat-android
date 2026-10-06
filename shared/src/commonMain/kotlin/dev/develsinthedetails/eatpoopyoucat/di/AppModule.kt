@@ -10,7 +10,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGamesViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameServerRouter
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.IncomingEventProcessor
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
@@ -42,7 +42,7 @@ val appModule = module {
     singleOf(::SharedKtorServer)
     includes(platformServerModule)
     includes(platformDataStoreModule)
-    single { Client(serverUrl = address, get()) }
+    single { GameClient(serverUrl = address, get(), get()) }
     singleOf(::NavigationManager)
     single {
         IncomingEventProcessor(

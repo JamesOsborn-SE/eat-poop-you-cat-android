@@ -39,7 +39,7 @@ actual class GameServerRouter actual constructor(
                         )
                     )
                 }
-                connectionManager.broadcast(event.copy(requestId = null))
+                connectionManager.broadcast(event)
             }
 
             is GameEvent.TurnComplete -> {
@@ -51,7 +51,7 @@ actual class GameServerRouter actual constructor(
                 reply(GameEvent.Success("Turn saved", requestId = event.requestId))
 
                 // Sync users with latest turn
-                connectionManager.broadcast(event.copy(requestId = null))
+                connectionManager.broadcast(event)
             }
 
             is GameEvent.TakeYourTurn -> {
@@ -63,7 +63,7 @@ actual class GameServerRouter actual constructor(
                 reply(GameEvent.Success("Turn saved", requestId = event.requestId))
 
                 // Sync users with latest turn
-                connectionManager.broadcast(event.copy(requestId = null))
+                connectionManager.broadcast(event)
             }
 
             is GameEvent.RequestGameWithRosters -> {
@@ -87,6 +87,11 @@ actual class GameServerRouter actual constructor(
                     session = session
                 )
                 reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+                val gameIds = repository.getGamesForPlayer(event.playerId)
+                connectionManager.sendToPlayer(
+                    event.playerId,
+                    GameEvent.GamesPlayerIsIn(event.playerId, gameIds, requestId = null)
+                )
             }
 
             else -> Unit

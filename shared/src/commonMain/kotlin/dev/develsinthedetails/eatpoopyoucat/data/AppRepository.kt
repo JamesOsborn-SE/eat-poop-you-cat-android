@@ -42,10 +42,10 @@ class AppRepository(
     suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
     fun getAllGamesWithEntriesFlow() = gameDao.getAllWithEntriesFlow()
-    fun getInProgressGamesWithRostersFlow(): Flow<List<GameWithRosters>> =
-        gameDao.getInProgressGamesWithRostersFlow()
+    fun getInProgressGamesWithRostersFlow() = gameDao.getInProgressGamesWithRostersFlow()
 
-    suspend fun getGameWithRosters(id: Uuid): GameWithRosters? = gameDao.getGameWithRosters(id)
+    suspend fun getGameWithRosters(gameId: Uuid) = gameDao.getGameWithRosters(gameId)
+    fun getGameWithRostersFlow(gameId: Uuid) = gameDao.getGameWithRostersFlow(gameId)
     suspend fun getAllGames() = gameDao.getAll()
     fun getGameWithEntriesFlow(id: Uuid) = gameDao.getWithEntriesFlow(id)
     suspend fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
@@ -109,5 +109,6 @@ class AppRepository(
     }
 
     fun getNetGameFlow(gameId: Uuid): Flow<NetGame> = gameDao.getNetGameFlow(gameId)
+    suspend fun getGamesForPlayer(playerId: Uuid) = gameDao.getGamesForPlayer(playerId)
 
 }

@@ -15,8 +15,7 @@ data class GameWithEntries(
 
 fun GameWithEntries.gameIsComplete() =
     (this.game.gameMode == GameMode.LOCAL || (this.game.gameMode != GameMode.LOCAL && this.game.turns != null))
-            && (this.entries.isNotEmpty()
-            && this.entries.all { it.sentence.isNullOrBlank().xor(it.drawing == null) })
+            && this.entries.isNotEmpty()
 
 fun GameWithEntries.gameToCleanUp() = this.game.gameMode == GameMode.LOCAL
         && this.entries.isNotEmpty()

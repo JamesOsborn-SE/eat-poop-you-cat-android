@@ -12,16 +12,22 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import korlibs.korlibs_platform.BuildConfig
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class StaticRouter {
     fun Route.staticRoutes() {
         get("/{...}") {
+            // compress the files
+            // find webApp/build/dist/wasmJs/developmentExecutable/ -type f \( -name "*.wasm" -o -name "*.png" -o -name "*.*js" -o -name "*.png" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.xml" -o -name "*.cvr"  \) -exec gzip -9 -f {} \;
+            // find webApp/build/dist/wasmJs/productionExecutable/ -type f \( -name "*.wasm" -o -name "*.png" -o -name "*.*js" -o -name "*.png" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.xml" -o -name "*.cvr"  \) -exec gzip -9 -f {} \;
+            // todo CD wipe pngs in ./file for smaller file sizes
             val requestPath = call.request.path().removePrefix("/").ifEmpty { "index.html" }
             val contentType = ContentType.fromFilePath(requestPath).firstOrNull()
                 ?: ContentType.Application.OctetStream
 
-            val resourcePath = "web/$requestPath.gz"
+            val rootPath = if (BuildConfig.DEBUG) "web-dev" else "web"
+            val resourcePath = "$rootPath/${requestPath}.gz"
 
             val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)
                 ?: this@StaticRouter.javaClass.classLoader?.getResourceAsStream(resourcePath)

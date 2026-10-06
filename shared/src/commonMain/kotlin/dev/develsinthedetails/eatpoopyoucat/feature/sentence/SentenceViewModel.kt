@@ -13,7 +13,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.nextText
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.validateNickname
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.no_nickname_chosen_warning
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +44,7 @@ class SentenceViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
-    private val client: Client,
+    private val client: GameClient,
 ) : ViewModel() {
     private val typeMap = appTypeMap
     private val route = state.toRoute<Sentence>(typeMap)

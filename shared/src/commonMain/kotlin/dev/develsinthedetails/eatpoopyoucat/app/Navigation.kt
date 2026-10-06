@@ -377,7 +377,6 @@ fun NavGraph(
         composable<Join>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) { backStackEntry ->
             val route = backStackEntry.toRoute<Join>()
             JoinNetGameScreen(
-                gameId = route.gameId,
                 onBack = {
                     navController.navigate(Home) {
                         popUpTo<Home>()

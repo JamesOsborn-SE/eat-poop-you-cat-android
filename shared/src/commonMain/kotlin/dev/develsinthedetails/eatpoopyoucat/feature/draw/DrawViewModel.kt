@@ -22,7 +22,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Line
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineProperties
 import dev.develsinthedetails.eatpoopyoucat.data.models.LineSegment
 import dev.develsinthedetails.eatpoopyoucat.data.models.Resolution
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.Client
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.no_nickname_chosen_warning
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,7 +65,7 @@ class DrawViewModel(
     state: SavedStateHandle,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
-    private val client: Client,
+    private val client: GameClient,
 ) : ViewModel() {
 
     private var currentX = 0f
