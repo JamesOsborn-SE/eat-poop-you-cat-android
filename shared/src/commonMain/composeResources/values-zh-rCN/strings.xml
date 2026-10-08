@@ -104,4 +104,8 @@
     <plurals name="previous_games">
         <item quantity="other">历史游戏</item>
     </plurals>
+    <string name="sentence_is_blank">无效点击…也许可以尝试点击其他按钮？</string>
+    <string name="new_player_prompt">新玩家；你们认识？</string>
+    <string name="nickname_prompt">请问怎么称呼你？</string>
+    <string name="enter_nickname_prompt">请输入你的姓名或昵称</string>
 </resources>
