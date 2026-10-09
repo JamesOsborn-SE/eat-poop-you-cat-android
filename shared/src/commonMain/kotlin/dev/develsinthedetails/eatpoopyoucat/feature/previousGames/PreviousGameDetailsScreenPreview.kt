@@ -1,8 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.previousGames
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -23,7 +21,6 @@ fun PreviousGameScreenPreview() {
     AppTheme {
         PreviousGameDetailsScreen(
             modifier = Modifier,
-            snackbarHostState = remember { SnackbarHostState() },
             PreviewData.entries,
             onBack = {},
             onContinueGame = {},

@@ -53,3 +53,5 @@ actual fun rememberNotificationPermissionState(): NotificationPermissionState {
 actual fun getServerUrl(): Url = Url("http://localhost:$SERVER_PORT")
 
 actual fun getGameIdFromUrl(): Uuid? = null
+
+actual fun providesServer(): Boolean = true

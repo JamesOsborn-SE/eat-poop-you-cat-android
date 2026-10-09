@@ -50,8 +50,8 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-actual class SharedKtorServer actual constructor(
-    private val gameServerRouter: GameServerRouter,
+class SharedKtorServer(
+    private val gameEventHandler: GameEventHandler,
     private val staticRouter: StaticRouter,
     private val repository: AppRepository,
     private val appSettings: AppSettings,
@@ -65,7 +65,7 @@ actual class SharedKtorServer actual constructor(
     private val activeMonitors = ConcurrentHashMap<Uuid, Job>()
 
     @OptIn(ExperimentalSerializationApi::class)
-    actual fun start() {
+    fun start() {
         if (server != null) return
 
         serverScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -105,7 +105,7 @@ actual class SharedKtorServer actual constructor(
                                     GameEvent.serializer(),
                                     frame.readBytes()
                                 )
-                                gameServerRouter.handleWebSocketEvent(
+                                gameEventHandler.handleWebSocketEvent(
                                     event = event,
                                     session = this,
                                     connectionManager = connectionManager
@@ -132,7 +132,7 @@ actual class SharedKtorServer actual constructor(
         }
     }
 
-    actual fun stop() {
+    fun stop() {
         serverScope?.cancel()
         serverScope = null
         server?.stop(1000, 2000)
@@ -235,12 +235,12 @@ actual class SharedKtorServer actual constructor(
     }
 
 
-    actual suspend fun sendGameComplete(game: Game) {
+    suspend fun sendGameComplete(game: Game) {
         connectionManager.broadcast(GameEvent.GameComplete(game, requestId = null))
     }
 
-    actual companion object {
-        actual val providesServer = true
+    companion object {
+        val providesServer = true
         fun availablePlayers(
             myPlayerId: Uuid,
             netGame: NetGame,

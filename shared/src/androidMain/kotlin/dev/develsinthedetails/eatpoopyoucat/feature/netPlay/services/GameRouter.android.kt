@@ -2,14 +2,12 @@
 
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
-import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import kotlinx.serialization.ExperimentalSerializationApi
 
-actual class GameServerRouter actual constructor(
+class GameEventHandler(
     private val repository: AppRepository,
-    private val appSettings: AppSettings,
 ) {
     @OptIn(ExperimentalSerializationApi::class)
     suspend fun handleWebSocketEvent(

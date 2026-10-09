@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.providesServer
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberNotificationPermissionState
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.dialog_start_game
 import eatpoopyoucat.shared.generated.resources.ic_lan
@@ -95,7 +95,7 @@ fun NewGameScreen(
                         defaultModifier
                     )
                 }
-                if (!SharedKtorServer.providesServer)
+                if (!providesServer())
                     return@Surface
 
                 HorizontalDivider(Modifier.padding(20.dp), 3.dp)

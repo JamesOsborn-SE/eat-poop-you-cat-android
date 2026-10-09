@@ -37,3 +37,5 @@ expect fun rememberNotificationPermissionState(): NotificationPermissionState
 expect fun getServerUrl(): Url
 
 expect fun getGameIdFromUrl(): Uuid?
+
+expect fun providesServer(): Boolean

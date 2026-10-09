@@ -27,7 +27,15 @@ class AppRepository(
         playerDao.insert(player.copy(createdAt = Clock.System.now()))
     }
 
-    suspend fun upsertPlayer(player: Player) = playerDao.upsert(player)
+    suspend fun upsertPlayer(player: Player) {
+        println("upsertPlayer: $player")
+        var player = player
+        if (player.createdAt == null) {
+            player = player.copy(createdAt = Clock.System.now())
+        }
+        playerDao.upsert(player)
+    }
+
     suspend fun getPlayer(id: Uuid): Player? = playerDao.get(id)
 
     // ==========================================

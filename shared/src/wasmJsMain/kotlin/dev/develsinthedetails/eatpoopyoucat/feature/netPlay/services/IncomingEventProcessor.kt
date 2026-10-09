@@ -40,26 +40,23 @@ class IncomingEventProcessor(
                 client.ensureGameMatchesServer(event.gameId)
                 val entry = event.entry
 
+                val navTo = suspend {
+                    if (entry.nextType == EntryType.Drawing) {
+                        navigationManager.navigate(
+                            NavigationCommand.OpenDraw(event.gameId, GameMode.LAN)
+                        )
+                    } else {
+                        navigationManager.navigate(
+                            NavigationCommand.OpenSentence(event.gameId, GameMode.LAN)
+                        )
+                    }
+                }
+
                 notifier.show(
-                    title = "Your turn",
+                    actionLabel = "Take turn",
+                    onAction = navTo,
                     message = "It's your turn to play"
                 )
-
-                if (entry.nextType == EntryType.Drawing) {
-                    navigationManager.navigate(
-                        NavigationCommand.OpenDraw(
-                            event.gameId,
-                            GameMode.LAN
-                        )
-                    )
-                } else {
-                    navigationManager.navigate(
-                        NavigationCommand.OpenSentence(
-                            event.gameId,
-                            GameMode.LAN
-                        )
-                    )
-                }
             }
 
             is GameEvent.GameComplete -> {
@@ -78,6 +75,7 @@ class IncomingEventProcessor(
             }
 
             is GameEvent.GamesPlayerIsIn -> {
+                println("Received GamesPlayerIsIn event: $event")
                 if (event.gameIds.isNullOrEmpty())
                     return
                 event.gameIds.forEach { gameId ->

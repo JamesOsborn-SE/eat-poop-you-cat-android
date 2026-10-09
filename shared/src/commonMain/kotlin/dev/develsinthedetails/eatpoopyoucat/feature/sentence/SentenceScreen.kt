@@ -12,15 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +38,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
@@ -77,19 +75,18 @@ fun SentenceScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val gameMode = uiState.gameMode
-    val snackbarHostState = remember { SnackbarHostState() }
+    val notifier = LocalAppNotifier.current
     val coroutineScope = rememberCoroutineScope()
 
     fun submit() {
         if (viewModel.isSentenceValid()) {
             viewModel.saveEntry()
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(uiState.nextText)
+                notifier.show(uiState.nextText)
             }
             if (gameMode == GameMode.LOCAL) {
                 toDraw(uiState.gameId, uiState.gameMode)
-            }
-            else{
+            } else {
                 toEndedGame(uiState.gameId, uiState.gameMode)
             }
         }
@@ -118,7 +115,6 @@ fun SentenceScreen(
                 focusRequester = focusRequester,
             )
         },
-        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -133,7 +129,6 @@ fun SentenceScreen(
     onSubmit: () -> Unit,
     onNavigateToHome: () -> Unit,
     nicknameForm: @Composable (() -> Unit)? = null,
-    snackbarHostState: SnackbarHostState,
 ) {
     val onEnd = {
         if (uiState.previousEntry == null) {
@@ -147,7 +142,12 @@ fun SentenceScreen(
     Scaffolds.InGame(
         title = stringResource(Res.string.sentence_turn_title),
         onEnd = onEnd,
-        floatingActionButton = { SubmitButton(onSubmit = onSubmit, modifier = Modifier.visible(uiState.nicknameIsSatisfied)) }
+        floatingActionButton = {
+            SubmitButton(
+                onSubmit = onSubmit,
+                modifier = Modifier.visible(uiState.nicknameIsSatisfied)
+            )
+        }
     )
     { innerPadding ->
         Surface(
@@ -218,10 +218,6 @@ fun SentenceScreen(
                 }
             }
         }
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.padding(innerPadding).fillMaxSize().wrapContentSize()
-        )
     }
 
     LaunchedEffect(Unit) {
@@ -296,7 +292,6 @@ fun SentenceScreenWithDrawingPreview() {
             onSubmit = {},
             onNavigateToHome = {},
             focusRequester = focusRequester,
-            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }
@@ -329,7 +324,6 @@ fun SentenceScreenPreview() {
             onSubmit = {},
             onNavigateToHome = {},
             focusRequester = focusRequester,
-            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }
@@ -359,7 +353,6 @@ fun SentenceScreenNoErrorPreview() {
             onSubmit = {},
             onNavigateToHome = {},
             focusRequester = focusRequester,
-            snackbarHostState = remember { SnackbarHostState() }
         )
     }
 }

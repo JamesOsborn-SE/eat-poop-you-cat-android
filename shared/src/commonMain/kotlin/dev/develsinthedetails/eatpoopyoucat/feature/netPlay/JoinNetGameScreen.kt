@@ -12,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,8 +23,6 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberNotificationPermissionState
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.ask_join
 import eatpoopyoucat.shared.generated.resources.nickname_prompt
@@ -44,13 +41,6 @@ fun JoinNetGameScreen(
     toInProgressGame: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    val permissionState = rememberNotificationPermissionState()
-    if(!SharedKtorServer.providesServer) {
-        LaunchedEffect(permissionState) {
-            permissionState.requestPermission()
-        }
-    }
 
     if (uiState.isLoading) {
         Box(

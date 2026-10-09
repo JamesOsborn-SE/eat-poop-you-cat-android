@@ -12,10 +12,8 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import korlibs.korlibs_platform.BuildConfig
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class StaticRouter {
+class StaticRouter {
     fun Route.staticRoutes() {
         get("/{...}") {
             // compress the files
@@ -26,7 +24,8 @@ actual class StaticRouter {
             val contentType = ContentType.fromFilePath(requestPath).firstOrNull()
                 ?: ContentType.Application.OctetStream
 
-            val rootPath = if (BuildConfig.DEBUG) "web-dev" else "web"
+            val rootPath = "web-dev"// else "web"
+            println("DEBUG: Serving $rootPath/$requestPath")
             val resourcePath = "$rootPath/${requestPath}.gz"
 
             val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)

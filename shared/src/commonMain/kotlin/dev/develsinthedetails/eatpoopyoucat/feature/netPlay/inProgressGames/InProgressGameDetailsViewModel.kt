@@ -9,7 +9,6 @@ import dev.develsinthedetails.eatpoopyoucat.app.InProgressGameDetails
 import dev.develsinthedetails.eatpoopyoucat.app.appTypeMap
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,7 +30,6 @@ class InProgressGameDetailsViewModel(
     appSettings: AppSettings,
     private val repository: AppRepository,
     state: SavedStateHandle,
-    private val server: SharedKtorServer
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         InProgressGamesUiState(
@@ -60,17 +58,16 @@ class InProgressGameDetailsViewModel(
         initialValue = null
     )
 
-    fun gameOverMan(){
+    fun gameOverMan() {
         viewModelScope.launch {
             val netGame = game.first() ?: return@launch
             if (netGame.entries.isEmpty()) return@launch
 
-            if (netGame.roster.any{it.playerId == playerId && it.isLeader}) {
+            if (netGame.roster.any { it.playerId == playerId && it.isLeader }) {
                 var game = netGame.game
                 val turns = netGame.entries.size
                 game = game.copy(turns = turns)
                 repository.upsertGame(game)
-                server.sendGameComplete(game)
             }
         }
     }

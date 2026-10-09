@@ -53,7 +53,8 @@ class JoinNetGameViewModel(
     init {
         repository.getGameWithRostersFlow(gameId)
             .onEach { gameData ->
-                val isAlreadyInGame = gameData?.roster?.any { it.playerId == appSettings.playerId }?:false
+                val isAlreadyInGame =
+                    gameData?.roster?.any { it.playerId == appSettings.playerId } ?: false
 
                 if (isAlreadyInGame) {
                     _uiState.update {
@@ -89,6 +90,7 @@ class JoinNetGameViewModel(
                     player = Player(state.playerId, "")
                 player = player.copy(nickname = state.nickname)
                 appSettings.setNickname(player.nickname)
+                println("DEBUG: Player=$player")
                 repository.upsertPlayer(player)
 
                 val gameWithRosters = client.getGame(gameId)

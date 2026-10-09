@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.getServerUrl
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
@@ -10,7 +11,7 @@ import io.ktor.http.Url
 import kotlin.uuid.Uuid
 
 expect class GameClient(
-    serverUrl: Url,
+    serverUrl: Url = getServerUrl(),
     repository: AppRepository,
     appSettings: AppSettings
 ) {

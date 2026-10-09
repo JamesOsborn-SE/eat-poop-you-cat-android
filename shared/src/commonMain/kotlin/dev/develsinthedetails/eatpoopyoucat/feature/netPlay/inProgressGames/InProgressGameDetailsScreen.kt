@@ -273,7 +273,7 @@ fun InProgressGameDetailsScreen(
                         }
                     }
                     itemsIndexed(game.entries.sortedBy { it.sequence }) { _, entry ->
-                        RosterPlayerItem(entry.sequence, thisRosterPlayer, game.entries, myPlayerId)
+                        RosterPlayerItem(entry.sequence, entry.playerId, entry.localPlayerName ?: "" , entry.type, myPlayerId)
                     }
                     item {
                         Text(
@@ -291,7 +291,7 @@ fun InProgressGameDetailsScreen(
                     itemsIndexed(game.roster.filter { r ->
                         game.entries.none { r.playerId == it.playerId }
                     }) { index, rosterPlayer ->
-                        RosterPlayerItem(index, rosterPlayer, game.entries, myPlayerId)
+                        RosterPlayerItem(index, rosterPlayer.playerId, rosterPlayer.nickname, EntryType.Unknown, myPlayerId)
                     }
                     item {
                         HorizontalDivider(
@@ -309,7 +309,7 @@ fun InProgressGameDetailsScreen(
 }
 
 @Composable
-fun RosterPlayerItem(index: Int, player: Roster, entries: List<Entry>, playerId: Uuid) {
+fun RosterPlayerItem(index: Int, playerId: Uuid, nickname: String, entryType: EntryType, myPlayerId: Uuid) {
     val rowColor = if (index % 2 == 0) {
         MaterialTheme.colorScheme.surfaceVariant
     } else {
@@ -324,7 +324,7 @@ fun RosterPlayerItem(index: Int, player: Roster, entries: List<Entry>, playerId:
             .size(50.dp)
             .rotate(90f)
             .padding(horizontal = 5.dp)
-        if (playerId == player.playerId) {
+        if (myPlayerId == playerId) {
             m = m.dropShadow(
                 shape = RoundedCornerShape(3.dp), shadow = Shadow(
                     radius = 4.dp,
@@ -335,35 +335,39 @@ fun RosterPlayerItem(index: Int, player: Roster, entries: List<Entry>, playerId:
             )
         }
         PixelArtImage(
-            generatePixelProfile4Bit(player.playerId), PIXEL_PALETTE_4_BIT, m
+            generatePixelProfile4Bit(playerId), PIXEL_PALETTE_4_BIT, m
         )
-        if (entries.any { it.playerId == player.playerId && it.type == EntryType.Sentence }) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_sms),
-                contentDescription = "Sentence Turn",
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(end = 10.dp, start = 10.dp)
-            )
-        } else if (entries.any { it.playerId == player.playerId && it.type == EntryType.Drawing }) {
-            Icon(
-                painter = painterResource(Res.drawable.ic_draw_rounded),
-                contentDescription = "Draw Turn",
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(end = 10.dp, start = 10.dp)
-            )
-        } else {
-            Icon(
-                painter = painterResource(Res.drawable.ic_schedule),
-                contentDescription = "Waiting",
-                modifier = Modifier
-                    .size(50.dp)
-                    .padding(end = 10.dp, start = 10.dp)
-            )
+        when (entryType) {
+            EntryType.Sentence -> {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_sms),
+                    contentDescription = "Sentence Turn",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(end = 10.dp, start = 10.dp)
+                )
+            }
+            EntryType.Drawing -> {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_draw_rounded),
+                    contentDescription = "Draw Turn",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(end = 10.dp, start = 10.dp)
+                )
+            }
+            else -> {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_schedule),
+                    contentDescription = "Waiting",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .padding(end = 10.dp, start = 10.dp)
+                )
+            }
         }
         Text(
-            player.nickname,
+            nickname,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
@@ -388,7 +392,7 @@ fun InProgressGameDetailsPreview() {
                         sequence = 0,
                         id = Uuid.NIL,
                         playerId = playerId,
-                        localPlayerName = "TODO()",
+                        localPlayerName = nicknames[2],
                         gameId = gameId,
                         timePassed = 0,
                         sentence = "TODO()",

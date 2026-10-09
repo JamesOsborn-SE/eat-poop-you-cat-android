@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,8 +17,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +32,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
@@ -87,7 +85,8 @@ fun PreviousGameDetailsRoute(
 ) {
     val game by viewModel.gameWithEntries.collectAsState(initial = null)
     val lastEntry = game?.entries?.last()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val notifier = LocalAppNotifier.current
+
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
     val appName = stringResource(Res.string.app_name)
     val isAvailableOn =
@@ -98,12 +97,12 @@ fun PreviousGameDetailsRoute(
     val launcher = rememberBackupFileSaver(
         onError = { failure ->
             scope.launch {
-                snackbarHostState.showSnackbar("Backup failed: ${failure.message}")
+                notifier.show("Backup failed: ${failure.message}")
             }
         },
         onSuccess = {
             scope.launch {
-                snackbarHostState.showSnackbar("Backup saved successfully!")
+                notifier.show("Backup saved successfully!")
             }
         },
     )
@@ -128,7 +127,7 @@ fun PreviousGameDetailsRoute(
         onBackupGame = {
             if (game?.entries?.isNotEmpty() == true) {
                 scope.launch {
-                    snackbarHostState.showSnackbar(getString(Res.string.saving))
+                    notifier.show(getString(Res.string.saving))
                     val gamesJson = Json.encodeToString(listOf(game!!))
                     val bytes = Gzip.compress(gamesJson)
                     launcher.saveBackup(
@@ -139,7 +138,7 @@ fun PreviousGameDetailsRoute(
                 }
             } else {
                 scope.launch {
-                    snackbarHostState.showSnackbar(getString(Res.string.no_games_to_save))
+                    notifier.show(getString(Res.string.no_games_to_save))
                 }
             }
         },
@@ -157,20 +156,18 @@ fun PreviousGameDetailsRoute(
                 val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
 
                 saveToGallery(bytes, defaultDataFilename())
-                snackbarHostState.showSnackbar("Saved to device gallery")
+                notifier.show("Saved to device gallery")
                 if (shareLauncher.isSupported) {
                     shareLauncher.launch(bytes, defaultDataFilename())
                 }
             }
         },
-        snackbarHostState = snackbarHostState
     )
 }
 
 @Composable
 fun PreviousGameDetailsScreen(
     modifier: Modifier = Modifier,
-    snackbarHostState: SnackbarHostState,
     entries: List<Entry>?,
     onBack: () -> Unit,
     onContinueGame: () -> Unit,
@@ -264,10 +261,6 @@ fun PreviousGameDetailsScreen(
                 }
             }
         }
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.padding(innerPadding).fillMaxSize().wrapContentSize()
-        )
     }
 }
 

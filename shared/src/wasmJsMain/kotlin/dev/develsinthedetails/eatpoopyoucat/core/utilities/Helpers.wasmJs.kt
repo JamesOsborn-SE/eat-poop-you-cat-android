@@ -78,3 +78,5 @@ fun getServerBaseUrl(): String {
 actual fun getServerUrl(): Url {
     return Url(getServerBaseUrl())
 }
+
+actual fun providesServer(): Boolean = false

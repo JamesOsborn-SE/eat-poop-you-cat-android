@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.visible
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
@@ -24,8 +23,6 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
@@ -49,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SubmitButton
@@ -106,16 +104,16 @@ fun DrawScreen(
     val setPencilMode: (DrawMode) -> Unit = { viewModel.setPencilMode(it) }
     val undo = { viewModel.undo() }
     val redo = { viewModel.redo() }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val notifier = LocalAppNotifier.current
     val coroutineScope = rememberCoroutineScope()
 
     val onSubmit = {
         if (viewModel.isValidDrawing()) {
             viewModel.saveDrawing()
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(uiState.nextText)
+                notifier.show(uiState.nextText)
             }
-            toSentence(uiState.gameId,uiState.gameMode)
+            toSentence(uiState.gameId, uiState.gameMode)
         }
     }
 
@@ -143,7 +141,6 @@ fun DrawScreen(
                 focusRequester = focusRequester,
             )
         },
-        snackbarHostState = snackbarHostState
     )
 }
 
@@ -161,7 +158,6 @@ private fun DrawScreen(
     onRedo: () -> Unit,
     onSubmit: () -> Unit,
     nicknameForm: @Composable (() -> Unit)? = null,
-    snackbarHostState: SnackbarHostState,
 ) {
     Scaffolds.InGame(
         title = stringResource(Res.string.draw_turn_title),
@@ -195,7 +191,8 @@ private fun DrawScreen(
                         else
                             SubmitButton(onSubmit = onSubmit)
                     }
-                }, modifier = Modifier.visible(uiState.nicknameIsSatisfied))
+                }, modifier = Modifier.visible(uiState.nicknameIsSatisfied)
+            )
         }
     )
     { innerPadding ->
@@ -237,11 +234,6 @@ private fun DrawScreen(
                 }
             }
         }
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier.padding(innerPadding).fillMaxSize().wrapContentSize()
-        )
-
     }
 }
 
@@ -503,7 +495,6 @@ fun DrawingWithSentencePreview() {
             onUndo = {},
             onSubmit = {},
             setPencilMode = {},
-            snackbarHostState = remember { SnackbarHostState() },
         )
     }
 }
