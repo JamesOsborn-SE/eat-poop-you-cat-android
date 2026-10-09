@@ -12,7 +12,6 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InPr
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameServerRouter
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.IncomingEventProcessor
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.SharedKtorServer
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.StaticRouter
@@ -44,14 +43,6 @@ val appModule = module {
     includes(platformDataStoreModule)
     single { GameClient(serverUrl = address, get(), get()) }
     singleOf(::NavigationManager)
-    single {
-        IncomingEventProcessor(
-            client = get(),
-            repository = get(),
-            notifier = get(),
-            navigationManager = get()
-        )
-    }
     singleOf(::Notifier)
     singleOf(::GameServerRouter)
     singleOf(::StaticRouter)

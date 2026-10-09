@@ -24,7 +24,6 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGames
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.IncomingEventProcessor
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesRoute
@@ -152,11 +151,9 @@ val appTypeMap = mapOf(
 fun NavGraph(
     onNavHostReady: suspend (NavController) -> Unit = {},
     navigationManager: NavigationManager = koinInject(),
-    incomingEventProcessor: IncomingEventProcessor = koinInject()
 ) {
     val navController = rememberNavController()
     LaunchedEffect(navigationManager) {
-        incomingEventProcessor.start(this)
         navigationManager.commands.collect { command ->
             when (command) {
                 is NavigationCommand.OpenDraw ->

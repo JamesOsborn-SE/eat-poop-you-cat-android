@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import androidx.navigation.ExperimentalBrowserHistoryApi
@@ -19,9 +20,12 @@ import dev.develsinthedetails.eatpoopyoucat.app.PreviousGames
 import dev.develsinthedetails.eatpoopyoucat.app.PrivacyPolicy
 import dev.develsinthedetails.eatpoopyoucat.app.Sentence
 import dev.develsinthedetails.eatpoopyoucat.di.appModule
+import dev.develsinthedetails.eatpoopyoucat.di.platformModule
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.IncomingEventProcessor
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.skiko.wasm.onWasmReady
+import org.koin.compose.koinInject
 import org.koin.core.context.startKoin
 import kotlin.uuid.Uuid
 
@@ -29,10 +33,15 @@ import kotlin.uuid.Uuid
 fun main() {
     startKoin {
         modules(appModule)
+        modules(platformModule)
     }
     onWasmReady {
         val body = document.body ?: return@onWasmReady
         ComposeViewport(body) {
+            val incomingEventProcessor: IncomingEventProcessor = koinInject()
+            LaunchedEffect(incomingEventProcessor) {
+                incomingEventProcessor.start(this)
+            }
             App(onNavHostReady = { navController ->
 
 

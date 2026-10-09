@@ -231,7 +231,7 @@ fun GameListItem(game: GameWithEntries, onGotoGame: () -> Unit, onDelete: () -> 
 
         IconButton(
             modifier = Modifier
-                .align(Alignment.BottomEnd) // Replaces constraint logic
+                .align(Alignment.BottomEnd)
                 .background(
                     color = MaterialTheme.colorScheme.tertiaryContainer,
                     shape = RoundedCornerShape(32.dp)

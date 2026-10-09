@@ -8,21 +8,7 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.nextType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-
-class NavigationManager {
-    private val _commands = MutableSharedFlow<NavigationCommand>(
-        replay = 0,
-        extraBufferCapacity = 16
-    )
-    val commands: SharedFlow<NavigationCommand> = _commands.asSharedFlow()
-    suspend fun navigate(command: NavigationCommand) {
-        _commands.emit(command)
-    }
-}
 
 class IncomingEventProcessor(
     private val client: GameClient,
@@ -40,11 +26,6 @@ class IncomingEventProcessor(
                 process(event)
             }
         }
-    }
-
-    fun stop() {
-        job?.cancel()
-        job = null
     }
 
     private suspend fun process(event: GameEvent) {
@@ -87,12 +68,7 @@ class IncomingEventProcessor(
                     println("Received GameUpdated event with null turns: $event")
                     return
                 }
-
                 client.ensureGameMatchesServer(event.game.id)
-
-                stop()
-                client.close()
-                client.destroy()
                 navigationManager.navigate(NavigationCommand.OpenPreviousGameDetails(event.game.id))
             }
 
