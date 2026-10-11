@@ -9,7 +9,7 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 
 class DesktopServerManager(
-    private val sharedKtorServer: SharedKtorServer,
+    private val server: Server,
 ) : ServerManager {
 
     private val _serverState = MutableStateFlow<ServerState>(ServerState.Stopped)
@@ -26,19 +26,25 @@ class DesktopServerManager(
             return
         }
 
-        sharedKtorServer.start()
+        server.start()
 
         val address = "http://$ip:$SERVER_PORT"
         _serverState.value = ServerState.Running(address)
     }
 
     override fun stopServer() {
-        sharedKtorServer.stop()
+        server.stop()
         _serverState.value = ServerState.Stopped
     }
 
     override fun promptNetworkSettings() {
         println("ServerManager: Please ensure you are connected to a LAN/Wi-Fi network.")
+    }
+
+    override fun clearError() {
+        if (_serverState.value is ServerState.Error) {
+            _serverState.value = ServerState.Stopped
+        }
     }
 
     private fun getLocalIpv4Address(): String? {

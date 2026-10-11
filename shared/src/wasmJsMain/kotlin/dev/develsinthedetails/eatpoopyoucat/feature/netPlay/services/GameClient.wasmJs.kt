@@ -149,25 +149,26 @@ actual class GameClient actual constructor(
                 if (frame !is Frame.Binary) {
                     continue
                 }
+                scope.launch {
+                    val event = Cbor.decodeFromByteArray<GameEvent>(
+                        frame.readBytes()
+                    )
 
-                val event = Cbor.decodeFromByteArray<GameEvent>(
-                    frame.readBytes()
-                )
+                    val requestId = event.requestId
 
-                val requestId = event.requestId
+                    if (requestId != null) {
+                        val pending = pendingMutex.withLock {
+                            pendingRequests[requestId]
+                        }
 
-                if (requestId != null) {
-                    val pending = pendingMutex.withLock {
-                        pendingRequests[requestId]
-                    }
-
-                    if (pending != null) {
-                        pending.complete(event)
+                        if (pending != null) {
+                            pending.complete(event)
+                        } else {
+                            println("Received response for unknown requestId=$requestId")
+                        }
                     } else {
-                        println("Received response for unknown requestId=$requestId")
+                        incomingEvents.send(event)
                     }
-                } else {
-                    incomingEvents.send(event)
                 }
             }
         } catch (e: CancellationException) {
@@ -212,15 +213,17 @@ actual class GameClient actual constructor(
         connection: DefaultClientWebSocketSession,
         event: GameEvent,
     ) {
-        val bytes = Cbor.encodeToByteArray<GameEvent>(event)
+        scope.launch {
+            val bytes = Cbor.encodeToByteArray<GameEvent>(event)
 
-        sendMutex.withLock {
-            connection.send(
-                Frame.Binary(
-                    fin = true,
-                    data = bytes,
+            sendMutex.withLock {
+                connection.send(
+                    Frame.Binary(
+                        fin = true,
+                        data = bytes,
+                    )
                 )
-            )
+            }
         }
     }
 

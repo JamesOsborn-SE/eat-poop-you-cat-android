@@ -1,5 +1,3 @@
-@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
@@ -50,7 +48,7 @@ import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-class SharedKtorServer(
+class Server(
     private val gameEventHandler: GameEventHandler,
     private val staticRouter: StaticRouter,
     private val repository: AppRepository,
@@ -101,15 +99,17 @@ class SharedKtorServer(
                     try {
                         incoming.consumeEach { frame ->
                             if (frame is Frame.Binary) {
-                                val event = Cbor.decodeFromByteArray(
-                                    GameEvent.serializer(),
-                                    frame.readBytes()
-                                )
-                                gameEventHandler.handleWebSocketEvent(
-                                    event = event,
-                                    session = this,
-                                    connectionManager = connectionManager
-                                )
+                                launch(Dispatchers.Default) {
+                                    val event = Cbor.decodeFromByteArray(
+                                        GameEvent.serializer(),
+                                        frame.readBytes()
+                                    )
+                                    gameEventHandler.handleWebSocketEvent(
+                                        event = event,
+                                        session = this@webSocket,
+                                        connectionManager = connectionManager
+                                    )
+                                }
                             }
                         }
                     } catch (e: CancellationException) {

@@ -31,7 +31,7 @@ actual class GameClient actual constructor(
     }
 
     actual suspend fun updateGame(game: GameWithEntries): List<Entry> {
-        TODO("Not yet implemented")
+        return listOf()
     }
 
     actual suspend fun ensureGameMatchesServer(gameId: Uuid) {

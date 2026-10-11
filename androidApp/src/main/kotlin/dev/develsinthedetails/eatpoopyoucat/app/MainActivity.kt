@@ -1,19 +1,12 @@
 package dev.develsinthedetails.eatpoopyoucat.app
 
 import android.content.Intent
-import android.content.pm.verify.domain.DomainVerificationManager
-import android.content.pm.verify.domain.DomainVerificationUserState
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_HOST
 import dev.develsinthedetails.eatpoopyoucat.config.DEEPLINK_PLAY
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.shareDecodeUrl
 import io.github.vinceglb.filekit.FileKit
@@ -27,30 +20,6 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalUuidApi::class)
     private var netGameParams = mutableStateOf<Pair<Uuid, String>?>(null)
-
-    override fun onStart() {
-        super.onStart()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            checkAndPromptForAppLinks()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun checkAndPromptForAppLinks() {
-        val manager = getSystemService(DomainVerificationManager::class.java)
-        val userState = manager?.getDomainVerificationUserState(packageName)
-        val domainState = userState?.hostToStateMap?.get(DEEPLINK_HOST)
-
-        if (domainState != DomainVerificationUserState.DOMAIN_STATE_VERIFIED &&
-            domainState != DomainVerificationUserState.DOMAIN_STATE_SELECTED
-        ) {
-            val intent = Intent(
-                Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                "package:$packageName".toUri()
-            )
-            startActivity(intent)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
