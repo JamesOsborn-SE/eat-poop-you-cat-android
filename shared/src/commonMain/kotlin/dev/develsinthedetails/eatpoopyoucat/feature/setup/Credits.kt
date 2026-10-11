@@ -1,5 +1,3 @@
-@file:Suppress("KotlinConstantConditions")
-
 package dev.develsinthedetails.eatpoopyoucat.feature.setup
 
 import androidx.compose.foundation.ScrollState
@@ -25,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.config.DEBUG
 import dev.develsinthedetails.eatpoopyoucat.config.GIT_HASH
-import dev.develsinthedetails.eatpoopyoucat.config.VERSION_NAME
 import dev.develsinthedetails.eatpoopyoucat.config.VERSION_CODE
+import dev.develsinthedetails.eatpoopyoucat.config.VERSION_NAME
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ReadMetadata
@@ -43,7 +41,7 @@ import org.koin.compose.koinInject
 import kotlin.uuid.Uuid
 
 @Composable
-fun CreditsScreen(playerId: Uuid, onBack: () -> Unit){
+fun CreditsScreen(playerId: Uuid, onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     val metadataReader = remember { ReadMetadata() }
     val fullDescription by produceState(initialValue = "Loading...") {
@@ -96,7 +94,12 @@ fun CreditsScreen(playerId: Uuid, onBack: () -> Unit){
                         }
                     }
                 }
-                Text(text = stringResource(Res.string.version_label, "$VERSION_NAME ($VERSION_CODE)"))
+                Text(
+                    text = stringResource(
+                        Res.string.version_label,
+                        "$VERSION_NAME ($VERSION_CODE)"
+                    )
+                )
                 Text(
                     text = stringResource(
                         Res.string.git_hash_label,
@@ -116,9 +119,10 @@ fun CreditsScreen(playerId: Uuid, onBack: () -> Unit){
         }
     }
 }
+
 @Composable
 fun CreditsScreen(appSettings: AppSettings = koinInject(), onBack: () -> Unit) {
-CreditsScreen(appSettings.playerId, onBack)
+    CreditsScreen(appSettings.playerId, onBack)
 }
 
 @Preview
