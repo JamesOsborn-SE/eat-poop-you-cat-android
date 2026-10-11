@@ -39,6 +39,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultImageFilename
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localDateTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.localTimestamp
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.rememberBackupFileSaver
@@ -155,10 +156,10 @@ fun PreviousGameDetailsRoute(
                 )
                 val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
 
-                saveToGallery(bytes, defaultDataFilename())
+                saveToGallery(bytes, defaultImageFilename())
                 notifier.show("Saved to device gallery")
                 if (shareLauncher.isSupported) {
-                    shareLauncher.launch(bytes, defaultDataFilename())
+                    shareLauncher.launch(bytes, defaultImageFilename())
                 }
             }
         },
