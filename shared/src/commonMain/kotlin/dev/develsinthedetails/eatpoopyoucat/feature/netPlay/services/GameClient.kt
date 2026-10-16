@@ -21,5 +21,6 @@ expect class GameClient(
     suspend fun turnComplete(newEntry: Entry): Boolean
     suspend fun updateGame(game: GameWithEntries): List<Entry>
     suspend fun ensureGameMatchesServer(gameId: Uuid)
+    suspend fun dismissTurn(turnId: Uuid)
 }
 

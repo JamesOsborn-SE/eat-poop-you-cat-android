@@ -55,7 +55,7 @@ actual class GameClient actual constructor(
         }
     }
     private val pendingMutex = Mutex()
-    private val pendingRequests = mutableMapOf<String, CompletableDeferred<GameEvent>>()
+    private val pendingRequests = mutableMapOf<Uuid, CompletableDeferred<GameEvent>>()
 
     private val sessionMutex = Mutex()
     private val sendMutex = Mutex()
@@ -209,7 +209,7 @@ actual class GameClient actual constructor(
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    private suspend fun send(
+    private fun send(
         connection: DefaultClientWebSocketSession,
         event: GameEvent,
     ) {
@@ -231,7 +231,7 @@ actual class GameClient actual constructor(
     private suspend inline fun <reified T : GameEvent> rpc(
         request: GameEvent,
     ): T? {
-        val requestId = Uuid.random().toString()
+        val requestId = Uuid.random()
         val response = CompletableDeferred<GameEvent>()
 
         pendingMutex.withLock {
@@ -334,8 +334,9 @@ actual class GameClient actual constructor(
     }
 
     actual suspend fun ensureGameMatchesServer(gameId: Uuid) {
+        println("ensureGameMatchesServer: $gameId")
         var myGame = repository.getGameWithEntries(gameId)
-        if (myGame == null) {
+        if (myGame == null || myGame.game.turns == null) {
             val gameWithRoster = getGame(gameId) ?: return
             repository.upsertGameWithRosters(gameWithRoster)
             myGame = GameWithEntries(gameWithRoster.game, emptyList())
@@ -372,5 +373,14 @@ actual class GameClient actual constructor(
         closed = true
         scope.cancel()
         httpClient.close()
+    }
+
+    actual suspend fun dismissTurn(turnId: Uuid) {
+        rpc<GameEvent.TooSlow>(
+            GameEvent.TooSlow(
+                gameId = turnId,
+                turnId
+            )
+        )
     }
 }

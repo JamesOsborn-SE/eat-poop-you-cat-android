@@ -9,19 +9,19 @@ import kotlin.uuid.Uuid
 
 @Serializable
 sealed class GameEvent {
-    abstract val requestId: String?
+    abstract val requestId: Uuid?
 
     @Serializable
     data class GamesPlayerIsIn(
         val playerId: Uuid,
         val gameIds: List<Uuid>? = null,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     @Serializable
     data class RegisterPlayerId(
         val playerId: Uuid,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -30,7 +30,7 @@ sealed class GameEvent {
     @Serializable
     data class RequestGameWithRosters(
         val gameId: Uuid,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -39,7 +39,7 @@ sealed class GameEvent {
     @Serializable
     data class ResponseGameWithRosters(
         val game: GameWithRosters?,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -48,7 +48,7 @@ sealed class GameEvent {
     @Serializable
     data class JoinGame(
         val player: Roster,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -59,8 +59,9 @@ sealed class GameEvent {
     @Serializable
     data class TakeYourTurn(
         val entry: Entry?,
+        val turnId: Uuid,
         val gameId: Uuid,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -72,7 +73,7 @@ sealed class GameEvent {
     data class TurnComplete(
         val entry: Entry?,
         val gameId: Uuid,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     /**
@@ -82,36 +83,41 @@ sealed class GameEvent {
     @Serializable
     data class RequestMissingEntries(
         val gameId: Uuid, val knownTurns: List<Int>,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     @Serializable
     data class ResponseMissingEntries(
         val entries: List<Entry>,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     @Serializable
     data class Success(
         val message: String,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     @Serializable
     data class Error(
         val message: String,
-        override val requestId: String? = null
+        override val requestId: Uuid? = null
     ) : GameEvent()
 
     @Serializable
     data class GameComplete(
-        val game: Game, override val requestId: String? = null
+        val game: Game, override val requestId: Uuid? = null
+    ) : GameEvent()
+
+    @Serializable
+    data class TooSlow(
+        val gameId: Uuid, val turnId: Uuid, override val requestId: Uuid? = null
     ) : GameEvent()
 }
 
 
 fun GameEvent.withRequestId(
-    requestId: String,
+    requestId: Uuid,
 ): GameEvent {
     return when (this) {
         is GameEvent.RequestGameWithRosters ->
@@ -136,6 +142,9 @@ fun GameEvent.withRequestId(
             copy(requestId = requestId)
 
         is GameEvent.Error ->
+            copy(requestId = requestId)
+
+        is GameEvent.TooSlow ->
             copy(requestId = requestId)
 
         else -> this
@@ -166,6 +175,9 @@ fun GameEvent.withoutRequestId(): GameEvent {
             copy(requestId = null)
 
         is GameEvent.Error ->
+            copy(requestId = null)
+
+        is GameEvent.TooSlow ->
             copy(requestId = null)
 
         else -> this

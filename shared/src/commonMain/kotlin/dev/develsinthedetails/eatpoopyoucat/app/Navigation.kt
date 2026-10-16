@@ -176,6 +176,14 @@ fun NavGraph(
                     ) {
                         popUpTo<Home>()
                     }
+
+                is NavigationCommand.OpenInProcessGameDetails -> {
+                    navController.navigate(
+                        InProgressGameDetails(command.gameId)
+                    ) {
+                        popUpTo<Home>()
+                    }
+                }
             }
         }
     }

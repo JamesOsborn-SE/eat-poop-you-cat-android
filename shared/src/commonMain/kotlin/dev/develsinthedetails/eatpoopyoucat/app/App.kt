@@ -18,7 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import kotlin.uuid.Uuid
 
 @Composable
 fun App(
@@ -26,21 +31,45 @@ fun App(
 ) {
     val appSettings: AppSettings = koinInject()
     val notifier: Notifier = koinInject()
+    val client: GameClient = koinInject()
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(notifier, snackbarHostState) {
-        notifier.events.collect { event ->
-            val result = snackbarHostState.showSnackbar(
-                message = event.message,
-                actionLabel = event.actionLabel,
-                duration = if (event.actionLabel != null) {
-                    SnackbarDuration.Indefinite
-                } else {
-                    SnackbarDuration.Short
-                },
-            )
+        val jobs = mutableMapOf<String, Job>()
 
-            if (result == SnackbarResult.ActionPerformed) {
-                event.onAction?.invoke()
+        notifier.events.collect { command ->
+            when (command) {
+                is SnackbarCommand.Show -> {
+                    val event = command.event
+                    val job = launch(start = CoroutineStart.LAZY) {
+                        try {
+                            val result = snackbarHostState.showSnackbar(
+                                message = event.message,
+                                actionLabel = event.actionLabel,
+                                duration = if (event.actionLabel != null) {
+                                    SnackbarDuration.Indefinite
+                                } else {
+                                    SnackbarDuration.Short
+                                },
+                            )
+
+                            if (result == SnackbarResult.ActionPerformed) {
+                                event.onAction?.invoke()
+                            }
+                            if (result == SnackbarResult.Dismissed && event.id != Uuid.NIL) {
+                                client.dismissTurn(event.id)
+                            }
+                        } finally {
+                            jobs.remove(event.id.toString())
+                        }
+                    }
+
+                    jobs[event.id.toString()] = job
+                    job.start()
+                }
+
+                is SnackbarCommand.Dismiss -> {
+                    jobs.remove(command.id)?.cancel()
+                }
             }
         }
     }

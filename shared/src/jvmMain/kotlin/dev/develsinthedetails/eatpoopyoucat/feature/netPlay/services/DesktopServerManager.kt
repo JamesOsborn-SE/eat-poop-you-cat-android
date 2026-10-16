@@ -9,7 +9,7 @@ import java.net.InetAddress
 import java.net.NetworkInterface
 
 class DesktopServerManager(
-    private val server: Server,
+    private val server: GameServer,
 ) : ServerManager {
 
     private val _serverState = MutableStateFlow<ServerState>(ServerState.Stopped)

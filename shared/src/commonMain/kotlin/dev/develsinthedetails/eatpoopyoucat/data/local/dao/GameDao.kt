@@ -87,6 +87,10 @@ interface GameDao {
     @Upsert
     suspend fun upsert(game: Game)
 
+    @Transaction
+    @Query("UPDATE game SET activeTurnId=:activeTurnId where id=:id")
+    suspend fun updateActiveTurn(id: Uuid, activeTurnId: Uuid?)
+
     @Query("SELECT g.id FROM game g JOIN roster r ON r.gameId=g.id WHERE r.playerId=:playerId")
     suspend fun getGamesForPlayer(playerId: Uuid): List<Uuid>
 

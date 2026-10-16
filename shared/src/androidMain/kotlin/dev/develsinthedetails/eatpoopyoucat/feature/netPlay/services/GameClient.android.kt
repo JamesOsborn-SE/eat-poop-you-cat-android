@@ -36,4 +36,7 @@ actual class GameClient actual constructor(
 
     actual suspend fun ensureGameMatchesServer(gameId: Uuid) {
     }
+
+    actual suspend fun dismissTurn(turnId: Uuid) {
+    }
 }

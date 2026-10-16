@@ -118,5 +118,6 @@ class AppRepository(
 
     fun getNetGameFlow(gameId: Uuid): Flow<NetGame> = gameDao.getNetGameFlow(gameId)
     suspend fun getGamesForPlayer(playerId: Uuid) = gameDao.getGamesForPlayer(playerId)
-
+    suspend fun updateActiveTurn(gameId: Uuid, activeTurnId: Uuid?) =
+        gameDao.updateActiveTurn(gameId, activeTurnId)
 }

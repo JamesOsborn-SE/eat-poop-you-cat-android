@@ -12,7 +12,7 @@ import dev.develsinthedetails.eatpoopyoucat.R
 import org.koin.android.ext.android.inject
 
 class AndroidForegroundServerService : Service() {
-    private val server by inject<Server>()
+    private val gameServer by inject<GameServer>()
     override fun onBind(intent: Intent?): IBinder? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return START_STICKY
@@ -23,11 +23,11 @@ class AndroidForegroundServerService : Service() {
 
         createNotificationChannel()
         startForegroundServiceNotification()
-        server.start()
+        gameServer.start()
     }
 
     override fun onDestroy() {
-        server.stop()
+        gameServer.stop()
         super.onDestroy()
     }
 

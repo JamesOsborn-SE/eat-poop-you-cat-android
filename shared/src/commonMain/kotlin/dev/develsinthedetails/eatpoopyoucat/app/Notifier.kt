@@ -1,10 +1,9 @@
 package dev.develsinthedetails.eatpoopyoucat.app
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlin.uuid.Uuid
 
 /**
  * @param message message to show
@@ -12,26 +11,38 @@ import kotlinx.coroutines.launch
  * @param onAction action to perform when action button is clicked
  **/
 data class SnackbarEvent(
+    val id: Uuid,
     val message: String,
     val actionLabel: String? = null,
     val onAction: (suspend () -> Unit)? = null,
+    val withDismissAction: Boolean = true,
 )
 
-class Notifier(private val scope: CoroutineScope) {
-    private val _events = MutableSharedFlow<SnackbarEvent>(
-        extraBufferCapacity = 16,
-    )
+sealed interface SnackbarCommand {
+    data class Show(val event: SnackbarEvent) : SnackbarCommand
+    data class Dismiss(val id: String) : SnackbarCommand
+}
 
-    val events = _events.asSharedFlow()
+class Notifier {
+    private val commands = Channel<SnackbarCommand>(Channel.UNLIMITED)
+    val events = commands.receiveAsFlow()
 
     fun show(
         message: String,
+        id: Uuid? = null,
         actionLabel: String? = null,
         onAction: (suspend () -> Unit)? = null,
     ) {
-        scope.launch {
-            _events.emit(SnackbarEvent(message, actionLabel, onAction))
-        }
+        var id = id
+        if (id == null)
+            id = Uuid.NIL
+        commands.trySend(
+            SnackbarCommand.Show(SnackbarEvent(id, message, actionLabel, onAction, true))
+        )
+    }
+
+    fun dismiss(id: Uuid) {
+        commands.trySend(SnackbarCommand.Dismiss(id.toString()))
     }
 }
 

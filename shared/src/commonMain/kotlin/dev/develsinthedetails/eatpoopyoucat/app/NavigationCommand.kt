@@ -17,4 +17,8 @@ sealed interface NavigationCommand {
     data class OpenPreviousGameDetails(
         val gameId: Uuid
     ) : NavigationCommand
+
+    data class OpenInProcessGameDetails(
+        val gameId: Uuid
+    ) : NavigationCommand
 }

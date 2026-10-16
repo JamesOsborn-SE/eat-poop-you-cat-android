@@ -6,7 +6,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.WebServerMa
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-actual val platformServerModule: Module = module {
+actual val platformGameServerModule: Module = module {
     single<ServerManager> { WebServerManager() }
 }
 val platformModule: Module = module {

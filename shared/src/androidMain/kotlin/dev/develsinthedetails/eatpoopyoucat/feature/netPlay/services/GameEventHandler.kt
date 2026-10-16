@@ -45,7 +45,7 @@ class GameEventHandler(
                     reply(GameEvent.Error("Entry cannot be null", requestId = event.requestId))
                     return
                 }
-                repository.upsertEntry(event.entry)
+                repository.createEntry(event.entry)
                 reply(GameEvent.Success("Turn saved", requestId = event.requestId))
 
                 // Sync users with latest turn
@@ -59,9 +59,6 @@ class GameEventHandler(
                 }
                 repository.upsertEntry(event.entry)
                 reply(GameEvent.Success("Turn saved", requestId = event.requestId))
-
-                // Sync users with latest turn
-                connectionManager.broadcast(event)
             }
 
             is GameEvent.RequestGameWithRosters -> {
@@ -90,6 +87,10 @@ class GameEventHandler(
                     event.playerId,
                     GameEvent.GamesPlayerIsIn(event.playerId, gameIds, requestId = null)
                 )
+            }
+
+            is GameEvent.TooSlow -> {
+                repository.updateActiveTurn(event.gameId, null)
             }
 
             else -> Unit

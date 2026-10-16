@@ -24,13 +24,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-expect val platformServerModule: Module
+expect val platformGameServerModule: Module
 val address = getServerUrl()
 val appModule = module {
     includes(databaseModule)
     singleOf(::AppRepository)
 
-    includes(platformServerModule)
+    includes(platformGameServerModule)
     includes(platformDataStoreModule)
     single { GameClient(serverUrl = address, get(), get()) }
     singleOf(::NavigationManager)

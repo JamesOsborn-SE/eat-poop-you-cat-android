@@ -3,12 +3,14 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.NavigationCommand
 import dev.develsinthedetails.eatpoopyoucat.app.Notifier
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.getGameIdFromUrl
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.nextType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.uuid.Uuid
 
 class IncomingEventProcessor(
     private val client: GameClient,
@@ -53,7 +55,8 @@ class IncomingEventProcessor(
                 }
 
                 notifier.show(
-                    actionLabel = "Take turn",
+                    id = event.turnId,
+                    actionLabel = "Take You Turn?",
                     onAction = navTo,
                     message = "It's your turn to play"
                 )
@@ -81,6 +84,13 @@ class IncomingEventProcessor(
                 event.gameIds.forEach { gameId ->
                     client.ensureGameMatchesServer(gameId)
                 }
+            }
+
+            is GameEvent.TooSlow -> {
+                if (getGameIdFromUrl() == event.gameId)
+                    navigationManager.navigate(NavigationCommand.OpenInProcessGameDetails(event.gameId))
+                notifier.dismiss(event.turnId)
+                notifier.show("too slow", Uuid.random())
             }
 
             else -> {
