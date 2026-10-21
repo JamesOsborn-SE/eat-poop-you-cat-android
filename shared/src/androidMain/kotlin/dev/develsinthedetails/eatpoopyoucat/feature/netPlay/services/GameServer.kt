@@ -86,6 +86,7 @@ class GameServer(
             install(WebSockets) {
                 pingPeriod = 15.seconds
                 timeout = 30.seconds
+                maxFrameSize = Long.MAX_VALUE
                 masking = false
             }
             install(CORS) {
@@ -158,44 +159,39 @@ class GameServer(
                 // Start new monitors
                 for (game in pendingGames) {
                     if (!activeMonitors.containsKey(game.id)) {
-                        activeMonitors[game.id] = monitorGame(game.id)
+                        activeMonitors[game.id] = manageTurns(game.id)
                     }
                 }
             }
     }
 
-    private fun monitorGame(
+    private fun manageTurns(
         gameId: Uuid,
         targetPlayers: Int = 4,
     ): Job = serverScope!!.launch {
+        val events = Channel<MonitorEvent>(Channel.BUFFERED)
+        var timerJob: Job? = null
+
+        val stateJob = launch {
+            combine(
+                repository.getNetGameFlow(gameId),
+                connectionManager.connectedPlayers
+            ) { netGame, players ->
+                MonitorEvent.StateChanged(netGame, players)
+            }.collect { events.send(it) }
+        }
+
+        var activeTurnId: Uuid? = null
+        var pendingTurnPlayerId: Uuid? = null
+        var lastHandledSequence: Int = -1
+
         try {
-            println("connected players: ${connectionManager.connectedPlayers} .")
-            println("activeMonitors $activeMonitors")
-            val events = Channel<MonitorEvent>(Channel.UNLIMITED)
-
-            launch {
-                combine(
-                    repository.getNetGameFlow(gameId),
-                    connectionManager.connectedPlayers
-                ) { netGame, players ->
-                    MonitorEvent.StateChanged(netGame, players)
-                }.collect(events::send)
-            }
-
-            var timerJob: Job? = null
-            var activeTurnId: Uuid? = null
-            var pendingTurnPlayerId: Uuid? = null
-            var lastHandledSequence: Int = -1
-
             for (event in events) {
                 when (event) {
                     is MonitorEvent.StateChanged -> {
-                        println("Game $gameId; Start monitor.")
                         if (event.netGame.game.turns != null) {
                             println("Game $gameId is over. Stopping monitor.")
-                            timerJob?.cancel()
-                            cancel() // Cancels this specific job
-                            break
+                            return@launch
                         }
 
                         val latestEntry = event.netGame.entries.maxByOrNull { it.sequence }
@@ -205,70 +201,72 @@ class GameServer(
                         if (currentSequence != lastHandledSequence) {
                             pendingTurnPlayerId = null
                             lastHandledSequence = currentSequence
+                            activeTurnId = Uuid.random()
                         }
 
                         val availablePlayers =
                             availablePlayers(appSettings.playerId, event.netGame, connectionManager)
 
-                        val hasEnoughPlayers = event.netGame.roster.size >= targetPlayers
+                        val hasEnoughPlayers = availablePlayers.size >= targetPlayers
 
-                        val canStartTurn =
+                        val canAssignTurn =
                             pendingTurnPlayerId == null &&
-                                    availablePlayers.isNotEmpty() &&
-                                    (!isFirstTurn || hasEnoughPlayers)
-                        println("canStartTurn=$canStartTurn")
-                        if (canStartTurn) {
+                                    (!isFirstTurn || hasEnoughPlayers) &&
+                                    activeTurnId != null
 
-                            activeTurnId = Uuid.random()
-                            pendingTurnPlayerId = availablePlayers.random().playerId
-                            println("pendingTurnPlayerId=$pendingTurnPlayerId")
-                            println("activeTurnId=$activeTurnId")
-                            println("event.netGame.game.activeTurnId=${event.netGame.game.activeTurnId}")
-                            if (event.netGame.game.activeTurnId != activeTurnId) {
-                                timerJob?.cancel()
-                                timerJob = launch {
-                                    val timeout =
-                                        (event.netGame.game.timeout?.minutes ?: 666666.minutes)
-                                    delay(timeout)
-                                    events.send(
-                                        MonitorEvent.CancelTurn(
-                                            pendingTurnPlayerId!!,
-                                            activeTurnId
-                                        )
-                                    )
-                                }
-                            }
+                        println("canStartTurn=$canAssignTurn")
+                        if (!canAssignTurn) continue
 
-                            println("Game $gameId progress automatically! Turn assigned to player id: $pendingTurnPlayerId")
-                            if (pendingTurnPlayerId == appSettings.playerId) {
-                                val command = if (currentSequence.isEven) {
-                                    NavigationCommand.OpenSentence(
-                                        event.netGame.game.id,
-                                        GameMode.LAN
-                                    )
-                                } else {
-                                    NavigationCommand.OpenDraw(event.netGame.game.id, GameMode.LAN)
-                                }
-                                navigationManager.navigate(command)
-                            } else {
-                                connectionManager.sendToPlayer(
-                                    playerId = pendingTurnPlayerId,
-                                    event = GameEvent.TakeYourTurn(
-                                        latestEntry,
-                                        activeTurnId,
-                                        gameId
+                        pendingTurnPlayerId = availablePlayers.random().playerId
+                        if (event.netGame.game.activeTurnId != activeTurnId) {
+                            timerJob?.cancel()
+
+                            val timeout =
+                                (event.netGame.game.timeout?.minutes ?: 666666.minutes)
+                            val playerId = pendingTurnPlayerId
+                            val turnId = activeTurnId
+                            timerJob = launch {
+                                delay(timeout)
+                                events.send(
+                                    MonitorEvent.CancelTurn(
+                                        playerId,
+                                        turnId
                                     )
                                 )
                             }
                             repository.updateActiveTurn(event.netGame.game.id, activeTurnId)
                         }
+
+                        println("Game $gameId progress automatically! Turn assigned to player id: $pendingTurnPlayerId")
+                        if (pendingTurnPlayerId == appSettings.playerId) {
+                            val command = if (currentSequence.isEven) {
+                                NavigationCommand.OpenSentence(
+                                    event.netGame.game.id,
+                                    GameMode.LAN
+                                )
+                            } else {
+                                NavigationCommand.OpenDraw(event.netGame.game.id, GameMode.LAN)
+                            }
+                            navigationManager.navigate(command)
+                        } else {
+                            connectionManager.sendToPlayer(
+                                playerId = pendingTurnPlayerId,
+                                event = GameEvent.TakeYourTurn(
+                                    latestEntry,
+                                    activeTurnId,
+                                    gameId
+                                )
+                            )
+                        }
+
                     }
+
 
                     is MonitorEvent.CancelTurn -> {
                         if (event.turnId == activeTurnId) {
                             connectionManager.sendToPlayer(
                                 playerId = event.playerId,
-                                event = GameEvent.TooSlow(gameId, activeTurnId)
+                                event = GameEvent.TooSlow(gameId, event.turnId)
                             )
                             pendingTurnPlayerId = null
                         }
@@ -277,6 +275,9 @@ class GameServer(
             }
 
         } finally {
+            stateJob.cancel()
+            timerJob?.cancel()
+            events.close()
             activeMonitors.remove(gameId)
         }
     }
