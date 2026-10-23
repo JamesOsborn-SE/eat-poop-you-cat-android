@@ -63,13 +63,17 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
+import eatpoopyoucat.shared.generated.resources.delete_game
+import eatpoopyoucat.shared.generated.resources.end_game_for_all
 import eatpoopyoucat.shared.generated.resources.ic_delete_forever_rounded
 import eatpoopyoucat.shared.generated.resources.ic_lan
 import eatpoopyoucat.shared.generated.resources.ic_question_mark
 import eatpoopyoucat.shared.generated.resources.ic_warning_rounded
 import eatpoopyoucat.shared.generated.resources.ic_wifi
+import korlibs.math.isEven
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.math.roundToInt
@@ -138,7 +142,7 @@ fun InProgressGames(
                         )
                     }
                     itemsIndexed(inProgressGames!!.sortedByDescending { it.game.createdAt }) { index, gameWithRosters ->
-                        ListGame(gameWithRosters, index, toGame, playerId, onEndGame, onDeleteGame)
+                        ListGame(gameWithRosters, index.isEven, toGame, playerId, onEndGame, onDeleteGame)
                     }
                 }
                 PlatformLazyVerticalScrollbar(
@@ -160,7 +164,7 @@ private enum class GameSwipeAnchor {
 @Composable
 private fun ListGame(
     gameWithRosters: GameWithRosters,
-    index: Int,
+    isEven: Boolean,
     toGame: (Uuid) -> Unit,
     playerId: Uuid,
     onEndGame: (Uuid) -> Unit,
@@ -176,7 +180,7 @@ private fun ListGame(
         AnchoredDraggableState(initialValue = GameSwipeAnchor.Closed)
     }
 
-    val rowColor = if (index % 2 == 0) {
+    val rowColor = if (isEven) {
         MaterialTheme.colorScheme.surfaceVariant
     } else {
         MaterialTheme.colorScheme.background
@@ -201,11 +205,11 @@ private fun ListGame(
                     Row {
                         Icon(
                             painterResource(Res.drawable.ic_warning_rounded),
-                            contentDescription = "Delete"
+                            contentDescription = stringResource(Res.string.end_game_for_all)
                         )
                     }
                     Row {
-                        Text("End for all", color = Color.White)
+                        Text(stringResource(Res.string.end_game_for_all), color = Color.White)
                     }
                 }
             }
@@ -225,11 +229,11 @@ private fun ListGame(
                     Row {
                         Icon(
                             painterResource(Res.drawable.ic_delete_forever_rounded),
-                            contentDescription = "Delete"
+                            contentDescription = stringResource(Res.string.delete_game)
                         )
                     }
                     Row {
-                        Text("Delete", color = Color.White)
+                        Text(stringResource(Res.string.delete_game), color = Color.White)
                     }
                 }
             }
@@ -272,7 +276,7 @@ private fun ListGameItem(
     player: List<Roster>,
     playerId: Uuid
 ) {
-    Row(modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)) {
+    Row {
         Column {
             Text(
                 text = "Created at: ${game.createdAt.localDateTimestamp()}",
