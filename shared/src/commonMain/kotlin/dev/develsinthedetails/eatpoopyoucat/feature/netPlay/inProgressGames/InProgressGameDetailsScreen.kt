@@ -90,6 +90,10 @@ fun InProgressGameDetailsScreen(
         serverManager = serverManager,
         onUpdateAddress = { viewModel.updateAddress(it) }
     )
+
+    if (game?.game?.turns != null)
+        game?.game?.id?.let { onEnd(it) }
+
     InProgressGameDetailsScreen(
         uiState = uiState,
         game = game,
@@ -139,7 +143,8 @@ fun InProgressGameDetailsScreen(
             color = MaterialTheme.colorScheme.background,
         ) {
             val turns = game?.entries?.size ?: 0
-            if (game == null) {
+
+            if (game == null || game.roster.none { it.playerId == myPlayerId }) {
                 Spinner()
                 return@Surface
             }
@@ -273,7 +278,13 @@ fun InProgressGameDetailsScreen(
                         }
                     }
                     itemsIndexed(game.entries.sortedBy { it.sequence }) { _, entry ->
-                        RosterPlayerItem(entry.sequence, entry.playerId, entry.localPlayerName ?: "" , entry.type, myPlayerId)
+                        RosterPlayerItem(
+                            entry.sequence,
+                            entry.playerId,
+                            entry.localPlayerName ?: "",
+                            entry.type,
+                            myPlayerId
+                        )
                     }
                     item {
                         Text(
@@ -291,7 +302,13 @@ fun InProgressGameDetailsScreen(
                     itemsIndexed(game.roster.filter { r ->
                         game.entries.none { r.playerId == it.playerId }
                     }) { index, rosterPlayer ->
-                        RosterPlayerItem(index, rosterPlayer.playerId, rosterPlayer.nickname, EntryType.Unknown, myPlayerId)
+                        RosterPlayerItem(
+                            index,
+                            rosterPlayer.playerId,
+                            rosterPlayer.nickname,
+                            EntryType.Unknown,
+                            myPlayerId
+                        )
                     }
                     item {
                         HorizontalDivider(
@@ -309,7 +326,13 @@ fun InProgressGameDetailsScreen(
 }
 
 @Composable
-fun RosterPlayerItem(index: Int, playerId: Uuid, nickname: String, entryType: EntryType, myPlayerId: Uuid) {
+fun RosterPlayerItem(
+    index: Int,
+    playerId: Uuid,
+    nickname: String,
+    entryType: EntryType,
+    myPlayerId: Uuid
+) {
     val rowColor = if (index % 2 == 0) {
         MaterialTheme.colorScheme.surfaceVariant
     } else {
@@ -347,6 +370,7 @@ fun RosterPlayerItem(index: Int, playerId: Uuid, nickname: String, entryType: En
                         .padding(end = 10.dp, start = 10.dp)
                 )
             }
+
             EntryType.Drawing -> {
                 Icon(
                     painter = painterResource(Res.drawable.ic_draw_rounded),
@@ -356,6 +380,7 @@ fun RosterPlayerItem(index: Int, playerId: Uuid, nickname: String, entryType: En
                         .padding(end = 10.dp, start = 10.dp)
                 )
             }
+
             else -> {
                 Icon(
                     painter = painterResource(Res.drawable.ic_schedule),

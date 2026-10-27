@@ -2,11 +2,14 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.NavigationCommand
+import dev.develsinthedetails.eatpoopyoucat.app.Notifier
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SERVER_PORT
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
+import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
+import dev.develsinthedetails.eatpoopyoucat.data.models.nextType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.cbor.cbor
@@ -31,7 +34,6 @@ import io.ktor.server.websocket.timeout
 import io.ktor.server.websocket.webSocket
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readBytes
-import korlibs.math.isEven
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -56,6 +58,7 @@ class GameServer(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
     private val navigationManager: NavigationManager,
+    private val notifier: Notifier,
 ) {
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
         null
@@ -167,7 +170,7 @@ class GameServer(
 
     private fun manageTurns(
         gameId: Uuid,
-        targetPlayers: Int = 4,
+        targetPlayers: Int = 3,
     ): Job = serverScope!!.launch {
         val events = Channel<MonitorEvent>(Channel.BUFFERED)
         var timerJob: Job? = null
@@ -183,22 +186,23 @@ class GameServer(
 
         var activeTurnId: Uuid? = null
         var pendingTurnPlayerId: Uuid? = null
-        var lastHandledSequence: Int = -1
+        var lastHandledSequence: Int = -5
 
         try {
             for (event in events) {
                 when (event) {
                     is MonitorEvent.StateChanged -> {
                         if (event.netGame.game.turns != null) {
-                            println("Game $gameId is over. Stopping monitor.")
+                            connectionManager.broadcast(GameEvent.GameComplete(event.netGame.game))
+                            printDebugLine(gameId, "Game is over. Stopping monitor.")
                             return@launch
                         }
-
                         val latestEntry = event.netGame.entries.maxByOrNull { it.sequence }
-                        val currentSequence = latestEntry?.sequence ?: 0
-                        val isFirstTurn = latestEntry == null
+                        val currentSequence =
+                            latestEntry?.sequence ?: -1 // HACK: for detecting first turn
 
                         if (currentSequence != lastHandledSequence) {
+                            printDebugLine(gameId, "New turn: $currentSequence")
                             pendingTurnPlayerId = null
                             lastHandledSequence = currentSequence
                             activeTurnId = Uuid.random()
@@ -206,15 +210,19 @@ class GameServer(
 
                         val availablePlayers =
                             availablePlayers(appSettings.playerId, event.netGame, connectionManager)
+                        printDebugLine(gameId, "Available players: $availablePlayers")
 
-                        val hasEnoughPlayers = availablePlayers.size >= targetPlayers
+                        // if some players dropped connection after the game started don't punish remaining players.
+                        val hasEnoughPlayers = availablePlayers.isNotEmpty() &&
+                                availablePlayers.size + currentSequence + 1 >= targetPlayers
+                        printDebugLine(gameId, "hasEnoughPlayers=$hasEnoughPlayers")
 
                         val canAssignTurn =
                             pendingTurnPlayerId == null &&
-                                    (!isFirstTurn || hasEnoughPlayers) &&
+                                    hasEnoughPlayers &&
                                     activeTurnId != null
 
-                        println("canStartTurn=$canAssignTurn")
+                        printDebugLine(gameId, "canStartTurn=$canAssignTurn")
                         if (!canAssignTurn) continue
 
                         pendingTurnPlayerId = availablePlayers.random().playerId
@@ -237,17 +245,30 @@ class GameServer(
                             repository.updateActiveTurn(event.netGame.game.id, activeTurnId)
                         }
 
-                        println("Game $gameId progress automatically! Turn assigned to player id: $pendingTurnPlayerId")
+                        printDebugLine(
+                            gameId,
+                            "Game progress automatically! Turn assigned to player id: $pendingTurnPlayerId"
+                        )
                         if (pendingTurnPlayerId == appSettings.playerId) {
-                            val command = if (currentSequence.isEven) {
-                                NavigationCommand.OpenSentence(
-                                    event.netGame.game.id,
-                                    GameMode.LAN
-                                )
-                            } else {
-                                NavigationCommand.OpenDraw(event.netGame.game.id, GameMode.LAN)
+                            val navTo = suspend {
+                                val entry = latestEntry!!
+                                if (entry.nextType == EntryType.Drawing) {
+                                    navigationManager.navigate(
+                                        NavigationCommand.OpenDraw(gameId, GameMode.LAN)
+                                    )
+                                } else {
+                                    navigationManager.navigate(
+                                        NavigationCommand.OpenSentence(gameId, GameMode.LAN)
+                                    )
+                                }
                             }
-                            navigationManager.navigate(command)
+                            val turnId = activeTurnId
+                            notifier.show(
+                                id = turnId,
+                                actionLabel = "Take You Turn?",
+                                onAction = navTo,
+                                message = "It's your turn to play"
+                            )
                         } else {
                             connectionManager.sendToPlayer(
                                 playerId = pendingTurnPlayerId,
@@ -258,7 +279,6 @@ class GameServer(
                                 )
                             )
                         }
-
                     }
 
 
@@ -280,6 +300,10 @@ class GameServer(
             events.close()
             activeMonitors.remove(gameId)
         }
+    }
+
+    private fun printDebugLine(gameId: Uuid, s: String) {
+        println("DEBUG: Game $gameId: $s")
     }
 
     companion object {

@@ -26,7 +26,7 @@ class InProgressGamesViewModel(
         viewModelScope.launch {
             val gameWithEntries = repository.getGameWithEntries(gameId)
             if (gameWithEntries?.game != null) {
-                if (gameWithEntries.entries.size > 0) {
+                if (gameWithEntries.entries.isNotEmpty()) {
                     repository.upsertGame(gameWithEntries.game.copy(turns = gameWithEntries.entries.size))
                 } else {
                     repository.deleteGame(gameId)

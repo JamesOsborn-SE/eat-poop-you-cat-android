@@ -20,6 +20,22 @@ class GameEventHandler(
         }
 
         when (event) {
+            // happens when WS connection is established
+            // sends back games player is in
+            is GameEvent.RegisterPlayerId -> {
+                println("DEBUG: RegisterPlayerId=${event.playerId}")
+                connectionManager.associatePlayer(
+                    playerId = event.playerId,
+                    session = session
+                )
+                reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+                val gameIds = repository.getGamesForPlayer(event.playerId)
+                connectionManager.sendToPlayer(
+                    event.playerId,
+                    GameEvent.GamesPlayerIsIn(event.playerId, gameIds, requestId = null)
+                )
+            }
+
             is GameEvent.JoinGame -> {
                 try {
                     repository.addPlayer(event.player)
@@ -37,6 +53,7 @@ class GameEventHandler(
                         )
                     )
                 }
+                // Sync users with latest user added
                 connectionManager.broadcast(event)
             }
 
@@ -52,15 +69,6 @@ class GameEventHandler(
                 connectionManager.broadcast(event)
             }
 
-            is GameEvent.TakeYourTurn -> {
-                if (event.entry == null) {
-                    reply(GameEvent.Error("Entry cannot be null", requestId = event.requestId))
-                    return
-                }
-                repository.upsertEntry(event.entry)
-                reply(GameEvent.Success("Turn saved", requestId = event.requestId))
-            }
-
             is GameEvent.RequestGameWithRosters -> {
                 val game = repository.getGameWithRosters(event.gameId)
                 reply(GameEvent.ResponseGameWithRosters(game, requestId = event.requestId))
@@ -73,20 +81,6 @@ class GameEventHandler(
                 )
 
                 reply(GameEvent.ResponseMissingEntries(missing, requestId = event.requestId))
-            }
-
-            is GameEvent.RegisterPlayerId -> {
-                println("DEBUG: RegisterPlayerId=${event.playerId}")
-                connectionManager.associatePlayer(
-                    playerId = event.playerId,
-                    session = session
-                )
-                reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
-                val gameIds = repository.getGamesForPlayer(event.playerId)
-                connectionManager.sendToPlayer(
-                    event.playerId,
-                    GameEvent.GamesPlayerIsIn(event.playerId, gameIds, requestId = null)
-                )
             }
 
             is GameEvent.TooSlow -> {

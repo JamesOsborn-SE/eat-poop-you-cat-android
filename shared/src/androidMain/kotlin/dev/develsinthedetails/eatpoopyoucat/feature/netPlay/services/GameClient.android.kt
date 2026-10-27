@@ -12,8 +12,18 @@ import kotlin.uuid.Uuid
 actual class GameClient actual constructor(
     val serverUrl: Url,
     val repository: AppRepository,
-    val appSettings: AppSettings
+    val appSettings: AppSettings,
 ) {
+    private val connectionManager = WebSocketConnectionManager()
+    actual suspend fun turnComplete(newEntry: Entry): Boolean {
+        val ge = GameEvent.TurnComplete(
+            entry = newEntry,
+            gameId = newEntry.gameId,
+        )
+        connectionManager.broadcast(ge)
+        return true
+    }
+
     actual suspend fun getGame(gameId: Uuid): GameWithRosters? {
         return null
     }
@@ -23,10 +33,6 @@ actual class GameClient actual constructor(
     }
 
     actual suspend fun registerPlayerId(playerId: Uuid): Boolean {
-        return false
-    }
-
-    actual suspend fun turnComplete(newEntry: Entry): Boolean {
         return false
     }
 

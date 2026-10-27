@@ -52,7 +52,6 @@ actual class GameClient actual constructor(
     private val httpClient = HttpClient {
         install(WebSockets) {
             pingInterval = 15.seconds
-            maxFrameSize = Long.MAX_VALUE
         }
     }
     private val pendingMutex = Mutex()

@@ -18,6 +18,9 @@ sealed class GameEvent {
         override val requestId: Uuid? = null
     ) : GameEvent()
 
+    /**
+     * Player registers their playerId with the server
+     */
     @Serializable
     data class RegisterPlayerId(
         val playerId: Uuid,

@@ -13,6 +13,7 @@ import kotlinx.serialization.cbor.Cbor
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.uuid.Uuid
 
+// todo track gameIds and use in broadcast() so only clients in that game are sent the messages
 @OptIn(ExperimentalSerializationApi::class)
 class WebSocketConnectionManager {
     private val _connectedPlayers = MutableStateFlow<Set<Uuid>>(emptySet())
@@ -59,7 +60,6 @@ class WebSocketConnectionManager {
     fun hasActiveSession(playerId: Uuid): Boolean = sessionsByPlayer.containsKey(playerId)
 
     suspend fun broadcast(event: GameEvent) {
-        // Encode once, send to many (Better performance)
         val bytes = Cbor.encodeToByteArray(GameEvent.serializer(), event.withoutRequestId())
         sessionsByPlayer.values.forEach { connection ->
             try {

@@ -17,15 +17,15 @@ class StaticRouter {
     fun Route.staticRoutes() {
         get("/{...}") {
             // compress the files
-            // find webApp/build/dist/wasmJs/developmentExecutable/ -type f \( -name "*.wasm" -o -name "*.png" -o -name "*.*js" -o -name "*.png" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.xml" -o -name "*.cvr"  \) -exec gzip -9 -f {} \;
-            // find webApp/build/dist/wasmJs/productionExecutable/ -type f \( -name "*.wasm" -o -name "*.png" -o -name "*.*js" -o -name "*.png" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.xml" -o -name "*.cvr"  \) -exec gzip -9 -f {} \;
+            // find webApp/build/dist/wasmJs/developmentExecutable/ -type f ! -name "*.gz" -exec gzip -9 -f {} \;
+            // find webApp/build/dist/wasmJs/productionExecutable/ -type f ! -name "*.gz" -exec gzip -9 -f {} \;
+            // todo compress in one file and load/serve in/from memory maybe?
             // todo CD wipe pngs in ./file for smaller file sizes
             val requestPath = call.request.path().removePrefix("/").ifEmpty { "index.html" }
             val contentType = ContentType.fromFilePath(requestPath).firstOrNull()
                 ?: ContentType.Application.OctetStream
 
             val rootPath = "web-dev"// else "web"
-            println("DEBUG: Serving $rootPath/$requestPath")
             val resourcePath = "$rootPath/${requestPath}.gz"
 
             val stream = Thread.currentThread().contextClassLoader.getResourceAsStream(resourcePath)
