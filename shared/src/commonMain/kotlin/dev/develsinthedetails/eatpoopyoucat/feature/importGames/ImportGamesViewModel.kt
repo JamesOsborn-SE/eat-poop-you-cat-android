@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
+import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -32,10 +33,19 @@ class ImportGamesViewModel(
                 repository.createPlayer(Player(appSettings.playerId, ""))
         }
     }
-    private suspend fun addGame(gameWithEntries: GameWithEntries) {
+    private suspend fun addGame(gameWithEntries: NetGame) {
         repository.createGame(gameWithEntries.game)
+        addPlayers(gameWithEntries.roster)
         addEntries(gameWithEntries.entries)
         _numberOfGamesAdded.emit(++_numberOfGamesAdded.value)
+    }
+    private suspend fun addPlayers(players: List<Roster>) {
+        players.forEach {
+            val player = repository.getPlayer(it.playerId)
+            if (player == null)
+                repository.createPlayer(Player(it.playerId, it.nickname))
+            repository.upsertRoster(it)
+        }
     }
 
     private suspend fun addEntries(entries: List<Entry>) {
@@ -48,8 +58,8 @@ class ImportGamesViewModel(
         }
     }
 
-    suspend fun addGames(gamesToImport: List<GameWithEntries>, closeStream: () -> Unit) {
-        val existingGameIds = repository.getAllGames().map { g -> g.id }
+    suspend fun addGames(gamesToImport: List<NetGame>, closeStream: () -> Unit) {
+        val existingGameIds = repository.getAllGames().map { g -> g.game.id }
         gamesToImport.forEach {
             if (!existingGameIds.any { g -> g == it.game.id })
                 addGame(it)

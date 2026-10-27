@@ -1,4 +1,4 @@
-package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames
+package dev.develsinthedetails.eatpoopyoucat.feature.previousGames
 
 
 import androidx.compose.foundation.background
@@ -21,8 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -53,8 +51,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.SelectableReadOnlyTextWithShare
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.end_game_for_all
 import eatpoopyoucat.shared.generated.resources.ic_cake
@@ -71,42 +67,8 @@ import eatpoopyoucat.shared.generated.resources.scroll_to_top
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
-
-@Composable
-fun InProgressGameDetailsScreen(
-    viewModel: InProgressGameDetailsViewModel = koinViewModel(),
-    serverManager: ServerManager = koinInject(),
-    onBack: () -> Unit,
-    onEnd: (Uuid) -> Unit,
-) {
-    val game by viewModel.game.collectAsState(null)
-    val uiState by viewModel.uiState.collectAsState()
-
-    ManageServerLifecycle(
-        serverManager = serverManager,
-        onUpdateAddress = { viewModel.updateAddress(it) }
-    )
-
-    if (game?.game?.turns != null)
-        game?.game?.id?.let { onEnd(it) }
-
-    InProgressGameDetailsScreen(
-        uiState = uiState,
-        game = game,
-        myPlayerId = viewModel.playerId,
-        onBack = onBack,
-        gameOverMan = {
-            viewModel.gameOverMan()
-            val gameId = game?.game?.id
-            if (gameId != null)
-                onEnd(gameId)
-        }
-    )
-}
 
 @Composable
 fun InProgressGameDetailsScreen(

@@ -11,8 +11,6 @@ import dev.develsinthedetails.eatpoopyoucat.app.Credits
 import dev.develsinthedetails.eatpoopyoucat.app.Draw
 import dev.develsinthedetails.eatpoopyoucat.app.Home
 import dev.develsinthedetails.eatpoopyoucat.app.Import
-import dev.develsinthedetails.eatpoopyoucat.app.InProgressGameDetails
-import dev.develsinthedetails.eatpoopyoucat.app.InProgressGames
 import dev.develsinthedetails.eatpoopyoucat.app.Join
 import dev.develsinthedetails.eatpoopyoucat.app.New
 import dev.develsinthedetails.eatpoopyoucat.app.PreviousGameDetails
@@ -102,15 +100,6 @@ fun main() {
                         route.startsWith(Draw.serializer().descriptor.serialName) -> {
                             val args = entry.toRoute<Draw>()
                             "#draw_${args.gameId}_${args.gameMode}"
-                        }
-
-                        route.startsWith(InProgressGames.serializer().descriptor.serialName) -> {
-                            "#in_progress_games"
-                        }
-
-                        route.startsWith(InProgressGameDetails.serializer().descriptor.serialName) -> {
-                            val args = entry.toRoute<InProgressGameDetails>()
-                            "#in_progress_game_details_${args.gameId}"
                         }
 
                         route.startsWith(Import.serializer().descriptor.serialName) -> {

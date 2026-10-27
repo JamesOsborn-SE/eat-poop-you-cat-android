@@ -7,8 +7,6 @@ import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsViewModel
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGamesViewModel
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsViewModel
@@ -45,9 +43,7 @@ val appModule = module {
     viewModelOf(::PreviousGamesViewModel)
     viewModelOf(::DrawViewModel)
     viewModelOf(::ImportGamesViewModel)
-    viewModelOf(::InProgressGamesViewModel)
     viewModelOf(::StartNetGameViewModel)
     viewModelOf(::NewGameViewModel)
-    viewModelOf(::InProgressGameDetailsViewModel)
     viewModelOf(::JoinNetGameViewModel)
 }

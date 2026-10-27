@@ -13,11 +13,7 @@ data class GameWithEntries(
     var entries: List<Entry> = emptyList()
 )
 
-fun GameWithEntries.gameIsComplete() =
-    (this.game.gameMode == GameMode.LOCAL || (this.game.gameMode != GameMode.LOCAL && this.game.turns != null))
-            && this.entries.isNotEmpty()
-
-fun GameWithEntries.invalidGames() = this.game.gameMode == GameMode.LOCAL
+fun NetGame.invalidGames() = this.game.gameMode == GameMode.LOCAL
         && this.entries.isNotEmpty()
         && this.entries.all { it.sentence.isNullOrBlank().xor(it.drawing == null) }
 

@@ -22,8 +22,6 @@ import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.importGames.ImportGamesScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.JoinNetGameScreen
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.StartNetGameScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGameDetailsScreen
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.inProgressGames.InProgressGames
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.NavigationManager
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGameDetailsRoute
 import dev.develsinthedetails.eatpoopyoucat.feature.previousGames.PreviousGamesRoute
@@ -124,14 +122,6 @@ data class StartNetGame(
 )
 
 @Serializable
-@SerialName("InProgressGames")
-data object InProgressGames
-
-@Serializable
-@SerialName("InProgressGameDetails")
-data class InProgressGameDetails(val gameId: Uuid)
-
-@Serializable
 @SerialName("Import")
 data object Import
 
@@ -176,14 +166,6 @@ fun NavGraph(
                     ) {
                         popUpTo<Home>()
                     }
-
-                is NavigationCommand.OpenInProcessGameDetails -> {
-                    navController.navigate(
-                        InProgressGameDetails(command.gameId)
-                    ) {
-                        popUpTo<Home>()
-                    }
-                }
             }
         }
     }
@@ -208,7 +190,7 @@ fun NavGraph(
                     navController.navigate(Credits)
                 },
                 toInProgressGames = {
-                    navController.navigate(InProgressGames)
+                    navController.navigate(PreviousGames)
                 },
                 toPrivacyPolicy = {
                     navController.navigate(PrivacyPolicy)
@@ -262,8 +244,8 @@ fun NavGraph(
                         }
 
                         else -> {
-                            navController.navigate(InProgressGameDetails(gameId)) {
-                                popUpTo<InProgressGames>()
+                            navController.navigate(PreviousGameDetails(gameId)) {
+                                popUpTo<PreviousGames>()
                             }
                         }
                     }
@@ -280,8 +262,8 @@ fun NavGraph(
                         }
 
                         else -> {
-                            navController.navigate(InProgressGameDetails(gameId)) {
-                                popUpTo<InProgressGames>()
+                            navController.navigate(PreviousGameDetails(gameId)) {
+                                popUpTo<PreviousGames>()
                             }
                         }
                     }
@@ -309,7 +291,7 @@ fun NavGraph(
                         }
 
                         else -> {
-                            navController.navigate(InProgressGameDetails(gameId = gameId))
+                            navController.navigate(PreviousGameDetails(gameId = gameId))
                         }
                     }
                 },
@@ -369,12 +351,6 @@ fun NavGraph(
                         popUpTo<PreviousGames>()
                         popUpTo<Home>()
                     }
-                },
-                onNavigateToInProgress = {
-                    navController.navigate(InProgressGameDetails(it)) {
-                        popUpTo<InProgressGames>()
-                        popUpTo<Home>()
-                    }
                 }
             )
         }
@@ -387,7 +363,7 @@ fun NavGraph(
                         popUpTo<Home>()
                     }
                 }, toInProgressGame = {
-                    navController.navigate(InProgressGameDetails(route.gameId)) {
+                    navController.navigate(PreviousGameDetails(route.gameId)) {
                         popUpTo<Home>()
                     }
                 })
@@ -415,25 +391,10 @@ fun NavGraph(
             StartNetGameScreen(onBack = {
                 navController.navigate(Home)
             }, onStartGame = { gameId: Uuid ->
-                navController.navigate(InProgressGameDetails(gameId))
+                navController.navigate(PreviousGameDetails(gameId))
             })
         }
 
-        composable<InProgressGames> {
-            InProgressGames(
-                onBack = { navController.navigate(Home) },
-                toGame = { gameId: Uuid ->
-                    navController.navigate(InProgressGameDetails(gameId))
-                }
-            )
-        }
-
-        composable<InProgressGameDetails>(typeMap = mapOf(typeOf<Uuid>() to UuidNavType)) {
-            InProgressGameDetailsScreen(
-                onBack = { navController.navigate(InProgressGames) },
-                onEnd = { gameId -> navController.navigate(PreviousGameDetails(gameId)) },
-            )
-        }
     }
     LaunchedEffect(navController) {
         onNavHostReady(navController)

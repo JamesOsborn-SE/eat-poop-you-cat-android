@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.ack
 import eatpoopyoucat.shared.generated.resources.imported
@@ -56,7 +56,7 @@ fun ImportGamesScreen(
                 try {
                     val bytes = platformFile.readBytes()
                     val gamesString = Gzip.decompressToString(bytes)
-                    val games = Json.decodeFromString<List<GameWithEntries>>(gamesString)
+                    val games = Json.decodeFromString<List<NetGame>>(gamesString)
 
                     viewModel.addGames(games) {
                         // todo Callback when done?

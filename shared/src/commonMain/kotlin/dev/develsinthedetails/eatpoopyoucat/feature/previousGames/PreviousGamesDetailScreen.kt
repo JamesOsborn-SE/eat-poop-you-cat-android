@@ -51,6 +51,8 @@ import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.continue_previous_game
@@ -72,6 +74,7 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.uuid.Uuid
 
@@ -79,14 +82,19 @@ import kotlin.uuid.Uuid
 fun PreviousGameDetailsRoute(
     modifier: Modifier = Modifier,
     viewModel: PreviousGameDetailsViewModel = koinViewModel(),
+    serverManager: ServerManager = koinInject(),
     onBack: () -> Unit,
     onContinueGame: (Uuid, EntryType) -> Unit,
-    onNavigateToImport: () -> Unit,
-    onNavigateToInProgress: (Uuid) -> Unit
+    onNavigateToImport: () -> Unit
 ) {
-    val game by viewModel.gameWithEntries.collectAsState(initial = null)
-    val lastEntry = game?.entries?.last()
+    val game by viewModel.game.collectAsState(initial = null)
+    val lastEntry = game?.entries?.lastOrNull()
     val notifier = LocalAppNotifier.current
+    val uiState by viewModel.uiState.collectAsState()
+    ManageServerLifecycle(
+        serverManager = serverManager,
+        onUpdateAddress = { viewModel.updateAddress(it) }
+    )
 
     val appIcon = rememberBitmapFromResource(Res.drawable.ic_launcher_foreground)
     val appName = stringResource(Res.string.app_name)
@@ -111,59 +119,67 @@ fun PreviousGameDetailsRoute(
     val shareLauncher = rememberShareFileLauncher(
         onError = { failure -> shareError = failure.message },
     )
-    // todo fix hack.. send to in progress games
-    if (game != null && game?.game?.gameMode != GameMode.LOCAL && game?.game?.turns == null) {
-        onNavigateToInProgress(viewModel.gameId)
-    }
 
-    PreviousGameDetailsScreen(
-        modifier = modifier,
-        entries = game?.entries,
-        onContinueGame = {
-            onContinueGame(
-                lastEntry?.id ?: Uuid.NIL,
-                lastEntry?.type ?: EntryType.Unknown
-            )
-        },
-        onBackupGame = {
-            if (game?.entries?.isNotEmpty() == true) {
-                scope.launch {
-                    notifier.show(getString(Res.string.saving))
-                    val gamesJson = Json.encodeToString(listOf(game!!))
-                    val bytes = Gzip.compress(gamesJson)
-                    launcher.saveBackup(
-                        bytes = bytes,
-                        suggestedName = defaultDataFilename(),
-                        extension = "gz"
-                    )
-                }
-            } else {
-                scope.launch {
-                    notifier.show(getString(Res.string.no_games_to_save))
-                }
+    if (game?.game?.gameMode !== GameMode.LOCAL && game?.game?.turns == null) {
+        InProgressGameDetailsScreen(
+            uiState = uiState,
+            game = game,
+            myPlayerId = viewModel.playerId,
+            onBack = onBack,
+            gameOverMan = {
+                viewModel.gameOverMan()
             }
-        },
-        onImportGame = onNavigateToImport,
-        onBack = onBack,
-        onShareGame = {
-            scope.launch {
-                val ie = ImageExport(
-                    game!!.entries,
-                    appIcon,
-                    appName,
-                    isAvailableOn,
-                    textMeasurer
+        )
+    } else
+
+        PreviousGameDetailsScreen(
+            modifier = modifier,
+            entries = game?.entries,
+            onContinueGame = {
+                onContinueGame(
+                    lastEntry?.id ?: Uuid.NIL,
+                    lastEntry?.type ?: EntryType.Unknown
                 )
-                val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
-
-                saveToGallery(bytes, defaultImageFilename())
-                notifier.show("Saved to device gallery")
-                if (shareLauncher.isSupported) {
-                    shareLauncher.launch(bytes, defaultImageFilename())
+            },
+            onBackupGame = {
+                if (game?.entries?.isNotEmpty() == true) {
+                    scope.launch {
+                        notifier.show(getString(Res.string.saving))
+                        val gamesJson = Json.encodeToString(listOf(game!!))
+                        val bytes = Gzip.compress(gamesJson)
+                        launcher.saveBackup(
+                            bytes = bytes,
+                            suggestedName = defaultDataFilename(),
+                            extension = "gz"
+                        )
+                    }
+                } else {
+                    scope.launch {
+                        notifier.show(getString(Res.string.no_games_to_save))
+                    }
                 }
-            }
-        },
-    )
+            },
+            onImportGame = onNavigateToImport,
+            onBack = onBack,
+            onShareGame = {
+                scope.launch {
+                    val ie = ImageExport(
+                        game!!.entries,
+                        appIcon,
+                        appName,
+                        isAvailableOn,
+                        textMeasurer
+                    )
+                    val bytes = ie.makeBitmap().encodeToByteArray(ImageFormat.PNG)
+
+                    saveToGallery(bytes, defaultImageFilename())
+                    notifier.show("Saved to device gallery")
+                    if (shareLauncher.isSupported) {
+                        shareLauncher.launch(bytes, defaultImageFilename())
+                    }
+                }
+            },
+        )
 }
 
 @Composable

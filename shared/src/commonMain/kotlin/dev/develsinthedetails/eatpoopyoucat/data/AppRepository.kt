@@ -55,6 +55,7 @@ class AppRepository(
     suspend fun getGameWithRosters(gameId: Uuid) = gameDao.getGameWithRosters(gameId)
     fun getGameWithRostersFlow(gameId: Uuid) = gameDao.getGameWithRostersFlow(gameId)
     suspend fun getAllGames() = gameDao.getAll()
+    fun getAllGamesFlow() = gameDao.getAllFlow()
     fun getGameWithEntriesFlow(id: Uuid) = gameDao.getWithEntriesFlow(id)
     suspend fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getPreviouslyUsedNicknames(gameId: Uuid): List<String> {

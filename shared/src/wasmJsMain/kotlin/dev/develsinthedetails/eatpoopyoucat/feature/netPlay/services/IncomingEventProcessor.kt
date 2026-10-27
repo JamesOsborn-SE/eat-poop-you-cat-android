@@ -88,7 +88,7 @@ class IncomingEventProcessor(
 
             is GameEvent.TooSlow -> {
                 if (getGameIdFromUrl() == event.gameId)
-                    navigationManager.navigate(NavigationCommand.OpenInProcessGameDetails(event.gameId))
+                    navigationManager.navigate(NavigationCommand.OpenPreviousGameDetails(event.gameId))
                 notifier.dismiss(event.turnId)
                 notifier.show("too slow", Uuid.random())
             }
