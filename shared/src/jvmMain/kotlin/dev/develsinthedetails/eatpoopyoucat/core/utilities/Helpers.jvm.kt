@@ -20,4 +20,6 @@ actual fun getServerUrl(): Url = Url("http://localhost:$SERVER_PORT")
 
 actual fun getGameIdFromUrl(): Uuid? = null
 
-actual fun providesServer(): Boolean = true
+actual val providesServer: Boolean = true
+
+actual fun provideSystemNotification(): Boolean = true

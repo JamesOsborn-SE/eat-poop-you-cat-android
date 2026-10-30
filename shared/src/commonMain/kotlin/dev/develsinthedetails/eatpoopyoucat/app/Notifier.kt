@@ -1,6 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.app
 
 import androidx.compose.runtime.staticCompositionLocalOf
+import dev.develsinthedetails.eatpoopyoucat.core.utilities.provideSystemNotification
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlin.uuid.Uuid
@@ -18,6 +19,14 @@ data class SnackbarEvent(
     val withDismissAction: Boolean = true,
 )
 
+data class SystemNotifyEvent(
+    val title: String,
+    val text: String,
+    val yes: String,
+    val no: String,
+    val destUri: String,
+)
+
 sealed interface SnackbarCommand {
     data class Show(val event: SnackbarEvent) : SnackbarCommand
     data class Dismiss(val id: String) : SnackbarCommand
@@ -26,8 +35,10 @@ sealed interface SnackbarCommand {
 class Notifier {
     private val commands = Channel<SnackbarCommand>(Channel.UNLIMITED)
     val events = commands.receiveAsFlow()
+    private val systemCommands = Channel<SystemNotifyEvent>(Channel.UNLIMITED)
+    val systemNotificationEvents = systemCommands.receiveAsFlow()
 
-    fun show(
+    suspend fun show(
         message: String,
         id: Uuid? = null,
         actionLabel: String? = null,
@@ -36,9 +47,21 @@ class Notifier {
         var id = id
         if (id == null)
             id = Uuid.NIL
-        commands.trySend(
-            SnackbarCommand.Show(SnackbarEvent(id, message, actionLabel, onAction, true))
+        commands.send(
+            SnackbarCommand.Show(
+                SnackbarEvent(id, message, actionLabel, onAction, true)
+            )
         )
+    }
+
+    suspend fun showSystemNotification(event: SystemNotifyEvent) {
+        if (provideSystemNotification()) {
+            systemCommands.send(
+                SystemNotifyEvent(
+                    event.title, event.text, event.yes, event.no, event.destUri
+                )
+            )
+        }
     }
 
     fun dismiss(id: Uuid) {

@@ -6,10 +6,13 @@ import android.app.NotificationManager
 import android.os.StrictMode
 import dev.develsinthedetails.eatpoopyoucat.BuildConfig
 import dev.develsinthedetails.eatpoopyoucat.di.appModule
-import dev.develsinthedetails.eatpoopyoucat.feature.notifications.AppNotificationChannel
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.AppNotificationChannel
+import dev.develsinthedetails.eatpoopyoucat.feature.notifications.SystemNotifierListener
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
 class MainApplication : Application() {
     override fun onCreate() {
@@ -30,6 +33,7 @@ class MainApplication : Application() {
             androidLogger()
             androidContext(this@MainApplication)
             modules(appModule)
+            modules(module { singleOf(::SystemNotifierListener) })
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.ktor.http.Url
+import io.ktor.util.toLowerCasePreservingASCIIRules
 import kotlinx.browser.window
 import kotlin.uuid.Uuid
 
@@ -79,4 +80,9 @@ actual fun getServerUrl(): Url {
     return Url(getServerBaseUrl())
 }
 
-actual fun providesServer(): Boolean = false
+actual val providesServer: Boolean = false
+
+actual fun provideSystemNotification(): Boolean {
+    val server = getServerBaseUrl()
+    return !server.toLowerCasePreservingASCIIRules().startsWith("http:")
+}

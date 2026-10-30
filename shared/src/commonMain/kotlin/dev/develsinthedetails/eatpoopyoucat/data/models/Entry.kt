@@ -88,3 +88,17 @@ val Entry?.nextType: EntryType
             return EntryType.Sentence
         return EntryType.Unknown
     }
+
+val List<Entry>?.nextSequence: Int
+    get() {
+        if (this.isNullOrEmpty())
+            return 0
+        return this.maxOf { it.sequence } + 1
+    }
+
+val List<Entry>?.latestEntry: Entry?
+    get() {
+        if (this.isNullOrEmpty())
+            return null
+        return this.maxByOrNull { it.sequence }
+    }

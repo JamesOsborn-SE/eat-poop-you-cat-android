@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
 import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
@@ -10,6 +9,23 @@ import android.os.Build
 import android.os.IBinder
 import dev.develsinthedetails.eatpoopyoucat.R
 import org.koin.android.ext.android.inject
+
+enum class AppNotificationChannel(
+    val id: String,
+    val channelName: String,
+    val importance: Int = NotificationManager.IMPORTANCE_DEFAULT
+) {
+    WEB_SERVER(
+        id = "webserver",
+        channelName = "Web Server Service",
+        importance = NotificationManager.IMPORTANCE_LOW
+    ),
+    GAME_ALERTS(
+        id = "game_alerts",
+        channelName = "Game Alerts",
+        importance = NotificationManager.IMPORTANCE_HIGH
+    )
+}
 
 class AndroidForegroundServerService : Service() {
     private val gameServer by inject<GameServer>()
@@ -20,8 +36,6 @@ class AndroidForegroundServerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-        createNotificationChannel()
         startForegroundServiceNotification()
         gameServer.start()
     }
@@ -32,7 +46,7 @@ class AndroidForegroundServerService : Service() {
     }
 
     private fun startForegroundServiceNotification() {
-        val notification = Notification.Builder(this, "webserver")
+        val notification = Notification.Builder(this, AppNotificationChannel.WEB_SERVER.id)
             .setContentTitle("Net Play Game")
             .setContentText("Hosting server...")
             .setSmallIcon(R.drawable.ic_notification)
@@ -43,15 +57,5 @@ class AndroidForegroundServerService : Service() {
         } else {
             startForeground(1, notification)
         }
-    }
-
-    private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            "webserver",
-            "Web Server Service",
-            NotificationManager.IMPORTANCE_LOW
-        )
-        val manager = getSystemService(NotificationManager::class.java)
-        manager?.createNotificationChannel(channel)
     }
 }

@@ -38,4 +38,6 @@ expect fun getServerUrl(): Url
 
 expect fun getGameIdFromUrl(): Uuid?
 
-expect fun providesServer(): Boolean
+expect val providesServer: Boolean
+
+expect fun provideSystemNotification(): Boolean

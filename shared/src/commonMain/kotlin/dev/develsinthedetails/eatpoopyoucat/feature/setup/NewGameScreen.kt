@@ -95,7 +95,7 @@ fun NewGameScreen(
                         defaultModifier
                     )
                 }
-                if (!providesServer())
+                if (!providesServer)
                     return@Surface
 
                 HorizontalDivider(Modifier.padding(20.dp), 3.dp)
