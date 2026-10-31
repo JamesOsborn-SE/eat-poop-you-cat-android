@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,23 +81,26 @@ fun InProgressGameDetailsScreen(
     gameOverMan: () -> Unit
 ) {
     val listState = rememberLazyListState()
+    val thisRosterPlayer = game?.roster?.first { it.playerId == myPlayerId }
+
     Scaffolds.Backable("Network game", onBack = onBack, floatingActionButton = {
-        Row {
-            // todo pixel pushing
-            FloatingActionButton(
-                modifier = Modifier.padding(3.dp),
-                onClick = { gameOverMan() }
-            ) {
-                Row {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_warning_rounded),
-                        modifier = Modifier.padding(3.dp),
-                        contentDescription = stringResource(Res.string.scroll_to_top)
-                    )
-                    Text(stringResource(Res.string.end_game_for_all))
+        if (thisRosterPlayer?.isLeader ?: false)
+            Row {
+                // todo pixel pushing
+                FloatingActionButton(
+                    modifier = Modifier.padding(3.dp),
+                    onClick = { gameOverMan() }
+                ) {
+                    Row {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_warning_rounded),
+                            modifier = Modifier.padding(3.dp),
+                            contentDescription = stringResource(Res.string.scroll_to_top)
+                        )
+                        Text(stringResource(Res.string.end_game_for_all))
+                    }
                 }
             }
-        }
     }) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -106,11 +111,10 @@ fun InProgressGameDetailsScreen(
         ) {
             val turns = game?.entries?.size ?: 0
 
-            if (game == null || game.roster.none { it.playerId == myPlayerId }) {
+            if (game == null || thisRosterPlayer == null || game.roster.none { it.playerId == myPlayerId }) {
                 Spinner()
                 return@Surface
             }
-            val thisRosterPlayer = game.roster.first { it.playerId == myPlayerId }
 
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
@@ -360,9 +364,17 @@ fun RosterPlayerItem(
     }
 }
 
+class IsLeader : PreviewParameterProvider<Boolean> {
+    override val values = sequenceOf(true, false)
+}
+
 @Composable
 @Preview
-fun InProgressGameDetailsPreview() {
+fun InProgressGameDetailsPreview(
+    @PreviewParameter(
+        IsLeader::class
+    ) isLeader: Boolean
+) {
     val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val nicknames = stringArrayResource(Res.array.nicknames)
@@ -401,7 +413,8 @@ fun InProgressGameDetailsPreview() {
             Roster(
                 gameId,
                 playerId,
-                nicknames[2]
+                nicknames[2],
+                isLeader = isLeader
             ),
             Roster(
                 gameId,
@@ -438,7 +451,11 @@ fun InProgressGameDetailsPreview() {
 
 @Composable
 @Preview
-fun InProgressGameDetailsSoloPreview() {
+fun InProgressGameDetailsSoloPreview(
+    @PreviewParameter(
+        IsLeader::class
+    ) isLeader: Boolean
+) {
     val playerId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val gameId = Uuid.parse("085900db-809b-408b-b656-62fcfa1c921b")
     val game = NetGame(
@@ -452,7 +469,8 @@ fun InProgressGameDetailsSoloPreview() {
             Roster(
                 gameId,
                 playerId,
-                "Me"
+                "Me",
+                isLeader
             ),
         )
     )

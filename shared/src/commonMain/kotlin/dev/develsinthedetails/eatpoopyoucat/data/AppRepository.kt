@@ -8,7 +8,6 @@ import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.RosterDao
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.Game
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
@@ -51,8 +50,6 @@ class AppRepository(
     suspend fun upsertGame(game: Game) = gameDao.upsert(game)
     suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
-    suspend fun getGameWithRosters(gameId: Uuid) = gameDao.getGameWithRosters(gameId)
-    suspend fun getAllGames() = gameDao.getAll()
     fun getAllGamesFlow() = gameDao.getAllFlow()
     suspend fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getPreviouslyUsedNicknames(gameId: Uuid): List<String> {
@@ -71,9 +68,6 @@ class AppRepository(
     suspend fun upsertEntry(entry: Entry) =
         entryDao.upsert(entry.copy(createdAt = Clock.System.now()))
 
-    suspend fun getEntries(gameId: Uuid) =
-        entryDao.getAllEntriesByGame(gameId)
-
     suspend fun getMissingEntries(gameId: Uuid, knownTurns: List<Int>) =
         entryDao.getMissingEntries(gameId, knownTurns)
 
@@ -89,25 +83,9 @@ class AppRepository(
 
     suspend fun delete(gameId: Uuid, playerId: Uuid) = rosterDao.delete(gameId, playerId)
     suspend fun upsertRoster(roster: Roster) = rosterDao.upsert(roster)
-    suspend fun upsertRosters(rosters: List<Roster>) = rosterDao.upsert(rosters)
     suspend fun deleteAll() = rosterDao.deleteAll()
     fun getActiveHostedGameWithRostersFlow(playerId: Uuid) =
         gameDao.getActiveHostedGameWithRostersFlow(playerId)
-
-    suspend fun getPlayers(playerIds: List<Uuid>): List<Player> = playerDao.getAll(playerIds)
-    suspend fun upsertGameWithRosters(gameWithRosters: GameWithRosters) {
-        upsertGame(gameWithRosters.game)
-        val existingPlayers = getPlayers(gameWithRosters.roster.map { it.playerId })
-        for (playerRoster in gameWithRosters.roster.filterNot { roster -> roster.playerId in existingPlayers.map { it.id } }) {
-            upsertPlayer(
-                Player(
-                    playerRoster.playerId,
-                    playerRoster.nickname
-                )
-            )
-        }
-        upsertRosters(gameWithRosters.roster)
-    }
 
     suspend fun upsertEntries(entries: List<Entry>) {
         entryDao.upsert(entries)

@@ -3,7 +3,6 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import io.ktor.client.HttpClient
@@ -301,14 +300,14 @@ actual class GameClient actual constructor(
     actual suspend fun joinGame(player: Roster): Boolean {
         println("joinGame: $player")
         return rpc<GameEvent.Success>(
-            GameEvent.JoinGame(player)
+            GameEvent.JoinGame(player, gameId = player.gameId)
         ) != null
     }
 
     actual suspend fun registerPlayerId(playerId: Uuid): Boolean {
         return rpc<GameEvent.Success>(
             GameEvent.RegisterPlayerId(
-                playerId = playerId
+                playerId = playerId, gameId = Uuid.NIL
             )
         ) != null
     }
@@ -322,7 +321,7 @@ actual class GameClient actual constructor(
         ) != null
     }
 
-    actual suspend fun updateGame(game: GameWithEntries): List<Entry> {
+    actual suspend fun updateGame(game: NetGame): List<Entry> {
         val knownSequences = game.entries.map { it.sequence }
 
         val response = rpc<GameEvent.ResponseMissingEntries>(
@@ -337,11 +336,11 @@ actual class GameClient actual constructor(
 
     actual suspend fun ensureGameMatchesServer(gameId: Uuid) {
         println("ensureGameMatchesServer: $gameId")
-        var myGame = repository.getGameWithEntries(gameId)
+        var myGame = repository.getNetGame(gameId)
         if (myGame == null || myGame.game.turns == null) {
-            val gameWithRoster = getGame(gameId) ?: return
-            repository.upsertGameWithRosters(gameWithRoster)
-            myGame = GameWithEntries(gameWithRoster.game, emptyList())
+            val netGame = getGame(gameId) ?: return
+            repository.upsertNetGame(netGame, appSettings.playerId)
+            myGame = NetGame(netGame.game, emptyList())
         }
 
         val entries = updateGame(myGame)
@@ -380,7 +379,7 @@ actual class GameClient actual constructor(
     actual suspend fun dismissTurn(turnId: Uuid) {
         rpc<GameEvent.NotRightNow>(
             GameEvent.NotRightNow(
-                turnId
+                turnId, gameId = Uuid.NIL
             )
         )
     }
