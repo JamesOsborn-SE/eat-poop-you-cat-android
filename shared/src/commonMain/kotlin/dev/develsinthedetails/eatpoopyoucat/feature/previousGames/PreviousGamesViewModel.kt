@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
-import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -13,8 +12,7 @@ import kotlin.uuid.Uuid
 
 class PreviousGamesViewModel(
     appSettings: AppSettings,
-    val repository: AppRepository,
-    val serverManager: ServerManager
+    val repository: AppRepository
 ) : ViewModel() {
 
     val games = repository.getAllGamesFlow().stateIn(
@@ -25,30 +23,27 @@ class PreviousGamesViewModel(
 
     val playerId = appSettings.playerId
 
-    fun deleteGame(gameId: Uuid) {
-        viewModelScope.launch {
+    fun deleteGame(gameId: Uuid) = viewModelScope.launch {
+        repository.deleteGame(gameId)
+    }
+
+    fun endGame(gameId: Uuid) = viewModelScope.launch {
+        val netGame = games.value
+            ?.firstOrNull { it.game.id == gameId }
+            ?: return@launch
+
+        if (netGame.entries.isEmpty()) {
             repository.deleteGame(gameId)
+        } else {
+            repository.upsertGame(
+                netGame.game.copy(turns = netGame.entries.size)
+            )
         }
     }
 
-    fun endGame(gameId: Uuid) {
-        viewModelScope.launch {
-            val gameWithEntries = repository.getGameWithEntries(gameId)
-            if (gameWithEntries?.game != null) {
-                if (gameWithEntries.entries.isNotEmpty()) {
-                    repository.upsertGame(gameWithEntries.game.copy(turns = gameWithEntries.entries.size))
-                } else {
-                    repository.deleteGame(gameId)
-                }
-            }
-        }
-    }
-
-    fun cleanup(invalidGames: List<NetGame>) {
-        viewModelScope.launch {
-            invalidGames.forEach {
-                repository.deleteGame(it.game.id)
-            }
+    fun cleanup(invalidGames: List<NetGame>) = viewModelScope.launch {
+        invalidGames.forEach {
+            repository.deleteGame(it.game.id)
         }
     }
 }
