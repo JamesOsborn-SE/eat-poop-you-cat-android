@@ -59,10 +59,8 @@ class PreviousGameDetailsViewModel(
         viewModelScope.launch {
             val netGame = game.first() ?: return@launch
             if (netGame.entries.isEmpty()) return@launch
-            println("gameOverMan: $netGame")
-            println("gameOverMan: ${netGame.roster}")
             if (netGame.roster.any { it.playerId == playerId && it.isLeader }) {
-                println("gameOverMan: leader")
+                println("gameOverMan: $netGame")
                 var game = netGame.game
                 val turns = netGame.entries.size
                 game = game.copy(turns = turns)

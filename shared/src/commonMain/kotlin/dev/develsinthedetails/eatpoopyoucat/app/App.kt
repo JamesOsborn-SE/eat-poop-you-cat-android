@@ -10,11 +10,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -45,6 +45,7 @@ fun App(
                             val result = snackbarHostState.showSnackbar(
                                 message = event.message,
                                 actionLabel = event.actionLabel,
+                                withDismissAction = true,
                                 duration = if (event.actionLabel != null) {
                                     SnackbarDuration.Indefinite
                                 } else {
@@ -74,7 +75,7 @@ fun App(
         }
     }
 
-    val isReady by appSettings.isReadyFlow.collectAsState()
+    val isReady by appSettings.isReadyFlow.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

@@ -40,7 +40,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +61,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ConfirmDialog
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPolygon
@@ -119,7 +119,7 @@ fun PreviousGamesRoute(
     onGameClick: (Uuid) -> Unit,
     onNavigateToImport: () -> Unit
 ) {
-    val games by viewModel.games.collectAsState(null)
+    val games by viewModel.games.collectAsStateWithLifecycle(null)
     ManageServerLifecycle(serverManager, onUpdateAddress = {})
 
     val notifier = LocalAppNotifier.current

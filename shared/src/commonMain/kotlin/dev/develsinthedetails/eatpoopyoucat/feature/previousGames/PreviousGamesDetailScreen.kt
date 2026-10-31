@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
@@ -87,10 +87,10 @@ fun PreviousGameDetailsRoute(
     onContinueGame: (Uuid, EntryType) -> Unit,
     onNavigateToImport: () -> Unit
 ) {
-    val game by viewModel.game.collectAsState(initial = null)
+    val game by viewModel.game.collectAsStateWithLifecycle(initialValue = null)
     val lastEntry = game?.entries?.lastOrNull()
     val notifier = LocalAppNotifier.current
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ManageServerLifecycle(
         serverManager = serverManager,
         onUpdateAddress = { viewModel.updateAddress(it) }

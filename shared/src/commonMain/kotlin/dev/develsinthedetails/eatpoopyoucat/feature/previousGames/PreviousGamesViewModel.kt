@@ -4,10 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
+import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
@@ -15,21 +14,15 @@ import kotlin.uuid.Uuid
 class PreviousGamesViewModel(
     appSettings: AppSettings,
     val repository: AppRepository,
+    val serverManager: ServerManager
 ) : ViewModel() {
 
-    val completedGames = repository.getAllGamesWithEntriesFlow()
     val games = repository.getAllGamesFlow().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = null
     )
-    val inProgressGames: StateFlow<List<GameWithRosters>?> =
-        repository.getInProgressGamesWithRostersFlow()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000L),
-                initialValue = null
-            )
+
     val playerId = appSettings.playerId
 
     fun deleteGame(gameId: Uuid) {

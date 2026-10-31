@@ -41,6 +41,7 @@ class WebSocketConnectionManager {
     fun removeSession(session: DefaultWebSocketServerSession) {
         activeConnections.remove(session)
         val playerId = playerBySession.remove(session)
+        println("session removed: session=$session, playerId=$playerId")
 
         if (playerId != null) {
             sessionsByPlayer.remove(playerId)
@@ -54,12 +55,14 @@ class WebSocketConnectionManager {
         sessionsByPlayer[playerId] = connection
         playerBySession[session] = playerId
         _connectedPlayers.update { it + playerId }
-        println("Associated player $playerId with session.")
+        println("Associated player $playerId with session: $session")
     }
 
     fun hasActiveSession(playerId: Uuid): Boolean = sessionsByPlayer.containsKey(playerId)
 
     suspend fun broadcast(event: GameEvent) {
+        println("Broadcasting event: $event")
+        println("sessionsByPlayer: ${sessionsByPlayer.keys}")
         val bytes = Cbor.encodeToByteArray(GameEvent.serializer(), event.withoutRequestId())
         sessionsByPlayer.values.forEach { connection ->
             try {

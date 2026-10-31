@@ -1,7 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.sentence
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,9 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.ErrorText
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
@@ -73,7 +77,7 @@ fun SentenceScreen(
     toEndedGame: (Uuid, GameMode) -> Unit,
     toHome: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val gameMode = uiState.gameMode
     val notifier = LocalAppNotifier.current
     val coroutineScope = rememberCoroutineScope()
@@ -138,6 +142,8 @@ fun SentenceScreen(
             onEndGame()
         }
     }
+    val coroutineScope = rememberCoroutineScope()
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
 
     Scaffolds.InGame(
         title = stringResource(Res.string.sentence_turn_title),
@@ -154,7 +160,7 @@ fun SentenceScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(ScrollState(0)),
+                .verticalScroll(rememberScrollState()),
             color = MaterialTheme.colorScheme.background,
         ) {
             var showTips by rememberSaveable { mutableStateOf(false) }
@@ -212,7 +218,15 @@ fun SentenceScreen(
                         if (uiState.previousEntry == null) stringResource(Res.string.write_a_funny_sentence) else stringResource(
                             Res.string.write_a_sentence_to_describe_this_drawing
                         ),
-                        modifier
+                        modifier.bringIntoViewRequester(bringIntoViewRequester)
+                            .onFocusChanged {
+                                if (it.isFocused) {
+                                    coroutineScope.launch {
+                                        bringIntoViewRequester.bringIntoView()
+                                    }
+                                }
+                            }
+                            .focusTarget()
                     )
                     Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
                 }

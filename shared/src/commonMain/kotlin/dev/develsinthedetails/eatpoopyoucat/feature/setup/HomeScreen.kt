@@ -21,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,7 +38,6 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.app_icon_background
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.secondaryButtonColors
-import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.tertiaryButtonColors
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
@@ -51,7 +49,6 @@ import eatpoopyoucat.shared.generated.resources.application_icon
 import eatpoopyoucat.shared.generated.resources.dialog_start_game
 import eatpoopyoucat.shared.generated.resources.epyc_icon
 import eatpoopyoucat.shared.generated.resources.ic_history_rounded
-import eatpoopyoucat.shared.generated.resources.ic_network_ping_rounded
 import eatpoopyoucat.shared.generated.resources.ic_start_rounded
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.privacy_policy
@@ -76,7 +73,7 @@ fun HomeScreen(
     toPrivacyPolicy: () -> Unit,
 ) {
     val useNicknames by viewModel.useNicknames.collectAsStateWithLifecycle(false)
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     println("isLoading: ${uiState.isLoading}")
     // todo add setting to toggle this
     ManageServerLifecycle(serverManager, onUpdateAddress = { })
@@ -192,21 +189,6 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.size(5.dp))
                         Icon(
                             painter = painterResource(Res.drawable.ic_history_rounded),
-                            contentDescription = null,
-                        )
-                    }
-                    Button(
-                        modifier = modifier
-                            .padding(5.dp)
-                            .align(Alignment.CenterHorizontally),
-                        colors = tertiaryButtonColors(),
-                        onClick = {
-                            toInProgressGames()
-                        }) {
-                        Text("In Progress Games")
-                        Spacer(modifier = Modifier.size(5.dp))
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_network_ping_rounded),
                             contentDescription = null,
                         )
                     }

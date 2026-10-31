@@ -80,7 +80,19 @@ interface GameDao {
     @Query("SELECT * FROM game where id=:id")
     suspend fun get(id: Uuid): Game?
 
-    @Query("SELECT g.* FROM game g JOIN roster r ON r.gameId=g.id WHERE g.turns IS NULL AND r.playerId=:playerId AND r.isLeader=1")
+    @Query(
+        """
+    SELECT g.*
+    FROM game g
+    JOIN roster r ON r.gameId = g.id
+    WHERE r.playerId = :playerId
+      AND r.isLeader = 1
+      AND (
+        g.turns IS NULL
+        OR (g.turns IS NOT NULL AND g.activeTurnId IS NOT NULL)
+      )
+    """
+    )
     fun getActiveHostedGameWithRostersFlow(playerId: Uuid): Flow<List<Game>>
 
     @Transaction

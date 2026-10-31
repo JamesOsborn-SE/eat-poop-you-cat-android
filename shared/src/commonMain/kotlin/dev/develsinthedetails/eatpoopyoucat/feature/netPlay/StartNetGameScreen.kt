@@ -4,6 +4,7 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
@@ -76,7 +78,7 @@ fun StartNetGameScreen(
     onStartGame: (Uuid) -> Unit,
     onBack: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ManageServerLifecycle(
         serverManager = serverManager,
         onUpdateAddress = { viewModel.updateAddress(it) }
@@ -113,7 +115,11 @@ fun ShareGame(
         "Let's go $displayName!",
         onBack,
         floatingActionButton = {
-            Button(onClick = onStartGame, enabled = canStart) {
+            Button(
+                modifier = Modifier.imePadding(),
+                onClick = onStartGame,
+                enabled = canStart
+            ) {
                 Text(stringResource(Res.string.start))
             }
         }) { innerPadding ->

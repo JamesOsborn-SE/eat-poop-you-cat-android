@@ -116,6 +116,11 @@ sealed class GameEvent {
     data class TooSlow(
         val gameId: Uuid, val turnId: Uuid, override val requestId: Uuid? = null
     ) : GameEvent()
+
+    @Serializable
+    data class NotRightNow(
+        val turnId: Uuid, override val requestId: Uuid? = null
+    ) : GameEvent()
 }
 
 

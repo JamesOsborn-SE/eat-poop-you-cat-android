@@ -25,20 +25,25 @@ class IncomingEventProcessor(
 
         job = scope.launch {
             client.events.collect { event ->
-                process(event)
+                try {
+                    process(event)
+                } catch (e: Exception) {
+                    println("Error processing event: $e")
+                    notifier.show("Oopsie whoopsie: I made a fucky wucky... try refreshing the page: $e")
+                }
             }
         }
     }
 
+
     private suspend fun process(event: GameEvent) {
+        println("Received event: $event")
         when (event) {
             is GameEvent.TurnComplete -> {
-                println("Received TurnComplete event: $event")
                 client.ensureGameMatchesServer(event.gameId)
             }
 
             is GameEvent.TakeYourTurn -> {
-                println("Received TakeYourTurn event: $event")
                 client.ensureGameMatchesServer(event.gameId)
                 val entry = event.entry
 
@@ -63,9 +68,8 @@ class IncomingEventProcessor(
             }
 
             is GameEvent.GameComplete -> {
-                println("Received GameUpdated event: $event")
                 if (event.game.turns == null) {
-                    println("Received GameUpdated event with null turns: $event")
+                    println("Received GameComplete event with null turns: $event")
                     return
                 }
                 client.ensureGameMatchesServer(event.game.id)
@@ -73,12 +77,13 @@ class IncomingEventProcessor(
             }
 
             is GameEvent.JoinGame -> {
-                println("Received JoinGame event: $event")
-                repository.addPlayer(event.player)
+                val game = repository.getGame(event.player.gameId)
+                if (game != null) {
+                    repository.addPlayer(event.player)
+                }
             }
 
             is GameEvent.GamesPlayerIsIn -> {
-                println("Received GamesPlayerIsIn event: $event")
                 if (event.gameIds.isNullOrEmpty())
                     return
                 event.gameIds.forEach { gameId ->

@@ -19,7 +19,7 @@ expect class GameClient(
     suspend fun joinGame(player: Roster): Boolean
     suspend fun registerPlayerId(playerId: Uuid): Boolean
     suspend fun turnComplete(newEntry: Entry): Boolean
-    suspend fun updateGame(game: GameWithEntries): List<Entry>
+    suspend fun updateGame(game: GameWithEntries): List<Entry> // todo change to NetGame
     suspend fun ensureGameMatchesServer(gameId: Uuid)
     suspend fun dismissTurn(turnId: Uuid)
 }

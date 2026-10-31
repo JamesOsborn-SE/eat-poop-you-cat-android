@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.app.Join
+import dev.develsinthedetails.eatpoopyoucat.app.Notifier
 import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
@@ -15,8 +16,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.reflect.typeOf
@@ -39,6 +39,7 @@ class JoinNetGameViewModel(
     private val repository: AppRepository,
     private val appSettings: AppSettings,
     private val client: GameClient,
+    private val notifier: Notifier,
     state: SavedStateHandle,
 ) : ViewModel() {
 
@@ -50,29 +51,21 @@ class JoinNetGameViewModel(
     )
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
-    init {
-        repository.getGameWithRostersFlow(gameId)
-            .onEach { gameData ->
-                val isAlreadyInGame =
-                    gameData?.roster?.any { it.playerId == appSettings.playerId } ?: false
+    private val _game = repository.getGameWithRostersFlow(gameId)
 
-                if (isAlreadyInGame) {
-                    _uiState.update {
-                        it.copy(
-                            isInGameAlready = true,
-                            isLoading = false
-                        )
-                    }
-                } else {
-                    _uiState.update {
-                        it.copy(
-                            isInGameAlready = false,
-                            isLoading = false
-                        )
-                    }
+    init {
+        viewModelScope.launch {
+            _game.collect { gameData ->
+                val isAlreadyInGame =
+                    gameData?.roster?.any { it.playerId == appSettings.playerId } == true
+                _uiState.update {
+                    it.copy(
+                        isInGameAlready = isAlreadyInGame,
+                        isLoading = false
+                    )
                 }
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     fun updateNickname(newName: String) {
@@ -81,19 +74,30 @@ class JoinNetGameViewModel(
 
     fun onYesPlay() {
         val state = _uiState.value
-        if (!state.nickname.isBlank()) {
+        if (state.nickname.isBlank()) {
+            println("nickname is blank")
+            _uiState.update { it.copy(nicknameError = 1, isLoading = false) }
+        } else {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
-                println("DEBUG: Game=$gameId")
                 var player = repository.getPlayer(state.playerId)
                 if (player == null)
                     player = Player(state.playerId, "")
                 player = player.copy(nickname = state.nickname)
                 appSettings.setNickname(player.nickname)
-                println("DEBUG: Player=$player")
                 repository.upsertPlayer(player)
 
-                val gameWithRosters = client.getGame(gameId)
+                var gameWithRosters = _game.first()
+
+                if (gameWithRosters?.roster?.any { it.playerId == player.id } == true) {
+                    _uiState.update { it.copy(isInGameAlready = true) }
+                    return@launch
+                }
+
+                if (gameWithRosters == null) {
+                    gameWithRosters = client.getGame(gameId)
+                }
+
                 if (gameWithRosters != null) {
                     val gameWithEntries =
                         client.updateGame(GameWithEntries(gameWithRosters.game, emptyList()))
@@ -103,18 +107,20 @@ class JoinNetGameViewModel(
                         player.nickname
                     )
 
-                    repository.upsertGameWithRosters(gameWithRosters)
-                    repository.upsertRoster(myRoster)
-                    repository.upsertEntries(gameWithEntries)
-                    client.joinGame(myRoster)
-                    _uiState.update { it.copy(isInGameAlready = true) }
+                    val gotGame = client.joinGame(myRoster)
+                    if (gotGame) {
+                        repository.upsertGameWithRosters(gameWithRosters)
+                        repository.upsertRoster(myRoster)
+                        repository.upsertEntries(gameWithEntries)
+                    } else{
+                        notifier.show("Failed to join game. server ded?")
+                    }
                 } else {
+                    println("DEBUG: gameWithRosters is null")
                     _uiState.update { it.copy(isError = true) }
                 }
                 _uiState.update { it.copy(isLoading = false) }
             }
-        } else {
-            _uiState.update { it.copy(nicknameError = 1, isLoading = false) }
         }
     }
 }

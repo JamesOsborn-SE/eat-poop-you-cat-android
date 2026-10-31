@@ -237,7 +237,7 @@ class GameServer(
                     }
                 }
             } catch (e: CancellationException) {
-                println(e)
+                println("DEBUG: Game $gameId: Cancelled. Exception: ${e.message}")
 
                 throw e
             } finally {
@@ -260,6 +260,8 @@ class GameServer(
             if (event.netGame.game.turns != null) {
                 connectionManager.broadcast(GameEvent.GameComplete(event.netGame.game))
                 printDebugLine(gameId, "Game is over. Stopping monitor.")
+                repository.updateActiveTurn(gameId, null)
+                activeMonitors.remove(gameId)
                 return false
             }
 
@@ -276,12 +278,10 @@ class GameServer(
 
             val availablePlayers =
                 availablePlayers(appSettings.playerId, event.netGame, connectionManager)
-            printDebugLine(gameId, "Available players: $availablePlayers")
 
             // if some players dropped connection after the game started don't punish remaining players.
             val hasEnoughPlayers =
                 availablePlayers.isNotEmpty() && (availablePlayers.size + currentSequence) >= targetPlayers
-            printDebugLine(gameId, "hasEnoughPlayers=$hasEnoughPlayers")
 
             val canAssignTurn = hasEnoughPlayers && activeTurnId != null
             if (canAssignTurn) {
@@ -343,13 +343,16 @@ class GameServer(
             event: MonitorEvent.StateChanged,
             sequence: Int,
         ) {
+            println("assignTurn: $sequence, playerId=$pendingTurnPlayerId, activeTurnId=$activeTurnId")
+            val activeTurnId = activeTurnId ?: return
+            val pendingTurnPlayerId = pendingTurnPlayerId ?: return
             if (pendingTurnPlayerId != appSettings.playerId) {
                 val latestEntry = event.netGame.entries.latestEntry
                 connectionManager.sendToPlayer(
-                    playerId = pendingTurnPlayerId!!,
+                    playerId = pendingTurnPlayerId,
                     event = GameEvent.TakeYourTurn(
                         latestEntry,
-                        activeTurnId!!,
+                        activeTurnId,
                         gameId
                     )
                 )
@@ -365,9 +368,8 @@ class GameServer(
                         )
                     }
                 }
-                val turnId = activeTurnId
                 notifier.show(
-                    id = turnId,
+                    id = activeTurnId,
                     actionLabel = "Take You Turn?",
                     onAction = navTo,
                     message = "It's your turn to play"

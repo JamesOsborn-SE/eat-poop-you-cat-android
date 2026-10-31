@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -84,17 +85,16 @@ actual class GameClient actual constructor(
         var retryDelay = 500L
 
         while (scope.isActive && !closed) {
-            try {
-                val connection = openSession()
-                registerPlayerId(appSettings.playerId)
-                retryDelay = 500L
+            val connection = openSession()
+            val readerJob = scope.launch {
                 readIncomingFrames(connection)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                println("WebSocket connection error: ${e.message}")
+            }
+
+            try {
+                registerPlayerId(appSettings.playerId)
+                readerJob.join()
             } finally {
-                clearSession()
+                readerJob.cancelAndJoin()
             }
 
             if (scope.isActive && !closed) {
@@ -149,9 +149,10 @@ actual class GameClient actual constructor(
                 if (frame !is Frame.Binary) {
                     continue
                 }
+                val bytes = frame.readBytes()
                 scope.launch {
                     val event = Cbor.decodeFromByteArray<GameEvent>(
-                        frame.readBytes()
+                        bytes
                     )
 
                     val requestId = event.requestId
@@ -298,6 +299,7 @@ actual class GameClient actual constructor(
     }
 
     actual suspend fun joinGame(player: Roster): Boolean {
+        println("joinGame: $player")
         return rpc<GameEvent.Success>(
             GameEvent.JoinGame(player)
         ) != null
@@ -376,9 +378,8 @@ actual class GameClient actual constructor(
     }
 
     actual suspend fun dismissTurn(turnId: Uuid) {
-        rpc<GameEvent.TooSlow>(
-            GameEvent.TooSlow(
-                gameId = turnId,
+        rpc<GameEvent.NotRightNow>(
+            GameEvent.NotRightNow(
                 turnId
             )
         )

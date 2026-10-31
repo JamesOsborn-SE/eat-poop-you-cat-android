@@ -12,13 +12,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -40,7 +41,12 @@ fun JoinNetGameScreen(
     onBack: () -> Unit,
     toInProgressGame: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(uiState.isInGameAlready) {
+        if (uiState.isInGameAlready) {
+            toInProgressGame()
+        }
+    }
 
     if (uiState.isLoading) {
         Box(
@@ -50,6 +56,7 @@ fun JoinNetGameScreen(
             Spinner()
         }
     } else {
+
         val joinData = JoinData(
             onChangeNickname = { newName -> viewModel.updateNickname(newName) },
             onYesPlay = { viewModel.onYesPlay() },
@@ -58,7 +65,6 @@ fun JoinNetGameScreen(
 
         JoinNetGameScreen(
             uiState,
-            toInProgressGame = toInProgressGame,
             joinData = joinData,
             modifier = Modifier
                 .fillMaxSize()
@@ -71,12 +77,8 @@ fun JoinNetGameScreen(
 fun JoinNetGameScreen(
     uiState: JoinUiState,
     joinData: JoinData,
-    toInProgressGame: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.isInGameAlready) {
-        toInProgressGame()
-    }
     AppTheme {
         Scaffolds.Backable(stringResource(Res.string.ask_join), onBack = joinData.onNoPlay) { pad ->
             Column(modifier.padding(pad)) {
@@ -126,7 +128,6 @@ data class JoinData(
 fun JoinNetGamePreview() {
     val d = JoinData({}, {}, {})
     JoinNetGameScreen(
-        JoinUiState(playerId = Uuid.NIL, stringResource(Res.string.oof)), d,
-        toInProgressGame = {},
+        JoinUiState(playerId = Uuid.NIL, stringResource(Res.string.oof)), d
     )
 }
