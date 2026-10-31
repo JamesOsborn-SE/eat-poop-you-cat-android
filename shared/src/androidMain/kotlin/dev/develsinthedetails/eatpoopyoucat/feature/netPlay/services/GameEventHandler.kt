@@ -28,11 +28,22 @@ class GameEventHandler(
                     playerId = event.playerId,
                     session = session
                 )
-                reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+                reply(
+                    GameEvent.Success(
+                        "Successfully joined",
+                        requestId = event.requestId,
+                        event.gameId
+                    )
+                )
                 val gameIds = repository.getGamesForPlayer(event.playerId)
                 connectionManager.sendToPlayer(
                     event.playerId,
-                    GameEvent.GamesPlayerIsIn(event.playerId, gameIds, requestId = null)
+                    GameEvent.GamesPlayerIsIn(
+                        event.playerId,
+                        gameIds,
+                        requestId = null,
+                        event.gameId
+                    )
                 )
             }
 
@@ -45,11 +56,19 @@ class GameEventHandler(
                         session = session
                     )
 
-                    reply(GameEvent.Success("Successfully joined", requestId = event.requestId))
+                    reply(
+                        GameEvent.Success(
+                            "Successfully joined",
+                            requestId = event.requestId,
+                            event.gameId
+                        )
+                    )
                 } catch (e: Exception) {
                     reply(
                         GameEvent.Error(
-                            "Could not join game: ${e.message}", requestId = event.requestId
+                            "Could not join game: ${e.message}",
+                            requestId = event.requestId,
+                            event.gameId
                         )
                     )
                 }
@@ -59,19 +78,31 @@ class GameEventHandler(
 
             is GameEvent.TurnComplete -> {
                 if (event.entry == null) {
-                    reply(GameEvent.Error("Entry cannot be null", requestId = event.requestId))
+                    reply(
+                        GameEvent.Error(
+                            "Entry cannot be null",
+                            requestId = event.requestId,
+                            event.gameId
+                        )
+                    )
                     return
                 }
                 repository.createEntry(event.entry)
-                reply(GameEvent.Success("Turn saved", requestId = event.requestId))
+                reply(GameEvent.Success("Turn saved", requestId = event.requestId, event.gameId))
 
                 // Sync users with latest turn
                 connectionManager.broadcast(event)
             }
 
-            is GameEvent.RequestGameWithRosters -> {
-                val game = repository.getGameWithRosters(event.gameId)
-                reply(GameEvent.ResponseGameWithRosters(game, requestId = event.requestId))
+            is GameEvent.RequestNetGame -> {
+                val game = repository.getNetGame(event.gameId)
+                reply(
+                    GameEvent.ResponseNetGame(
+                        game,
+                        requestId = event.requestId,
+                        event.gameId
+                    )
+                )
             }
 
             is GameEvent.RequestMissingEntries -> {
@@ -80,7 +111,13 @@ class GameEventHandler(
                     event.knownTurns
                 )
 
-                reply(GameEvent.ResponseMissingEntries(missing, requestId = event.requestId))
+                reply(
+                    GameEvent.ResponseMissingEntries(
+                        missing,
+                        requestId = event.requestId,
+                        event.gameId
+                    )
+                )
             }
 
             is GameEvent.TooSlow -> {

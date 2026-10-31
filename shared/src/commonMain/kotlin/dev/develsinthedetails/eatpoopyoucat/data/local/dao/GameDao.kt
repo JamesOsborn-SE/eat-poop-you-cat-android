@@ -42,7 +42,7 @@ interface GameDao {
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
-    fun getNetGameFlow(id: Uuid): Flow<NetGame>
+    fun getNetGameFlow(id: Uuid): Flow<NetGame?>
 
     @Transaction
     @Query("SELECT * FROM game where id=:id")
@@ -105,6 +105,10 @@ interface GameDao {
 
     @Query("SELECT g.id FROM game g JOIN roster r ON r.gameId=g.id WHERE r.playerId=:playerId")
     suspend fun getGamesForPlayer(playerId: Uuid): List<Uuid>
+
+    @Transaction
+    @Query("SELECT * FROM game where id=:id")
+    suspend fun getNetGame(id: Uuid): NetGame?
 
 }
 

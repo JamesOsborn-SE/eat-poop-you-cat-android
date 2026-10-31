@@ -9,7 +9,6 @@ import dev.develsinthedetails.eatpoopyoucat.app.Join
 import dev.develsinthedetails.eatpoopyoucat.app.Notifier
 import dev.develsinthedetails.eatpoopyoucat.app.UuidNavType
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.GameClient
@@ -51,7 +50,7 @@ class JoinNetGameViewModel(
     )
     val uiState: StateFlow<JoinUiState> = _uiState.asStateFlow()
 
-    private val _game = repository.getGameWithRostersFlow(gameId)
+    private val _game = repository.getNetGameFlow(gameId)
 
     init {
         viewModelScope.launch {
@@ -87,20 +86,20 @@ class JoinNetGameViewModel(
                 appSettings.setNickname(player.nickname)
                 repository.upsertPlayer(player)
 
-                var gameWithRosters = _game.first()
+                var netGame = _game.first()
 
-                if (gameWithRosters?.roster?.any { it.playerId == player.id } == true) {
+                if (netGame?.roster?.any { it.playerId == player.id } == true) {
                     _uiState.update { it.copy(isInGameAlready = true) }
                     return@launch
                 }
 
-                if (gameWithRosters == null) {
-                    gameWithRosters = client.getGame(gameId)
+                if (netGame == null) {
+                    netGame = client.getGame(gameId)
                 }
 
-                if (gameWithRosters != null) {
+                if (netGame != null) {
                     val gameWithEntries =
-                        client.updateGame(GameWithEntries(gameWithRosters.game, emptyList()))
+                        client.updateGame(netGame)
                     val myRoster = Roster(
                         gameId,
                         player.id,
@@ -109,10 +108,10 @@ class JoinNetGameViewModel(
 
                     val gotGame = client.joinGame(myRoster)
                     if (gotGame) {
-                        repository.upsertGameWithRosters(gameWithRosters)
+                        repository.upsertNetGame(netGame)
                         repository.upsertRoster(myRoster)
                         repository.upsertEntries(gameWithEntries)
-                    } else{
+                    } else {
                         notifier.show("Failed to join game. server ded?")
                     }
                 } else {

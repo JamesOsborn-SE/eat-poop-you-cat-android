@@ -18,7 +18,6 @@ interface RosterDao {
     @Query("SELECT * FROM roster WHERE gameId=:id")
     suspend fun getAllByGame(id: Uuid): List<Roster>
 
-
     @Query("SELECT * FROM roster WHERE gameId=:id")
     fun getAllByGameFlow(id: Uuid): Flow<List<Roster>>
 

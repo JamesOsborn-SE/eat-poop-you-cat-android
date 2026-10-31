@@ -1,5 +1,7 @@
 package dev.develsinthedetails.eatpoopyoucat.data
 
+import androidx.room3.withWriteTransaction
+import dev.develsinthedetails.eatpoopyoucat.data.local.AppDatabase
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.EntryDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.GameDao
 import dev.develsinthedetails.eatpoopyoucat.data.local.dao.PlayerDao
@@ -15,6 +17,7 @@ import kotlin.time.Clock
 import kotlin.uuid.Uuid
 
 class AppRepository(
+    private val db: AppDatabase,
     private val gameDao: GameDao,
     private val playerDao: PlayerDao,
     private val entryDao: EntryDao,
@@ -46,17 +49,11 @@ class AppRepository(
     }
 
     suspend fun upsertGame(game: Game) = gameDao.upsert(game)
-    fun getGameFlow(id: Uuid) = gameDao.getFlow(id)
     suspend fun getGame(id: Uuid) = gameDao.get(id)
     suspend fun deleteGame(id: Uuid) = gameDao.delete(id)
-    fun getAllGamesWithEntriesFlow() = gameDao.getAllWithEntriesFlow()
-    fun getInProgressGamesWithRostersFlow() = gameDao.getInProgressGamesWithRostersFlow()
-
     suspend fun getGameWithRosters(gameId: Uuid) = gameDao.getGameWithRosters(gameId)
-    fun getGameWithRostersFlow(gameId: Uuid) = gameDao.getGameWithRostersFlow(gameId)
     suspend fun getAllGames() = gameDao.getAll()
     fun getAllGamesFlow() = gameDao.getAllFlow()
-    fun getGameWithEntriesFlow(id: Uuid) = gameDao.getWithEntriesFlow(id)
     suspend fun getGameWithEntries(id: Uuid) = gameDao.getWithEntries(id)
     suspend fun getPreviouslyUsedNicknames(gameId: Uuid): List<String> {
         val nicknames = getGameWithEntries(gameId)
@@ -85,7 +82,6 @@ class AppRepository(
     // ==========================================
     // Roster functions
     // ==========================================
-    fun getRostersByGameFlow(id: Uuid): Flow<List<Roster>> = rosterDao.getAllByGameFlow(id)
     suspend fun addPlayer(roster: Roster) {
         playerDao.upsert(Player(roster.playerId, roster.nickname))
         rosterDao.upsert(roster)
@@ -117,8 +113,18 @@ class AppRepository(
         entryDao.upsert(entries)
     }
 
-    fun getNetGameFlow(gameId: Uuid): Flow<NetGame> = gameDao.getNetGameFlow(gameId)
+    fun getNetGameFlow(gameId: Uuid): Flow<NetGame?> = gameDao.getNetGameFlow(gameId)
     suspend fun getGamesForPlayer(playerId: Uuid) = gameDao.getGamesForPlayer(playerId)
     suspend fun updateActiveTurn(gameId: Uuid, activeTurnId: Uuid?) =
         gameDao.updateActiveTurn(gameId, activeTurnId)
+
+    suspend fun getPlayersInGame(gameId: Uuid) = rosterDao.getAllByGame(gameId)
+    suspend fun getNetGame(gameId: Uuid) = gameDao.getNetGame(gameId)
+    suspend fun upsertNetGame(netGame: NetGame) {
+        db.withWriteTransaction {
+            gameDao.upsert(netGame.game)
+            rosterDao.upsert(netGame.roster)
+            entryDao.upsert(netGame.entries)
+        }
+    }
 }

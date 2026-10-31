@@ -4,7 +4,7 @@ import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
@@ -290,9 +290,9 @@ actual class GameClient actual constructor(
         }
     }
 
-    actual suspend fun getGame(gameId: Uuid): GameWithRosters? {
-        val response = rpc<GameEvent.ResponseGameWithRosters>(
-            GameEvent.RequestGameWithRosters(gameId)
+    actual suspend fun getGame(gameId: Uuid): NetGame? {
+        val response = rpc<GameEvent.ResponseNetGame>(
+            GameEvent.RequestNetGame(gameId)
         )
 
         return response?.game

@@ -76,7 +76,7 @@ class GameServer(
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
         null
     private var serverScope: CoroutineScope? = null
-    private val connectionManager = WebSocketConnectionManager()
+    private val connectionManager = WebSocketConnectionManager(repository)
 
     private val activeMonitors = ConcurrentHashMap<Uuid, Job>()
 
@@ -217,7 +217,7 @@ class GameServer(
                     repository.getNetGameFlow(gameId),
                     connectionManager.connectedPlayers, // connected players acts as a trigger but data isn't directly used
                 ) { netGame, _ ->
-                    MonitorEvent.StateChanged(netGame)
+                    MonitorEvent.StateChanged(netGame!!) // it existed when this was called
                 }.collect { events.send(it) }
             }
 
@@ -258,7 +258,12 @@ class GameServer(
         ): Boolean {
             // if the game is over, stop monitoring and send broadcast.
             if (event.netGame.game.turns != null) {
-                connectionManager.broadcast(GameEvent.GameComplete(event.netGame.game))
+                connectionManager.broadcast(
+                    GameEvent.GameComplete(
+                        event.netGame.game,
+                        gameId = event.netGame.game.id
+                    )
+                )
                 printDebugLine(gameId, "Game is over. Stopping monitor.")
                 repository.updateActiveTurn(gameId, null)
                 activeMonitors.remove(gameId)

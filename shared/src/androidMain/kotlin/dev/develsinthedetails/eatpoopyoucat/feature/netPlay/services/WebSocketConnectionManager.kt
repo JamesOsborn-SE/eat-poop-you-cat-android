@@ -1,5 +1,6 @@
 package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 
+import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import io.ktor.server.websocket.DefaultWebSocketServerSession
 import io.ktor.websocket.Frame
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,9 +14,10 @@ import kotlinx.serialization.cbor.Cbor
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.uuid.Uuid
 
-// todo track gameIds and use in broadcast() so only clients in that game are sent the messages
 @OptIn(ExperimentalSerializationApi::class)
-class WebSocketConnectionManager {
+class WebSocketConnectionManager(
+    val repository: AppRepository
+) {
     private val _connectedPlayers = MutableStateFlow<Set<Uuid>>(emptySet())
     val connectedPlayers: StateFlow<Set<Uuid>> = _connectedPlayers.asStateFlow()
 
@@ -61,10 +63,10 @@ class WebSocketConnectionManager {
     fun hasActiveSession(playerId: Uuid): Boolean = sessionsByPlayer.containsKey(playerId)
 
     suspend fun broadcast(event: GameEvent) {
-        println("Broadcasting event: $event")
-        println("sessionsByPlayer: ${sessionsByPlayer.keys}")
+        val playersInThisGame = repository.getPlayersInGame(gameId = event.gameId)
         val bytes = Cbor.encodeToByteArray(GameEvent.serializer(), event.withoutRequestId())
-        sessionsByPlayer.values.forEach { connection ->
+        for (player in playersInThisGame) {
+            val connection = sessionsByPlayer[player.playerId] ?: continue
             try {
                 connection.send(bytes)
             } catch (e: Exception) { /* Ignore dropped clients */
@@ -78,7 +80,7 @@ class WebSocketConnectionManager {
         try {
             connection.send(bytes)
         } catch (e: Exception) {
-            println("Failed to send to player $playerId: ${e.message}")
+            println("Failed to send to player $playerId: ${e.message}") //todo retry they are supposed to take turn? maybe in handleStateChanged..
         }
     }
 

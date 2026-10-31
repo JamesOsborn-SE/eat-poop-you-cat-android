@@ -3,8 +3,7 @@ package dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithEntries
-import dev.develsinthedetails.eatpoopyoucat.data.models.GameWithRosters
+import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import io.ktor.http.Url
 import kotlin.uuid.Uuid
@@ -14,7 +13,9 @@ actual class GameClient actual constructor(
     val repository: AppRepository,
     val appSettings: AppSettings,
 ) {
-    private val connectionManager = WebSocketConnectionManager()
+    private val connectionManager = WebSocketConnectionManager(repository)
+
+    // todo remove this hack should be moved into handleStateChanged in game server
     actual suspend fun turnComplete(newEntry: Entry): Boolean {
         val ge = GameEvent.TurnComplete(
             entry = newEntry,
@@ -24,7 +25,7 @@ actual class GameClient actual constructor(
         return true
     }
 
-    actual suspend fun getGame(gameId: Uuid): GameWithRosters? {
+    actual suspend fun getGame(gameId: Uuid): NetGame? {
         return null
     }
 
@@ -36,7 +37,7 @@ actual class GameClient actual constructor(
         return false
     }
 
-    actual suspend fun updateGame(game: GameWithEntries): List<Entry> {
+    actual suspend fun updateGame(game: NetGame): List<Entry> {
         return listOf()
     }
 
