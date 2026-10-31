@@ -207,7 +207,20 @@ object Scaffolds {
         content: @Composable (PaddingValues) -> Unit,
     ) {
         var showMenu by remember { mutableStateOf(false) }
-
+        var showDeleteConfirmation by remember { mutableStateOf(false) }
+        SystemBackHandler(enabled = true) {
+            showDeleteConfirmation = false
+        }
+        val extraContent = @Composable { padding: PaddingValues ->
+            content(padding)
+            if (showDeleteConfirmation) {
+                ConfirmDialog(
+                    onDismiss = { showDeleteConfirmation = false },
+                    onConfirm = onDeleteGame,
+                    action = stringResource(Res.string.delete_game)
+                )
+            }
+        }
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -263,7 +276,7 @@ object Scaffolds {
                                 text = { Text(stringResource(Res.string.import_games)) })
                             DropdownMenuItem(
                                 onClick = {
-                                    onDeleteGame.invoke()
+                                    showDeleteConfirmation = true
                                     showMenu = false
                                 },
                                 text = { Text(stringResource(Res.string.delete_game)) })
@@ -272,7 +285,7 @@ object Scaffolds {
                 )
             },
             bottomBar = bottomBar,
-            content = content
+            content = extraContent
         )
     }
 
