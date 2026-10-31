@@ -36,7 +36,6 @@ import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
-import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.defaultDataFilename
@@ -50,6 +49,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.utilities.saveToGallery
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.valueOrEmpty
 import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.EntryType
+import dev.develsinthedetails.eatpoopyoucat.data.models.isInProgress
 import dev.develsinthedetails.eatpoopyoucat.data.models.type
 import dev.develsinthedetails.eatpoopyoucat.feature.draw.DrawBox
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServerLifecycle
@@ -121,10 +121,12 @@ fun PreviousGameDetailsRoute(
     val shareLauncher = rememberShareFileLauncher(
         onError = { failure -> shareError = failure.message },
     )
-    if (game == null){
+    if (game?.game == null){
         Spinner()
+        return
     }
-    if (game?.game?.gameMode !== GameMode.LOCAL && game?.game?.turns == null) {
+
+    if (game.isInProgress()) {
         InProgressGameDetailsScreen(
             uiState = uiState,
             game = game,

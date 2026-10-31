@@ -25,3 +25,4 @@ data class Game(
     val gameMode: GameMode = GameMode.LOCAL,
     val activeTurnId: Uuid? = null,
 )
+

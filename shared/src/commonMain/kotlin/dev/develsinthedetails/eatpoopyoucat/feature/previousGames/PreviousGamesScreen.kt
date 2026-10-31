@@ -32,6 +32,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +67,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.CustomRoundedPoly
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PixelArtImage
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.SpinnerScreen
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generateOrganicProfile
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.generatePixelProfile4Bit
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
@@ -90,7 +92,6 @@ import eatpoopyoucat.shared.generated.resources.ic_lan
 import eatpoopyoucat.shared.generated.resources.ic_question_mark
 import eatpoopyoucat.shared.generated.resources.ic_warning_rounded
 import eatpoopyoucat.shared.generated.resources.ic_wifi
-import eatpoopyoucat.shared.generated.resources.loading
 import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.no_previous_games_found
 import eatpoopyoucat.shared.generated.resources.previous_games
@@ -188,16 +189,19 @@ fun PreviousGamesScreen(
     onEndGame: (Uuid) -> Unit,
     onCleanup: () -> Unit,
 ) {
+    if (games == null)
+        SpinnerScreen()
+
     val inProgressGames =
-        games?.filter { it.game.turns == null && it.game.gameMode != GameMode.LOCAL }
+        games?.filter { it.game.turns == null && it.game.gameMode != GameMode.LOCAL }.orEmpty()
     val completedGames =
-        games?.filter { it.game.turns != null || it.game.gameMode == GameMode.LOCAL }
+        games?.filter { it.game.turns != null || it.game.gameMode == GameMode.LOCAL }.orEmpty()
     val listState = rememberLazyListState()
 
     Scaffolds.PreviousGames(
         title = pluralStringResource(
             Res.plurals.previous_games,
-            (completedGames?.count() ?: 0) + (inProgressGames?.count() ?: 0)
+            completedGames.count() + inProgressGames.count()
         ),
         onBackupGames = onBackupGames,
         onImportGames = onImportGames,
@@ -205,17 +209,14 @@ fun PreviousGamesScreen(
         onCleanup = onCleanup
     )
     { innerPadding ->
+        // todo use surface more better everywhere
         Surface(
             modifier = modifier
                 .fillMaxSize()
                 .padding(innerPadding),
             color = MaterialTheme.colorScheme.primaryContainer
         ) {
-            if (games == null) {
-                Text(stringResource(Res.string.loading))
-                return@Surface
-            }
-            if (completedGames.isNullOrEmpty() && inProgressGames.isNullOrEmpty()) {
+            if (completedGames.isEmpty() && inProgressGames.isEmpty()) {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
@@ -249,16 +250,17 @@ fun PreviousGamesScreen(
                     contentPadding = PaddingValues(16.dp),
                 ) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        if (inProgressGames!!.isNotEmpty())
+                        if (inProgressGames.isNotEmpty())
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .padding(bottom = 15.dp),
-                                text = "In Progress Games"
+                                text = "In Progress Games",
+                                style = MaterialTheme.typography.titleLarge
                             )
                     }
                     itemsIndexed(
-                        inProgressGames!!.sortedByDescending { it.game.createdAt },
+                        inProgressGames.sortedByDescending { it.game.createdAt },
                         span = { _, _ -> GridItemSpan(maxLineSpan) },
                         key = { _, item -> item.game.id },
                     ) { index, gameWithRosters ->
@@ -272,16 +274,21 @@ fun PreviousGamesScreen(
                         )
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        if (completedGames!!.isNotEmpty())
+                        if (inProgressGames.isNotEmpty())
+                            HorizontalDivider(modifier = Modifier.padding(16.dp), 6.dp)
+                    }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        if (completedGames.isNotEmpty())
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .padding(bottom = 15.dp),
-                                text = "Completed Games"
+                                text = "Completed Games",
+                                style = MaterialTheme.typography.titleLarge
                             )
                     }
                     items(
-                        items = completedGames ?: listOf(),
+                        items = completedGames,
                         key = { it.game.id }
                     ) { game ->
                         GameListItem(
@@ -417,7 +424,7 @@ private fun ListGame(
 ) {
     val game = netGame.game
     val players = netGame.roster
-    val thisRosterPlayer = netGame.roster.first { it.playerId == playerId }
+    val thisRosterPlayer = netGame.roster.firstOrNull { it.playerId == playerId }
     val actionWidth = 88.dp
     val actionWidthPx = with(LocalDensity.current) { actionWidth.toPx() }
     val scope = rememberCoroutineScope()
@@ -434,7 +441,7 @@ private fun ListGame(
 
     Box(Modifier.fillMaxWidth()) {
         Row(Modifier.matchParentSize()) {
-            if (thisRosterPlayer.isLeader)
+            if (thisRosterPlayer?.isLeader == true)
                 Box(
                     Modifier
                         .width(actionWidth)
@@ -449,14 +456,19 @@ private fun ListGame(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row {
+                        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                             Icon(
                                 painterResource(Res.drawable.ic_warning_rounded),
                                 contentDescription = stringResource(Res.string.end_game_for_all)
                             )
                         }
                         Row {
-                            Text(stringResource(Res.string.end_game_for_all), color = Color.White)
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterVertically),
+                                text = stringResource(Res.string.end_game_for_all),
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
                         }
                     }
                 }
@@ -473,14 +485,19 @@ private fun ListGame(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row {
+                    Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                         Icon(
                             painterResource(Res.drawable.ic_delete_forever_rounded),
                             contentDescription = stringResource(Res.string.delete_game)
                         )
                     }
                     Row {
-                        Text(stringResource(Res.string.delete_game), color = Color.White)
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                            text = stringResource(Res.string.delete_game),
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
@@ -497,7 +514,7 @@ private fun ListGame(
                     state.updateAnchors(
                         DraggableAnchors {
                             GameSwipeAnchor.Closed at 0f
-                            if (thisRosterPlayer.isLeader) {
+                            if (thisRosterPlayer?.isLeader == true) {
                                 GameSwipeAnchor.EndForAll at actionWidthPx
                             }
                             GameSwipeAnchor.Delete at -actionWidthPx

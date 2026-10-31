@@ -34,3 +34,5 @@ data class NetGame(
     @Relation(parentColumns = ["id"], entityColumns = ["gameId"])
     var entries: List<Entry> = emptyList()
 )
+
+fun NetGame?.isInProgress() = this?.game?.gameMode !== GameMode.LOCAL && this?.game?.turns == null && this?.roster?.size!! >= 1
