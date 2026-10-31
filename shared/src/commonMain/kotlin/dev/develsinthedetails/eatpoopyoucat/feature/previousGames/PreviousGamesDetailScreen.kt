@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.develsinthedetails.eatpoopyoucat.app.LocalAppNotifier
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.PlatformLazyVerticalScrollbar
 import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
+import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Spinner
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.GameMode
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.Gzip
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ImageExport
@@ -119,7 +120,9 @@ fun PreviousGameDetailsRoute(
     val shareLauncher = rememberShareFileLauncher(
         onError = { failure -> shareError = failure.message },
     )
-
+    if (game == null){
+        Spinner()
+    }
     if (game?.game?.gameMode !== GameMode.LOCAL && game?.game?.turns == null) {
         InProgressGameDetailsScreen(
             uiState = uiState,
@@ -179,6 +182,10 @@ fun PreviousGameDetailsRoute(
                     }
                 }
             },
+            onDeleteGame = {
+                viewModel.deleteGame(game?.game?.id)
+                onBack()
+            }
         )
 }
 
@@ -191,6 +198,7 @@ fun PreviousGameDetailsScreen(
     onBackupGame: () -> Unit,
     onImportGame: () -> Unit,
     onShareGame: () -> Unit,
+    onDeleteGame: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -207,6 +215,7 @@ fun PreviousGameDetailsScreen(
         onShareGame = onShareGame,
         onContinueGame = onContinueGame,
         onBack = onBack,
+        onDeleteGame = onDeleteGame
     ) { innerPadding ->
         Surface(
             modifier = modifier

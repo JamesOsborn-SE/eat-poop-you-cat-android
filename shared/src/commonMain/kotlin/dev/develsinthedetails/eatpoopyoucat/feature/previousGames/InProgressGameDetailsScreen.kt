@@ -91,13 +91,13 @@ fun InProgressGameDetailsScreen(
                     modifier = Modifier.padding(3.dp),
                     onClick = { gameOverMan() }
                 ) {
-                    Row {
+                    Row(modifier = Modifier.padding(3.dp)) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_warning_rounded),
-                            modifier = Modifier.padding(3.dp),
+                            modifier = Modifier.padding(3.dp).align(Alignment.CenterVertically),
                             contentDescription = stringResource(Res.string.scroll_to_top)
                         )
-                        Text(stringResource(Res.string.end_game_for_all))
+                        Text(modifier = Modifier.padding(6.dp).align(Alignment.CenterVertically), text = stringResource(Res.string.end_game_for_all))
                     }
                 }
             }

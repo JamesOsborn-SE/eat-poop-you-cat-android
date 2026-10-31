@@ -68,4 +68,11 @@ class PreviousGameDetailsViewModel(
             }
         }
     }
+
+    fun deleteGame(gameId: Uuid?) {
+        if (gameId == null) return
+        viewModelScope.launch {
+            repository.deleteGame(gameId)
+        }
+    }
 }

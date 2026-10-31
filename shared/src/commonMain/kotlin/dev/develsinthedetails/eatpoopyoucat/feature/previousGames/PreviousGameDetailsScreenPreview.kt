@@ -27,6 +27,7 @@ fun PreviousGameScreenPreview() {
             onBackupGame = {},
             onImportGame = {},
             onShareGame = {},
+            onDeleteGame = {}
         )
     }
 }

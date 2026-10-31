@@ -26,6 +26,7 @@ import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.app_name
 import eatpoopyoucat.shared.generated.resources.backup_games
 import eatpoopyoucat.shared.generated.resources.continue_previous_game
+import eatpoopyoucat.shared.generated.resources.delete_game
 import eatpoopyoucat.shared.generated.resources.delete_orphaned_games
 import eatpoopyoucat.shared.generated.resources.end_game_for_all
 import eatpoopyoucat.shared.generated.resources.ic_arrow_back_rounded
@@ -201,6 +202,7 @@ object Scaffolds {
         onBackupGame: () -> Unit,
         onBack: () -> Unit,
         onImportGame: (() -> Unit)?,
+        onDeleteGame: () -> Unit,
         bottomBar: @Composable () -> Unit = {},
         content: @Composable (PaddingValues) -> Unit,
     ) {
@@ -259,6 +261,12 @@ object Scaffolds {
                                     showMenu = false
                                 },
                                 text = { Text(stringResource(Res.string.import_games)) })
+                            DropdownMenuItem(
+                                onClick = {
+                                    onDeleteGame.invoke()
+                                    showMenu = false
+                                },
+                                text = { Text(stringResource(Res.string.delete_game)) })
                         }
                     },
                 )
