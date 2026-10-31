@@ -97,26 +97,21 @@ class JoinNetGameViewModel(
                     netGame = client.getGame(gameId)
                 }
 
-                if (netGame != null) {
-                    val gameWithEntries =
-                        client.updateGame(netGame)
+                if (netGame == null) {
+                    println("DEBUG: gameWithRosters is null")
+                    _uiState.update { it.copy(isError = true) }
+                } else {
                     val myRoster = Roster(
                         gameId,
                         player.id,
                         player.nickname
                     )
-
                     val gotGame = client.joinGame(myRoster)
                     if (gotGame) {
-                        repository.upsertNetGame(netGame)
-                        repository.upsertRoster(myRoster)
-                        repository.upsertEntries(gameWithEntries)
+                        repository.upsertNetGame(netGame, appSettings.playerId)
                     } else {
                         notifier.show("Failed to join game. server ded?")
                     }
-                } else {
-                    println("DEBUG: gameWithRosters is null")
-                    _uiState.update { it.copy(isError = true) }
                 }
                 _uiState.update { it.copy(isLoading = false) }
             }

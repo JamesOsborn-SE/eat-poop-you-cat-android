@@ -35,6 +35,10 @@ interface PlayerDao {
     @Upsert
     suspend fun upsert(player: Player)
 
+    @Transaction
+    @Upsert
+    suspend fun upsert(players: List<Player>)
+
     @Query("DELETE FROM player")
     suspend fun deleteAll()
 }

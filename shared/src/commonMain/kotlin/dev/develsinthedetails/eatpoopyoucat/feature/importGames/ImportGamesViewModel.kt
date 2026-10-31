@@ -4,10 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.develsinthedetails.eatpoopyoucat.app.AppSettings
 import dev.develsinthedetails.eatpoopyoucat.data.AppRepository
-import dev.develsinthedetails.eatpoopyoucat.data.models.Entry
 import dev.develsinthedetails.eatpoopyoucat.data.models.NetGame
 import dev.develsinthedetails.eatpoopyoucat.data.models.Player
-import dev.develsinthedetails.eatpoopyoucat.data.models.Roster
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -33,43 +31,12 @@ class ImportGamesViewModel(
                 repository.createPlayer(Player(appSettings.playerId, ""))
         }
     }
-    private suspend fun addGame(gameWithEntries: NetGame) {
-        repository.createGame(gameWithEntries.game)
-        addPlayers(gameWithEntries.roster)
-        addEntries(gameWithEntries.entries)
-        _numberOfGamesAdded.emit(++_numberOfGamesAdded.value)
-    }
-    private suspend fun addPlayers(players: List<Roster>) {
-        players.forEach {
-            val player = repository.getPlayer(it.playerId)
-            if (player == null)
-                repository.createPlayer(Player(it.playerId, it.nickname))
-            repository.upsertRoster(it)
-        }
-    }
-
-    private suspend fun addEntries(entries: List<Entry>) {
-        entries.forEach {
-            val player = repository.getPlayer(it.playerId)
-            if (player == null)
-                repository.createPlayer(Player(it.playerId, it.localPlayerName?:""))
-            repository.createEntry(it)
-            _numberOfEntriesAdded.emit(++_numberOfEntriesAdded.value)
-        }
-    }
 
     suspend fun addGames(gamesToImport: List<NetGame>, closeStream: () -> Unit) {
-        val existingGameIds = repository.getAllGames().map { g -> g.game.id }
         gamesToImport.forEach {
-            if (!existingGameIds.any { g -> g == it.game.id })
-                addGame(it)
-            else {
-                val existingEntries = repository.getEntries(it.game.id)
-                val missingEntries =
-                    it.entries.filter { e -> !existingEntries.any { ee -> ee.id == e.id } }
-                if (missingEntries.any())
-                    addEntries(missingEntries)
-            }
+            repository.upsertNetGame(it, appSettings.playerId)
+            _numberOfGamesAdded.emit(_numberOfGamesAdded.value + 1)
+            _numberOfEntriesAdded.emit(_numberOfEntriesAdded.value + it.entries.size)
         }
         closeStream()
         _isFinished.emit(true)

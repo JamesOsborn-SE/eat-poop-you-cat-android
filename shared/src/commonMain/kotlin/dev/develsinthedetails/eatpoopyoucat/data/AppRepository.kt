@@ -120,10 +120,23 @@ class AppRepository(
 
     suspend fun getPlayersInGame(gameId: Uuid) = rosterDao.getAllByGame(gameId)
     suspend fun getNetGame(gameId: Uuid) = gameDao.getNetGame(gameId)
-    suspend fun upsertNetGame(netGame: NetGame) {
+    suspend fun upsertNetGame(netGame: NetGame, myPlayerId: Uuid) {
+        var rosters = netGame.roster
+        if (rosters.isEmpty()) {
+            rosters = netGame.entries.map {
+                Roster(
+                    netGame.game.id,
+                    it.playerId,
+                    it.localPlayerName ?: ""
+                )
+            }
+        }
+        val players =
+            rosters.filter { it.playerId != myPlayerId }.map { Player(it.playerId, it.nickname) }
         db.withWriteTransaction {
             gameDao.upsert(netGame.game)
-            rosterDao.upsert(netGame.roster)
+            playerDao.upsert(players)
+            rosterDao.upsert(rosters)
             entryDao.upsert(netGame.entries)
         }
     }
