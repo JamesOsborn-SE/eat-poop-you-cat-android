@@ -27,7 +27,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,6 +73,7 @@ import eatpoopyoucat.shared.generated.resources.ic_eraser_black_24
 import eatpoopyoucat.shared.generated.resources.ic_redo_rounded
 import eatpoopyoucat.shared.generated.resources.ic_send_rounded
 import eatpoopyoucat.shared.generated.resources.ic_undo_rounded
+import eatpoopyoucat.shared.generated.resources.loading
 import eatpoopyoucat.shared.generated.resources.nicknames
 import eatpoopyoucat.shared.generated.resources.no_letters_or_numbers
 import eatpoopyoucat.shared.generated.resources.oof
@@ -206,7 +206,7 @@ private fun DrawScreen(
         ) {
 
             if (uiState.isLoading || uiState.previousEntry == null) {
-                Text("Loading...")
+                Text(stringResource(Res.string.loading))
                 return@Surface
             }
             if (!uiState.nicknameIsSatisfied) {

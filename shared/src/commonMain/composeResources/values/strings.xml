@@ -21,6 +21,7 @@
     <string name="redo_description">Undo the undo</string>
     <string name="redo">Redo</string>
     <string name="preferences_header">Preferences</string>
+    <string name="back">Back</string>
     <string name="background_header">Background activity</string>
     <string name="background_title">"Allow app to communicate in the background"</string>
     <string name="background_summary_off">You will not be able to send or receive games unless the app is open</string>
@@ -67,9 +68,11 @@
     <string name="translations_welcome">Translation contributions welcome</string>
     <string name="issues">Issues</string>
     <string name="share_this_game">Share this game</string>
+    <string name="share_link_for_this_game">Share Link for this game</string>
+    <string name="waiting">Waiting for turn</string>
     <string name="is_available_on">%1$s is available on F-Droid and Google Play</string>
     <string name="continue_previous_game">Continue an old game</string>
-    <string name="loading">Loading</string>
+    <string name="loading">Loading...</string>
     <string name="debugging_on_label">Debugging on: %1$s</string>
     <string name="version_label">Version: %1$s</string>
     <string name="git_hash_label">Git Hash: %1$s</string>

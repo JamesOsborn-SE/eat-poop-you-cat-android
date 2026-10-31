@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import kotlin.uuid.Uuid
 
+// global TODO remove all hard coded string
 @Composable
 fun App(
     onNavHostReady: suspend (NavController) -> Unit = {}

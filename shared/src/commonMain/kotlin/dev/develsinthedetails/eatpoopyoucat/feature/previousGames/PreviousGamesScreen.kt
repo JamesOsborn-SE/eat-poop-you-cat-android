@@ -90,10 +90,12 @@ import eatpoopyoucat.shared.generated.resources.ic_lan
 import eatpoopyoucat.shared.generated.resources.ic_question_mark
 import eatpoopyoucat.shared.generated.resources.ic_warning_rounded
 import eatpoopyoucat.shared.generated.resources.ic_wifi
+import eatpoopyoucat.shared.generated.resources.loading
 import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.no_previous_games_found
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
+import eatpoopyoucat.shared.generated.resources.share_link_for_this_game
 import eatpoopyoucat.shared.generated.resources.turns
 import korlibs.math.isEven
 import kotlinx.coroutines.launch
@@ -210,7 +212,7 @@ fun PreviousGamesScreen(
             color = MaterialTheme.colorScheme.primaryContainer
         ) {
             if (games == null) {
-                Text("Loading...")
+                Text(stringResource(Res.string.loading))
                 return@Surface
             }
             if (completedGames.isNullOrEmpty() && inProgressGames.isNullOrEmpty()) {
@@ -533,7 +535,7 @@ private fun ListGameItem(
                     GameMode.LAN -> {
                         Icon(
                             painter = painterResource(Res.drawable.ic_lan),
-                            contentDescription = "Share text",
+                            contentDescription = stringResource(Res.string.share_link_for_this_game),
                             modifier = Modifier
                                 .size(50.dp)
                                 .padding(end = 10.dp)
@@ -543,7 +545,7 @@ private fun ListGameItem(
                     GameMode.INET ->
                         Icon(
                             painter = painterResource(Res.drawable.ic_wifi),
-                            contentDescription = "Share text",
+                            contentDescription = stringResource(Res.string.share_link_for_this_game),
                             modifier = Modifier
                                 .size(50.dp)
                                 .padding(end = 10.dp)
@@ -551,7 +553,7 @@ private fun ListGameItem(
 
                     else -> Icon(
                         painter = painterResource(Res.drawable.ic_question_mark),
-                        contentDescription = "Share text"
+                        contentDescription = stringResource(Res.string.share_link_for_this_game)
                     )
                 }
                 val generatedProfile = generateOrganicProfile(game.id)

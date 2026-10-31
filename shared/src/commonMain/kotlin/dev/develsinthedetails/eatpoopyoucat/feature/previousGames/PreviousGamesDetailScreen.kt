@@ -62,6 +62,7 @@ import eatpoopyoucat.shared.generated.resources.ic_replay_rounded
 import eatpoopyoucat.shared.generated.resources.ic_share_filled
 import eatpoopyoucat.shared.generated.resources.ic_vertical_align_top_rounded
 import eatpoopyoucat.shared.generated.resources.is_available_on
+import eatpoopyoucat.shared.generated.resources.loading
 import eatpoopyoucat.shared.generated.resources.no_games_to_save
 import eatpoopyoucat.shared.generated.resources.previous_games
 import eatpoopyoucat.shared.generated.resources.saving
@@ -264,7 +265,7 @@ fun PreviousGameDetailsScreen(
                 },
             ) { contentPadding ->
                 if (entries == null) {
-                    Text("Loading...", modifier = Modifier.padding(contentPadding))
+                    Text(stringResource(Res.string.loading), modifier = Modifier.padding(contentPadding))
                     return@Scaffold
                 }
                 Box(modifier = Modifier.fillMaxSize()) {

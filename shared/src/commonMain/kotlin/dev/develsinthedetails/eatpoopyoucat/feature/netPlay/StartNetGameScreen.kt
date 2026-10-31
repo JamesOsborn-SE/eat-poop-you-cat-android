@@ -39,6 +39,7 @@ import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ManageServe
 import dev.develsinthedetails.eatpoopyoucat.feature.netPlay.services.ServerManager
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.ic_share_filled
+import eatpoopyoucat.shared.generated.resources.share_this_game
 import eatpoopyoucat.shared.generated.resources.start
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -64,7 +65,7 @@ fun SelectableReadOnlyTextWithShare(modifier: Modifier = Modifier, link: String)
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_share_filled),
-                    contentDescription = "Share Game"
+                    contentDescription = stringResource(Res.string.share_this_game)
                 )
             }
         }

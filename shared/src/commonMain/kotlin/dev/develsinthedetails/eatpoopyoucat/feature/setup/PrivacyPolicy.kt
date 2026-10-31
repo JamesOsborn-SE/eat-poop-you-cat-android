@@ -21,6 +21,7 @@ import dev.develsinthedetails.eatpoopyoucat.core.ui.components.Scaffolds
 import dev.develsinthedetails.eatpoopyoucat.core.ui.theme.AppTheme
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.ReadMetadata
 import eatpoopyoucat.shared.generated.resources.Res
+import eatpoopyoucat.shared.generated.resources.loading
 import eatpoopyoucat.shared.generated.resources.privacy_policy
 import org.jetbrains.compose.resources.stringResource
 
@@ -29,7 +30,7 @@ fun PrivacyPolicyScreen(
     onBack: () -> Unit
 ) {
     val metadataReader = remember { ReadMetadata() }
-    val privacyText by produceState(initialValue = "Loading...") {
+    val privacyText by produceState(initialValue = stringResource(Res.string.loading)) {
         value = metadataReader.getPrivacyPolicy()
     }
     Scaffolds.Backable(

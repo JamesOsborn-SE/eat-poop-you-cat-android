@@ -61,7 +61,7 @@ class IncomingEventProcessor(
 
                 notifier.show(
                     id = event.turnId,
-                    actionLabel = "Take You Turn?",
+                    actionLabel = "Let's Go!!!1",
                     onAction = navTo,
                     message = "It's your turn to play"
                 )

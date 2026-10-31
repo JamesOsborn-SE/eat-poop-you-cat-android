@@ -375,7 +375,7 @@ class GameServer(
                 }
                 notifier.show(
                     id = activeTurnId,
-                    actionLabel = "Take You Turn?",
+                    actionLabel = "Let's Go!!!1",
                     onAction = navTo,
                     message = "It's your turn to play"
                 )
@@ -385,7 +385,7 @@ class GameServer(
                     notifier.showSystemNotification(
                         SystemNotifyEvent(
                             title = "It's your turn to play",
-                            text = "Take You Turn?",
+                            text = "Let's Go!",
                             yes = getString(Res.string.yes),
                             no = getString(Res.string.no),
                             destUri = destUri

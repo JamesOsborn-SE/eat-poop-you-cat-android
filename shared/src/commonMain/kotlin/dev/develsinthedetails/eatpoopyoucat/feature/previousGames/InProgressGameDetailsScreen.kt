@@ -66,6 +66,8 @@ import eatpoopyoucat.shared.generated.resources.ic_warning_rounded
 import eatpoopyoucat.shared.generated.resources.ic_wifi
 import eatpoopyoucat.shared.generated.resources.nicknames
 import eatpoopyoucat.shared.generated.resources.scroll_to_top
+import eatpoopyoucat.shared.generated.resources.share_link_for_this_game
+import eatpoopyoucat.shared.generated.resources.waiting
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
@@ -133,7 +135,7 @@ fun InProgressGameDetailsScreen(
                                     GameMode.LAN -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.ic_lan),
-                                            contentDescription = "Share text",
+                                            contentDescription = stringResource(Res.string.share_link_for_this_game),
                                             modifier = Modifier
                                                 .size(50.dp)
                                                 .padding(end = 10.dp)
@@ -142,7 +144,7 @@ fun InProgressGameDetailsScreen(
 
                                     GameMode.INET -> Icon(
                                         painter = painterResource(Res.drawable.ic_wifi),
-                                        contentDescription = "Share text",
+                                        contentDescription = stringResource(Res.string.share_link_for_this_game),
                                         modifier = Modifier
                                             .size(50.dp)
                                             .padding(end = 10.dp)
@@ -150,7 +152,7 @@ fun InProgressGameDetailsScreen(
 
                                     else -> Icon(
                                         painter = painterResource(Res.drawable.ic_question_mark),
-                                        contentDescription = "Share text"
+                                        contentDescription = stringResource(Res.string.share_link_for_this_game)
                                     )
                                 }
                                 val generatedProfile = generateOrganicProfile(game.game.id)
@@ -215,7 +217,7 @@ fun InProgressGameDetailsScreen(
 
                                 false -> {
                                     Text(
-                                        text = "Waiting for turn",
+                                        text = stringResource(Res.string.waiting),
                                         style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
@@ -233,7 +235,7 @@ fun InProgressGameDetailsScreen(
                             if (turns == 0 && game.roster.size == 1) {
                                 Icon(
                                     painter = painterResource(Res.drawable.ic_cake),
-                                    contentDescription = "Waiting for players. the cake is a lie",
+                                    contentDescription = stringResource(Res.string.waiting),
                                     modifier = Modifier
                                         .size(200.dp)
                                         .padding(end = 10.dp, start = 10.dp).fillMaxWidth()
@@ -350,7 +352,7 @@ fun RosterPlayerItem(
             else -> {
                 Icon(
                     painter = painterResource(Res.drawable.ic_schedule),
-                    contentDescription = "Waiting",
+                    contentDescription = stringResource(Res.string.waiting),
                     modifier = Modifier
                         .size(50.dp)
                         .padding(end = 10.dp, start = 10.dp)

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import dev.develsinthedetails.eatpoopyoucat.core.utilities.SystemBackHandler
 import eatpoopyoucat.shared.generated.resources.Res
 import eatpoopyoucat.shared.generated.resources.app_name
+import eatpoopyoucat.shared.generated.resources.back
 import eatpoopyoucat.shared.generated.resources.backup_games
 import eatpoopyoucat.shared.generated.resources.continue_previous_game
 import eatpoopyoucat.shared.generated.resources.delete_game
@@ -152,7 +153,7 @@ object Scaffolds {
                         IconButton(onClick = onBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_arrow_back_rounded),
-                                contentDescription = "Back"
+                                contentDescription = stringResource(Res.string.back)
                             )
                         }
                     },
@@ -235,7 +236,7 @@ object Scaffolds {
                         IconButton(onClick = onBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_arrow_back_rounded),
-                                contentDescription = "Back"
+                                contentDescription = stringResource(Res.string.back)
                             )
                         }
                     },
@@ -243,7 +244,7 @@ object Scaffolds {
                         IconButton(onClick = { showMenu = !showMenu }) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_more_vert_filled),
-                                contentDescription = "open"
+                                contentDescription = stringResource(Res.string.open)
                             )
                         }
                         DropdownMenu(
@@ -310,7 +311,7 @@ object Scaffolds {
                         IconButton(onClick = onBack) {
                             Icon(
                                 painter = painterResource(Res.drawable.ic_arrow_back_rounded),
-                                contentDescription = "Back"
+                                contentDescription = stringResource(Res.string.back)
                             )
                         }
                     },
