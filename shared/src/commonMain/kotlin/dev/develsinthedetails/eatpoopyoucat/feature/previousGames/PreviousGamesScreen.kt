@@ -24,13 +24,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -408,15 +406,16 @@ private enum class GameSwipeAnchor {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ListGame(
-    gameWithRosters: NetGame,
+    netGame: NetGame,
     isEven: Boolean,
     toGame: (Uuid) -> Unit,
     playerId: Uuid,
     onEndGame: (Uuid) -> Unit,
     onDeleteGame: (Uuid) -> Unit
 ) {
-    val game = gameWithRosters.game
-    val player = gameWithRosters.roster
+    val game = netGame.game
+    val players = netGame.roster
+    val thisRosterPlayer = netGame.roster.first { it.playerId == playerId }
     val actionWidth = 88.dp
     val actionWidthPx = with(LocalDensity.current) { actionWidth.toPx() }
     val scope = rememberCoroutineScope()
@@ -433,31 +432,32 @@ private fun ListGame(
 
     Box(Modifier.fillMaxWidth()) {
         Row(Modifier.matchParentSize()) {
-            Box(
-                Modifier
-                    .width(actionWidth)
-                    .fillMaxHeight()
-                    .background(Color.Blue)
-                    .clickable {
-                        scope.launch {
-                            onEndGame(gameWithRosters.game.id)
-                            state.animateTo(GameSwipeAnchor.Closed)
+            if (thisRosterPlayer.isLeader)
+                Box(
+                    Modifier
+                        .width(actionWidth)
+                        .fillMaxHeight()
+                        .background(Color.Blue)
+                        .clickable {
+                            scope.launch {
+                                onEndGame(netGame.game.id)
+                                state.animateTo(GameSwipeAnchor.Closed)
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Row {
+                            Icon(
+                                painterResource(Res.drawable.ic_warning_rounded),
+                                contentDescription = stringResource(Res.string.end_game_for_all)
+                            )
                         }
-                    },
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Row {
-                        Icon(
-                            painterResource(Res.drawable.ic_warning_rounded),
-                            contentDescription = stringResource(Res.string.end_game_for_all)
-                        )
-                    }
-                    Row {
-                        Text(stringResource(Res.string.end_game_for_all), color = Color.White)
+                        Row {
+                            Text(stringResource(Res.string.end_game_for_all), color = Color.White)
+                        }
                     }
                 }
-            }
             Spacer(Modifier.weight(1f))
 
             Box(
@@ -466,7 +466,7 @@ private fun ListGame(
                     .fillMaxHeight()
                     .background(Color.Red)
                     .clickable {
-                        onDeleteGame(gameWithRosters.game.id)
+                        onDeleteGame(netGame.game.id)
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -492,11 +492,12 @@ private fun ListGame(
                 }
                 .layout { measurable, constraints ->
                     val placeable = measurable.measure(constraints)
-
                     state.updateAnchors(
                         DraggableAnchors {
                             GameSwipeAnchor.Closed at 0f
-                            GameSwipeAnchor.EndForAll at actionWidthPx
+                            if (thisRosterPlayer.isLeader) {
+                                GameSwipeAnchor.EndForAll at actionWidthPx
+                            }
                             GameSwipeAnchor.Delete at -actionWidthPx
                         }
                     )
@@ -510,7 +511,7 @@ private fun ListGame(
                 .clickable { toGame(game.id) }
                 .padding(10.dp)
         ) {
-            ListGameItem(game, player, playerId)
+            ListGameItem(game, players, playerId)
         }
     }
 }
@@ -565,8 +566,8 @@ private fun ListGameItem(
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-                LazyRow(modifier = Modifier.padding(horizontal = 3.dp)) {
-                    itemsIndexed(player.take(4)) { _, entry ->
+                player.take(4).forEach { entry ->
+                    Row(modifier = Modifier.padding(horizontal = 3.dp)) {
                         var m = Modifier
                             .size(50.dp)
                             .rotate(90f)
@@ -588,6 +589,7 @@ private fun ListGameItem(
                         )
                     }
                 }
+
             }
             Text(
                 text = "Players: ${player.size}",
@@ -685,7 +687,8 @@ fun InProgressGamesPreview() {
                 Roster(
                     gameId2,
                     playerId = playerId,
-                    nickname = ""
+                    nickname = "",
+                    isLeader = true
                 ),
                 Roster(
                     gameId2, Uuid.parse("0ce3fd21-6b6e-41e3-9d4d-547a2f83b281"),
